@@ -182,7 +182,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	
 	public static void crearResolucion(List<Long> idsSeleccionados) {
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		Long idResolucionFAP = ids.get("idResolucionFAP");
 		if (idsSeleccionados == null) {
 			play.Logger.error("Se debe seleccionar un expediente");
 			Messages.error("Se debe seleccionar un expediente");
@@ -194,15 +193,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		} else {
 			ResolucionBase resolBase = null;
 			try {
-				resolBase = getResolucionObject(idResolucionFAP);
+				resolBase = getResolucionObject(ids.get("idResolucionFAP"));
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.setLineasDeResolucion(idResolucionFAP, idsSeleccionados);
-			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			resolBase.setLineasDeResolucion(ids.get("idResolucionFAP"), idsSeleccionados);
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(ids.get("idResolucionFAP"));
 			resolBase.avanzarFase_Borrador(resolucion);
 		}
-		index("editar", idResolucionFAP);
+		index("editar", ids.get("idResolucionFAP"));
 	}
 	
 	public static List<ComboItem> selectJefeServicio() {

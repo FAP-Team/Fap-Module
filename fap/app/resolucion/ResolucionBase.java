@@ -446,7 +446,11 @@ public class ResolucionBase {
 				tx.begin();
 		} 
 	 }
-	 
+	
+	public void generarOficioRemision (long idResolucion) {
+		
+	}
+	
 	public void notificarCopiarEnExpedientes (long idResolucion) {
 		ResolucionBase resolucion = null;
 		try {

@@ -46,10 +46,7 @@ public class LineaResolucionFAP extends FapModel {
 	public Documento docEvaluacionCompletoConComentarios;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Documento documentoOficioRemision;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Registro registroDocumentoOficioRemision;
+	public Registro registro;
 
 	@Transient
 	public String importeTotal_formatFapTabla;
@@ -88,20 +85,31 @@ public class LineaResolucionFAP extends FapModel {
 		else
 			docEvaluacionCompletoConComentarios.init();
 
-		if (documentoOficioRemision == null)
-			documentoOficioRemision = new Documento();
+		if (registro == null)
+			registro = new Registro();
 		else
-			documentoOficioRemision.init();
-
-		if (registroDocumentoOficioRemision == null)
-			registroDocumentoOficioRemision = new Registro();
-		else
-			registroDocumentoOficioRemision.init();
+			registro.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
+
+	/**
+	 * Calcula la lista de firmantes para la resolución
+	 * @param agente
+	 * @return
+	 */
+	public List<Firmante> calcularFirmantes() {
+		Firmantes firmantes = new Firmantes();
+		List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
+		for (int i = 0; i < agentes.size(); i++) {
+			Firmante firmante = new Firmante(agentes.get(i));
+			firmantes.todos.add(firmante);
+		}
+
+		return firmantes.todos;
+	}
 
 	// === MANUAL REGION END ===
 

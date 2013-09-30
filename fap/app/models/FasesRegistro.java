@@ -37,6 +37,9 @@ public class FasesRegistro extends FapModel {
 
 	public String fase;
 
+	@Transient
+	public String firmadaVisible;
+
 	public void init() {
 
 		postInit();
@@ -56,6 +59,12 @@ public class FasesRegistro extends FapModel {
 	public FasesRegistro() {
 		setFase(FaseRegistroEnum.borrador);
 		reiniciar();
+	}
+
+	public String getFirmadaVisible() {
+		if ((this.firmada != null) && (this.firmada == true))
+			return "Sí";
+		return "No";
 	}
 
 	public void reiniciar() {

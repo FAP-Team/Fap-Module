@@ -99,8 +99,8 @@ Entidad LineaResolucionFAP {
 	Documento docBaremacion 			// Documento visible para el solicitante de la Baremación del Expediente
 	Documento docEvaluacionCompleto		// Documento con la Evaluación Completa
 	Documento docEvaluacionCompletoConComentarios 	// Documento con la Evaluación Completa con Comentarios de la Admin
-	Documento documentoOficioRemision 
-	Registro registroDocumentoOficioRemision
+	//Documento documentoOficioRemision 
+	Registro registro // Oficio de remisión
 }
 
 // Entidades de la resolución
@@ -221,7 +221,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 		}
@@ -379,7 +379,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -520,16 +520,48 @@ Formulario Principal {
 	}
 
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
-		Grupo grupoNotificar titulo="Notificación de la Resolución" {
-			Form formCopiaExpediente {
-				Grupo grupoCopiaExpediente borde=false {
+		Grupo grupoNotificarResolucion titulo="Notificación de la resolución" {
+			Grupo grupoOficioRemision titulo="Oficio de remisión" permiso=permisoOficioRemision {
+				Grupo grupoGenerarOficioRemision borde=false permiso=permisoGenerarOficioRemision {
+					Form formGenerarOficioRemision {
+						Boton botonGenerarOficioRemision titulo="Generar"
+					}
+				}
+				Grupo tablaLineasResolucion borde=false permiso=permisoFirmarOficioRemision {
+					Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision {
+						Columna campo=LineaResolucionFAP.id titulo="Id"
+						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante"
+						Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante"
+						Columna campo=LineaResolucionFAP.estado titulo="Estado"
+						Columna campo=LineaResolucionFAP.registro.id titulo="Id oficio de remision"
+						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de remision"
+						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmada Oficio de remision"
+					}
+				}
+			}
+			Grupo grupoCopiaExpediente borde=false permiso=permisoNotificar {
+				Form formCopiaExpediente {
 					Boton btnCopiaExpediente titulo="Notificar y copiar en expediente" waitPopup
 				}
 			}
-			Form volver {
-				Grupo grupovolver borde=false {
-					Boton btnVolver titulo="Volver" pagina=EditarResolucion 
+			Grupo grupoVolver borde=false {
+				Form formVolver {
+					Boton botonVolver titulo="Volver" pagina=EditarResolucion
 				}
+			}
+		}
+	}
+
+	Pagina PaginaFirmarOficioRemision campo=ResolucionFAP.lineasResolucion noForm {
+		Form formFirmarOficioRemision redirigir=PaginaNotificarResolucion permiso=permisoOficioRemision {
+			FirmaSimple firmaFirmarOficioRemision titulo="Firmar" documento=LineaResolucionFAP.registro.oficial
+				listaFirmantes=LineaResolucionFAP.registro.firmantes.todos calcularFirmantes="lineaResolucionFAP.calcularFirmantes()"
+		}
+		Form formVolver {
+			Grupo grupoVolver borde=false {
+				Boton botonVolver titulo="Volver" pagina=PaginaNotificarResolucion 
 			}
 		}
 	}
@@ -547,8 +579,8 @@ Formulario Principal {
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" ancho="100"
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
 					Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
-					Columna campo=LineaResolucionFAP.documentoOficioRemision.enlaceDescargaFirmado titulo="Documento Oficio de remisión" expandir
-					Columna campo=LineaResolucionFAP.registroDocumentoOficioRemision.justificante.enlaceDescarga titulo="Justificante" expandir
+					Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remisión firmado" expandir
+					Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante oficio de remision" expandir
 				}
 			}
 			Form formFinalizar {
@@ -883,6 +915,46 @@ Permiso publicarResolucion {
 	when
 		resolucion.estado in ("registrada", "notificada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+// sobreescrito
+Permiso permisoOficioRemision {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("gestor", "administrador")
+	return
+		all
+}
+
+// sobreescrito
+Permiso permisoGenerarOficioRemision {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("gestor", "administrador")
+	return
+		all
+}
+
+// sobreescrito
+Permiso permisoFirmarOficioRemision {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("gestor", "administrador")
+	return
+		all
+}
+
+// sobreescrito
+Permiso permisoNotificar {
+	vars
+		ResolucionFAP resolucion
+	when
+		agente.rolActivo in ("gestor", "administrador")
 	return
 		all
 }

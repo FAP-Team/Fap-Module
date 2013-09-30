@@ -29,6 +29,7 @@ import models.DocumentoNotificacion;
 import models.ExpedienteAed;
 import models.LineaResolucionFAP;
 import models.Notificacion;
+import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 
@@ -38,8 +39,6 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 		super(resolucion);
 	}
 	
-	//TODO: Modificar para utilizar documentoOficioRemison de lineaResolucionFAP
-	//      Y tener en cuenta la solicitud para generar el documento
 	public File generarDocumentoOficioRemision (LineaResolucionFAP linea) {
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", this.resolucion);
@@ -50,17 +49,17 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 								.footer(getFooterReport())
 								.renderTmpFile(linea.solicitud, resolucion);
 			
-			linea.documentoOficioRemision = new Documento();
-			linea.documentoOficioRemision.tipo = getTipoDocumentoOficioRemision();
-			linea.documentoOficioRemision.save();
+			linea.registro = new Registro();
+			linea.registro.oficial.descripcion = "Oficio de remisión";
+			linea.registro.oficial.tipo = getTipoDocumentoOficioRemision();
+			linea.registro.save();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return report;
 	}
-	
-	 @Override
-	 public void notificarCopiarEnExpedientes (long idResolucion){	
+
+	 public void generarOficioRemision (long idResolucion) {
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -71,56 +70,50 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		
-		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
+
+		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+
+			try  {
+				
+				// Se genera el documento oficio de remisión
+				File fileOficioRemision = generarDocumentoOficioRemision(linea);
+				String uri = gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+				
+				// Se copia el documento oficio de remisión al expediente
+				listaExpedientes.add(linea.solicitud.expedienteAed);
+				gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExpedientes);
+				listaExpedientes.clear();
+				
+				linea.save();
+			} catch (Throwable e)   {
+			}
+		}
+	}
+	
+	 @Override
+	 public void notificarCopiarEnExpedientes (long idResolucion){	
+		ResolucionBase resolucion = null;
+		try {
+			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+		}catch (Throwable e) {
+			// TODO: handle exception
+		}
+
+		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+		
+		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
-			
-			try  {
-				
-				// Se genera el documento oficio de remisión
-				File documentoOficioRemision = generarDocumentoOficioRemision(linea);
-				String uri = gestorDocumentalService.saveDocumentoTemporal(linea.documentoOficioRemision, documentoOficioRemision);
-				
-				// Se firma el documento oficio de remisión
-				firmaService.firmarEnServidor(linea.documentoOficioRemision);
-				listaExpedientes.add(linea.solicitud.expedienteAed);
-				
-				// Se copia el documento oficio de remisión al expediente
-				gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExpedientes);
-				
-				// Se obtiene el justificante de registro de salida del oficio de remisión
-				models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, linea.documentoOficioRemision, solicitud.expedientePlatino, "Oficio de remisión");				
-				linea.registroDocumentoOficioRemision.informacionRegistro.setDataFromJustificante(justificanteSalida);
-				Documento documento = linea.registroDocumentoOficioRemision.justificante;
-				documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
-				documento.descripcion = "Justificante de registro de salida del oficio de remisión";
-				documento.save();
-				InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-				uri = gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
-				play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
-				List<Documento> documentos = new ArrayList<Documento>();
-		        documentos.add(linea.registroDocumentoOficioRemision.justificante);
-				gestorDocumentalService.clasificarDocumentos(solicitud, documentos, true);
-				
-				// Copiarlo al expediente
-				gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExpedientes);
-				listaExpedientes.clear();
-				solicitud.save();
-			} catch (Throwable e)   {
-				
-			}
-			
+
 			// Se crea la notificación y se añade a la solicitud correspondiente
 			
 			Notificacion notificacion = new Notificacion();
 			DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
 			notificacion.documentosANotificar.add(docANotificar);
-			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registroDocumentoOficioRemision.justificante.uri);
+			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
 			notificacion.documentosANotificar.add(docANotificar2);
 			notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 			notificacion.descripcion = "Notificación de resolución simple de la fase de ejecución";

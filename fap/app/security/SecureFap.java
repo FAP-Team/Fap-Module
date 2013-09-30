@@ -16,6 +16,7 @@ import models.Agente;
 import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
+import models.LineaResolucionFAP;
 import models.Participacion;
 import models.PeticionCesiones;
 import models.Registro;
@@ -95,6 +96,14 @@ public class SecureFap extends Secure {
 			return permisoFirmarDocBaremacionResolucion(_permiso, action, ids, vars);
 		else if ("finalizarResolucion".equals(id))
 			return finalizarResolucion(_permiso, action, ids, vars);
+		else if ("permisoOficioRemision".equals(id))
+			return permisoOficioRemision(_permiso, action, ids, vars);
+		else if ("permisoGenerarOficioRemision".equals(id))
+			return permisoGenerarOficioRemision(_permiso, action, ids, vars);
+		else if ("permisoFirmarOficioRemision".equals(id))
+			return permisoFirmarOficioRemision(_permiso, action, ids, vars);
+		else if ("permisoNotificar".equals(id))
+			return permisoNotificar(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -1123,6 +1132,79 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
+	private ResultadoPermiso permisoOficioRemision(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar
+				if ((linea.registro.oficial.uri == null) || (linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) {
+					return new ResultadoPermiso(Accion.All);
+				}
+			 }
+
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso permisoGenerarOficioRemision(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar
+				if (linea.registro.oficial.uri == null) {
+					return new ResultadoPermiso(Accion.All);
+				}
+			 }
+		}	
+			
+		return null;
+	}
+
+	private ResultadoPermiso permisoFirmarOficioRemision(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y quede alguno sin firmar
+				if ((linea.registro.oficial.uri != null) && ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
+					return new ResultadoPermiso(Accion.All);
+				}
+			 }
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso permisoNotificar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y firmado
+				if ((linea.registro.oficial.uri != null) && ((linea.registro.fasesRegistro.firmada != null) && (linea.registro.fasesRegistro.firmada == true))) {
+					return new ResultadoPermiso(Accion.All);
+				}
+			 }
+		}
+
+		return null;
+	}
+
 	public ResolucionFAP getResolucionFAP(Map<String, Long> ids, Map<String, Object> vars) {
 		if (vars != null && vars.containsKey("resolucionFAP"))
 			return (ResolucionFAP) vars.get("resolucionFAP");

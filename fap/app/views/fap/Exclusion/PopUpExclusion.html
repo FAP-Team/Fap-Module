@@ -3,7 +3,7 @@
 	List<models.TipoCodigoExclusion> codigos = models.TipoCodigoExclusion.find("select tce from TipoCodigoExclusion tce").fetch();
 	tags.JSMap codigo = new tags.JSMap();
     tags.JSMap descripcionLarga = new tags.JSMap();
-       for (models.TiposCodigoExclusion cod: codigos){
+       for (models.TipoCodigoExclusion cod: codigos){
                codigo.put(cod.descripcionCorta, cod.codigo);
                descripcionLarga.put(cod.descripcionCorta, cod.descripcion);
        }

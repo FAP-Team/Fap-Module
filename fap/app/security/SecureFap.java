@@ -104,6 +104,8 @@ public class SecureFap extends Secure {
 			return permisoFirmarOficioRemision(_permiso, action, ids, vars);
 		else if ("permisoNotificar".equals(id))
 			return permisoNotificar(_permiso, action, ids, vars);
+		else if ("noHayverificacion".equals(id))
+			return noHayverificacion(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -1248,4 +1250,21 @@ public class SecureFap extends Secure {
 		return null;
 	}
 	
+	private ResultadoPermiso noHayverificacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Verificacion verificacion = Verificacion.find("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id).first();
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "revisor")) && ((verificacion == null) || ((verificacion.estado == null) || (utils.StringUtils.in(verificacion.estado.toString(), "enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa"))))) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
+
+		return null;
+	}
 }

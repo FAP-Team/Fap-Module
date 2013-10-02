@@ -8802,6 +8802,7 @@ Lista tipoConsulta crearEnumerado {
 Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
+	ejecucion : "Ejecucion"
 }
 
 Lista estadosVerificacion crearEnumerado {

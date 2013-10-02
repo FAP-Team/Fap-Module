@@ -647,7 +647,7 @@ Permiso editAdminGestorVisibleUser {
 	return visible
 }
 
-
+// Sobreescrito para tener en cuenta el estado de la convocatoria
 Permiso noHayverificacion{
 	vars
 		SolicitudGenerica solicitud

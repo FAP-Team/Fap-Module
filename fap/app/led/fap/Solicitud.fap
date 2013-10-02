@@ -157,6 +157,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+			Columna campo=Documento.uri titulo="Uri"
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}

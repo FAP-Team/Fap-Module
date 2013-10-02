@@ -19,7 +19,7 @@ public class AportacionRecibosController extends AportacionRecibosControllerGen 
 						  "where solicitud.id=? and registradas.registro.justificante.uri is not null",
 						  idSolicitud).fetch();
 	    TableRenderResponse<Documento> response = TableRenderResponse.sinPermisos(rows);
-		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "tipo", "descripcionVisible", "urlDescarga", "enlaceDescargaFirmado", "id"));
+		renderJSON(response.toJSON("fechaSubida", "fechaRegistro", "tipo", "descripcionVisible", "urlDescarga", "enlaceDescargaFirmado", "uri",  "id"));
 	}
 
 }

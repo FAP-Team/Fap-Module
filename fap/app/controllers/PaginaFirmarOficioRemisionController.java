@@ -24,6 +24,7 @@ import security.Accion;
 import services.GestorDocumentalService;
 import services.RegistroService;
 import config.InjectorConfig;
+import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.PaginaFirmarOficioRemisionControllerGen;
 
@@ -54,7 +55,6 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(lineaResolucionFAP.solicitud.id);
 			RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
 			
 			try  {
 
@@ -66,7 +66,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				documento.descripcion = "Justificante de registro de salida del oficio de remisión";
 				documento.save();
 				InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-				String uri = gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
+				gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
 				play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
 				lineaResolucionFAP.registro.fasesRegistro.registro = true;
 				
@@ -84,12 +84,6 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				// Se clasifican los documentos
 				gestorDocumentalService.clasificarDocumentos(solicitud, documentos, true);
 				lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
-				lineaResolucionFAP.save();
-				
-				// Se copia al expediente el justificante
-				listaExpedientes.add(lineaResolucionFAP.solicitud.expedienteAed);
-				gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExpedientes);
-				listaExpedientes.clear();
 
 				lineaResolucionFAP.save();
 				solicitud.save();
@@ -98,6 +92,14 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				
 			}
 		}
+		
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada sin éxito (Problemas de Validación)");
+
+		redirect("PaginaNotificarResolucionController.index", "editar", idResolucionFAP);
 	}
 	
 }

@@ -66,8 +66,7 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 		}catch (Throwable e) {
 			// TODO: handle exception
 		}
-		
-		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
@@ -78,13 +77,8 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 				
 				// Se genera el documento oficio de remisión
 				File fileOficioRemision = generarDocumentoOficioRemision(linea);
-				String uri = gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
-				
-				// Se copia el documento oficio de remisión al expediente
-				listaExpedientes.add(linea.solicitud.expedienteAed);
-				gestorDocumentalService.copiarDocumentoEnExpediente(uri, listaExpedientes);
-				listaExpedientes.clear();
-				
+				gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+
 				linea.save();
 			} catch (Throwable e)   {
 			}

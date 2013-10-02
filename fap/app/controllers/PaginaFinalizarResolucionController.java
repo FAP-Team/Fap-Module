@@ -37,6 +37,7 @@ public class PaginaFinalizarResolucionController extends PaginaFinalizarResoluci
 		if (!Messages.hasErrors()) {
 
 			log.info("Acción Editar de página: " + "gen/PaginaFinalizarResolucion/PaginaFinalizarResolucion.html" + " , intentada con éxito");
+			EditarResolucionController.index(EditarResolucionController.getAccion(), idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaFinalizarResolucion/PaginaFinalizarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaFinalizarResolucionController.formFinalizarRender(idResolucionFAP);

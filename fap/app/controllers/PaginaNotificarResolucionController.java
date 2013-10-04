@@ -32,7 +32,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			try {
 				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
 				resolBase.generarOficioRemision(idResolucionFAP);
-				play.Logger.info("Se ha generado el documento de oficio de remisión para la resolucion "+idResolucionFAP);
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}

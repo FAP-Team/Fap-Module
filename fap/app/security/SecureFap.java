@@ -1116,7 +1116,6 @@ public class SecureFap extends Secure {
 			catch (Throwable e) {
 				// TODO: handle exception
 			}
-			Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
 			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.conBaremacion.toString().equals("true".toString()) && resolucion.resolucion.estadoPublicacion != null && !resolucion.resolucion.estado.equals("publicada")){
 				//Tengo que generar todos los docs
@@ -1197,14 +1196,13 @@ public class SecureFap extends Secure {
 
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y firmado
-				if ((linea.registro.oficial.uri != null) && ((linea.registro.fasesRegistro.firmada != null) && (linea.registro.fasesRegistro.firmada == true))) {
-					return new ResultadoPermiso(Accion.All);
+				if ((linea.registro.oficial.uri == null) || ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
+					return null;
 				}
 			 }
 		}
-
-		return null;
+		// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y firmado
+		return new ResultadoPermiso(Accion.All);
 	}
 
 	public ResolucionFAP getResolucionFAP(Map<String, Long> ids, Map<String, Object> vars) {
@@ -1220,8 +1218,6 @@ public class SecureFap extends Secure {
 		Agente agente = AgenteController.getAgente();
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
-
-		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
 		boolean publicar = properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios");
 		boolean notificar = properties.FapProperties.getBoolean("fap.resoluciones.notificar");

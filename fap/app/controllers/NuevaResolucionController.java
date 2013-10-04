@@ -45,7 +45,6 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		Long idResolucionFAP = null;
 		if ((!Messages.hasErrors()) && ((!dbResolucionFAP.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) 
 				&& (!dbResolucionFAP.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())))) {
-			ResolucionBase resolBase = null;
 			try {
 				ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "validarInicioResolucion");
 			} catch (Throwable e) {

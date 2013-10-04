@@ -161,6 +161,7 @@ Entidad ResolucionFAP {
 	//Documento docResolucion							// Documento de Resolución
 	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
 	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
+	OneToMany Documento docConsultaPortamfirmasResolucionPorUri //Documentos de consulta Portafirmas Añadidos por uri
 
 	Registro registro
 	OneToMany Interesado destinatarios transient
@@ -305,7 +306,12 @@ Formulario Principal {
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
-
+				Grupo borde=false {
+					Tabla documentosSolicitud titulo="Documentos a añadir por URI" campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri pagina=DocPortafirmaPorUri{
+						Columna campo=Documento.uri titulo="Uri"
+						Columna campo=Documento.tipo titulo="Tipo"
+					} 
+				}
 				Form formSelectJefeServicio {
 					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Destinatario Portafirma" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
@@ -435,11 +441,20 @@ Formulario Principal {
 	Pagina DocConsultaPortafirmaCrear campo=ResolucionFAP.docConsultaPortafirmasResolucion {
 		Accion crear redirigir=EditarResolucion
 		SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
+		Enlace volver titulo="Volver" anterior estilo="btn"
+	}
+	
+	Pagina DocPortafirmaPorUri campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri{
+		Accion crear redirigir=EditarResolucion
+		Combo comboTiposDoc titulo="Tipos Documentos" campo=Documento.tipo
+		Texto uriDoc titulo="Uri del documento" campo=Documento.uri
+		Enlace volver titulo="Volver" anterior estilo="btn"
 	}
 	
 	Pagina DocConsultaPortafirmaEditar campo=ResolucionFAP.docConsultaPortafirmasResolucion {
 		Accion editar redirigir=EditarResolucion
 		EditarArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
+		Enlace volver titulo="Volver" anterior estilo="btn"
 	}
 	
 	Pagina PaginaPublicarResolucion campo=ResolucionFAP perteneceA="Principal" noForm{

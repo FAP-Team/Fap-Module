@@ -522,7 +522,7 @@ Formulario Principal {
 	Pagina AportarDocumentoResolucion titulo="Documento Resolución" campo=ResolucionFAP {
 		Accion editar redirigir=EditarResolucion crearSiempre
 		Grupo grupoAportarDocumentoResolucion titulo= "Aportar documento de resolución" {
-			SubirArchivo subirArchivoAportarDocumentoResolucion campo=ResolucionFAP.registro.oficial requerido
+			SubirArchivo subirArchivoAportarDocumentoResolucion campo=ResolucionFAP.registro.oficial requerido tramite="Resolucion"
 		}
 	}
 	

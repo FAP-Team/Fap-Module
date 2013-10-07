@@ -638,12 +638,23 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteAceptacionRenuncia.setDocumentoEnTramite("Prefijo justificante pdf desestimiento", "fs://prefijojustificantepdfaceptacionrenuncia/v01", "UNICO"); 	
         tramiteAceptacionRenuncia.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
 
+     // ------- TRAMITE 5: Trámite Resolucion ------- 
+
+        Tramite tramiteResolucion = new Tramite();
+        tramiteResolucion.nombre = "Resolucion";
+        tramiteResolucion.uri = "fs://resolucion";
+        uriDocumento = tramiteResolucion.setDocumentoEnTramite("Resolucion", "fs://resolucion/v01", "UNICO");  
+        tramiteResolucion.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto, tipoCodReqdbEspanol, tipoCodReqdbFirma, tipoCodReqdbObligatoriedad);	 
+        
+        
+        
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
         tramites.add(tramiteSolicitud);
         tramites.add(tramiteAlegacion);
         tramites.add(tramiteAportacion);
         tramites.add(tramiteDesestimiento);
         tramites.add(tramiteAceptacionRenuncia);
+        tramites.add(tramiteResolucion);
         return tramites;
     }
     

@@ -446,7 +446,6 @@ Formulario Principal {
 	
 	Pagina DocPortafirmaPorUri campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri{
 		Accion crear redirigir=EditarResolucion
-		Combo comboTiposDoc titulo="Tipos Documentos" campo=Documento.tipo
 		Texto uriDoc titulo="Uri del documento" campo=Documento.uri
 		Enlace volver titulo="Volver" anterior estilo="btn"
 	}

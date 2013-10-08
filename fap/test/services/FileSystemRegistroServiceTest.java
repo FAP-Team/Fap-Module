@@ -5,7 +5,7 @@ import org.junit.BeforeClass;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 
-public class FileSystemRegistroServiceTest extends RegistroServiceTest {
+//public class FileSystemRegistroServiceTest extends RegistroServiceTest {
 
 //    @BeforeClass
 //    public static void beforeClass(){
@@ -13,4 +13,4 @@ public class FileSystemRegistroServiceTest extends RegistroServiceTest {
 //        registroService = new FileSystemRegistroService(gestorDocumentalService);
 //    }
     
-}
+//}

@@ -1447,4 +1447,47 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 	}
 
+	@Override
+	public String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+	String descripcion = null;
+		try {
+			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
+			descripcion = propiedades.getDescripcion();
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al intentar obtener la descripción del documento", e);
+			e.printStackTrace();
+			new GestorDocumentalServiceException("Error al intentar obtener la descripción del documento", e);
+		}
+		return descripcion;
+	}
+
+	@Override
+	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		try {
+			if (aedPort.obtenerDocumento(uriDocumento) != null){
+				return true;
+			}
+			return false;
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error el documento no existe entre los documentos clasificados"+e);
+			e.printStackTrace();
+			new GestorDocumentalServiceException("Error el documento no existe entre los documentos clasificados", e);
+			return false;
+		}
+	}
+
+	@Override
+	public String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		String tipo = "";
+		try {
+			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
+			tipo = propiedades.getDescripcion();
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al intentar obtener el tipo del documento", e);
+			e.printStackTrace();
+			new GestorDocumentalServiceException("Error al intentar obtener el tipo del documento", e);
+		}
+		return tipo;
+	}
+
 }

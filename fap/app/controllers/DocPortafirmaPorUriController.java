@@ -4,6 +4,7 @@ import messages.Messages;
 import models.Documento;
 import models.ResolucionFAP;
 import play.mvc.Util;
+import utils.DocumentosUtils;
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
 import controllers.gen.DocPortafirmaPorUriControllerGen;
@@ -150,10 +151,18 @@ public class DocPortafirmaPorUriController extends DocPortafirmaPorUriController
 
 		CustomValidation.valid("documento", documento);
 		CustomValidation.validValueFromTable("documento.tipo", documento.tipo);
-		dbDocumento.tipo = documento.tipo;
-		dbDocumento.descripcion = documento.descripcion;
-		dbDocumento.descripcionVisible = documento.descripcionVisible;
-		dbDocumento.uri = documento.uri;
+		if (DocumentosUtils.docExisteEnAed(documento.uri)){
+			dbDocumento.tipo = DocumentosUtils.getTipoDocumento(documento.uri);
+			dbDocumento.descripcion = DocumentosUtils.getDescripcionVisible(documento.uri);
+			dbDocumento.descripcionVisible = DocumentosUtils.getDescripcionVisible(documento.uri);
+			dbDocumento.uri = documento.uri;	
+		} 
+		else{
+			play.Logger.error("El documento con uri "+documento.uri+" no existe");
+			Messages.error("Error no existe el documento con uri "+documento.uri);
+		}
+		
 
 	}
+	
 }

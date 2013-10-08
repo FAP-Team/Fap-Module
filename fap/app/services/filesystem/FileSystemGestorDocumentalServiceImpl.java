@@ -910,4 +910,26 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		return documento.descripcionVisible;
+	}
+
+	@Override
+	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		if (documento != null){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		return documento.tipo;
+	}
 }

@@ -574,15 +574,4 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		index("editar", idResolucionFAP);
 	}
 
-	public static void tabladocumentosSolicitud(Long idResolucionFAP) {
-
-		java.util.List<Documento> rows = Documento.find("select documento from ResolucionFAP resolucionFAP join resolucionFAP.docConsultaPortamfirmasResolucionPorUri documento where resolucionFAP.id=?", idResolucionFAP).fetch();
-
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		List<Documento> rowsFiltered = rows; //Tabla sin permisos, no filtra
-
-		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-
-		renderJSON(response.toJSON("uri", "id"));
-	}
 }

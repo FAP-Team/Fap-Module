@@ -1,11 +1,15 @@
 package utils;
 
 import java.util.ArrayList;
+
+import config.InjectorConfig;
  
 import models.TipoDocumento;
 import models.Tramite;
 
 import properties.FapProperties;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import verificacion.ObligatoriedadDocumentosFap;
  
  public class DocumentosUtils {
@@ -150,4 +154,41 @@ import verificacion.ObligatoriedadDocumentosFap;
  		}
  		return null;
  	}
+	
+	public static Boolean docExisteEnAed (String uriDocumento){
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			if (gestorDocumentalService.existeDocumento(uriDocumento)){
+				return true;
+			}
+		} catch (GestorDocumentalServiceException e) {
+			play.Logger.error("Error, el documento no existe", e);
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static String getDescripcionVisible(String uriDocumento){
+		String descripcion = "";
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			descripcion = gestorDocumentalService.getDescripcionDocumento(uriDocumento);
+		} catch (GestorDocumentalServiceException e) {
+			play.Logger.error("Error, obteniendo la descripción del documento", e);
+			e.printStackTrace();
+		}
+		return descripcion;
+	}
+	
+	public static String getTipoDocumento (String uriDocumento) {
+		String tipo = "";
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			tipo = gestorDocumentalService.getTipoDocumento(uriDocumento);
+		} catch (GestorDocumentalServiceException e) {
+			play.Logger.error("Error, obteniendo el tipo del documento", e);
+			e.printStackTrace();
+		}
+		return tipo;
+	}
 }

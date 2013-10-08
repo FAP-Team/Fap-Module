@@ -11,6 +11,7 @@ import properties.FapProperties;
 import services.FirmaService;
 import services.NotificacionService;
 import services.async.GestorDocumentalServiceAsync;
+import services.async.NotificacionServiceAsync;
 import tags.ComboItem;
 import utils.StringUtils;
 import validation.CustomValidation;
@@ -128,8 +129,8 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	 * 
 	 */
 	private static boolean notificacionIsConfigured() {
-		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
-		return notificacionService.isConfigured();
+		NotificacionServiceAsync notificacionServiceAsync = InjectorConfig.getInjector().getInstance(NotificacionServiceAsync.class);
+		return await(notificacionServiceAsync.isConfigured());
 	}
 	
 	/*
@@ -139,7 +140,11 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	private static Boolean gestorDocumentalIsConfigured() {
 		GestorDocumentalServiceAsync gestorDocumentalServiceAsync = InjectorConfig.getInjector().getInstance(GestorDocumentalServiceAsync.class);
 		play.Logger.info("gestorDocumentalIsConfigured " + gestorDocumentalServiceAsync);
-		boolean aux = await(gestorDocumentalServiceAsync.isConfigured()); 
+		Promise<Boolean> ret = gestorDocumentalServiceAsync.isConfigured();
+		boolean aux = await(ret);
+		for (int i = 0; i < 10; i++) {
+			play.Logger.info("gestorDocumentalIsConfigured " +  i);
+		}
 		play.Logger.info("gestorDocumentalIsConfigured " + aux);
 		return aux;
 	}

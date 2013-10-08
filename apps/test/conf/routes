@@ -171,6 +171,9 @@ GET /Solicitud/paginacancelar PaginaCancelarController.index
 POST /Solicitud/paginacancelar/guardarPCE PaginaCancelarController.guardarPCE
 GET /Solicitud/paginadirector PaginaDirectorController.index
 POST /Solicitud/paginadirector/editar PaginaDirectorController.editar
+GET /Solicitud/paginaconversion PaginaConversionController.index
+POST /Solicitud/paginaconversion/formArchivo PaginaConversionController.formArchivo
+POST /Solicitud/paginaconversion/formBoton PaginaConversionController.formBoton
 GET /Solicitud/copiatablas CopiaTablasController.index
 POST /Solicitud/copiatablas/editar CopiaTablasController.editar
 POST /Solicitud/copiatablas/beforeOpenPageTable CopiaTablasController.beforeOpenPageTable
@@ -191,6 +194,8 @@ POST /Solicitud/paginanombrecopia PaginaNombreCopiaController.index
 POST /Solicitud/paginanombrecopia/editar PaginaNombreCopiaController.editar
 POST /Solicitud/paginanombrecopia/borrar PaginaNombreCopiaController.borrar
 POST /Solicitud/paginanombrecopia/crear PaginaNombreCopiaController.crear
+GET /Solicitud/direccionescopia DireccionesCopiaController.index
+POST /Solicitud/direccionescopia/editar DireccionesCopiaController.editar
 GET /Solicitud/pruebabigpopup popups.PruebaBigPopUpController.index
 POST /Solicitud/pruebabigpopup/editar popups.PruebaBigPopUpController.editar
 GET /Solicitud/pruebabigpopup/documentosExternos popups.PruebaBigPopUpController.tabladocumentosExternos
@@ -225,6 +230,8 @@ GET /Solicitud/popupconceptos popups.PopUpConceptosController.index
 POST /Solicitud/popupconceptos/editar popups.PopUpConceptosController.editar
 POST /Solicitud/popupconceptos/borrar popups.PopUpConceptosController.borrar
 POST /Solicitud/popupconceptos/crear popups.PopUpConceptosController.crear
+GET /Solicitud/popupnombrecopia popups.PopupNombreCopiaController.index
+POST /Solicitud/popupnombrecopia/editar popups.PopupNombreCopiaController.editar
 GET /Solicitud/popuppersonasolicitante2juridicatabla popups.PopupPersonaSolicitante2JuridicaTablaController.index
 POST /Solicitud/popuppersonasolicitante2juridicatabla/editar popups.PopupPersonaSolicitante2JuridicaTablaController.editar
 POST /Solicitud/popuppersonasolicitante2juridicatabla/borrar popups.PopupPersonaSolicitante2JuridicaTablaController.borrar

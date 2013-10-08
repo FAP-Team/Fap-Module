@@ -97,6 +97,10 @@ public class GestorDocumentalServiceAsyncImpl extends GenericServiceAsyncImpl im
 
 	public Promise<Boolean> isConfigured() {
 		play.Logger.info("isConfigured " + gestorDocumentalService);
+		gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		for (int i = 0; i < 10; i++) {
+			play.Logger.info("isConfigured " +  i);
+		}
 		return (Promise<Boolean>) execute(gestorDocumentalService, "isConfigured");
 	}
 

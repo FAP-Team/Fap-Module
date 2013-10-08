@@ -10,12 +10,13 @@ import play.mvc.Util;
 import registroresolucion.AreaResolucion;
 import registroresolucion.TipoResolucion;
 import services.RegistroLibroResolucionesService;
+import services.async.RegistroLibroResolucionesServiceAsync;
 import controllers.gen.CargarTiposAreasResolucionesControllerGen;
 
 public class CargarTiposAreasResolucionesController extends CargarTiposAreasResolucionesControllerGen {
 	
 	@Inject
-    public static RegistroLibroResolucionesService registroLibroResolucionesService;
+    public static RegistroLibroResolucionesServiceAsync registroLibroResolucionesServiceAsync;
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
@@ -28,7 +29,7 @@ public class CargarTiposAreasResolucionesController extends CargarTiposAreasReso
 		if (!Messages.hasErrors()) {
 			List<AreaResolucion> listaAreas = null;
 			try {
-				listaAreas = registroLibroResolucionesService.leerAreas();
+				listaAreas = await(registroLibroResolucionesServiceAsync.leerAreas());
 				TableKeyValue.deleteTable("areasResolucion");
 				for (AreaResolucion area: listaAreas) {
 					TableKeyValue.setValue("areasResolucion", area.idArea.toString(), area.codigo + "-" + area.descripcion, false);
@@ -61,7 +62,7 @@ public class CargarTiposAreasResolucionesController extends CargarTiposAreasReso
 		if (!Messages.hasErrors()) {
 			List<TipoResolucion> listaTipos = null;
 			try {
-				listaTipos = registroLibroResolucionesService.leerTipos();
+				listaTipos = await(registroLibroResolucionesServiceAsync.leerTipos());
 				TableKeyValue.deleteTable("tiposResolucion");
 				for (TipoResolucion tipo: listaTipos) {
 					TableKeyValue.setValue("tiposResolucion", tipo.idTipo.toString(), tipo.codigo + "-" + tipo.descripcion, false);

@@ -33,6 +33,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
 import services.async.GestorDocumentalServiceAsync;
+import services.async.RegistroLibroResolucionesServiceAsync;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import validation.CustomValidation;
@@ -462,8 +463,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			if ((dbResolucionFAP.registro.fasesRegistro.firmada) && (!dbResolucionFAP.registro.fasesRegistro.registro)) {
 				tx.begin();
 				try {
-					RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
-					datosRegistro = registroLibroResolucionesService.crearResolucion(dbResolucionFAP);
+					RegistroLibroResolucionesServiceAsync registroLibroResolucionesServiceAsync = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesServiceAsync.class);
+					datosRegistro = await(registroLibroResolucionesServiceAsync.crearResolucion(dbResolucionFAP));
 					dbResolucionFAP.codigoResolucion = Integer.toString(datosRegistro.numero);
 					dbResolucionFAP.fechaRegistroResolucion = datosRegistro.fecha;
 					dbResolucionFAP.folio_inicio = datosRegistro.primerFolio;

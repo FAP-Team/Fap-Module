@@ -316,7 +316,7 @@ public class SolicitudGenerica extends FapModel {
 				agente.rolActivo = "usuario";
 				agente.save();
 				play.Logger.info("Creado el agente %s", user);
-			}	
+			}
 			p = new Participacion();
 			p.agente = agente;
 			p.solicitud = this;
@@ -346,9 +346,9 @@ public class SolicitudGenerica extends FapModel {
 				agente.save();
 				play.Logger.info("Creado el agente %s", user);
 			}
-			if ((this.estado.equals(EstadosSolicitudEnum.modificacion.name())) &&(this.registroModificacion.get(this.registroModificacion.size()-1).enRecuperacion)) {
+			if ((this.estado.equals(EstadosSolicitudEnum.modificacion.name())) && (this.registroModificacion.get(this.registroModificacion.size() - 1).enRecuperacion)) {
 				Participacion par = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.representante.name(), this.id).first();
-				if (par != null){
+				if (par != null) {
 					par.delete(); //si ya hubiera un representante antes de modificar creo que no serviría
 				}
 			}
@@ -358,9 +358,9 @@ public class SolicitudGenerica extends FapModel {
 			p.tipo = TiposParticipacionEnum.representante.name();
 			p.save();
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
-			
+
 			SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(p.solicitud.id);
-			
+
 			dbSolicitud.save();
 
 			if (p.solicitud.estado.equals(EstadosSolicitudEnum.modificacion.name())) {
@@ -382,7 +382,7 @@ public class SolicitudGenerica extends FapModel {
 						valoresNuevosRepresentante.add(participacion.id.toString());
 						peticionModificacionRepresentante.setValorCreado("participacion.id", new ArrayList<String>(), valoresNuevosRepresentante);
 					}
-					if (!dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size()-1).enRecuperacion) {
+					if (!dbSolicitud.registroModificacion.get(dbSolicitud.registroModificacion.size() - 1).enRecuperacion) {
 						if (!peticionModificacionRepresentante.isEmpty()) {
 							if ((!Messages.hasErrors())) {
 								Gson gson = new Gson();

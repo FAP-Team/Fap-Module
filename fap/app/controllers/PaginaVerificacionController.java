@@ -19,6 +19,7 @@ import services.GestorDocumentalServiceException;
 import services.NotificacionService;
 import services.RegistroService;
 import services.async.GestorDocumentalServiceAsync;
+import services.async.NotificacionServiceAsync;
 import services.filesystem.TipoDocumentoEnTramite;
 
 import org.joda.time.DateTime;
@@ -73,7 +74,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
     static RegistroService registroService;
     
     @Inject
-    static NotificacionService notificacionService;
+    static NotificacionServiceAsync notificacionServiceAsync;
     
 	@Inject
 	static GestorDocumentalServiceAsync gestorDocumentalServiceAsync;
@@ -638,7 +639,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name())) {
 				// TODO: Está en estado creada, debo notificarla
 				try {
-					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+					await(notificacionServiceAsync.enviarNotificaciones(notificacion, AgenteController.getAgente()));
 					
 					play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
 					notificacion.fechaPuestaADisposicion = new DateTime();

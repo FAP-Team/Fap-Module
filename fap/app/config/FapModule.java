@@ -27,9 +27,10 @@ import services.filesystem.FilesystemTicketingServiceImpl;
 import services.async.*;
 import services.async.portafirma.PortafirmaServiceAsyncImpl;
 import services.async.publicar.PublicarServiceAsyncImpl;
+import services.async.registro.RegistroServiceAsyncImpl;
+import services.async.registrolibroresoluciones.RegistroLibroResolucionesServiceAsyncImpl;
 import services.async.ticketing.TicketingServiceAsyncImpl;
 import services.async.aed.*;
-import services.async.filesystem.FileSystemPublicarServiceAsyncImpl;
 import services.notificacion.NotificacionServiceImpl;
 import services.openofice.OpenOfficeConversor;
 import services.platino.PlatinoTercerosServiceImpl;
@@ -46,12 +47,14 @@ public class FapModule extends PlayAbstractModule {
 		gestorDocumentalAsync();
 		firma();
 		registro();
+		registroAsync();
 		notificacion();
 		portafirma();
 		portafirmaAsync();
 		publicar();
 		publicarAsync();
 		registroLibroResoluciones();
+		registroLibroResolucionesAsync();
 		terceros();
 		ticketing();
 		ticketingAsync();
@@ -94,6 +97,10 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
 	}
 	
+	protected void registroAsync() {
+		bindLazySingletonOnDev(RegistroServiceAsync.class, RegistroServiceAsyncImpl.class);
+	}
+	
 	protected void publicar() {
 		bindLazySingletonOnDev(PublicarService.class, FileSystemPublicarServiceImpl.class);
 	}
@@ -104,6 +111,10 @@ public class FapModule extends PlayAbstractModule {
 	
 	protected void registroLibroResoluciones() {
 		bindLazySingletonOnDev(RegistroLibroResolucionesService.class, FileSystemRegistroLibroResolucionesServiceImpl.class);
+	}
+	
+	protected void registroLibroResolucionesAsync() {
+		bindLazySingletonOnDev(RegistroLibroResolucionesServiceAsync.class, RegistroLibroResolucionesServiceAsyncImpl.class);
 	}
 	
 	protected void ticketing () {

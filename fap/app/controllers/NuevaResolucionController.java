@@ -14,6 +14,7 @@ import play.modules.guice.InjectSupport;
 import play.mvc.Util;
 import resolucion.ResolucionBase;
 import services.RegistroLibroResolucionesService;
+import services.async.RegistroLibroResolucionesServiceAsync;
 import tags.ComboItem;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.NuevaResolucionControllerGen;
@@ -22,7 +23,7 @@ import controllers.gen.NuevaResolucionControllerGen;
 public class NuevaResolucionController extends NuevaResolucionControllerGen {
 	
 	@Inject
-    public static RegistroLibroResolucionesService registroLibroResolucionesService;
+    public static RegistroLibroResolucionesServiceAsync registroLibroResolucionesServiceAsync;
 	
 	@Util
 	public static Long crearLogica(ResolucionFAP resolucionFAP) {

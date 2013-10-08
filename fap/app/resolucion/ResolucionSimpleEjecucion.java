@@ -22,6 +22,7 @@ import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
 import services.RegistroService;
+import services.async.NotificacionServiceAsync;
 import utils.NotificacionUtils;
 import messages.Messages;
 import models.Documento;
@@ -71,7 +72,7 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		
-		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		NotificacionServiceAsync notificacionServiceAsync = InjectorConfig.getInjector().getInstance(NotificacionServiceAsync.class);
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
@@ -138,7 +139,7 @@ public class ResolucionSimpleEjecucion extends ResolucionSimple {
 			// Se envía la notificación
 			
 			try {
-				notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+				notificacionServiceAsync.enviarNotificaciones(notificacion, AgenteController.getAgente());
 				play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
 				notificacion.fechaPuestaADisposicion = new DateTime();
 				notificacion.save();

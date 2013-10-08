@@ -16,13 +16,13 @@
      pagina:'PaginaCEconomicosEvaluados', 
      permiso:'adminOrGestor', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
-     titulo:'Conceptos Económicos Evaluados', 
+     titulo:'Conceptos Económicos Propuestos y Concedidos', 
      urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.borrar' , ['idSolicitud':solicitud?.id]), 
      urlCrear:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.crear' ), 
      urlEditar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.editar' , ['idSolicitud':solicitud?.id])
 }
 
-	#{fap.grupo titulo:'Conceptos Económicos Evaluados', id: 'CEconomicosEvaluados'}
+	#{fap.grupo titulo:'Conceptos Económicos Propuestos y Concedidos', id: 'CEconomicosEvaluados'}
 
 		<div id="tablaCEconomicosEvaluados" class="tabla"></div>
 
@@ -181,7 +181,7 @@
 				renderTo: '${id}',
 				id: '${id}-grid',
 				height: 400,
-				title: 'Conceptos Economicos Evaluados',
+				title: 'Conceptos Económicos Propuestos y Concedidos',
 				plugins: [
 					editRow
 				],

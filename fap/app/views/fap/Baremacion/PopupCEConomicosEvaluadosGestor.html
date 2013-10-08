@@ -46,7 +46,7 @@
 		#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
 		#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value, id:valorEstimado.name, format:'moneda' /}
 		#{if cEconomico.tipo.clase.equals("manual")}
-			#{simple.text id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
+			#{simple.uneditable id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
 			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error, format:'moneda' /}
 		#{/if}
 		#{else}

@@ -233,6 +233,9 @@
 			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.guardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
 				#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
 			#{/form}
+			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.botonCopiarValoresGuardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
+				#{fap.boton id:'botonCopiarValores', titulo:'Copiar Propuestos a Concedidos' /}
+			#{/form}
 		</div>
 	
 	#{/fap.grupo}

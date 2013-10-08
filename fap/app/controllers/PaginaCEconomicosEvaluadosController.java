@@ -194,9 +194,24 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 			PaginaCEconomicosEvaluadosController.guardarValidateRules();
 		}
 		if (!Messages.hasErrors()) {
-			log.info("Acción Editar de página: " + "gen/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada con éxito");
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada con éxito");
 		} else
-			log.info("Acción Editar de página: " + "gen/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
+		PaginaCEconomicosEvaluadosController.guardarRender(idSolicitud);
+	}
+	
+
+	@Util
+	public static void botonCopiarValoresGuardar(Long idSolicitud) {
+		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
+		for (CEconomico ceco : solicitud.ceconomicos) {
+			ceco.valores.get(0).valorConcedido = ceco.valores.get(0).valorPropuesto; 
+			ceco.save();
+		}
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada con éxito");
+		} else
+			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaCEconomicosEvaluadosController.guardarRender(idSolicitud);
 	}
 	

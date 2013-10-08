@@ -683,7 +683,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	//Sobreescrita TODO: REVISAR PERMISOS (con estado?)
 	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Propuestos y Concedidos" campo=SolicitudGenerica permiso=evaluacionFinalizada noForm  perteneceA ="Baremacion" {
 		Form Guardar { 
-			Boton botonGuardar titulo="Guardar" 
+			Boton botonGuardar titulo="Guardar"
+			Boton botonCopiarValores titulo="Copiar Propuestos a Concedidos"  
 		}
 	}
 

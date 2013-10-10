@@ -8,9 +8,11 @@ import java.util.Map;
 
 import messages.Messages;
 import messages.Messages.MessageType;
+import models.Agente;
 import models.Documento;
 import models.ExpedienteAed;
 import models.Firmante;
+import models.Firmantes;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -39,7 +41,11 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		Map<String, Object> vars = new HashMap<String, Object>();
 		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
 			if (lineaResolucionFAP.registro.firmantes.todos == null || lineaResolucionFAP.registro.firmantes.todos.size() == 0) {
-				lineaResolucionFAP.registro.firmantes.todos = lineaResolucionFAP.calcularFirmantes();
+				List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
+				for (int i = 0; i < agentes.size(); i++) {
+					Firmante firmante = new Firmante(agentes.get(i));
+					lineaResolucionFAP.registro.firmantes.todos.add(firmante);
+				}
 				lineaResolucionFAP.registro.firmantes.save();
 			}
 			FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);

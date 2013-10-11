@@ -19,6 +19,7 @@
 	%{
 	 def totalSolicitado = 0.0;
 	 def totalEstimado = 0.0;
+	 def totalPropuesto = 0.0;
 	 String formato = properties.FapProperties.get("fap.format.double");
 	 def tipoEvaluacion = models.TipoEvaluacion.all().first();
 	 def anioInicio = tipoEvaluacion.inicio;
@@ -31,8 +32,10 @@
 			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
 			def valorSolicitado= newValue(paramName + ".valorSolicitado", "Valor Solicitado", cEconomico.valores[anio].valorSolicitado);
 			def valorEstimado = newValue(paramName + ".valorEstimado", "Valor Estimado", cEconomico.valores[anio].valorEstimado);
+			def valorPropuesto = newValue(paramName + ".valorPropuesto", "Valor Propuesto", cEconomico.valores[anio].valorPropuesto);
 			totalSolicitado += valorSolicitado.value;
 			totalEstimado += valorEstimado.value;
+			totalPropuesto += valorPropuesto.value;
 		%}
 		<b>${anioLabel}</b>
 		#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
@@ -42,11 +45,13 @@
 		#{else}
 			#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value, id:valorEstimado.name, format:'moneda' /}
 		#{/else}
+		#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value, id:valorPropuesto.name, format:'moneda'/}
 	#{/list}
 	
 	<b>Totales</b>
 	#{simple.uneditable label:"Total Valor Solicitado", value:totalSolicitado, id:"totalSolicitado", format:'moneda'/}
 	#{simple.uneditable label:"Total Valor Estimado", value:totalEstimado, id:"totalEstimado", format:'moneda' /}
+	#{simple.uneditable label:"Total Valor Propuesto", value:totalPropuesto, id:"totalPropuesto", format:'moneda' /}
 	
 #{/fap.popup}
 
@@ -67,6 +72,13 @@
 			totalEstimado+=parseFloat(valores[i].value);
 		}
 		$('#totalEstimado').val(totalEstimado);
+		
+		valores = $('input[id$="valorPropuesto"]');
+		var totalPropuesto=0.0;
+		for (i=0; i<valores.size(); i++){
+			totalPropuesto+=parseFloat(valores[i].value);
+		}
+		$('#totalPropuesto').val(totalPropuesto);
 		
 	});
 		

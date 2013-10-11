@@ -351,15 +351,18 @@ public class FichaEvaluadorController extends Controller {
 		List <Map<String, String>> columnasCEconomicos = new ArrayList <Map <String, String>>();
 		List<Double> totalesSolicitadoAnio = new ArrayList<Double>();
 		List<Double> totalesEstimadoAnio = new ArrayList<Double>();
+		List<Double> totalesPropuestoAnio = new ArrayList<Double>();
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
 			totalesSolicitadoAnio.add(0.0);
 			totalesEstimadoAnio.add(0.0);
+			totalesPropuestoAnio.add(0.0);
 		}
 		for (CEconomico cEconomico : rowsFiltered) {
 			 Map<String, String> columna = new HashMap<String, String>();
 			 columna.put("id", cEconomico.id.toString());
 			 Double totalesSolicitado = 0.0;
 			 Double totalesEstimado = 0.0;
+			 Double totalesPropuesto = 0.0;
 			 
 			 Pattern pattern = Pattern.compile ("^[a-zA-Z]$");
 			 
@@ -368,13 +371,17 @@ public class FichaEvaluadorController extends Controller {
 				 if (matcher.find()){
 					 totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
 					 totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i)+cEconomico.valores.get(i).valorSolicitado);
+					 totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i)+cEconomico.valores.get(i).valorPropuesto);
 				 }
 
 				totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
 				columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
 				columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				totalesPropuesto += cEconomico.valores.get(i).valorPropuesto;
+				columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 			 }
+			 
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
 		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);
 		  	 if (cEconomico.tipo.clase.equals("auto")){
@@ -385,23 +392,29 @@ public class FichaEvaluadorController extends Controller {
 		 	 }
 		  	 columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+		  	 columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columnasCEconomicos.add(columna);
 		}
+		
 		Map<String, String> columna = new HashMap<String, String>();
 		columna.put("id", "0");
 		Double totalesSolicitado = 0.0;
 		Double totalesEstimado = 0.0;
+		Double totalesPropuesto = 0.0;
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
 			columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(totalesSolicitadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
 			columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(totalesEstimadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
+			columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(totalesEstimadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
 			totalesSolicitado += totalesSolicitadoAnio.get(i);
 			totalesEstimado += totalesEstimadoAnio.get(i);
+			totalesPropuesto += totalesPropuestoAnio.get(i);
 		}
 		columna.put("jerarquia", "TOTALES");
 	  	columna.put("nombre", "POR AÑOS");
 	  	columna.put("permiso", "false");
 	  	columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 	  	columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+	  	columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 	  	columnasCEconomicos.add(columna);
 		renderJSON(columnasCEconomicos);
 	}

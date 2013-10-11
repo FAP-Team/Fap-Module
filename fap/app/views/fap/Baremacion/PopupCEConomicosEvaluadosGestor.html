@@ -46,7 +46,7 @@
 		#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
 		#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value, id:valorEstimado.name, format:'moneda' /}
 		#{if cEconomico.tipo.clase.equals("manual")}
-			#{simple.text id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
+			#{simple.uneditable id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
 			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error, format:'moneda' /}
 		#{/if}
 		#{else}
@@ -60,13 +60,39 @@
 	#{simple.uneditable label:"Total Valor Estimado", value:totalEstimado, id:"totalEstimado", format:'moneda' /}
 	#{simple.uneditable label:"Total Valor Propuesto", value:totalPropuesto, id:"totalPropuesto", format:'moneda' /}
 	#{simple.uneditable label:"Total Valor Concedido", value:totalConcedido, id:"totalConcedido", format:'moneda' /}
+
+%{ 
+	//Si es de tipo Otros, mostrar si tiene ceconomicosManuales
+	if (cEconomico.tipo.tipoOtro) {
+%}	
+#{fap.tabla 
+     campo:'cEconomico.otros', 
+     id:'tablaCeconomicosManuales', 
+     idEntidad:'idCEconomicosManuales', 
+     popupEditar:'PopUpEditarCEconomicosEvaluados', 
+     saveEntity:false, 
+     tipoContainer:'popup', 
+     titulo:'Tabla CEconomicosManuales', 
+     urlTabla:@popups.PopupCEConomicosEvaluadosGestorController.tablaCEconomicosManuales(cEconomico.id),
+     urlEditar:play.mvc.Router.reverse("popups.PopUpEditarCEconomicosEvaluadosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'CEconomicosManuales.tipo.jerarquia', campo:'tipo.jerarquia', cabecera:'Jerarquía' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'CEconomicosManuales.tipo.nombre', campo:'tipo.nombre', cabecera:'Nombre' /}
+		
+#{/fap.tabla}
+
+%{
+	} //Cierre de if de la tabla
+%}
+
 	
 #{/fap.popup}
 
 <script>
 	// Para que se recalculen los totales, cada vez que se modifique algun input de los valores
 	$('input').change(function() {
-	
 		var valores = $('input[id$="valorSolicitado"]');
 		var totalSolicitado=0.0;
 		for (i=0; i<valores.size(); i++){

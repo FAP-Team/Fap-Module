@@ -103,8 +103,8 @@ public class LineaResolucionFAP extends FapModel {
 	public List<Firmante> calcularFirmantes() {
 		Firmantes firmantes = new Firmantes();
 		List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
-		for (int i = 0; i < agentes.size(); i++) {
-			Firmante firmante = new Firmante(agentes.get(i));
+		for (Agente agente : agentes) {
+			Firmante firmante = new Firmante(agente);
 			firmantes.todos.add(firmante);
 		}
 

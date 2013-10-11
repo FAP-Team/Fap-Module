@@ -203,7 +203,17 @@
 			            	#{if !noPuedeEditar}, boton_editar #{/if}
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						if (record.data.sombrear != "false") {
+							return "filaEditable" 
+						} 
+						else { 
+							return "filaNoEditable" 
+						}
+					}
+				}
 			});
 			
 			grid.addListener("selectionchange", function(){
@@ -229,9 +239,111 @@
     		
 		</script>
 		
+		
+		<div class="wiki ">
+		<table class="table table-bordered table-striped">
+		<thead>
+		<tr>
+			<th class="tabla-encabezado">Concepto</th>
+			<th class="tabla-encabezado">Valor Solicitado</th>
+			<th class="tabla-encabezado">Valor Estimado</th>
+			<th class="tabla-encabezado">Valor Propuesto</th>
+			<th class="tabla-encabezado">Valor Concedido</th>
+		</tr>
+		</thead>
+		<tbody>
+		%{
+			java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
+			Double totalSolicitado = 0
+			Double totalEstimado = 0
+			Double totalPropuesto = 0
+			Double totalConcedido = 0
+			java.util.ArrayList<Double> arrayTotalesSolicitado = new java.util.ArrayList<Double>(d+1);
+			java.util.ArrayList<Double> arrayTotalesEstimado = new java.util.ArrayList<Double>(d+1);
+			java.util.ArrayList<Double> arrayTotalesPropuesto = new java.util.ArrayList<Double>(d+1);
+			java.util.ArrayList<Double> arrayTotalesConcedido = new java.util.ArrayList<Double>(d+1);
+			
+		%}
+		
+		#{list items:rows, as:'fila'}
+			%{
+				// Calculamos si la jerarquía es de las principales
+				java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
+				def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+				
+				if (jerarquiaPrincipal) {
+					Double subTotalSolicitado = 0;
+					Double subTotalEstimado = 0;
+					Double subTotalPropuesto = 0;
+					Double subTotalConcedido = 0;
+			%}
+					
+					<tr>
+				<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
+			
+			%{  
+				int i = 0; // Contador de años
+			%}
+			
+			#{list items:fila.valores, as:'valor'}
+				%{
+					subTotalSolicitado += valor.valorSolicitado;
+					subTotalEstimado += valor.valorEstimado;
+					subTotalPropuesto += valor.valorPropuesto;
+					subTotalConcedido += valor.valorConcedido;
+				%}			
+					
+				%{
+				    if (arrayTotalesSolicitado.size() <= i) {
+				    	arrayTotalesSolicitado.add(valor.valorSolicitado);
+				    	arrayTotalesEstimado.add(valor.valorEstimado);
+				    	arrayTotalesPropuesto.add(valor.valorPropuesto);
+				    	arrayTotalesConcedido.add(valor.valorConcedido);
+				    } else {
+						arrayTotalesSolicitado.set(i, arrayTotalesSolicitado.get(i)+valor.valorSolicitado);
+						arrayTotalesEstimado.set(i, arrayTotalesEstimado.get(i)+valor.valorEstimado);
+						arrayTotalesPropuesto.set(i, arrayTotalesPropuesto.get(i)+valor.valorPropuesto);
+						arrayTotalesConcedido.set(i, arrayTotalesConcedido.get(i)+valor.valorConcedido);
+					}
+					i++;
+				%}
+			#{/list}
+		
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalSolicitado)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalEstimado)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalPropuesto)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalconcedido)} €</td>
+				%{
+					totalSolicitado += subTotalSolicitado;
+					totalEstimado += subTotalEstimado;
+					totalPropuesto += subTotalPropuesto;
+					totalConcedido += subTotalConcedido;
+				%}
+			</tr>
+		
+			%{
+				} // Close IF
+			%}
+		#{/list}
+			<tr class="total">
+				<td><b>TOTAL</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalSolicitado)} €</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalEstimado)} €</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalPropuesto)} €</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalConcedido)} €</b></td>
+			</tr>
+		</tbody>
+		</table>
+		</div>
+		
+		
+		
 		<div class="well">
 			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.guardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
 				#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
+			#{/form}
+			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.botonCopiarValoresGuardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
+				#{fap.boton id:'botonCopiarValores', titulo:'Copiar Propuestos a Concedidos' /}
 			#{/form}
 		</div>
 	

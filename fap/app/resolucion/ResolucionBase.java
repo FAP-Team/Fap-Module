@@ -40,10 +40,12 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
+import models.Agente;
 import models.Documento;
 import models.DocumentoNotificacion;
 import models.Evaluacion;
 import models.ExpedienteAed;
+import models.Firmante;
 import models.LineaResolucionFAP;
 import models.Notificacion;
 import models.Registro;
@@ -473,9 +475,9 @@ public class ResolucionBase {
 			
 			Notificacion notificacion = new Notificacion();
 			DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-			notificacion.documentosANotificar.add(docANotificar);
 			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
 			notificacion.documentosANotificar.add(docANotificar2);
+			notificacion.documentosANotificar.add(docANotificar);
 			notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 			notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
 			notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
@@ -1092,9 +1094,19 @@ public class ResolucionBase {
 			linea.registro = new Registro();
 			linea.registro.oficial.descripcion = "Oficio de remisión";
 			linea.registro.oficial.tipo = getTipoDocumentoOficioRemision();
+			if (linea.registro.firmantes.todos == null || linea.registro.firmantes.todos.size() == 0) {
+				List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
+				for (int i = 0; i < agentes.size(); i++) {
+					Firmante firmante = new Firmante(agentes.get(i));
+					linea.registro.firmantes.todos.add(firmante);
+				}
+				linea.registro.firmantes.save();
+			}
 			linea.registro.save();
 		} catch (Exception e) {
+			Messages.error("Error Generando el Documento de Oficio de Remisión");
 			e.printStackTrace();
+			play.Logger.error("Error Generando el Documento de Oficio de Remisión");
 		}
 		return report;
 	}
@@ -1104,7 +1116,9 @@ public class ResolucionBase {
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 		}catch (Throwable e) {
-			// TODO: handle exception
+			Messages.error("Error obteniendo el objeto Resolución");
+			e.printStackTrace();
+			play.Logger.error("Error obteniendo el objeto Resolución");			
 		}
 
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
@@ -1118,9 +1132,11 @@ public class ResolucionBase {
 				// Se genera el documento oficio de remisión
 				File fileOficioRemision = generarDocumentoOficioRemision(linea);
 				gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
-
 				linea.save();
 			} catch (Throwable e)   {
+				Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+				e.printStackTrace();
+				play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
 			}
 		}
 		

@@ -1,0 +1,45 @@
+%{
+   Integer anios = cEconomicosManuales.valores.size()-1;
+   def tipoEvaluacion = models.TipoEvaluacion.all().first();
+   %}
+#{fap.popup 
+     accion:accion, 
+     maximizar:false, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'PopUpEditarCEconomicosEvaluados', 
+     titulo:'Popup Modificación de Concepto Económico ', 
+     urlBorrar:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
+     urlEditar:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
+     urlRedirigir:urlRedirigir
+}
+	#{fap.grupo borde:false, permiso:'noEditable'}
+			#{fap.texto campo:'cEconomicosManuales.tipo.nombre', id:'Nombre', titulo:'Nombre'/}		
+			#{fap.texto campo:'cEconomicosManuales.tipo.jerarquia', id:'Jerarquia', titulo:'Jerarquía' /}
+	#{/fap.grupo}
+			#{list items:0..anios, as:'i'}
+				%{
+					def paramName="cEconomicosManuales.valores[${i}]";
+					def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+					def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+					def solicitadoLabel = "Solicitado";
+					def estimadoLabel = "Estimado";
+					def propuestoLabel = "Propuesto";
+					def concedidoLabel = "Concedido";
+					def valorSolicitado=newValue(paramName + ".valorSolicitado", solicitadoLabel, cEconomicosManuales.valores[i].valorSolicitado);
+					def valorEstimado=newValue(paramName + ".valorEstimado", estimadoLabel, cEconomicosManuales.valores[i].valorEstimado);
+					def valorPropuesto=newValue(paramName + ".valorPropuesto", propuestoLabel, cEconomicosManuales.valores[i].valorPropuesto);
+					def valorConcedido=newValue(paramName + ".valorConcedido", concedidoLabel, cEconomicosManuales.valores[i].valorConcedido);
+				%}
+				<div class="wiki ">
+					<p><b>Año ${tipoEvaluacion.inicio+i}</b><br/></p>
+				</div>		
+				#{simple.uneditable name:valorSolicitado.name, label:valorSolicitado.label, value:valorSolicitado.value, error:valorSolicitado.error, format:'moneda' /}
+				#{simple.uneditable name:valorEstimado.name, label:valorEstimado.label, value:valorEstimado.value, error:valorSolicitado.error, format:'moneda' /}
+				#{simple.text name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
+				#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error, format:'moneda' /}
+			#{/list}
+
+#{/fap.popup}
+		

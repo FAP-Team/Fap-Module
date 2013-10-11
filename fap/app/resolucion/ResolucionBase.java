@@ -475,9 +475,9 @@ public class ResolucionBase {
 			
 			Notificacion notificacion = new Notificacion();
 			DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-			notificacion.documentosANotificar.add(docANotificar);
 			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
 			notificacion.documentosANotificar.add(docANotificar2);
+			notificacion.documentosANotificar.add(docANotificar);
 			notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 			notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
 			notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
@@ -1104,7 +1104,9 @@ public class ResolucionBase {
 			}
 			linea.registro.save();
 		} catch (Exception e) {
+			Messages.error("Error Generando el Documento de Oficio de Remisión");
 			e.printStackTrace();
+			play.Logger.error("Error Generando el Documento de Oficio de Remisión");
 		}
 		return report;
 	}
@@ -1114,7 +1116,9 @@ public class ResolucionBase {
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 		}catch (Throwable e) {
-			// TODO: handle exception
+			Messages.error("Error obteniendo el objeto Resolución");
+			e.printStackTrace();
+			play.Logger.error("Error obteniendo el objeto Resolución");			
 		}
 
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
@@ -1128,9 +1132,11 @@ public class ResolucionBase {
 				// Se genera el documento oficio de remisión
 				File fileOficioRemision = generarDocumentoOficioRemision(linea);
 				gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
-
 				linea.save();
 			} catch (Throwable e)   {
+				Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+				e.printStackTrace();
+				play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
 			}
 		}
 		

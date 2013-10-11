@@ -103,6 +103,12 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 			 }
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
 		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);
+		  	 if (cEconomico.tipo.clase.equals("auto")){
+		  		columna.put("sombrear", "false");
+		  	 }
+		 	 else{
+		 		 columna.put("sombrear", "true");
+		 	 }
 		  	 columna.put("permiso", "true");
 		  	 columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
 		  	 columna.put("totalConcedido", (new BigDecimal(Double.toString(totalesConcedido)).setScale(2, RoundingMode.FLOOR).toPlainString()));

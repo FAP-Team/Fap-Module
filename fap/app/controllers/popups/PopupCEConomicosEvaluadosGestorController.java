@@ -1,6 +1,7 @@
 
 package controllers.popups;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.CEconomicosManuales;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
 
@@ -81,9 +83,11 @@ public class PopupCEConomicosEvaluadosGestorController extends Controller{
 	public static void PopupCEConomicosEvaluadosGestorValidateCopy(String accion, CEconomico dbCEconomico, CEconomico cEconomico, Integer duracion) {
 		CustomValidation.clearValidadas();
 		CustomValidation.valid("cEconomico", cEconomico);
-		for (int i=0; i<=duracion; i++){
-			dbCEconomico.valores.get(i).valorConcedido = cEconomico.valores.get(i).valorConcedido != null ? cEconomico.valores.get(i).valorConcedido : 0.0;
-			dbCEconomico.valores.get(i).valorPropuesto = cEconomico.valores.get(i).valorPropuesto != null ? cEconomico.valores.get(i).valorPropuesto : 0.0;
+		if(!dbCEconomico.tipo.tipoOtro){ //TipoOtro tienen el array vacio
+			for (int i=0; i<=duracion; i++){
+				dbCEconomico.valores.get(i).valorConcedido = cEconomico.valores.get(i).valorConcedido != null ? cEconomico.valores.get(i).valorConcedido : 0.0;
+				dbCEconomico.valores.get(i).valorPropuesto = cEconomico.valores.get(i).valorPropuesto != null ? cEconomico.valores.get(i).valorPropuesto : 0.0;
+			}
 		}
 	}
 
@@ -145,5 +149,20 @@ public class PopupCEConomicosEvaluadosGestorController extends Controller{
 		Messages.setFlash(param + ".comentariosAdministracion", params.get(param + ".comentariosAdministracion", String.class));
 		Messages.setFlash(param + ".comentariosSolicitante", params.get(param + ".comentariosSolicitante", String.class));
 	}
+	
+	public static void tablaCEconomicosManuales(Long idCEconomico) {
+		CEconomico ceconomico = CEconomico.findById(idCEconomico);
+		
+		java.util.List<CEconomicosManuales> rows = ceconomico.otros;
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<CEconomicosManuales> rowsFiltered = rows; //Tabla sin permisos, no filtra
+
+		tables.TableRenderResponse<CEconomicosManuales> response = new tables.TableRenderResponse<CEconomicosManuales>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id"));
+	}
+	
+	
 }
 		

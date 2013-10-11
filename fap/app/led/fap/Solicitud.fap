@@ -687,7 +687,20 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Boton botonCopiarValores titulo="Copiar Propuestos a Concedidos"  
 		}
 	}
+	
+//	Popup temporal titulo="Temporal" campo=SolicitudGenerica.ceconomicos.otros {
+//		Tabla tablita titulo="Tablita" campo=CEconomicosManuales popupEditar=PopUpEditarCEconomicosEvaluados {
+//				Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquia"
+//				Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+//		}
+//	}
 
+Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.ceconomicos.otros {
+	Grupo noEditable borde=false permiso=noEditable{
+		Texto nombre campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto jerarquia campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
+	}
+}
 	// ******************************************************************************************
 	// PAGINA CONCEPTOS ECONOMICOS COPIA
 	// *******************************************************************************************	

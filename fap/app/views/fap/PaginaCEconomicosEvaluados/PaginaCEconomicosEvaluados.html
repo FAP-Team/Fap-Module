@@ -203,7 +203,17 @@
 			            	#{if !noPuedeEditar}, boton_editar #{/if}
         				]
     				}
-				]
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+						if (record.data.sombrear != "false") {
+							return "filaEditable" 
+						} 
+						else { 
+							return "filaNoEditable" 
+						}
+					}
+				}
 			});
 			
 			grid.addListener("selectionchange", function(){

@@ -391,7 +391,7 @@ public class ResolucionBase {
 		
 	}
 
-	public void publicarCopiarEnExpedientes (long idResolucion){
+	public void copiarEnExpedientes (long idResolucion){
 		//ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 			ResolucionBase resolucion = null;
 			try {
@@ -438,21 +438,9 @@ public class ResolucionBase {
 				play.Logger.error("No se han podido copiar el documento de resolución a los expedientes: "+" -> "+e);
 				Messages.error("No se han podido copiar el documento de resolución a los expedientes");
 			}
-			
-			//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
-			//Si no hay, ha terminado la publicacion
-			
-			if (!resolucion.resolucion.conBaremacion) {
-				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
-				tx.begin();
-				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-				else
-					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
-				tx.commit();
-				tx.begin();
-		} 
+			if (!Messages.hasErrors()){
+				resolucion.resolucion.copiadoExpedientes = true;
+			}
 	 }
 
 	 public void notificarCopiarEnExpedientes (long idResolucion){

@@ -164,6 +164,7 @@ Entidad ResolucionFAP {
 	OneToMany Documento docConsultaPortamfirmasResolucionPorUri //Documentos de consulta Portafirmas Añadidos por uri
 
 	Registro registro
+	Boolean copiadoExpedientes default="false" //Indica si el doc de resolucion ha sido copiado en los expedientes
 	OneToMany Interesado destinatarios transient
 	ExpedienteAed expedienteAed
 	
@@ -356,6 +357,11 @@ Formulario Principal {
 		
 		Grupo gDocumentoDeResolucion titulo="Documento de Resolución" permiso=verDocumentoResolucion {
 			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
+			Form copiaExpediente permiso=permisoCopiaExpedientes{
+				Grupo grupoCopiaExpediente titulo="Copia del Registro de Resolucion"{
+					Boton btnCopiaExpediente titulo="Copiar" waitPopup
+				}
+			}
 		}
 		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true)" {
@@ -463,19 +469,15 @@ Formulario Principal {
 					Boton btnCambioEstadoFecha titulo="Actualizar"
 				}
 			}
-			Form copiaExpediente permiso=permisoCopiaExpedientes{
-				Grupo grupoCopiaExpediente titulo="Paso 2: Copia del Registro de Resolucion"{
-					Boton btnCopiaExpediente titulo="Copiar" waitPopup
-				}
-			}
-			Grupo grupoDocumentoResolucion titulo="Paso 3: Documento de Baremacion en Resolucion" permiso=permisoGenerarBaremacionResolucion{
+
+			Grupo grupoDocumentoResolucion titulo="Paso 2: Documento de Baremacion en Resolucion" permiso=permisoGenerarBaremacionResolucion{
 				Form generarDocumentoBaremacionResolucion permiso=permisoGenerarDocBaremacion{
-					Grupo grupoGenerarDocumento titulo="Paso 3.1: Generación y Almacenamiento de Documentos"{
+					Grupo grupoGenerarDocumento titulo="Paso 2.1: Generación y Almacenamiento de Documentos"{
 						Boton btnGenerarDocumento titulo="Generar" waitPopup
 					}
 				}
 				Form generarClasificarDocumentos permiso=permisoClasificarDocBaremacion {
-					Grupo grupoClasificarDocumentos titulo="Paso 3.2: Clasificar los documentos"{
+					Grupo grupoClasificarDocumentos titulo="Paso 2.2: Clasificar los documentos"{
 						Boton btnClasificarDocumentos titulo="Clasificar" waitPopup
 					}
 				}
@@ -543,17 +545,15 @@ Formulario Principal {
 					}
 				}
 				Grupo tablaLineasResolucion borde=false permiso=permisoFirmarOficioRemision {
-					Wiki { "Debe firmar los siguientes oficios de remisión:" } 
-					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision {
-						Columna campo=LineaResolucionFAP.id titulo="Id"  expandir
+					Wiki { "Debe firmar los siguientes oficios de remisión: <b> (Pulsar el botón \"Editar\")"  } 
+					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion{
 						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
 						Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
 						Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
-						Columna campo=LineaResolucionFAP.registro.id titulo="Id Oficio de remisión" expandir
+						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Oficio Firmado" expandir
 						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de remisión" expandir
-						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de remisión" expandir
 					}
 				}
 			}
@@ -572,7 +572,7 @@ Formulario Principal {
 						Columna campo=LineaResolucionFAP.registro.id titulo="Id oficio de remisión" expandir
 						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remision" expandir
 					}
-					Boton btnCopiaExpediente titulo="Notificar y copiar en expediente" waitPopup
+					Boton btnCopiaExpediente titulo="Notificar por Comparecencia en Sede" waitPopup
 				}
 			}
 			Grupo grupoVolver borde=false {
@@ -580,6 +580,19 @@ Formulario Principal {
 					Boton botonVolver titulo="Volver" pagina=EditarResolucion
 				}
 			}
+		}
+	}
+	
+	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Lineas de Resolución"{
+		Grupo titulo="Datos de la Línea de Resolución y el Oficio de Remisión" {
+			Texto campo=LineaResolucionFAP.id titulo="Id"
+			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
+			Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
+			Texto campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" 
+			Texto campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" 
+			Combo campo=LineaResolucionFAP.estado titulo="Estado" 
+			Texto campo=LineaResolucionFAP.registro.id titulo="Id Oficio de remisión" 
+			Texto campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de remisión" 
 		}
 	}
 
@@ -723,13 +736,24 @@ Permiso permisoCopiaExpedientes {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estadoPublicacion != null and
-		resolucion.estadoPublicacion = "estadoFecha" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		(
+			resolucion.estadoPublicacion != null and
+			resolucion.estadoPublicacion = "publicada" and
+			agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		)
+		or(
+			agente.rolActivo in ("administrador", "gestor", "jefeServicio") and
+			resolucion.estadoNotificacion != null and
+			resolucion.estadoNotificacion = "notificada"
+		)
+		or (
+			resolucion.estado != null and
+			resolucion.estado = "publicadaYNotificada" and
+			agente.rolActivo  in ("administrador", "gestor", "jefeServicio")
+		)
 	return
 		editar
 	when
-		resolucion.estadoPublicacion != null and
 		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
 	return 
 		visible

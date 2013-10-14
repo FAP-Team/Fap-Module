@@ -51,7 +51,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
 		} else {
 			//ERROR
-			Messages.error("No tiene permisos suficientes para realizar la acción++");
+			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		if (!Messages.hasErrors()) {
 

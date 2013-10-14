@@ -106,6 +106,8 @@ public class SecureFap extends Secure {
 			return permisoNotificar(_permiso, action, ids, vars);
 		else if ("noHayverificacion".equals(id))
 			return noHayverificacion(_permiso, action, ids, vars);
+		else if ("permisoCopiaExpedientes".equals(id))
+			return permisoCopiaExpedientes(_permiso, action, ids, vars);
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -1261,6 +1263,31 @@ public class SecureFap extends Secure {
 
 		}
 
+		return null;
+	}
+	
+	private ResultadoPermiso permisoCopiaExpedientes(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		if(!resolucion.copiadoExpedientes) { //Si no ha sido copiado previamente
+			if ((resolucion.estadoPublicacion != null && resolucion.estadoPublicacion.toString().equals("publicada".toString()) && utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio")) 
+					//Si está notificada y no tengo que publicar true, si hay que publicar debe esperarse a eso
+					|| (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.estadoNotificacion != null && resolucion.estadoNotificacion.toString().equals("notificada".toString()) && (FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios") == false)) 
+					|| (resolucion.estado != null && resolucion.estado.toString().equals("publicadaYNotificada".toString()) && utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio"))) {
+				if ("editar".equals(accion))
+					return new ResultadoPermiso(Accion.Editar);
+				else
+					return null;
+			}
+		}
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio")) {
+			return new ResultadoPermiso(Grafico.Visible);
+		}
 		return null;
 	}
 }

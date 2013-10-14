@@ -240,7 +240,7 @@ Formulario Principal {
 		}
 		
 		Grupo mostrarSiCampo ResolucionFAP.modalidad="resolucionMultiple" borde=false  {
-			Grupo titulo="Expedientes a Resolver" permiso=seleccionarExpedientes {
+			Grupo titulo="Expedientes afectados" permiso=seleccionarExpedientes {
 			
 				Form formSeleccionarExpedientes {
 					Grupo titulo="Seleccionar Expedientes"{
@@ -405,7 +405,6 @@ Formulario Principal {
 			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
 			Texto campo=ResolucionFAP.codigoResolucion titulo="Numero"
 			Fecha campo=ResolucionFAP.fechaRegistroResolucion titulo="Fecha Resolución"
-			Wiki { " Faltan más cosas ................ " }
 		}
 	}
 	

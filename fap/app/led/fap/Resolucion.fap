@@ -445,13 +445,17 @@ Formulario Principal {
 
 	Pagina DocConsultaPortafirmaCrear campo=ResolucionFAP.docConsultaPortafirmasResolucion {
 		Accion crear redirigir=EditarResolucion
-		SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
+		Grupo titulo="Aportar Documento"{
+			SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
+		}
 		Enlace volver titulo="Volver" anterior estilo="btn"
 	}
 	
 	Pagina DocPortafirmaPorUri campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri{
 		Accion crear redirigir=EditarResolucion
-		Texto uriDoc titulo="Uri del documento" campo=Documento.uri
+		Grupo titulo="Aportar Documento"{
+			Texto uriDoc titulo="Uri del documento" campo=Documento.uri
+		}
 		Enlace volver titulo="Volver" anterior estilo="btn"
 	}
 	
@@ -545,8 +549,8 @@ Formulario Principal {
 					}
 				}
 				Grupo tablaLineasResolucion borde=false permiso=permisoFirmarOficioRemision {
-					Wiki { "Debe firmar los siguientes oficios de remisión: <b> (Pulsar el botón \"Editar\")"  } 
-					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion{
+					Wiki { "Debe firmar los siguientes oficios de remisión: "  } 
+					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar"{
 						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir

@@ -113,6 +113,20 @@ public class GTabla extends GElement{
 			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
 		}
 		
+		//Nombre de los botones (opcional)
+		if(tabla.nombreBotonEditar != null){
+			params.putStr 'nombreBotonEditar', tabla.nombreBotonEditar;
+		}
+		if(tabla.nombreBotonVer != null){
+			params.putStr 'nombreBotonotonVer', tabla.nombreBotonotonVer;
+		}
+		if(tabla.nombreBotonBorrar != null){
+			params.putStr 'nombreBotonotonBorrar', tabla.nombreBotonotonBorrar;
+		}
+		if(tabla.nombreBotonCrear != null){
+			params.putStr 'nombreBotonotonCrear', tabla.nombreBotonotonCrear;
+		}
+		
 		if (tabla.popup || tabla.popupCrear){
 			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
@@ -208,6 +222,8 @@ public class GTabla extends GElement{
 			params.put 'urlLeer', Controller.create(GElement.getInstance(tabla.popupLeer, null)).getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', tabla.popupLeer.name;
 		}
+		
+		
 		if (tabla.popupCrear != null) {
 			params.put 'urlCrear', Controller.create(GElement.getInstance(tabla.popupCrear, null)).getRouteIndex("crear", true, true);
 			params.putStr 'popupCrear', tabla.popupCrear.name;

@@ -77,7 +77,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		this.propertyPlaceholder = propertyPlaceholder;
 		
         URL wsdlURL = PlatinoTercerosServiceImpl.class.getClassLoader().getResource("wsdl/terceros.wsdl");
-        tercerosPort = new TercerosService(wsdlURL).getTercerosService();
+        tercerosPort = new TercerosServiceBeanService(wsdlURL).getTercerosServiceBeanPort();
         WSUtils.configureEndPoint(tercerosPort, getEndPoint());
         WSUtils.configureSecurityHeaders(tercerosPort, propertyPlaceholder);
         PlatinoProxy.setProxy(tercerosPort, propertyPlaceholder);

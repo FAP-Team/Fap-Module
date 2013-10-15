@@ -35,13 +35,21 @@ require:
         transitive: false
     - commons-io -> commons-io 2.0.1
 
-    - org.apache.ws.security -> wss4j 1.5.4:
+    - org.apache.ws.security -> wss4j 1.6.12:
         transitive: false
-    - org.apache.cxf -> cxf-bundle 2.2.6:
+    - org.apache.neethi -> neethi 3.0.0:
+        transitive: false    
+    - org.apache.cxf -> cxf-bundle 2.7.7:
         transitive: false
-    - org.apache.ws.commons.schema -> XmlSchema 1.4.2:
+    - org.codehaus.woodstox -> woodstox-core-asl 4.2.0:
         transitive: false
-    - org.apache.santuario -> xmlsec 1.4.3:
+    - org.codehaus.woodstox -> stax2-api 3.1.1:
+        transitive: false        
+   #- org.apache.ws.commons.schema -> XmlSchema 1.4.7:
+    #    transitive: false
+    - org.apache.ws.xmlschema -> xmlschema-core 2.0.3:
+        transitive: false    
+    - org.apache.santuario -> xmlsec 1.4.5:
         transitive: false
     
     # Generacion de pdf OpenOffice
@@ -64,7 +72,7 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre v20130117:
+    - es.gobcan.platino -> platino.pre v20131001:
         transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
@@ -76,7 +84,8 @@ require:
         transitive: false
     - es.gobcan -> resoluciones v20130529:
         transitive: false
-    - platinowssinterceptor -> platinowssinterceptor 2
+   #- platinowssinterceptor -> platinowssinterceptor 2
+    - platinosecurityheader -> platinosecurityheader 1.201302.0
     
     - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
         transitive: false
@@ -100,6 +109,7 @@ repositories:
             - es.gobcan.eadmon -> *
             - es.gobcan.eadmon.aed.cliente -> *
             - platinowssinterceptor -> *
+            - platinosecurityheader -> *
             - es.mityc -> * 
             - es.gobcan.platino.servicios.enotificacion -> * 
             - de.devsurf.components.converter.integrations -> *

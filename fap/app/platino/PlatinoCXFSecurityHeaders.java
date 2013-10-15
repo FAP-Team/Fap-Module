@@ -11,9 +11,13 @@ import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 
-import es.gobcan.platino.wss.headers.UsernameCallbackHandler;
-import es.gobcan.platino.wss.interceptor.WSSPlatinoHeaderOutInterceptor;
-import es.gobcan.platino.wss.interceptor.WSSPlatinoOutInterceptor;
+import es.gobcan.platino.security.*;
+//import es.gobcan.platino.wss.headers.UsernameCallbackHandler;
+//import es.gobcan.platino.wss.interceptor.WSSPlatinoHeaderOutInterceptor;
+//import es.gobcan.platino.wss.interceptor.WSSPlatinoOutInterceptor;
+import es.gobcan.platino.security.osgi.header.passwordHandler.UsernameCallbackHandler;
+import es.gobcan.platino.security.osgi.interceptor.WSSPlatinoHeaderOutInterceptor;
+import es.gobcan.platino.security.osgi.interceptor.WSSPlatinoOutInterceptor;
 
 public class PlatinoCXFSecurityHeaders {
 	public static final String SOAP_11 = "SOAP11";
@@ -39,6 +43,7 @@ public class PlatinoCXFSecurityHeaders {
 		outUsernameProps.put("action", "UsernameToken");
 		outUsernameProps.put("passwordType", "PasswordText");
 		outUsernameProps.put("user", username);
+		outUsernameProps.put("password", "PLATINO");
 		outUsernameProps.put("passwordCallbackClass", UsernameCallbackHandler.class.getName());
 		outUsernameProps.put("addUTElements", "Nonce");
 		outUsernameProps.put("actor", "http://www.gobiernodecanarias.org/Platino/Authentication/1.0");

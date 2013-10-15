@@ -124,10 +124,6 @@ public class ResolucionFAP extends FapModel {
 	@JoinTable(name = "resolucionfap_docconsultaportafirmasresolucion")
 	public List<Documento> docConsultaPortafirmasResolucion;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "resolucionfap_docconsultaportamfirmasresolucionporuri")
-	public List<Documento> docConsultaPortamfirmasResolucionPorUri;
-
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
@@ -166,9 +162,6 @@ public class ResolucionFAP extends FapModel {
 
 		if (docConsultaPortafirmasResolucion == null)
 			docConsultaPortafirmasResolucion = new ArrayList<Documento>();
-
-		if (docConsultaPortamfirmasResolucionPorUri == null)
-			docConsultaPortamfirmasResolucionPorUri = new ArrayList<Documento>();
 
 		if (registro == null)
 			registro = new Registro();

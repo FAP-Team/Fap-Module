@@ -161,7 +161,6 @@ Entidad ResolucionFAP {
 	//Documento docResolucion							// Documento de Resolución
 	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
 	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
-	OneToMany Documento docConsultaPortamfirmasResolucionPorUri //Documentos de consulta Portafirmas Añadidos por uri
 
 	Registro registro
 	Boolean copiadoExpedientes default="false" //Indica si el doc de resolucion ha sido copiado en los expedientes
@@ -307,12 +306,6 @@ Formulario Principal {
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
-				Grupo borde=false {
-					Tabla documentosSolicitud titulo="Documentos a añadir por URI" campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri pagina=DocPortafirmaPorUri{
-						Columna campo=Documento.uri titulo="Uri"
-						Columna campo=Documento.tipo titulo="Tipo"
-					} 
-				}
 				Form formSelectJefeServicio {
 					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Destinatario Portafirma" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
@@ -448,12 +441,7 @@ Formulario Principal {
 		Grupo titulo="Aportar Documento"{
 			SubirArchivo file campo=Documento requerido /*tramite="ESTANCIAS"*/
 		}
-		Enlace volver titulo="Volver" anterior estilo="btn"
-	}
-	
-	Pagina DocPortafirmaPorUri campo=ResolucionFAP.docConsultaPortamfirmasResolucionPorUri{
-		Accion crear redirigir=EditarResolucion
-		Grupo titulo="Aportar Documento"{
+		Grupo titulo="Aportar documento por uri"{
 			Texto uriDoc titulo="Uri del documento" campo=Documento.uri
 		}
 		Enlace volver titulo="Volver" anterior estilo="btn"

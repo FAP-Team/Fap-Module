@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
+import properties.FapProperties;
 import resolucion.ResolucionBase;
 import services.RegistroLibroResolucionesService;
 import tags.ComboItem;
@@ -31,6 +32,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		if (!permiso("crear")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
+
 		ResolucionFAP dbResolucionFAP = NuevaResolucionController.getResolucionFAP();
 		NuevaResolucionController.NuevaResolucionBindReferences(resolucionFAP);
 

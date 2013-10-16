@@ -224,7 +224,9 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
 			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
-			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
+				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			}
 		}
 	}
 

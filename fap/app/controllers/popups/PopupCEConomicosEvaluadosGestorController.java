@@ -48,6 +48,19 @@ public class PopupCEConomicosEvaluadosGestorController extends Controller{
 		SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
 		
 		CEconomico cEconomico = PopupCEConomicosEvaluadosGestorController.getCEconomico(idSolicitud, idCEconomico);
+		
+		//Inicializar valores de suma???
+		if (cEconomico.tipo.tipoOtro) {
+			for (int i=0; i<=duracion; i++) {
+				cEconomico.valores.get(i).valorConcedido = 0.0;
+				cEconomico.valores.get(i).valorPropuesto = 0.0;
+				for(int j=0; j<cEconomico.otros.get(i).valores.size(); j++) {
+					cEconomico.valores.get(i).valorConcedido += cEconomico.otros.get(j).valores.get(i).valorConcedido != null ? cEconomico.otros.get(j).valores.get(i).valorConcedido : 0.0;
+					cEconomico.valores.get(i).valorPropuesto += cEconomico.otros.get(j).valores.get(i).valorPropuesto != null ? cEconomico.otros.get(j).valores.get(i).valorPropuesto : 0.0;
+				}
+			}
+		}
+		
 		log.info("Visitando página: " + "fap/PCEconomico/PopupCEConomicosEvaluadosGestor.html");
 		renderTemplate("fap/Baremacion/PopupCEConomicosEvaluadosGestor.html", accion, idSolicitud, solicitud, idCEconomico, cEconomico, duracion);
 	}
@@ -163,6 +176,9 @@ public class PopupCEConomicosEvaluadosGestorController extends Controller{
 		renderJSON(response.toJSON("tipo.jerarquia", "tipo.nombre", "id"));
 	}
 	
-	
+	public static void refreshFlash(String campo, String valor) {
+		Messages.setFlash(campo, valor);
+		log.info(campo.replace("sManuales", "") + " set now to " + valor);
+	}
 }
 		

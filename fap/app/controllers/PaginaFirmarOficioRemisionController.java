@@ -32,6 +32,36 @@ import controllers.gen.PaginaFirmarOficioRemisionControllerGen;
 
 public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemisionControllerGen {
 
+	public static void index(String accion, Long idResolucionFAP, Long idLineaResolucionFAP) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			renderTemplate("gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html");
+		}
+
+		ResolucionFAP resolucionFAP = PaginaFirmarOficioRemisionController.getResolucionFAP(idResolucionFAP);
+
+		LineaResolucionFAP lineaResolucionFAP = null;
+		if ("crear".equals(accion)) {
+			lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP();
+			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
+
+				lineaResolucionFAP.save();
+				idLineaResolucionFAP = lineaResolucionFAP.id;
+				resolucionFAP.lineasResolucion.add(lineaResolucionFAP);
+				resolucionFAP.save();
+
+				accion = "editar";
+			}
+
+		} else if (!"borrado".equals(accion))
+			lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP(idResolucionFAP, idLineaResolucionFAP);
+
+		log.info("Visitando página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+		renderTemplate("fap/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html", accion, idResolucionFAP, idLineaResolucionFAP, resolucionFAP, lineaResolucionFAP);
+	}
+	
 	@Util
 	public static void firmaFirmarOficioRemisionFormFirmarOficioRemision(Long idResolucionFAP, Long idLineaResolucionFAP, String firma) {
 		LineaResolucionFAP lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP(idResolucionFAP, idLineaResolucionFAP);

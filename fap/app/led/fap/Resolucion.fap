@@ -532,13 +532,13 @@ Formulario Principal {
 
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificarResolucion titulo="Notificación de la resolución" {
-			Grupo grupoOficioRemision titulo="Oficio de remisión" permiso=permisoOficioRemision {
-				Grupo grupoGenerarOficioRemision borde=false permiso=permisoGenerarOficioRemision {
+			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
+				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
 						Boton botonGenerarOficioRemision titulo="Generar"
 					}
 				}
-				Grupo tablaLineasResolucion borde=false permiso=permisoFirmarOficioRemision {
+				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
 					Wiki { "Debe firmar los siguientes oficios de remisión: "  } 
 					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar"{
 						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
@@ -592,7 +592,7 @@ Formulario Principal {
 
 	Pagina PaginaFirmarOficioRemision campo=ResolucionFAP.lineasResolucion noForm {
 		Form formFirmarOficioRemision redirigir=PaginaNotificarResolucion permiso=permisoOficioRemision {
-			FirmaSimple firmaFirmarOficioRemision titulo="Firmar" documento=LineaResolucionFAP.registro.oficial
+			FirmaSimple firmaFirmarOficioRemision titulo="Firmar y Registrar Oficio de Remisión" documento=LineaResolucionFAP.registro.oficial
 				listaFirmantes=LineaResolucionFAP.registro.firmantes.todos calcularFirmantes="lineaResolucionFAP.calcularFirmantes()"
 		}
 		Form formVolver {

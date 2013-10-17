@@ -213,7 +213,7 @@ p {
 				def valor = services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion)
 			}%
 			<tr>
-				<th>${tipoDatoAdicional.descripcion}:</th>
+				<th>${tipoDatoAdicional.descripcion.nl2br()}:</th>
 				<td>${valor}</td>
 			</tr>
 		#{/list}	

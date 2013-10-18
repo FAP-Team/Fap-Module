@@ -1,5 +1,14 @@
 h2. Changelog
 
+h3 Versión 2.3.2RC6
+* Cálculo de los totales del popup de Ceconomicos de instrucción
+* Modificada página de firma de la página de firma de oficio de remisión (quitar tabla interesados en firma).
+* Añadida propertie para mostrar o no el check de baremación en resolucion.
+* Las lineas de resolucion de la resolucionEjecucion pasan al estado afectada.
+* Unidas tablas de subida de documentos al portafirmas.
+* Añadida posibilidad de personalizar los nombres de los botones de las tablas.
+
+
 h3 Version 2.3.2RC5
 * Copia de resolucion al expediente fuera de publicar resolucion.
 * PopupVer en firma de Oficios de remisión.

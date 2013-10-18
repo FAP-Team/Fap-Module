@@ -81,5 +81,22 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			PaginaNotificarResolucionController.formCopiaExpedienteRender(idResolucionFAP);
 		}
 	}
+	
+//	public static void guardarValoresNotificacion (int plazoAcceso, int frecuenciaRecordatorioAcceso, int plazoRespuesta, int frecuenciaRecordatorioRespuesta){
+//		System.out.println("Llegamos por Ajax");
+//		Long idResolucionFap = Long.parseLong(params.get("idResolucionFap"));
+//		ResolucionBase resolBase = null;		
+//		try {
+//				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFap);
+//		} catch (Exception e) {
+//			e.printStackTrace();	
+//		} catch (Throwable e) {
+//		// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		for (LineaResolucionFAP linea : resolBase.resolucion.lineasResolucion) {
+//			linea.solicitud.notificaciones.get(linea.solicitud.notificaciones.size()-1)
+//		}	
+//	}
 
 }

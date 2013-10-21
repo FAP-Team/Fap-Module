@@ -223,7 +223,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -387,7 +387,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -531,6 +531,7 @@ Formulario Principal {
 		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
 	}
 
+	// HTML modificado
 	Pagina PaginaNotificarResolucion campo=ResolucionFAP perteneceA="Principal" noForm {
 		Grupo grupoNotificarResolucion titulo="Notificación de la resolución" {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
@@ -553,22 +554,20 @@ Formulario Principal {
 				}
 			}
 			Grupo grupoCopiaExpediente borde=false permiso=permisoNotificar {
-				Form formCopiaExpediente {
-					Grupo borde=false {
-						Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
-					}
-					Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
-						Columna campo=LineaResolucionFAP.id titulo="Id" expandir
-						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
-						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
-						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
-						Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-						Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
-						Columna campo=LineaResolucionFAP.registro.id titulo="Id oficio de remisión" expandir
-						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remision" expandir
-					}
-					Boton btnCopiaExpediente titulo="Notificar por Comparecencia en Sede" waitPopup
+				Grupo borde=false {
+					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 				}
+				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
+					Columna campo=LineaResolucionFAP.id titulo="Id" expandir
+					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+					Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
+					Columna campo=LineaResolucionFAP.registro.id titulo="Id oficio de remisión" expandir
+					Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remision" expandir
+				}
+				// Aquí van los inputs de los plazos asociados a la notificación y el botón notificar
 			}
 			Grupo grupoVolver borde=false {
 				Form formVolver {

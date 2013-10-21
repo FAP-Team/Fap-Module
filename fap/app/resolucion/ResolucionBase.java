@@ -442,7 +442,7 @@ public class ResolucionBase {
 			}
 	 }
 
-	 public void notificarCopiarEnExpedientes (long idResolucion){
+	 public void notificarCopiarEnExpedientes (long idResolucion, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta){
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -455,6 +455,7 @@ public class ResolucionBase {
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+
 			if (!linea.notificada){
 				SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
 	
@@ -467,10 +468,10 @@ public class ResolucionBase {
 				notificacion.documentosANotificar.add(docANotificar);
 				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 				notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
-				notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
-				notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
-				notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
-				notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
+				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
+				notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
+				notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
+				notificacion.frecuenciaRecordatorioRespuesta = fapNotificacionFrecuenciarecordatoriorespuesta;
 				notificacion.estado = EstadoNotificacionEnum.creada.name();
 				notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
 				notificacion.asunto = "Notificación de resolución";

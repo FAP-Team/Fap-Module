@@ -402,14 +402,13 @@ public class ResolucionBase {
 			
 			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
-			// ATENCIÓN:
-			// 		LISTAEXPEDIENTES SE CREA PERO NO SE MODIFICA NUNCA
-			//
+
 			int i = 1;
 			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
 			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 				SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
+				listaExpedientes.add(linea.solicitud.expedienteAed);
 				if ((i%10 == 0) || (i == resolucion.resolucion.lineasResolucion.size())) {
 					try {
 						gestorDocumental.copiarDocumentoEnExpediente(resolucion.resolucion.registro.oficial.uri, listaExpedientes);

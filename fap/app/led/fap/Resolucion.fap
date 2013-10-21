@@ -101,6 +101,7 @@ Entidad LineaResolucionFAP {
 	Documento docEvaluacionCompletoConComentarios 	// Documento con la Evaluación Completa con Comentarios de la Admin
 	//Documento documentoOficioRemision 
 	Registro registro // Oficio de remisión
+	Boolean notificada default="false"
 }
 
 // Entidades de la resolución
@@ -362,10 +363,10 @@ Formulario Principal {
 			}
 		}
 				
-		Grupo gDocumentoDeResolucion titulo="Documento de Resolución" permiso=verDocumentoResolucion {
-			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
+		Grupo gDocumentoDeResolucion borde=false /*titulo="Documento de Resolución" */ permiso=verDocumentoResolucion {
 			Form copiaExpediente permiso=permisoCopiaExpedientes{
 				Grupo grupoCopiaExpediente titulo="Copia de la Resolución a los expedientes afectados"{
+					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
 					Boton btnCopiaExpediente titulo="Copiar" waitPopup
 				}
 			}

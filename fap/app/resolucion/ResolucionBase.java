@@ -455,44 +455,47 @@ public class ResolucionBase {
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
-
-			SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
-
-			// Se crea la notificación y se añade a la solicitud correspondiente
-			
-			Notificacion notificacion = new Notificacion();
-			DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
-			notificacion.documentosANotificar.add(docANotificar2);
-			notificacion.documentosANotificar.add(docANotificar);
-			notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
-			notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
-			notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
-			notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
-			notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
-			notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
-			notificacion.estado = EstadoNotificacionEnum.creada.name();
-			notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
-			notificacion.asunto = "Notificación de resolución";
-			notificacion.save();
-			solicitud.notificaciones.add(notificacion);
-			solicitud.save();
-
-			// Se envía la notificación
-			
-			try {
-				notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
-				play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
-				notificacion.fechaPuestaADisposicion = new DateTime();
-				notificacion.save();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
-				Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
-			}
+			if (!linea.notificada){
+				SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
+	
+				// Se crea la notificación y se añade a la solicitud correspondiente
 				
-			NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+				Notificacion notificacion = new Notificacion();
+				DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+				DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
+				notificacion.documentosANotificar.add(docANotificar2);
+				notificacion.documentosANotificar.add(docANotificar);
+				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
+				notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
+				notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
+				notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
+				notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
+				notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
+				notificacion.estado = EstadoNotificacionEnum.creada.name();
+				notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
+				notificacion.asunto = "Notificación de resolución";
+				notificacion.save();
+				solicitud.notificaciones.add(notificacion);
+				solicitud.save();
+	
+				// Se envía la notificación
+				
+				try {
+					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+					notificacion.fechaPuestaADisposicion = new DateTime();
+					notificacion.save();
+					linea.notificada = true;
+					play.Logger.info("Notificada la linea de resolución de la solicitud "+linea.solicitud.id);
+					break;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
+				}
+					
+				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+			}
 		}
 		
 		//Una vez copiados los expedientes se comprueba si hay documentos de baremacion

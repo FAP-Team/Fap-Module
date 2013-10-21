@@ -48,6 +48,8 @@ public class LineaResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
+	public Boolean notificada;
+
 	@Transient
 	public String importeTotal_formatFapTabla;
 
@@ -89,6 +91,9 @@ public class LineaResolucionFAP extends FapModel {
 			registro = new Registro();
 		else
 			registro.init();
+
+		if (notificada == null)
+			notificada = false;
 
 		postInit();
 	}

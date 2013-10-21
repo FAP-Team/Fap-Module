@@ -102,6 +102,7 @@ Entidad LineaResolucionFAP {
 	//Documento documentoOficioRemision 
 	Registro registro // Oficio de remisión
 	Boolean notificada default="false"
+	Boolean generadoOficio default="false"
 }
 
 // Entidades de la resolución
@@ -537,6 +538,7 @@ Formulario Principal {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
 				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
+						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
 						Boton botonGenerarOficioRemision titulo="Generar"
 					}
 				}

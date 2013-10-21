@@ -50,6 +50,8 @@ public class LineaResolucionFAP extends FapModel {
 
 	public Boolean notificada;
 
+	public Boolean generadoOficio;
+
 	@Transient
 	public String importeTotal_formatFapTabla;
 
@@ -94,6 +96,9 @@ public class LineaResolucionFAP extends FapModel {
 
 		if (notificada == null)
 			notificada = false;
+
+		if (generadoOficio == null)
+			generadoOficio = false;
 
 		postInit();
 	}

@@ -487,7 +487,6 @@ public class ResolucionBase {
 					notificacion.save();
 					linea.notificada = true;
 					play.Logger.info("Notificada la linea de resolución de la solicitud "+linea.solicitud.id);
-					break;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1118,16 +1117,20 @@ public class ResolucionBase {
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
-			try  {
-				
-				// Se genera el documento oficio de remisión
-				File fileOficioRemision = generarDocumentoOficioRemision(linea);
-				gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
-				linea.save();
-			} catch (Throwable e)   {
-				Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
-				e.printStackTrace();
-				play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+			if (!linea.generadoOficio){
+			
+				try  {
+					
+					// Se genera el documento oficio de remisión
+					File fileOficioRemision = generarDocumentoOficioRemision(linea);
+					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+					linea.generadoOficio = true;
+					linea.save();
+				} catch (Throwable e)   {
+					Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+					e.printStackTrace();
+					play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+				}
 			}
 		}
 		

@@ -1140,10 +1140,9 @@ public class SecureFap extends Secure {
 		Agente agente = AgenteController.getAgente();
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
-
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar
+				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar o no esten notificados
 				if ((linea.registro.oficial.uri == null) || (linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) {
 					return new ResultadoPermiso(Accion.All);
 				}

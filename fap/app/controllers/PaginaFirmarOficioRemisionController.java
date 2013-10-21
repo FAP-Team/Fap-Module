@@ -125,7 +125,8 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				solicitud.save();
 
 			} catch (Throwable e)   {
-				
+				Messages.error("Error almacenando el justificante del documento de oficio de remisión en el AED");
+				play.Logger.info("Error almacenando el justificante del documento de oficio de remisión en el AED");
 			}
 		}
 		

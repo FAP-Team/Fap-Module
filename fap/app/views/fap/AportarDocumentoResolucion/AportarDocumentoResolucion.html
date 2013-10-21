@@ -1,0 +1,26 @@
+%{
+	String miTramite = properties.FapProperties.get("fap.resoluciones.aportacion.tramite") != null? properties.FapProperties.get("fap.resoluciones.aportacion.tramite") : 'Resolucion';
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Principal', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'AportarDocumentoResolucion', 
+     titulo:'Documento Resolución', 
+     urlBorrar:play.mvc.Router.reverse('AportarDocumentoResolucionController.borrar' , ['idResolucionFAP':resolucionFAP?.id]), 
+     urlCrear:play.mvc.Router.reverse('AportarDocumentoResolucionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('AportarDocumentoResolucionController.editar' , ['idResolucionFAP':resolucionFAP?.id])
+}
+	
+			#{fap.grupo titulo:'Aportar documento de resolución'}
+				#{fap.documento accept:'', campo:'resolucionFAP.registro.oficial', id:'subirArchivoAportarDocumentoResolucion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite: miTramite /}	
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

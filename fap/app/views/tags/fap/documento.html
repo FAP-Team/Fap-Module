@@ -14,7 +14,7 @@
 	def oldComboId = field.id + "_tipo";
 	def upload = _upload != null? _upload : true
 	def download = _download != null? _download : false
-	def tramite = properties.FapProperties.get("fap.resoluciones.aportacion.tramite") != null? properties.FapProperties.get("fap.resoluciones.aportacion.tramite") : _tramite
+	def tramite = _tramite
 	def aportadoPor = _aportadoPor
 	def esFactura = _esFactura != null? _esFactura : false
 

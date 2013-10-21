@@ -672,7 +672,6 @@
 			        }
 
 				    this.getSelectionModel().select(this.selectedRecords, true);
-				    Ext.defer(this.setScrollTop, 30, this, [this.getView().scrollState.top]);
 			    },
 			    #{if urlEditar || urlLeer}
 				plugins: [

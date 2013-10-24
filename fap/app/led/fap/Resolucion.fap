@@ -102,7 +102,9 @@ Entidad LineaResolucionFAP {
 	//Documento documentoOficioRemision 
 	Registro registro // Oficio de remisión
 	Boolean notificada default="false"
+	String visibleNotificada transient
 	Boolean generadoOficio default="false"
+	String visibleGeneradoOficio transient
 }
 
 // Entidades de la resolución
@@ -272,12 +274,11 @@ Formulario Principal {
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
 			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
-				Columna campo=LineaResolucionFAP.id titulo="Id" expandir
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-				Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
+				Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
 			}
 			Form prepararResolucion {
 				Boton  btnPrepararResolucion titulo="Preparar Resolución"
@@ -393,16 +394,15 @@ Formulario Principal {
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-			Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
-				Columna campo=LineaResolucionFAP.id titulo="Id" expandir
-				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
-				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
-				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
-				Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-				Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
-				Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remisión" expandir
-				Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante oficio de remisión" expandir
-			}
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
+					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+					Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+					Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remisión" expandir
+					Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante oficio de remisión" expandir
+				}
 			}
 			Texto campo=ResolucionFAP.folio_inicio titulo="Folio Inicial"
 			Texto campo=ResolucionFAP.folio_final titulo="Folio Final"
@@ -538,6 +538,15 @@ Formulario Principal {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
 				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
+						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
+							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+							Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+							Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de Remisión" expandir
+							Columna campo=LineaResolucionFAP.visibleGeneradoOficio titulo="Generado Oficio de Remisión" expandir
+						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
 						Boton botonGenerarOficioRemision titulo="Generar"
 					}
@@ -549,9 +558,10 @@ Formulario Principal {
 						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
 						Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-						Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
-						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Oficio Firmado" expandir
-						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de remisión" expandir
+						Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de Remisión" expandir
+						Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
+						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de Remisión" expandir
 					}
 				}
 			}
@@ -560,14 +570,14 @@ Formulario Principal {
 					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 				}
 				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
-					Columna campo=LineaResolucionFAP.id titulo="Id" expandir
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-					Columna campo=LineaResolucionFAP.estado titulo="Estado" expandir
-					Columna campo=LineaResolucionFAP.registro.id titulo="Id oficio de remisión" expandir
-					Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de remision" expandir
+					Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+					Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescargaFirmado titulo="Oficio de Remisión" expandir
+					Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
+					Columna campo=LineaResolucionFAP.visibleNotificada titulo="Notificada" expandir
 				}
 				// Aquí van los inputs de los plazos asociados a la notificación y el botón notificar
 			}

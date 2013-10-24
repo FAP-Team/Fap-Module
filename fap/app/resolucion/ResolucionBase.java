@@ -498,19 +498,15 @@ public class ResolucionBase {
 			}
 		}
 		
-		//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
-		//y se avanza de fase segun el tipo de la resolucion
-		if (!resolucion.resolucion.conBaremacion) {
-				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
-				tx.begin();
-				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-				else
-					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-				tx.commit();
-				tx.begin();
-		}
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		tx.begin();
+		if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+		else
+			resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+		tx.commit();
+		tx.begin();
 	}
 	 
 	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
@@ -721,6 +717,16 @@ public class ResolucionBase {
 
 			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
 			res.resolucion.save();
+
+			tx.commit();
+
+			//Una vez clasificados todos los documentos, termina la publicacion
+			tx.begin();
+			if (EstadoResolucionEnum.notificada.name().equals(res.resolucion.estado))
+				res.avanzarFase_Registrada_PublicadaYNotificada(res.resolucion);
+			else
+				res.avanzarFase_Registrada_Publicada(res.resolucion);
+			res.resolucion.save();
 			tx.commit();
 
 		} catch (Throwable e) {
@@ -797,7 +803,7 @@ public class ResolucionBase {
 	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
 		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
 		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
-			if (linea.estado.equals("concedida")) // Base
+			if (linea.estado.equals("concedida") || linea.estado.equals("afectada")) // Base
 				lista.add(linea);
 		}
 		return lista;

@@ -119,5 +119,5 @@ when
 	solicitud.aceptarRenunciar.registro.fasesRegistro.registro = "false" and
 	solicitud.aceptarRenunciar.registro.fasesRegistro.clasificarAed = "false")
 return
-	editable
+	editar
 }

@@ -381,6 +381,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	        		"Agente: "+AgenteController.getAgente().name+
 	        		"Número de Registro: "+justificante.getNumeroRegistro()+
 	        		"Fecha: "+justificante.getFechaRegistro());
+	        Messages.ok("Registro de Salida realizado con éxito");
 			return justificante;
 		} catch (Exception e) {
 			log.error("Error al obtener el justificante y EXIT "+e);

@@ -52,8 +52,10 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 
 		if (!Messages.hasErrors()) {
 			trAlegacion.firmar(firma);
+			Messages.info("La alegación correspondiente a la solicitud "+idSolicitud+" fue firmada correctamente");
 			try {
 				trAlegacion.registrar();
+				Messages.info("La alegación correspondiente a la solicitud "+idSolicitud+" fue registrada correctamente");
 				dbSolicitud.alegaciones.actual.estado = EstadoAlegacionEnum.iniciada.toString();
 				try {
 					Mails.enviar(trAlegacion.getMail(), dbSolicitud);
@@ -62,6 +64,8 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 				}
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
+				Messages.error("Error: no se pudo firmar la Alegación correctamente");
+				play.Logger.info("Error: no se pudo firmar la Alegación correctamente");
 			}
 		}
 
@@ -100,6 +104,7 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 
 		if (!Messages.hasErrors()) {
 			trAlegacion.firmar(firma);
+			Messages.info("La alegación correspondiente a la solicitud "+idSolicitud+" fue firmada correctamente");
 		}
 
 		if (!Messages.hasErrors()) {
@@ -127,16 +132,20 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 
 		if (!Messages.hasErrors()) {
 			trAlegacion.firmar(firma);
+			Messages.info("La alegación correspondiente a la solicitud "+idSolicitud+" fue firmada correctamente");
 			try {
 				trAlegacion.registrar();
+				Messages.info("La alegación correspondiente a la solicitud "+idSolicitud+" fue registra correctamente");
 				dbSolicitud.alegaciones.actual.estado = EstadoAlegacionEnum.iniciada.toString();
 				try {
 					Mails.enviar(trAlegacion.getMail(), dbSolicitud);
 				} catch (Exception e) {
-					play.Logger.error("No se pudo enviar mail de aceptación " + trAlegacion.getMail() + " de la solicitud " + dbSolicitud.id);
+					play.Logger.error("No se pudo enviar mail de alegación" + trAlegacion.getMail() + " de la solicitud " + dbSolicitud.id);
 				}
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
+				Messages.error("Error: no se pudo firmar la alegación correctamente");
+				play.Logger.error("Error: no se pudo firmar la alegación correctamente");
 			}
 		}
 
@@ -177,14 +186,18 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 		if (!Messages.hasErrors()) {
 			try {
 				trAlegacion.registrar();
+				Messages.info("La Alegación correspondiente a la solicitud "+idSolicitud+" registrada correctamente");
 				dbSolicitud.alegaciones.actual.estado = EstadoAlegacionEnum.iniciada.toString();
 				try {
 					Mails.enviar(trAlegacion.getMail(), dbSolicitud);
+					Messages.info("La alegación fue enviada correctamente");
 				} catch (Exception e) {
-					play.Logger.error("No se pudo enviar mail de aceptación " + trAlegacion.getMail() + " de la solicitud " + dbSolicitud.id);
+					play.Logger.error("No se pudo enviar mail de alegación " + trAlegacion.getMail() + " de la solicitud " + dbSolicitud.id);
 				}
 			} catch (RegistroServiceException e) {
 				e.printStackTrace();
+				Messages.error("Error: no se pudo registrar la alegación correctamente");
+				play.Logger.error("Error: no se pudo registrar la alegación correctamente");
 			}
 		}
 
@@ -202,7 +215,7 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 	
 	@Util
 	public static void frmRegistrarRender(Long idSolicitud) {
-		if (!Messages.hasMessages()) {
+		if (!Messages.hasErrors()) {
 			Messages.ok("Página editada correctamente");
 			Messages.keep();
 			redirect("AlegacionesController.index", "editar", idSolicitud);

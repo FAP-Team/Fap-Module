@@ -52,11 +52,14 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 
 		if (!Messages.hasErrors()) {
 			trAceptacionRenuncia.firmar(firma);
+			play.Logger.info("Se firmó correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 			try {
 				trAceptacionRenuncia.registrar();
+				play.Logger.info("Se registró correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 				try {
 					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
+					play.Logger.info("Modificado el estado de la solicitud "+idSolicitud+" a "+dbSolicitud.estado);
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia"+e.getMessage());
 				}
@@ -100,6 +103,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 
 		if (!Messages.hasErrors()) {
 			trAceptacionRenuncia.firmar(firma);
+			play.Logger.info("Se firmó correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 		}
 
 		if (!Messages.hasErrors()) {
@@ -126,11 +130,14 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 		
 		if (!Messages.hasErrors()) {
 			trAceptacionRenuncia.firmar(firma);
+			play.Logger.info("Se firmó correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 			try {
 				trAceptacionRenuncia.registrar();
+				play.Logger.info("Se registró correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 				try {
 					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
+					play.Logger.info("Modificado el estado de la solicitud "+idSolicitud+" a "+dbSolicitud.estado);
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
 				}
@@ -151,7 +158,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 	}
 	
 	@Util
-	public static void formRegistrar(Long idSolicitud) {
+	public static void formRegistrar(Long idSolicitud, String botonRegistrar) {
 		checkAuthenticity();
 		if (!permisoFormRegistrar("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -163,9 +170,11 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 		if (!Messages.hasErrors()) {
 			try {
 				trAceptacionRenuncia.registrar();
+				play.Logger.info("Se registró correctamente la Aceptación/Renuncia de la solicitud: "+idSolicitud);
 				try {
 					ResolucionFapController.invoke(ResolucionFapController.class, "setEstadoAfterResolucion", idSolicitud);
 					dbSolicitud.save();
+					play.Logger.info("Modificado el estado de la solicitud "+idSolicitud+" a "+dbSolicitud.estado);
 				} catch (Throwable e) {
 					play.Logger.error("Hubo un problema al intentar cambiar el estado de la solicitud: "+idSolicitud+", en Aceptación Renuncia");
 				}
@@ -184,6 +193,17 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 			log.info("Acción Editar de página: " + "gen/AceptacionRenunciaPresentar/AceptacionRenunciaPresentar.html" + " , intentada sin éxito (Problemas de Validación)");
 		
 		AceptacionRenunciaPresentarController.formRegistrarRender(idSolicitud);
+	}
+
+	@Util
+	public static void formRegistrarRender(Long idSolicitud) {
+		if (!Messages.hasErrors()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("AceptacionRenunciaController.index", "editar", idSolicitud);
+		}
+		Messages.keep();
+		redirect("AceptacionRenunciaPResentarController.index", "editar", idSolicitud);
 	}
 	
 }

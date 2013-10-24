@@ -45,6 +45,7 @@ vars
 when
 	(_accion = leer) or
 	solicitud.alegaciones.actual.motivoAlegacion != null 
+	and (solicitud.alegaciones.actual.registro.fasesRegistro.borrador="false")
 return
 	editable
 }

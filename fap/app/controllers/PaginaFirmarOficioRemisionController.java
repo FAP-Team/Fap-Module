@@ -123,7 +123,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 
 				lineaResolucionFAP.save();
 				solicitud.save();
-
+				Messages.ok("Se realizó el registro correctamente");
 			} catch (Throwable e)   {
 				Messages.error("Error almacenando el justificante del documento de oficio de remisión en el AED");
 				play.Logger.info("Error almacenando el justificante del documento de oficio de remisión en el AED");

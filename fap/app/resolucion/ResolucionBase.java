@@ -442,7 +442,7 @@ public class ResolucionBase {
 			}
 	 }
 
-	 public void notificarCopiarEnExpedientes (long idResolucion, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta){
+	 public boolean notificarCopiarEnExpedientes (long idResolucion, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta){
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -453,6 +453,8 @@ public class ResolucionBase {
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		
+		boolean correcto = true;
 		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
@@ -467,7 +469,7 @@ public class ResolucionBase {
 				notificacion.documentosANotificar.add(docANotificar2);
 				notificacion.documentosANotificar.add(docANotificar);
 				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
-				notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
+				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
 				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
 				notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
 				notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
@@ -490,6 +492,7 @@ public class ResolucionBase {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					correcto = false;
 					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
@@ -498,15 +501,18 @@ public class ResolucionBase {
 			}
 		}
 		
-		EntityTransaction tx = JPA.em().getTransaction();
-		tx.commit();
-		tx.begin();
-		if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-			resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-		else
-			resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-		tx.commit();
-		tx.begin();
+		if (correcto) {
+			EntityTransaction tx = JPA.em().getTransaction();
+			tx.commit();
+			tx.begin();
+			if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+				resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+			else
+				resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+			tx.commit();
+			tx.begin();
+		}
+		return correcto;
 	}
 	 
 	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}

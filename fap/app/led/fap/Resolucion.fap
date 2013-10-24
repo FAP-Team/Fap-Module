@@ -353,6 +353,10 @@ Formulario Principal {
     		}
 		}
 		
+		Grupo grupoVerDocumentoResolucion titulo="Documento de Resolución" permiso=verDocumentoResolucion {
+			Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
+		}
+		
 		Grupo gPublicarResolucion titulo="Publicar la Resolución en el tablón de Anuncios" permiso=publicarResolucion mostrarSiExpresion "(properties.FapProperties.getBoolean(\"fap.resoluciones.publicarTablonAnuncios\")==true)" {
 			Form publicacionResolucion {
 				Enlace publicarResolucionPasos titulo="Publicar la Resolución" pagina=PaginaPublicarResolucion estilo="btn"
@@ -368,7 +372,6 @@ Formulario Principal {
 		Grupo gDocumentoDeResolucion borde=false /*titulo="Documento de Resolución" */ permiso=verDocumentoResolucion {
 			Form copiaExpediente permiso=permisoCopiaExpedientes{
 				Grupo grupoCopiaExpediente titulo="Copia de la Resolución a los expedientes afectados"{
-					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Resolución" destino="_blank" estilo="boton"
 					Boton btnCopiaExpediente titulo="Copiar" waitPopup
 				}
 			}

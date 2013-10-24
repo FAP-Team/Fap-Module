@@ -271,7 +271,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				resolBase = getResolucionObject(dbResolucionFAP.id);
 				resolBase.avanzarFase_Preparada_Portafirma(dbResolucionFAP);
 				dbResolucionFAP.save();
-				Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma del Jefe de Servicio");
+				Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma");
 			} catch (Throwable e) {
 				play.Logger.error("No se ha enviado correctamente al portafirma la solicitud de firma: "+e);
 				Messages.error("No se ha enviado correctamente al portafirma la solicitud de firma. ");

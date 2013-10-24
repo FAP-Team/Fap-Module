@@ -77,26 +77,20 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void notificar(Long idResolucionFAP, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta) {
+	public static boolean notificar(Long idResolucionFAP, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta) {
 
 		ResolucionBase resolBase = null;
+		boolean notificada = false;
 		try {
 			resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
-			resolBase.notificarCopiarEnExpedientes(idResolucionFAP, fapNotificacionPlazoacceso, fapNotificacionFrecuenciarecordatorioacceso, fapNotificacionPlazorespuesta, fapNotificacionFrecuenciarecordatoriorespuesta);
+			notificada = resolBase.notificarCopiarEnExpedientes(idResolucionFAP, fapNotificacionPlazoacceso, fapNotificacionFrecuenciarecordatorioacceso, fapNotificacionPlazorespuesta, fapNotificacionFrecuenciarecordatoriorespuesta);
 			resolBase.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
 			resolBase.resolucion.save();
 		} catch (Throwable e) {
 			new Exception ("No se ha podido obtener el objeto resolución", e);
 		}
 
-		if (!Messages.hasErrors()) {
-			log.info("Notificación con éxito");
-			redirect("EditarResolucionController.index", EditarResolucionController.getAccion(), idResolucionFAP);
-		} else {
-			log.info("Notificación sin éxito");
-			Messages.keep();
-			redirect("PaginaNotificarResolucionController.index", "editar", idResolucionFAP);
-		}
+		return notificada;
 	}
 
 	

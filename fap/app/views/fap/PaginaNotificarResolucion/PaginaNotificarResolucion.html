@@ -226,6 +226,7 @@
 		});
 
 		function notificar() {
+			popupWait_open();
 			$.ajax({
 				type: "POST",
 				url: "${urlNotificar}",
@@ -236,8 +237,15 @@
 					fapNotificacionPlazorespuesta: $('#idInputFapNotificacionPlazorespuesta').val(),
 					fapNotificacionFrecuenciarecordatoriorespuesta: $('#idInputFapNotificacionFrecuenciarecordatoriorespuesta').val()
 				}
-			}).done(function() {
-  				location.href = "${urlEditarResolucion}";
+			}).done(function(msg) {
+				popupWait_close();
+				if (msg == "true") {
+ 	 				location.href = "${urlEditarResolucion}";
+					alert("Notificación con éxito"+msg);
+ 				}
+ 				else {
+					alert("Notificación sin éxito"+msg);
+				}
 			});
 		}
 </script>

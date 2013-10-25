@@ -510,6 +510,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				tx.begin();
 				try {
 					gestorDocumentalService.clasificarDocumentoResolucion(dbResolucionFAP);
+					gestorDocumentalService.clasificarDocumentosConsulta(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.clasificarAed = true;
 					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {
@@ -605,6 +606,30 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.copiaExpedienteRender(idResolucionFAP);
 	
+	}
+	
+	public static void tablalineasResolucion(Long idResolucionFAP) {
+		boolean flag = true;
+		java.util.List<LineaResolucionFAP> rows = LineaResolucionFAP.find("select lineaResolucionFAP from ResolucionFAP resolucionFAP join resolucionFAP.lineasResolucion lineaResolucionFAP where resolucionFAP.id=?", idResolucionFAP).fetch();
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<LineaResolucionFAP> rowsFiltered = rows; //Tabla sin permisos, no filtra
+		
+		tables.TableRenderResponse<LineaResolucionFAP> response = new tables.TableRenderResponse<LineaResolucionFAP>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+		//System.out.println("este es: " + registro.justificante.enlaceDescarga);
+		for (LineaResolucionFAP row:rows) {
+			if ((row.registro.oficial.uri == null) || (row.registro.fasesRegistro.firmada == null) || (row.registro.fasesRegistro.firmada == false)){
+				flag = false;
+				break;
+			}
+		}	
+		if (!flag) {
+			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado"));
+		}
+		else {
+			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "registro.oficial.enlaceDescargaFirmado", "registro.justificante.enlaceDescarga"));
+		}
+		
 	}
 	
 }

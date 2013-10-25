@@ -1,0 +1,28 @@
+%{
+	String miTramite = properties.FapProperties.get("fap.alegacion.aportacion.tramite") != null? properties.FapProperties.get("fap.alegacion.aportacion.tramite") : 'Alegacion';
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'AportarDocumentacionAlegacion', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Añadir Documentación Alegación', 
+     urlBorrar:play.mvc.Router.reverse('AportarDocumentacionAlegacionController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id]), 
+     urlCrear:play.mvc.Router.reverse('AportarDocumentacionAlegacionController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('AportarDocumentacionAlegacionController.editar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id])
+}
+	
+			#{fap.grupo titulo:'Documento'}
+				#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:miTramite /}	
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

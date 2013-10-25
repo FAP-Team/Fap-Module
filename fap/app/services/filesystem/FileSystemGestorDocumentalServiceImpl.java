@@ -870,6 +870,23 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
             }
         }
 	}
+	
+	//@Override
+	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		File dst = clasificadoPath;
+		for(Documento documento : resolucionFap.docConsultaPortafirmasResolucion){
+			if(!documento.clasificado){
+				File file = getFile(documento);
+				boolean ok = move(file, dst);
+				if(ok){
+					documento.clasificado = true;
+					documento.save();
+				} else{
+            	throw new GestorDocumentalServiceException("No se pudo clasificar el documento de consulta " + file.toString());
+				}
+			}
+		}
+	}
 
 	@Override
 	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {

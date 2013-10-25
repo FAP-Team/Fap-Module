@@ -804,6 +804,32 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
+    
+
+    protected void clasificarDocumentosConsultaResolucion(String idAed, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
+        
+    	for (models.Documento documento : resolucion.docConsultaPortafirmasResolucion){
+	    	PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
+	        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
+	        if (propAdmin.getResolucion() == null) {
+	        	Resolucion res = new Resolucion();
+	        	res.setPrimerFolio(resolucion.folio_inicio.toString());
+	        	res.setUltimoFolio(resolucion.folio_final.toString());
+	        	res.setNumeroResolucion(resolucion.numero.toString());
+	        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+	        	propAdmin.setResolucion(res);
+	        } else {
+	        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
+	        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
+	        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
+	        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+	        }
+	        // Marca como notificable
+	        if (notificable)
+	        	propAdmin.setNotificable(true);
+	        clasificarDocumento(idAed, documento, propiedades, interesados);
+    	}
+    }
 
     protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
@@ -1332,6 +1358,24 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
 		}
 		
+	}
+	
+	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		log.debug("Clasificando documento resolución");
+		
+	    Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+	    String idAed = convocatoria.expedienteAed.idAed;
+	    
+	    if(idAed == null)
+	        throw new NullPointerException();
+	    
+	    Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
+	    
+	    try {
+	    	clasificarDocumentosConsultaResolucion(idAed, interesados, resolucionFap, false);
+	    } catch (AedExcepcion e) {
+	    	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
+		}
 	}
 
 	@Override

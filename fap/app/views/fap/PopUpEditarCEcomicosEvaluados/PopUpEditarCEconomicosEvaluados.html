@@ -13,7 +13,6 @@
      urlBorrar:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.borrar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
      urlCrear:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]), 
      urlEditar:play.mvc.Router.reverse('popups.PopUpEditarCEconomicosEvaluadosController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'idCEconomicosManuales':cEconomicosManuales?.id]), 
-     urlRedirigir:urlRedirigir
 }
 	#{fap.grupo borde:false, permiso:'noEditable'}
 			#{fap.texto campo:'cEconomicosManuales.tipo.nombre', id:'Nombre', titulo:'Nombre'/}		
@@ -43,6 +42,7 @@
 			#{/list}
 			
 			<script type="text/javascript">
+			
 				Number.prototype.formatMoney = function(c, d, t){
 					var n = this, 
 					    c = isNaN(c = Math.abs(c)) ? 2 : c, 
@@ -53,12 +53,11 @@
 					    j = (j = i.length) > 3 ? j % 3 : 0;
 					   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
 				};	
-				
 			
 				$('input').change(function() {
 					$.ajax({
 						type: "POST",
-						url: "@{popups.PopupCEConomicosEvaluadosGestorController.refreshFlash}",
+						url: "@{PaginaCEConomicosEvaluadosGestorController.refreshFlash}",
 						data: {
 							campo: this.name,
 							valor: this.value
@@ -67,9 +66,6 @@
 					var formatedVal = parseFloat(this.value.replace(".",""));
 					this.value = formatedVal.formatMoney();
 				});
-				
-
-				
 								
 				var valores = $('input[id$="valorSolicitado"]');
 				var totalSolicitado=0.0;
@@ -101,4 +97,11 @@
 			</script>		
 
 #{/fap.popup}
+
+<script>
+	document.getElementById('Guardar_id_PopUpEditarCEconomicosEvaluados_popup').onclick = function() {
+		window.location.reload(true);
+		PopUpEditarCEconomicosEvaluadosGuardar();
+	};
+</script>
 		

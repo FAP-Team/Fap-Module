@@ -1,7 +1,13 @@
 
 %{
+	Integer d = duracion;
 	def tipoEvaluacion = models.TipoEvaluacion.all().first();
 	def anioInicio = tipoEvaluacion.inicio;
+	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition) play.mvc.Router.reverse("PaginaCEconomicosEvaluadosController.tablatablaCEconomicosEvaluados", ['idSolicitud':idSolicitud]), "url");
+	def id="tablaCEconomicosEvaluados";
+	def modelName = id + "_model";
+	def idEntidad="_idCEConomico_";
+    urlEditar = play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.index' , ['accion':accion, 'idSolicitud':solicitud?.id, 'idCEconomico':idEntidad, 'duracion':duracion]);
 %}
 
 #{fap.pagina 
@@ -17,24 +23,15 @@
      permiso:'adminOrGestor', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Conceptos Económicos Propuestos y Concedidos', 
-     urlBorrar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.borrar' , ['idSolicitud':solicitud?.id]), 
-     urlCrear:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.crear' ), 
-     urlEditar:play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.editar' , ['idSolicitud':solicitud?.id])
+     urlBorrar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.index' , ['accion':accion, 'idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion])
 }
 
 	#{fap.grupo titulo:'Conceptos Económicos Propuestos y Concedidos', id: 'CEconomicosEvaluados'}
 
 		<div id="tablaCEconomicosEvaluados" class="tabla"></div>
-
-		%{
-			Integer d = duracion-1;
-			play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition) play.mvc.Router.reverse("PaginaCEconomicosEvaluadosController.tablatablaCEconomicosEvaluados", ['idSolicitud':idSolicitud]), "url");
-			def id="tablaCEconomicosEvaluados";
-			def modelName = id + "_model";
-			String idEntidad="_idCEconomico_";
-			String popupEditar="PopupCEConomicosEvaluadosGestor";
-			String urlPopupEditar=play.mvc.Router.reverse("popups.PopupCEConomicosEvaluadosGestorController.index" , ['accion':'editar', 'idSolicitud':idSolicitud, 'idCEconomico':'_idCEconomico_', 'duracion':duracion]);
-		%}
+			
 		<script>
 		
 		  Ext.onReady(function() {
@@ -94,11 +91,14 @@
 		    	disabled:true,
 		    	handler : function(){
 			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-			   		popup_open(
-			   			"${popupEditar}_popup",
-			   			replaceId("${urlPopupEditar}", "${idEntidad}", selected_id),
-			   			reload
-			   		);
+			   		#{if saveBefore && saveEntity}
+    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+   						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+					#{/if}
+					#{else}
+						var urlRep = "${urlEditar}";
+						window.location.href = replaceId(urlRep, "${idEntidad}", selected_id);
+					#{/else}
 		    	}
 		    });
 		    
@@ -108,11 +108,14 @@
 	    	   		if (grid.getSelectionModel().getSelection()[0].data.permiso == "true"){
 						var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
 						var registro = store.getAt(store.find("id", selected_id));
-			   			popup_open(
-			   				"${popupEditar}_popup",
-				   			replaceId("${urlPopupEditar}", "${idEntidad}", selected_id),
-		   					reload
-		   				);
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+						#{/if}
+						#{else}
+						var urlRep = "${urlEditar}";
+						window.location.href = replaceId(urlRep, "${idEntidad}", selected_id);
+						#{/else}
 		   			}
         		}
     		});
@@ -239,112 +242,81 @@
     		
 		</script>
 		
-		
 		<div class="wiki ">
-		<table class="table table-bordered table-striped">
-		<thead>
-		<tr>
-			<th class="tabla-encabezado">Concepto</th>
-			<th class="tabla-encabezado">Valor Solicitado</th>
-			<th class="tabla-encabezado">Valor Estimado</th>
-			<th class="tabla-encabezado">Valor Propuesto</th>
-			<th class="tabla-encabezado">Valor Concedido</th>
-		</tr>
-		</thead>
-		<tbody>
-		%{
-			java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
-			Double totalSolicitado = 0
-			Double totalEstimado = 0
-			Double totalPropuesto = 0
-			Double totalConcedido = 0
-			java.util.ArrayList<Double> arrayTotalesSolicitado = new java.util.ArrayList<Double>(d+1);
-			java.util.ArrayList<Double> arrayTotalesEstimado = new java.util.ArrayList<Double>(d+1);
-			java.util.ArrayList<Double> arrayTotalesPropuesto = new java.util.ArrayList<Double>(d+1);
-			java.util.ArrayList<Double> arrayTotalesConcedido = new java.util.ArrayList<Double>(d+1);
-			
-		%}
-		
-		#{list items:rows, as:'fila'}
-			%{
-				// Calculamos si la jerarquía es de las principales
-				java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
-				def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th class="tabla-encabezado">Concepto</th>
+						#{list items:0..d, as:'i'}
+						<th class="tabla-encabezado">Año ${tipoEvaluacion.inicio+i}</th>
+						#{/list}
+						<th class="tabla-encabezado">Total</th>
+					</tr>
+				</thead>
+				<tbody>
 				
-				if (jerarquiaPrincipal) {
-					Double subTotalSolicitado = 0;
-					Double subTotalEstimado = 0;
-					Double subTotalPropuesto = 0;
-					Double subTotalConcedido = 0;
-			%}
+				%{
+					java.util.List<models.CEconomico> rows = models.CEconomico.find("select cEconomico from SolicitudGenerica solicitud join solicitud.ceconomicos cEconomico where solicitud.id=?",idSolicitud).fetch();
+					Double total = 0
+					java.util.ArrayList<Double> arrayTotales = new java.util.ArrayList<Double>(d+1);
+				%}
+				
+				#{list items:rows, as:'fila'}
+					%{
+						// Calculamos si la jerarquía es de las principales
+						java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
+						def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+						
+						if (jerarquiaPrincipal) {
+							Double subTotal = 0;
+					%}
 					
 					<tr>
-				<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
-			
-			%{  
-				int i = 0; // Contador de años
-			%}
-			
-			#{list items:fila.valores, as:'valor'}
-				%{
-					subTotalSolicitado += valor.valorSolicitado;
-					subTotalEstimado += valor.valorEstimado;
-					subTotalPropuesto += valor.valorPropuesto;
-					subTotalConcedido += valor.valorConcedido;
-				%}			
+						<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
 					
-				%{
-				    if (arrayTotalesSolicitado.size() <= i) {
-				    	arrayTotalesSolicitado.add(valor.valorSolicitado);
-				    	arrayTotalesEstimado.add(valor.valorEstimado);
-				    	arrayTotalesPropuesto.add(valor.valorPropuesto);
-				    	arrayTotalesConcedido.add(valor.valorConcedido);
-				    } else {
-						arrayTotalesSolicitado.set(i, arrayTotalesSolicitado.get(i)+valor.valorSolicitado);
-						arrayTotalesEstimado.set(i, arrayTotalesEstimado.get(i)+valor.valorEstimado);
-						arrayTotalesPropuesto.set(i, arrayTotalesPropuesto.get(i)+valor.valorPropuesto);
-						arrayTotalesConcedido.set(i, arrayTotalesConcedido.get(i)+valor.valorConcedido);
-					}
-					i++;
-				%}
-			#{/list}
-		
-				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalSolicitado)} €</td>
-				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalEstimado)} €</td>
-				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalPropuesto)} €</td>
-				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalconcedido)} €</td>
-				%{
-					totalSolicitado += subTotalSolicitado;
-					totalEstimado += subTotalEstimado;
-					totalPropuesto += subTotalPropuesto;
-					totalConcedido += subTotalConcedido;
-				%}
-			</tr>
-		
-			%{
-				} // Close IF
-			%}
-		#{/list}
-			<tr class="total">
-				<td><b>TOTAL</b></td>
-				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalSolicitado)} €</b></td>
-				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalEstimado)} €</b></td>
-				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalPropuesto)} €</b></td>
-				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalConcedido)} €</b></td>
-			</tr>
-		</tbody>
-		</table>
+						%{  
+							int i = 0; // Contador de años
+						%}
+						
+						#{list items:fila.valores, as:'valor'}
+							%{
+								subTotal += valor.valorSolicitado;
+							%}
+							<td class="tabla-moneda">${format.FapFormat.formatMoneda(valor.valorSolicitado)} €</td>
+								
+							%{
+							    if (arrayTotales.size() <= i) {
+							    	arrayTotales.add(valor.valorSolicitado);
+							    } else {
+									arrayTotales.set(i, arrayTotales.get(i)+valor.valorSolicitado);
+								}
+								i++;
+							%}
+						#{/list}
+				
+						<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotal)} €</td>
+						%{
+							total += subTotal;
+						%}
+					</tr>
+				
+					%{
+						} // Close IF
+					%}
+				#{/list}
+					<tr class="total">
+						<td><b>TOTAL</b></td>
+						#{list items:0..d, as:'i'}
+									<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(arrayTotales.get(i))} €</b></td>
+						#{/list}
+						<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(total)} €</b></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		
-		
-		
 		<div class="well">
-			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.guardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
-				#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
-			#{/form}
-			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.botonCopiarValoresGuardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"guardar"}
-				#{fap.boton id:'botonCopiarValores', titulo:'Copiar Propuestos a Concedidos' /}
-			#{/form}
+			#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
 		</div>
 	
 	#{/fap.grupo}

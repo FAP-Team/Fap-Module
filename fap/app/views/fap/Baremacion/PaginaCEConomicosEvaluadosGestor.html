@@ -1,13 +1,19 @@
 
-#{fap.popup 
-     accion:accion, 
-     popup:'PopupCEConomicosEvaluadosGestor', 
-     permiso:'evaluacionFinalizada', 
+#{fap.pagina 
+     accion:accion,
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar',
+     pagina:'PaginaCEConomicosEvaluadosGestor', 
+     permiso:'evaluacionFinalizada',
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true,
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
      titulo:'Concepto económico Evaluado', 
-     urlCrear:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadosGestorController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]),
-     urlBorrar:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadosGestorController.borrar' , ['idSolicitud':solicitud?.id]), 
-     urlEditar:play.mvc.Router.reverse('popups.PopupCEConomicosEvaluadosGestorController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion])
+     urlCrear:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]),
+     urlBorrar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion])
 }
 	
 <div class="wiki ">
@@ -73,7 +79,7 @@
      saveEntity:false, 
      tipoContainer:'popup', 
      titulo:'Tabla CEconomicosManuales', 
-     urlTabla:@popups.PopupCEConomicosEvaluadosGestorController.tablaCEconomicosManuales(cEconomico.id),
+     urlTabla:@PaginaCEConomicosEvaluadosGestorController.tablaCEconomicosManuales(cEconomico.id),
      urlEditar:play.mvc.Router.reverse("popups.PopUpEditarCEconomicosEvaluadosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
 }
 	
@@ -88,7 +94,7 @@
 %}
 
 	
-#{/fap.popup}
+#{/fap.pagina}
 
 <script>
 	// Para que se recalculen los totales, cada vez que se modifique algun input de los valores

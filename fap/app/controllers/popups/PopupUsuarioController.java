@@ -34,7 +34,6 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 		log.info("Visitando página: " + "fap/Admin/PopupUsuario.html");
 		renderTemplate("fap/Admin/PopupUsuario.html", accion, idAgente, agente, urlRedirigir);
 	}
-
 	
 	public static void editar(Long idAgente, Agente agente){
         checkAuthenticity();
@@ -123,7 +122,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 			} else {
 				if (!agente.passwordAntiguo.isEmpty()){
 					CustomValidation.error("La longitud de la contraseña debe tener entre 6 y 10 carateres", "agente.password", agente.password);
-				} 
+				}
 			}
 		}
 		

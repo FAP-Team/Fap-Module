@@ -1,3 +1,6 @@
+%{
+	def hiddenPass = "";
+%}
 
 #{fap.popup 
      accion:accion,
@@ -23,7 +26,11 @@
 			#{fap.enlace codigojs:'usuarioGenerarPass(hiddenPass);', estilo:'btn btn-link', id:'generarPass', titulo:'Generar contraseña' /}
 			</label>
 		
-			#{fap.texto campo:'agente.password', id:'hiddenPass', titulo:' ' /}			
+			<div class="control-group ">
+				<div class="controls">
+					<input class="input-manual" id="hiddenPass" type="text" name="hiddenPass" value=${hiddenPass} >
+				</div> 
+			</div>			
 		
 			#{/fap.grupo}
 		
@@ -43,11 +50,16 @@
    		$('#hiddenPass').val("");
    });
    
+	$(document).on('hidden', '.modal', function () {
+    	$(this).remove();
+	});
+   
    function usuarioGenerarPass (pass) {
 		var generated = makeid();
 		$(pass).val(generated);
 		$('#agente_password').val(generated);
 		$('#agente_passwordcopy').val(generated);
+		$('#hiddenPass').val(generated);
 	}
 
 	function makeid() {

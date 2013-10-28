@@ -79,8 +79,8 @@
 		    
 		    function peticionJSON(){
 				$.ajax("${actionDef.url}").done(function (data){
-				 									store.loadData(data);
-												});
+						store.loadData(data);
+				});
 		    }
 		    
 		    peticionJSON();
@@ -138,22 +138,22 @@
 					columns : [{
 							text : 'Valor Solicitado',
 							sortable : true,
-							dataIndex : 'valorSolicitado'+${i},
+							dataIndex : "valorSolicitado${i}",
 							width: 100
 						} , {
 							text : 'Valor Estimado',
 							sortable : true,
-							dataIndex : 'valorEstimado'+${i},
+							dataIndex : "valorEstimado${i}",
 							width: 100
 						} , {
 							text : 'Valor Propuesto',
 							sortable : true,
-							dataIndex : 'valorPropuesto'+${i},
+							dataIndex : "valorPropuesto${i}",
 							width: 100	
 						} , {
 							text : 'Valor Concedido',
 							sortable : true,
-							dataIndex : 'valorConcedido'+${i},
+							dataIndex : "valorConcedido${i}",
 						width: 100
 					}]
 				#{/list}

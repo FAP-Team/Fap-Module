@@ -16,6 +16,7 @@ import tables.TableRecord;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.CEconomico;
+import models.CEconomicosManuales;
 import models.Evaluacion;
 import models.SolicitudGenerica;
 import models.TipoEvaluacion;
@@ -87,16 +88,35 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 			 Double totalesSolicitado = 0.0;
 			 Double totalesPropuesto = 0.0;
 			 Double totalesEstimado = 0.0;
+			 Double totalAuxConcedido = 0.0;
+			 Double totalAuxPropuesto = 0.0;
 			 for (int i=0; i<tipoEvaluacion.duracion; i++){
-				totalesConcedidoAnio.set(i, totalesConcedidoAnio.get(i)+cEconomico.valores.get(i).valorConcedido);
-				totalesConcedido += cEconomico.valores.get(i).valorConcedido;
-				columna.put("valorConcedido"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorConcedido)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				totalAuxConcedido = 0.0;
+				if (cEconomico.otros.isEmpty()) {
+					totalAuxConcedido = cEconomico.valores.get(i).valorConcedido;
+				} else {
+					for(CEconomicosManuales cem: cEconomico.otros)
+						totalAuxConcedido += cem.valores.get(i).valorConcedido;
+				}
+				totalesConcedidoAnio.set(i, totalesConcedidoAnio.get(i)+totalAuxConcedido);
+				totalesConcedido += totalAuxConcedido;
+				columna.put("valorConcedido"+i, (new BigDecimal(Double.toString(totalAuxConcedido)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				
 				totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i)+cEconomico.valores.get(i).valorSolicitado);
 				totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
 				columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-				totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i)+cEconomico.valores.get(i).valorPropuesto);
-				totalesPropuesto += cEconomico.valores.get(i).valorPropuesto;
-				columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				
+				totalAuxPropuesto = 0.0;
+				if (cEconomico.otros.isEmpty()) {
+					totalAuxPropuesto = cEconomico.valores.get(i).valorPropuesto;
+				} else {
+					for(CEconomicosManuales cem: cEconomico.otros)
+						totalAuxPropuesto += cem.valores.get(i).valorPropuesto;
+				}
+				totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i)+totalAuxPropuesto);
+				totalesPropuesto += totalAuxPropuesto;
+				columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(totalAuxPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				
 				totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
 				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
 				columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));

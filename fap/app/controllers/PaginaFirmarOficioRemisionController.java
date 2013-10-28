@@ -84,7 +84,9 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			}
 			lineaResolucionFAP.registro.firmantes.save();
 			//}
-			FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
+			if (!lineaResolucionFAP.registro.fasesRegistro.firmada) {
+				FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
+			}
 		} else {
 			//ERROR
 			Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -99,37 +101,42 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			
 			try  {
-
-				// Se obtiene el justificante de registro de salida del oficio de remisión
-				models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
-				lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
-				Documento documento = lineaResolucionFAP.registro.justificante;
-				documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
-				documento.descripcion = "Justificante de registro de salida del oficio de remisión";
-				documento.save();
-				InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-				gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
-				play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
-				lineaResolucionFAP.registro.fasesRegistro.registro = true;
-				
-				// Se pone la fecha de registro a los documentos
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.add(lineaResolucionFAP.registro.oficial);
 				documentos.add(lineaResolucionFAP.registro.justificante);
-				for (Documento doc: documentos) {
-					if (doc.fechaRegistro == null) {
-						doc.fechaRegistro = lineaResolucionFAP.registro.informacionRegistro.fechaRegistro;
-						doc.save();
+				
+				if (lineaResolucionFAP.registro.fasesRegistro.registro){
+					play.Logger.info("Se inicia el proceso de Registro");
+					// Se obtiene el justificante de registro de salida del oficio de remisión
+					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
+					lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
+					Documento documento = lineaResolucionFAP.registro.justificante;
+					documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
+					documento.descripcion = "Justificante de registro de salida del oficio de remisión";
+					documento.save();
+					InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
+					gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
+					play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
+					lineaResolucionFAP.registro.fasesRegistro.registro = true;
+							
+					// Se pone la fecha de registro a los documentos
+					for (Documento doc: documentos) {
+						if (doc.fechaRegistro == null) {
+							doc.fechaRegistro = lineaResolucionFAP.registro.informacionRegistro.fechaRegistro;
+							doc.save();
+						}
 					}
 				}
+				if (lineaResolucionFAP.registro.fasesRegistro.clasificarAed){
+					// Se clasifican los documentos
+					gestorDocumentalService.clasificarDocumentos(solicitud, documentos, true);
+					lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
+	
+					lineaResolucionFAP.save();
+					solicitud.save();
+					Messages.ok("Se realizó el registro correctamente");
+				}
 				
-				// Se clasifican los documentos
-				gestorDocumentalService.clasificarDocumentos(solicitud, documentos, true);
-				lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
-
-				lineaResolucionFAP.save();
-				solicitud.save();
-				Messages.ok("Se realizó el registro correctamente");
 			} catch (Throwable e)   {
 				Messages.error("Error almacenando el justificante del documento de oficio de remisión en el AED");
 				play.Logger.info("Error almacenando el justificante del documento de oficio de remisión en el AED");

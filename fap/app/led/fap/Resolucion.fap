@@ -206,7 +206,7 @@ Entidad SolicitudPortafirmaFAP {
 	
 
 Formulario Principal {
-	Pagina ResolucionesFAP titulo="Lista de Resoluciones" {
+	Pagina ResolucionesFAP titulo="Lista de Resoluciones" permiso=adminOrGestor{
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
 			Columna campo=ResolucionFAP.id titulo="ID" ancho="40"

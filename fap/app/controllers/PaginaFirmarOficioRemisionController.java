@@ -29,6 +29,7 @@ import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.PaginaFirmarOficioRemisionControllerGen;
+import enumerado.fap.gen.RolesEnum;
 
 public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemisionControllerGen {
 
@@ -70,14 +71,19 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		Map<String, Object> vars = new HashMap<String, Object>();
 		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
-			if (lineaResolucionFAP.registro.firmantes.todos == null || lineaResolucionFAP.registro.firmantes.todos.size() == 0) {
-				List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
-				for (int i = 0; i < agentes.size(); i++) {
-					Firmante firmante = new Firmante(agentes.get(i));
-					lineaResolucionFAP.registro.firmantes.todos.add(firmante);
-				}
-				lineaResolucionFAP.registro.firmantes.save();
+			//if (lineaResolucionFAP.registro.firmantes.todos == null || lineaResolucionFAP.registro.firmantes.todos.size() == 0) {
+			
+			//Calculo que todos los firmantes sean Gestores.
+			List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = ?", RolesEnum.gestor.name()).fetch();
+			play.Logger.info("Lista de Gestores que pueden firmar el Oficio de Remision Generado");
+			lineaResolucionFAP.registro.firmantes.todos = new ArrayList<Firmante>();
+			for (int i = 0; i < agentes.size(); i++) {
+				Firmante firmante = new Firmante(agentes.get(i));
+				lineaResolucionFAP.registro.firmantes.todos.add(firmante);
+				play.Logger.info("Agente con gestor: "+firmante.nombre);
 			}
+			lineaResolucionFAP.registro.firmantes.save();
+			//}
 			FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
 		} else {
 			//ERROR

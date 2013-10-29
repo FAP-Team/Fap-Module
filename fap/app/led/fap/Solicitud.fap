@@ -834,11 +834,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	}
 	
 	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion" noForm  perteneceA ="AceptarRenunciar"{
-		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
+//		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
+//			Wiki estilo ="box-warn box" {
+//				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//			}
+//		}
 		
 		//Firma persona física	
 		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{			
@@ -945,11 +945,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	                        Boton botonModificar titulo="Modificar alegación"
 	                  }
                   
-	                  Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
-	                        Wiki estilo ="box-warn box" {
-	    	                    "Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-    	                    }
-	                  }
+//	                  Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
+//	                        Wiki estilo ="box-warn box" {
+//	    	                    "Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//    	                    }
+//	                  }
             	}
             }
             
@@ -978,9 +978,9 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	/*
 	 * AportarDocumentacionAlegacion
 	 */
-	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud  perteneceA ="Alegacion"{
+	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarAlegacion  perteneceA ="Alegacion"{
 		Accion crear redirigir=Alegaciones
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Alegacion" aportadoPor="CIUDADANO"	
     }
 	
 	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm  perteneceA ="Alegacion"{
@@ -1037,7 +1037,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					Wiki {"Su alegación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 			
 					Form frmRegistrar redirigir=Alegaciones {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 			
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
@@ -1220,7 +1220,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					Wiki {"Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 
 					Form frmRegistrar redirigir=PresentarFAP {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
@@ -1594,7 +1594,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					Wiki {"Su solicitud de modificación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 
 					Form frmRegistrar redirigir=PresentarModificacionFAP {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}

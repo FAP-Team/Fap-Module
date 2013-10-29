@@ -101,11 +101,8 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			
 			try  {
-				List<Documento> documentos = new ArrayList<Documento>();
-				documentos.add(lineaResolucionFAP.registro.oficial);
-				documentos.add(lineaResolucionFAP.registro.justificante);
 				
-				if (lineaResolucionFAP.registro.fasesRegistro.registro){
+				if (!lineaResolucionFAP.registro.fasesRegistro.registro){
 					play.Logger.info("Se inicia el proceso de Registro");
 					// Se obtiene el justificante de registro de salida del oficio de remisión
 					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
@@ -118,7 +115,11 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
 					play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
 					lineaResolucionFAP.registro.fasesRegistro.registro = true;
-							
+
+					List<Documento> documentos = new ArrayList<Documento>();
+					documentos.add(lineaResolucionFAP.registro.oficial);
+					documentos.add(lineaResolucionFAP.registro.justificante);
+					
 					// Se pone la fecha de registro a los documentos
 					for (Documento doc: documentos) {
 						if (doc.fechaRegistro == null) {
@@ -127,9 +128,14 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 						}
 					}
 				}
-				if (lineaResolucionFAP.registro.fasesRegistro.clasificarAed){
+				if (!lineaResolucionFAP.registro.fasesRegistro.clasificarAed){
+					
+					List<Documento> documentos = new ArrayList<Documento>();
+					documentos.add(lineaResolucionFAP.registro.oficial);
+					documentos.add(lineaResolucionFAP.registro.justificante);
+					
 					// Se clasifican los documentos
-					gestorDocumentalService.clasificarDocumentos(solicitud, documentos, true);
+					gestorDocumentalService.clasificarDocumentos(solicitud, documentos, false);
 					lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
 	
 					lineaResolucionFAP.save();

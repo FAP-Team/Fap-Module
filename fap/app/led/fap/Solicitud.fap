@@ -809,7 +809,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				// Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado	
 				Form frmPresentar redirigir=AceptacionRenunciaPresentar {
 		 			Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar
+					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
 				}
 			}
 		
@@ -882,7 +882,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					Wiki {"Su aceptación/renuncia ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 					
 					Form formRegistrar redirigir=PaginaAceptacionRenuncia {
-						Boton botonRegistrar titulo="Registrar" 
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 					
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}

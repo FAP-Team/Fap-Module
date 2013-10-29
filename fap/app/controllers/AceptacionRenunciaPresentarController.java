@@ -82,7 +82,7 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 	
 	@Util
 	public static void formFirmaRender(Long idSolicitud) {
-		if (!Messages.hasMessages()) {
+		if (!Messages.hasErrors()) {
 			Messages.ok("Página editada correctamente");
 			Messages.keep();
 			redirect("PaginaAceptacionRenunciaController.index", "editar", idSolicitud);

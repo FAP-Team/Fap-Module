@@ -200,10 +200,10 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 		if (!Messages.hasErrors()) {
 			Messages.ok("Página editada correctamente");
 			Messages.keep();
-			redirect("AceptacionRenunciaController.index", "editar", idSolicitud);
+			redirect("PaginaAceptacionRenunciaController.index", "editar", idSolicitud);
 		}
 		Messages.keep();
-		redirect("AceptacionRenunciaPResentarController.index", "editar", idSolicitud);
+		redirect("AceptacionRenunciaPresentarController.index", "editar", idSolicitud);
 	}
 	
 }

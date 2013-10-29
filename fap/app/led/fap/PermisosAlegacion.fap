@@ -135,7 +135,7 @@ vars
 when
 	(_accion = leer) or
 	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
-	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "false" and
+	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "false" or
 	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false")
 return
 	editable

@@ -86,14 +86,17 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			//}
 			if (!lineaResolucionFAP.registro.fasesRegistro.firmada) {
 				FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
+				if (!Messages.hasErrors()) {
+					lineaResolucionFAP.registro.fasesRegistro.firmada = true;
+				} else {
+					play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo");
+				}
 			}
 		} else {
 			//ERROR
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		if (!Messages.hasErrors()) {
-
-			lineaResolucionFAP.registro.fasesRegistro.firmada = true;
 			lineaResolucionFAP.save();
 
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(lineaResolucionFAP.solicitud.id);
@@ -111,6 +114,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
 					documento.descripcion = "Justificante de registro de salida del oficio de remisión";
 					documento.save();
+					play.Logger.info("Creado el documento de justificante en local, se procede a almacenar en el AED");
 					InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
 					gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
 					play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
@@ -127,20 +131,20 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 							doc.save();
 						}
 					}
+					Messages.ok("Se realizó el registro correctamente");
 				}
 				if (!lineaResolucionFAP.registro.fasesRegistro.clasificarAed){
-					
 					List<Documento> documentos = new ArrayList<Documento>();
 					documentos.add(lineaResolucionFAP.registro.oficial);
 					documentos.add(lineaResolucionFAP.registro.justificante);
-					
+					play.Logger.info("Se procede a clasificar los documentos oficial y justificante de la línea: "+lineaResolucionFAP.id);
 					// Se clasifican los documentos
 					gestorDocumentalService.clasificarDocumentos(solicitud, documentos, false);
 					lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
-	
+					play.Logger.info("Documentos clasificados");
 					lineaResolucionFAP.save();
 					solicitud.save();
-					Messages.ok("Se realizó el registro correctamente");
+					Messages.ok("Se realizó la clasificación correctamente");
 				}
 				
 			} catch (Throwable e)   {

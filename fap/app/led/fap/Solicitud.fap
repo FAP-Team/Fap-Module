@@ -824,7 +824,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	/*
 	 * AportarDocumentacionAceptacionRenuncia
 	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos  perteneceA ="AceptarRenunciar"{
+	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
 		Accion crear redirigir=PaginaAceptacionRenuncia
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"	
     }

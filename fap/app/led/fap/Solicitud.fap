@@ -213,11 +213,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			
-			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
-				Wiki estilo ="box-warn box" {
-					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-				}
-			}
+//			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
+//				Wiki estilo ="box-warn box" {
+//					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//				}
+//			}
 			
 			// Sobreescrito HTML
 			
@@ -797,11 +797,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             	    	Boton botonModificar titulo="Modificar aceptación/renuncia"
                 	}
                   
-                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-                        Wiki estilo ="box-warn box" {
-                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-                        }
-                  	}
+//                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
+//                        Wiki estilo ="box-warn box" {
+//                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//                        }
+//                  	}
             	}
 			}
             
@@ -984,11 +984,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
     }
 	
 	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm  perteneceA ="Alegacion"{
-		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
+//		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
+//			Wiki estilo ="box-warn box" {
+//				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//			}
+//		}
 
 		//Firma persona física	
 		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=editarFirmaAlegaciones// permiso=presentacionFirmar 
@@ -1387,11 +1387,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			
-			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
-				Wiki estilo ="box-warn box" {
-					"Se produjo un error en la presentación de la justificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-				}
-			}
+//			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
+//				Wiki estilo ="box-warn box" {
+//					"Se produjo un error en la presentación de la justificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//				}
+//			}
 			
 			// Sobreescrito HTML
 			

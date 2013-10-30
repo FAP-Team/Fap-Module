@@ -1,5 +1,5 @@
 %{
-	String miTramite = properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") != null? properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") : 'Aceptacion';
+	String miTramite = properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") != null? properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") : 'AceptacionRenuncia';
 %}
 
 #{fap.pagina 
@@ -21,7 +21,7 @@
 }
 	
 			#{fap.grupo titulo:'Documento'}
-				#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite: mitramite /}	
+				#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:miTramite /}	
 			#{/fap.grupo}
 		
 #{/fap.pagina}

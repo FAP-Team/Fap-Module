@@ -1,5 +1,14 @@
 h2. Changelog
 
+h3 Versión 2.3.2RC8
+* Fixedbug en lectura de trámite de aportación AceptacionRenuncia.
+* Añadida recuperacion de errores en registro de AceptacionRenuncia.
+* Fixed bug varios.
+* Adicion de permiso a popup de documentacion de AceptacionRenuncia.
+* Fixed bug en redireccion de AceptacionRenuncia.
+* Añadidos multiples volcados de datos a los logs a la hroa de registrar de salida.
+* 
+
 h3 Versión 2.3.2RC7
 * Añadido plazo acceso y plazo respuesta al notificar.
 * Fixed bug "temblor" en los checkbox.
@@ -8,7 +17,7 @@ h3 Versión 2.3.2RC7
 * Se clasifican los documentos de consulta enviados al portafirmas en el expediente de la convocatoria.
 
 h3 Versión 2.3.2RC6
-* Cálculo de los totales del popup de Ceconomicos de instrucción
+* Cálculo de los totales del popup de CEconomicos de instrucción
 * Modificada página de firma de la página de firma de oficio de remisión (quitar tabla interesados en firma).
 * Añadida propertie para mostrar o no el check de baremación en resolucion.
 * Las lineas de resolucion de la resolucionEjecucion pasan al estado afectada.

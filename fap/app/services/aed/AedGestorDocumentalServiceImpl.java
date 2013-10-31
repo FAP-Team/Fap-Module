@@ -24,6 +24,7 @@ import models.Agente;
 import models.Convocatoria;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
+import models.PersonaJuridica;
 import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -811,19 +812,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     	for (models.Documento documento : resolucion.docConsultaPortafirmasResolucion){
 	    	PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
 	        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
-	        if (propAdmin.getResolucion() == null) {
-	        	Resolucion res = new Resolucion();
-	        	res.setPrimerFolio(resolucion.folio_inicio.toString());
-	        	res.setUltimoFolio(resolucion.folio_final.toString());
-	        	res.setNumeroResolucion(resolucion.numero.toString());
-	        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
-	        	propAdmin.setResolucion(res);
-	        } else {
-	        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
-	        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
-	        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
-	        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
-	        }
+//	        if (propAdmin.getResolucion() == null) {
+//	        	Resolucion res = new Resolucion();
+//	        	res.setPrimerFolio(resolucion.folio_inicio.toString());
+//	        	res.setUltimoFolio(resolucion.folio_final.toString());
+//	        	res.setNumeroResolucion(resolucion.numero.toString());
+//	        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+//	        	propAdmin.setResolucion(res);
+//	        } else {
+//	        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
+//	        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
+//	        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
+//	        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
+//	        }
 	        // Marca como notificable
 	        if (notificable)
 	        	propAdmin.setNotificable(true);
@@ -1369,7 +1370,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    if(idAed == null)
 	        throw new NullPointerException();
 	    
-	    Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
+	    //Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
+	    Interesados interesados = new Interesados();
+	    PersonaJuridica aciisi = new PersonaJuridica();
+
+	    //Generalizado con properties
+	    aciisi.entidad = FapProperties.get("fap.docConsulta.portaFirma.interesado.nombre");
+	    aciisi.cif = FapProperties.get("fap.docConsulta.portaFirma.interesado.cif");
+	    interesados.add(aciisi);
 	    
 	    try {
 	    	clasificarDocumentosConsultaResolucion(idAed, interesados, resolucionFap, false);

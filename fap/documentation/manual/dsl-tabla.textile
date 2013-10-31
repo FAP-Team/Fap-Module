@@ -27,7 +27,11 @@ h2. Parámetros
 * **paginaEditar = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Editar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaCrear = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaBorrar = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
-* **Color: _[string | porDefecto | siFilaBorrar | siFilaLeer | siFilaEditar]_ = String** (opcional): Atributo que permite asignar una clase css para colorear las filas de una tabla de acuerdo a un código especificado, a sus permisos (siFilaLeer, siFilaBorrar, siFilaEditar) o por la opción por defecto (editable y no editable).
+* **Color: _[string | porDefecto | siFilaBorrar | siFilaLeer | siFilaEditar]_ = _[string]_** (opcional): Atributo que permite asignar una clase css para colorear las filas de una tabla de acuerdo a un código especificado, a sus permisos (siFilaLeer, siFilaBorrar, siFilaEditar) o por la opción por defecto (editable y no editable).
+* **nombreBotonEditar = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón editar de la tabla (sustituyendo al valor por defecto _Editar_)
+* **nombreBotonVer = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón ver de la tabla (sustituyendo al valor por defecto _Ver_)
+* **nombreBotonBorrar = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón borrar de la tabla (sustituyendo al valor por defecto _Borrar_)
+* **nombreBotonCrear = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón crear de la tabla (sustituyendo al valor por defecto _Crear_)
 
 h2. Definición
 
@@ -52,7 +56,11 @@ bc. Tabla:
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
-	    & (color=Color)?
+		& (color=Color)?
+		& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?
+	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
+	   	& ('nombreBotonBorrar' '=' nombreBotonBorrar=STRING)?
+	   	& ('nombreBotonCrear' '=' nombreBotonCrear=STRING)?
 	)
 	'{'
 		columnas += Columna*

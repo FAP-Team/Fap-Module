@@ -8,7 +8,9 @@ bc. public class SecureControllerApp extends SecureController{
    ...
 }
 
-Y en esta clase tendremos la posibilidad de configurar 2 funciones que llevan toda la lógica de autenticaciones. Si no se crean estas funciones, FAP usará por defecto las suyas propias, tal y como lo venía haciendo en versiones anteriores.
+h2. Login
+
+En esta clase tendremos la posibilidad de configurar 2 funciones que llevan toda la lógica de autenticaciones. Si no se crean estas funciones, FAP usará por defecto las suyas propias, tal y como lo venía haciendo en versiones anteriores.
 
 Las funciones en cuestión son:
 
@@ -28,9 +30,23 @@ bc. public void authenticateCertificate(String certificado, String token, String
 ** *password* String con la contraseña que se haya puesto en el input correspondiente
 ** *remember* Boolean con el valor del check para recordar o no el usuario
 
-Por lo que deberemos declararla en nuestra clase que extiende de SecureController, como sigue, y hacer ahí dentro la lógica que queramos (Incluyendo los redirect y demás):
+Por lo que deberemos declararla en nuestra clase que extiende de _SecureController_, como sigue, y hacer ahí dentro la lógica que queramos (Incluyendo los redirect y demás):
 
 bc. public void authenticate(String username, String password, boolean remember){
    ...
 }
+
+
+h2. Logout
+
+A la hora de personalizar el logout y sobreescribir el comportamiento por defecto, solo debemos declarar en nuestra clase que extiende de _SecureController_ el método _logoutRedireccionar()_, e implementar en él la lógica que necesitemos. Por ejemplo, podemos redireccionar a la url contenida en la propiedad _fap.logout.ticketing.url_:
+
+bc. 	@Util
+	public static String logoutRedireccion(){
+	        String redireccion="fap.SecureController.loginFap";
+	        if(AgenteController.getAgente().acceso.equals(AccesoAgenteEnum.ticketing.name())){
+	            redireccion=FapProperties.get("fap.logout.ticketing.url");
+	        }
+	        return redireccion;
+	}
  

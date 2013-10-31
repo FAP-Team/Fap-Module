@@ -198,6 +198,23 @@ fap.resoluciones.publicarTablonAnuncios=false
 fap.resoluciones.notificar=true
 ...
 
+h3. Otras propiedades
+
+Existen otras propiedades que pueden ser utilizadas para configurar algunas caracteristicas adicionales, como son:
+
+* *fap.resoluciones.descripcionNotificacion*
+**	Contiene la descripción que se enviará en la notificacion al finalizar la resolución.
+
+* *fap.resoluciones.aportacion.tramite*
+**	Permite especificar el trámite del que obtener los tipos de documento que se pueden utilizar en las aportaciones a la resolución.
+
+Estas propiedades tienen por defecto los siguientes valores:
+
+bc. ...
+fap.resoluciones.descripcionNotificacion=Notificación de resolución
+fap.resoluciones.aportacion.tramite=Resolucion
+...
+
 h2. Conclusiones
 
 Hemos visto que tenemos la posibilidad de personalizar la Resolución o, por el contrario, dejarlo tal cual funciona por defecto en FAP. En el caso de decidirnos por la personalización, podemos sobreescribir los métodos de la clase ResolucionControllerFAP sin crear una nueva clase que extienda de ResolucionBase, o sobreescribiendo todo.

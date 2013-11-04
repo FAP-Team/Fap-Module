@@ -20,6 +20,7 @@ import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import messages.Messages;
 import models.Agente;
 import models.Convocatoria;
 import models.ExpedienteAed;
@@ -812,23 +813,31 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     	for (models.Documento documento : resolucion.docConsultaPortafirmasResolucion){
 	    	PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
 	        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
-//	        if (propAdmin.getResolucion() == null) {
-//	        	Resolucion res = new Resolucion();
-//	        	res.setPrimerFolio(resolucion.folio_inicio.toString());
-//	        	res.setUltimoFolio(resolucion.folio_final.toString());
-//	        	res.setNumeroResolucion(resolucion.numero.toString());
-//	        	res.setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
-//	        	propAdmin.setResolucion(res);
-//	        } else {
-//	        	propAdmin.getResolucion().setPrimerFolio(resolucion.folio_inicio.toString());
-//	        	propAdmin.getResolucion().setUltimoFolio(resolucion.folio_final.toString());
-//	        	propAdmin.getResolucion().setNumeroResolucion(resolucion.numero.toString());
-//	        	propAdmin.getResolucion().setFechaResolucion(resolucion.fechaRegistroResolucion.toDate());
-//	        }
 	        // Marca como notificable
 	        if (notificable)
 	        	propAdmin.setNotificable(true);
-	        clasificarDocumento(idAed, documento, propiedades, interesados);
+	        
+	        if(!documento.clasificado){
+	        	try {
+					if (!existeDocumento(documento.uri)){ //Si no existe lo clasifico -> Doc. nuevo
+						clasificarDocumento(idAed, documento, propiedades, interesados);
+					}
+					else{
+						//Ya existía en otro expediente:
+						//1) Se copia al expediente de la convocatoria
+						Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+						List<ExpedienteAed> expedientes = new ArrayList<ExpedienteAed>();
+						expedientes.add(convocatoria.expedienteAed);
+						copiarDocumentoEnExpediente(documento.uri, expedientes);
+						//2)Se marca como clasificado
+						documento.clasificado = true;
+					}
+				} catch (GestorDocumentalServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Messages.error("Error clasificando documentos en el Gestor Documental");
+				}
+	        }
     	}
     }
 
@@ -1523,7 +1532,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		} catch (AedExcepcion e) {
 			play.Logger.error("Error el documento no existe entre los documentos clasificados"+e);
 			e.printStackTrace();
-			new GestorDocumentalServiceException("Error el documento no existe entre los documentos clasificados", e);
+			//new GestorDocumentalServiceException("Error el documento no existe entre los documentos clasificados", e);
 			return false;
 		}
 	}

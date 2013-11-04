@@ -616,7 +616,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		List<LineaResolucionFAP> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		
 		tables.TableRenderResponse<LineaResolucionFAP> response = new tables.TableRenderResponse<LineaResolucionFAP>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-		//System.out.println("este es: " + registro.justificante.enlaceDescarga);
+		
 		for (LineaResolucionFAP row:rows) {
 			if ((row.registro.oficial.uri == null) || (row.registro.fasesRegistro.firmada == null) || (row.registro.fasesRegistro.firmada == false)){
 				flag = false;

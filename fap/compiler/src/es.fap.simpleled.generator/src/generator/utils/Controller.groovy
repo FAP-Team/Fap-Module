@@ -372,7 +372,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				}.join("\n")}""";
 		
 		devolver +=	"""${getEntidad}
-				log.info("Visitando página: "+${renderView}+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+				log.info("Visitando página: "+${renderView});
 				"""; 
 		if (isPopup()){
 			devolver += """renderTemplate(${StringUtils.params(
@@ -459,7 +459,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 			if(!Messages.hasErrors()){
 				${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
 			}
 			else log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 			${editarRenderCall}
@@ -537,10 +537,10 @@ public class ${controllerName} extends ${controllerGenName} {
 							return "${it.variableDb}.save();";
 						else return "";
 					}.join("\n")}
-					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito");
 				}
 				else{
-					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 				}
 				return ${entidad.id};
 			}
@@ -672,9 +672,9 @@ public class ${controllerName} extends ${controllerGenName} {
 
 				if(!Messages.hasErrors()){
 					$borrarEntidad
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito");
 				} else{
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+", usuario: "+AgenteController.getAgente().name+" Solicitud: "+params.get("idSolicitud"));
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
 				}
 				${controllerName}.borrarRender(${StringUtils.params(allEntities.collect{it.id})});
 			}

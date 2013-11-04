@@ -2,12 +2,14 @@ package jobs;
 
 import models.AdministracionFapJobs;
 import play.db.jpa.Transactional;
+import play.jobs.Every;
 import play.jobs.Job;
 import play.jobs.On;
 import properties.FapProperties;
 import utils.NotificacionUtils;
 
-@On("0 0 1 * * ?")
+//@On("0 20 9 * * ?")
+@Every("15min")
 public class ActualizarDocumentacionNotificaciones extends Job {
 		
 	static Integer tiempoRefresco = 1;
@@ -20,6 +22,7 @@ public class ActualizarDocumentacionNotificaciones extends Job {
 		    	if ((job.valorActualizarNotificaciones != null) && (tiempoRefresco == job.valorActualizarNotificaciones)){
 		    		tiempoRefresco=1;
 			    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty()))){
+			    		play.Logger.info("Iniciando Job de Recarga de Documentos de Notificaciones");
 			    		NotificacionUtils.recargarDocumentosNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			    	}
 		    	}

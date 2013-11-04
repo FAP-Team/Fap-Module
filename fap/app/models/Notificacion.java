@@ -255,24 +255,27 @@ public class Notificacion extends FapModel {
 
 		//Doc Acuse de recibo -> Negativo o Positivo
 		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+		play.Logger.info("Comprobando fichero de AcuseRecibo");
 		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))) {
-			System.out.println("Nuevo fichero de AcuseRecibo para " + this.idExpedienteAed);
+			play.Logger.info("Nuevo fichero de AcuseRecibo para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
 			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
 		}
 
 		//Doc anulacion
 		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
+		play.Logger.info("Comprobando fichero de Anulacion");
 		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))) {
-			System.out.println("Nuevo fichero de Anulacion para " + this.idExpedienteAed);
+			play.Logger.info("Nuevo fichero de Anulacion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
 			this.documentoAnulacion.uri = uriAnulacion;
 		}
 
 		//DocPuestaADisposicion
 		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+		play.Logger.info("Comprobando fichero de PuestaADisposicion");
 		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))) {
-			System.out.println("Nuevo fichero de PuestaADisposicion para " + this.idExpedienteAed);
+			play.Logger.info("Nuevo fichero de PuestaADisposicion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
 			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
 		}
@@ -284,29 +287,33 @@ public class Notificacion extends FapModel {
 		if (this.documentoNoAcceso == null) {
 			this.documentoNoAcceso = new Documento();
 		}
+		play.Logger.info("Comprobando fichero de Respondida");
 		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
-			System.out.println("Nuevo fichero de Respondida para " + this.idExpedienteAed);
+			play.Logger.info("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
 			this.documentoRespondida.uri = uriRespondida;
 		}
 
 		//DocNoAcceso
 		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
+		play.Logger.info("Comprobando fichero de NoAcceso");
 		if ((uriNoAcceso != "") && (!uriNoAcceso.equals(this.documentoNoAcceso.uri))) {
-			System.out.println("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
+			play.Logger.info("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
 			this.documentoNoAcceso.uri = uriNoAcceso;
 		}
 
 		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
 		if ((documentosNuevos != null) && (!documentosNuevos.isEmpty())) {
-			System.out.println("Nuevos Multiples Ficheros para " + this.idExpedienteAed);
+			play.Logger.info("Nuevos Multiples Ficheros para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentosNotificacionExpediente(documentosNuevos, this);
 		}
 	}
 
 	public void actualizar(Notificacion notificacion) {
 		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
+		play.Logger.info("Estado notificacion en BBDD: "+this.estado+" - estado en SW: "+notificacion.estado);
+		play.Logger.info("FechaFinPlazo en BBDD: "+this.fechaFinPlazo+" - fechaFinPlazo en SW: "+notificacion.fechaFinPlazo);
 		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
 			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
 			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
@@ -314,7 +321,9 @@ public class Notificacion extends FapModel {
 			//this.fechaAcceso = notificacion.fechaAcceso;
 			this.fechaFinPlazo = notificacion.fechaFinPlazo;
 			this.fechaLimite = notificacion.fechaLimite;
-			System.out.println("Actualizando fechas y estado de Notificacion: " + this.id + " para el expediente " + this.idExpedienteAed);
+			play.Logger.info("Actualizando fechas y estado de Notificacion: " + this.id + " para el expediente " + this.idExpedienteAed);
+		} else {
+			play.Logger.info("Notificacion "+notificacion.id+" no requiere actualizacion de fechas o estado");
 		}
 
 	}

@@ -829,8 +829,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 						List<ExpedienteAed> expedientes = new ArrayList<ExpedienteAed>();
 						expedientes.add(convocatoria.expedienteAed);
 						copiarDocumentoEnExpediente(documento.uri, expedientes);
-						//2)Se marca como clasificado
-						documento.clasificado = true;
+						//2)Se marca como clasificado si no hubo errores
+						if (!Messages.hasErrors()){
+							documento.clasificado = true;
+						}
 					}
 				} catch (GestorDocumentalServiceException e) {
 					// TODO Auto-generated catch block

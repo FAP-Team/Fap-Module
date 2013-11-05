@@ -255,7 +255,6 @@ public class Notificacion extends FapModel {
 
 		//Doc Acuse de recibo -> Negativo o Positivo
 		String uriAcuseDeRecibo = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ACUSE_RECIBO);
-		play.Logger.info("Comprobando fichero de AcuseRecibo");
 		if ((uriAcuseDeRecibo != "") && (!uriAcuseDeRecibo.equals(this.documentoAcuseRecibo.uri))) {
 			play.Logger.info("Nuevo fichero de AcuseRecibo para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
@@ -264,7 +263,6 @@ public class Notificacion extends FapModel {
 
 		//Doc anulacion
 		String uriAnulacion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.ANULACION);
-		play.Logger.info("Comprobando fichero de Anulacion");
 		if ((uriAnulacion != "") && (!uriAnulacion.equals(this.documentoAnulacion.uri))) {
 			play.Logger.info("Nuevo fichero de Anulacion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
@@ -273,7 +271,6 @@ public class Notificacion extends FapModel {
 
 		//DocPuestaADisposicion
 		String uriPuestaADisposicion = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
-		play.Logger.info("Comprobando fichero de PuestaADisposicion");
 		if ((uriPuestaADisposicion != "") && (!uriPuestaADisposicion.equals(this.documentoPuestaADisposicion.uri))) {
 			play.Logger.info("Nuevo fichero de PuestaADisposicion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
@@ -287,7 +284,6 @@ public class Notificacion extends FapModel {
 		if (this.documentoNoAcceso == null) {
 			this.documentoNoAcceso = new Documento();
 		}
-		play.Logger.info("Comprobando fichero de Respondida");
 		if ((uriRespondida != "") && (!uriRespondida.equals(this.documentoRespondida.uri))) {
 			play.Logger.info("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
@@ -296,7 +292,6 @@ public class Notificacion extends FapModel {
 
 		//DocNoAcceso
 		String uriNoAcceso = NotificacionUtils.obtenerUriDocumentos(this, DocumentoNotificacionEnumType.NO_ACCESO);
-		play.Logger.info("Comprobando fichero de NoAcceso");
 		if ((uriNoAcceso != "") && (!uriNoAcceso.equals(this.documentoNoAcceso.uri))) {
 			play.Logger.info("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
@@ -312,8 +307,6 @@ public class Notificacion extends FapModel {
 
 	public void actualizar(Notificacion notificacion) {
 		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		play.Logger.info("Estado notificacion en BBDD: "+this.estado+" - estado en SW: "+notificacion.estado);
-		play.Logger.info("FechaFinPlazo en BBDD: "+this.fechaFinPlazo+" - fechaFinPlazo en SW: "+notificacion.fechaFinPlazo);
 		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
 			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
 			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);

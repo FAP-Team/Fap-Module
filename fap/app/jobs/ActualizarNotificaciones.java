@@ -50,6 +50,7 @@ public class ActualizarNotificaciones extends Job {
 			    	if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty()))){
 			    		play.Logger.info("Recargando Notificaciones desde el WebService");
 			    		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+			    		
 			    		// Código Añadido (05/07/2013)	CREACION automatica de las modificaciones	    		
 //				    	if (FapProperties.getBoolean("fap.notificacion.activarModificacion")) {
 //			    			List<SolicitudGenerica> solicitudes = SolicitudGenerica.findAll();
@@ -73,18 +74,11 @@ public class ActualizarNotificaciones extends Job {
 //			    						solicitud.estado = EstadosSolicitudEnum.modificacion.name();
 //			    						solicitud.save();
 //			    					}
-//			    				}
-//			    			}
-//			    		}
-//			    	
-			    	}	//-----------------
 			    		
-		    	} else {
-		    		tiempoRefresco++;
-		    	}
+	    			}
+	    		}
 			}
 		}
-    }
-
+	}
     
 }

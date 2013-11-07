@@ -316,7 +316,7 @@ public class Notificacion extends FapModel {
 			this.fechaLimite = notificacion.fechaLimite;
 			play.Logger.info("Actualizando fechas y estado de Notificacion: " + this.id + " para el expediente " + this.idExpedienteAed);
 		} else {
-			play.Logger.info("Notificacion "+notificacion.id+" no requiere actualizacion de fechas o estado");
+			play.Logger.info("Notificacion " + notificacion.id + " no requiere actualizacion de fechas o estado");
 		}
 
 	}

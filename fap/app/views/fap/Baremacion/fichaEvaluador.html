@@ -12,6 +12,8 @@
 	def hasCriterios = !evaluacion.tipo.criterios.isEmpty();
 	def hasCEconomicos = !evaluacion.tipo.ceconomicos.isEmpty();
 	def anioInicio = evaluacion.tipo.inicio;
+	Integer d = duracion;
+	def tipoEvaluacion = models.TipoEvaluacion.all().first();
 }%
 
 <div class="control-group">
@@ -83,10 +85,12 @@
         					%}
 			    			{name: '${valorSolicitado}', mapping: '${valorSolicitado}'},
 			    			{name: '${valorEstimado}', mapping: '${valorEstimado}'},
+			    			{name: '${valorPropuesto}', mapping: '${valorPropuesto}'},
 			    		#{/list}
 			    		{name: 'permiso', mapping: 'permiso'},
 			    		{name: 'totalSolicitado', mapping: 'totalSolicitado'},
-			    		{name: 'totalEstimado', mapping: 'totalEstimado'}
+			    		{name: 'totalEstimado', mapping: 'totalEstimado'},
+			    		{name: 'totalPropuesto', mapping: 'totalPropuesto'}
 					]
 		    	});
 			}
@@ -166,6 +170,11 @@
 							sortable : true,
 							dataIndex : 'valorEstimado'+${i},
 							width: 100
+						} , {
+							text : 'Valor Propuesto',
+							sortable : true,
+							dataIndex : 'valorPropuesto'+${i},
+							width: 100
 						}
 					]
 				#{/list}
@@ -181,7 +190,12 @@
 							sortable : true,
 							dataIndex : 'totalEstimado',
 							width: 100
-						} 
+						} , {
+							text : 'Valor Propuesto',
+							sortable : true,
+							dataIndex : 'totalPropuesto',
+							width: 100
+						}
 					]
 				}],
 				renderTo: '${id}',
@@ -246,8 +260,117 @@
 		</script>
 	
 	#{/fap.grupo}
-	
-#{/if} 
+
+	<div class="wiki ">
+		<table class="table table-bordered table-striped">
+		<thead>
+		<tr>
+			<th class="tabla-encabezado">Concepto</th>
+			#{list items:0..d*2+1, as:'i'}
+			%{
+				tipoValor = (i.mod(2) == 0) ? "V. Solicitado: " : "V. Estimado: ";
+			%}
+			<th class="tabla-encabezado">${tipoValor} Año ${tipoEvaluacion.inicio+i.intdiv(2)}</th>
+			#{/list}
+			<th class="tabla-encabezado">Total Solicitado</th>
+			<th class="tabla-encabezado">Total Estimado</th>
+			<th class="tabla-encabezado">Total Propuesto</th>
+		</tr>
+		</thead>
+		<tbody>
+		%{
+			Long idSolicitud = evaluacion.solicitud.id;
+			java.util.List<models.CEconomico> rows = controllers.fap.FichaEvaluadorController.filtroConceptosEconomicos(evaluacion);
+			Double totalSolicitado = 0
+			Double totalEstimado = 0
+			Double totalPropuesto = 0
+			java.util.ArrayList<Double> arrayTotalesSolicitado = new java.util.ArrayList<Double>(d+1);
+			java.util.ArrayList<Double> arrayTotalesEstimado = new java.util.ArrayList<Double>(d+1);
+			java.util.ArrayList<Double> arrayTotalesPropuesto = new java.util.ArrayList<Double>(d+1);
+		%}
+		
+		#{list items:rows, as:'fila'}
+			%{
+				// Calculamos si la jerarquía es de las principales
+				java.util.regex.Pattern pattern = java.util.regex.Pattern.compile ("^[a-zA-Z]\$");
+				def jerarquiaPrincipal = pattern.matcher("${fila.tipo.jerarquia}").matches();
+				
+				if (jerarquiaPrincipal) {
+					Double subTotalSolicitado = 0;
+					Double subTotalEstimado = 0;
+					Double subTotalPropuesto = 0;
+			%}
+			
+			<tr>
+				<td>${fila.tipo.jerarquia} (${fila.tipo.nombre})</td>
+			
+			%{  
+				int i = 0; // Contador de años
+			%}
+			
+			#{list items:fila.valores, as:'valor'}
+				%{
+					subTotalSolicitado += valor.valorSolicitado;
+					subTotalEstimado += valor.valorEstimado;
+					subTotalPropuesto += valor.valorPropuesto;
+				%}
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(valor.valorSolicitado)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(valor.valorEstimado)} €</td>
+					
+				%{
+				    if (arrayTotalesSolicitado.size() <= i) {
+				    	arrayTotalesSolicitado.add(valor.valorSolicitado);
+				    } else {
+						arrayTotalesSolicitado.set(i, arrayTotalesSolicitado.get(i)+valor.valorSolicitado);
+					}
+					
+					if (arrayTotalesEstimado.size() <= i) {
+				    	arrayTotalesEstimado.add(valor.valorEstimado);
+				    } else {
+						arrayTotalesEstimado.set(i, arrayTotalesEstimado.get(i)+valor.valorEstimado);
+					}
+					if (arrayTotalesPropuesto.size() <= i) {
+				    	arrayTotalesPropuesto.add(valor.valorPropuesto);
+				    } else {
+						arrayTotalesPropuesto.set(i, arrayTotalesPropuesto.get(i)+valor.valorPropuesto);
+					}
+					i++;
+				%}
+			#{/list}
+		
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalSolicitado)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalEstimado)} €</td>
+				<td class="tabla-moneda">${format.FapFormat.formatMoneda(subTotalPropuesto)} €</td>
+				%{
+					totalSolicitado += subTotalSolicitado;
+					totalEstimado += subTotalEstimado;
+					totalPropuesto += subTotalPropuesto;
+				%}
+			</tr>
+		
+			%{
+				} // Close IF
+			%}
+		#{/list}
+			<tr class="total">
+				<td><b>TOTAL</b></td>
+				#{list items:0..d*2+1, as:'i'}
+				%{
+					totalFinalSolicitado = (i.mod(2) == 0) ? format.FapFormat.formatMoneda(arrayTotalesSolicitado.get(i.intdiv(2))) : format.FapFormat.formatMoneda(arrayTotalesSolicitado.get(i.intdiv(2)));
+					totalFinalEstimado = (i.mod(2) == 0) ? format.FapFormat.formatMoneda(arrayTotalesEstimado.get(i.intdiv(2))) : format.FapFormat.formatMoneda(arrayTotalesEstimado.get(i.intdiv(2)));
+					totalFinalPropuesto = (i.mod(2) == 0) ? format.FapFormat.formatMoneda(arrayTotalesPropuesto.get(i.intdiv(2))) : format.FapFormat.formatMoneda(arrayTotalesPropuesto.get(i.intdiv(2)));
+					valorFinal = (i.mod(2) == 0) ? totalFinalSolicitado : totalFinalEstimado;
+				%}
+					<td class="tabla-moneda"><b>${valorFinal} €</b></td>
+				#{/list}
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalSolicitado)} €</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalEstimado)} €</b></td>
+				<td class="tabla-moneda"><b>${format.FapFormat.formatMoneda(totalPropuesto)} €</b></td>
+			</tr>
+		</tbody>
+		</table>
+		</div>
+ #{/if}
 #{form play.mvc.Router.reverse('fap.FichaEvaluadorController.save' , ['idEvaluacion':evaluacion?.id]), class:"form-stacked"}
 
 <input type="hidden" name="evaluacion.id" value="${evaluacion.id}"/>

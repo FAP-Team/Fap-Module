@@ -638,12 +638,23 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
         uriDocumento = tramiteAceptacionRenuncia.setDocumentoEnTramite("Prefijo justificante pdf desestimiento", "fs://prefijojustificantepdfaceptacionrenuncia/v01", "UNICO"); 	
         tramiteAceptacionRenuncia.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto);    
 
+     // ------- TRAMITE 5: Trámite Resolucion ------- 
+
+        Tramite tramiteResolucion = new Tramite();
+        tramiteResolucion.nombre = "Resolucion";
+        tramiteResolucion.uri = "fs://resolucion";
+        uriDocumento = tramiteResolucion.setDocumentoEnTramite("Resolucion", "fs://resolucion/v01", "UNICO");  
+        tramiteResolucion.setCodigosRequerimiento(uriDocumento, tipoCodReqdbCorrupto, tipoCodReqdbEspanol, tipoCodReqdbFirma, tipoCodReqdbObligatoriedad);	 
+        
+        
+        
         ArrayList<Tramite> tramites = new ArrayList<Tramite>();
         tramites.add(tramiteSolicitud);
         tramites.add(tramiteAlegacion);
         tramites.add(tramiteAportacion);
         tramites.add(tramiteDesestimiento);
         tramites.add(tramiteAceptacionRenuncia);
+        tramites.add(tramiteResolucion);
         return tramites;
     }
     
@@ -859,6 +870,23 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
             }
         }
 	}
+	
+	//@Override
+	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		File dst = clasificadoPath;
+		for(Documento documento : resolucionFap.docConsultaPortafirmasResolucion){
+			if(!documento.clasificado){
+				File file = getFile(documento);
+				boolean ok = move(file, dst);
+				if(ok){
+					documento.clasificado = true;
+					documento.save();
+				} else{
+            	throw new GestorDocumentalServiceException("No se pudo clasificar el documento de consulta " + file.toString());
+				}
+			}
+		}
+	}
 
 	@Override
 	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {
@@ -898,5 +926,27 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 			throws GestorDocumentalServiceException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		return documento.descripcionVisible;
+	}
+
+	@Override
+	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		if (documento != null){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		Documento documento = Documento.findByUri(uriDocumento);
+		return documento.tipo;
 	}
 }

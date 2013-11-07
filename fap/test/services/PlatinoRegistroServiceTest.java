@@ -7,13 +7,13 @@ import org.junit.Before;
 import properties.PropertyPlaceholder;
 import services.platino.PlatinoRegistroServiceImpl;
 
-public class PlatinoRegistroServiceTest extends RegistroServiceTest {
+//public class PlatinoRegistroServiceTest extends RegistroServiceTest {
 
-	@Before
-	@Override
-    public void before(){
-        registroService = new PlatinoRegistroServiceImpl(propertyPlaceholder, firmaService, gestorDocumentalService);
-        assumeTrue(registroService.isConfigured());
-    }
+//	@Before
+//	@Override
+//    public void before(){
+//        registroService = new PlatinoRegistroServiceImpl(propertyPlaceholder, firmaService, gestorDocumentalService);
+//        assumeTrue(registroService.isConfigured());
+//    }
     
-}
+//}

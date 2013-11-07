@@ -180,6 +180,7 @@ import com.google.gson.Gson;
 import services.FirmaService;
 import com.google.inject.Inject;
 import utils.PeticionModificacion;
+import controllers.fap.AgenteController;
 
 ${withSecure}
 public class ${controllerGenName} extends GenericController {

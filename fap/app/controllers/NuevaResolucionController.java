@@ -12,12 +12,14 @@ import com.google.inject.Inject;
 
 import play.modules.guice.InjectSupport;
 import play.mvc.Util;
+import properties.FapProperties;
 import resolucion.ResolucionBase;
 import services.RegistroLibroResolucionesService;
 import services.async.RegistroLibroResolucionesServiceAsync;
 import tags.ComboItem;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.NuevaResolucionControllerGen;
+import enumerado.fap.gen.ResolucionesDefinidasEnum;
 
 @InjectSupport
 public class NuevaResolucionController extends NuevaResolucionControllerGen {
@@ -31,6 +33,7 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		if (!permiso("crear")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
+
 		ResolucionFAP dbResolucionFAP = NuevaResolucionController.getResolucionFAP();
 		NuevaResolucionController.NuevaResolucionBindReferences(resolucionFAP);
 
@@ -43,8 +46,8 @@ public class NuevaResolucionController extends NuevaResolucionControllerGen {
 		}
 		
 		Long idResolucionFAP = null;
-		if (!Messages.hasErrors()) {
-			ResolucionBase resolBase = null;
+		if ((!Messages.hasErrors()) && ((!dbResolucionFAP.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) 
+				&& (!dbResolucionFAP.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())))) {
 			try {
 				ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "validarInicioResolucion");
 			} catch (Throwable e) {

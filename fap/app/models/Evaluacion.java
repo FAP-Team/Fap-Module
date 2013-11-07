@@ -95,7 +95,7 @@ public class Evaluacion extends FapModel {
 		for (TipoCriterio tCriterio : tipo.criterios) {
 			Criterio criterio = new Criterio();
 			criterio.tipo = tCriterio;
-			//tCriterio.esNuevo = false;
+			tCriterio.esNuevo = false; //Iniciando no se actualiza
 			this.criterios.add(criterio);
 		}
 

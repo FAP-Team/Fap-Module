@@ -45,6 +45,7 @@ vars
 when
 	(_accion = leer) or
 	solicitud.alegaciones.actual.motivoAlegacion != null 
+	and (solicitud.alegaciones.actual.registro.fasesRegistro.borrador="false")
 return
 	editable
 }
@@ -81,7 +82,7 @@ return
  * Permiso "alegacionMensajeIntermedio"
  * 
  * - Cuando la firma y registro se quedo en un paso intermedio. Se le muestra un mensaje
- * al usuario diciendole que hubo un problema, que pulse otra vez el problema para completar el registro 
+ * al usuario diciendole que hubo un problema, que pulse otra vez el boton para completar el registro 
  */	
 
 Permiso mensajeIntermedioAlegacion {
@@ -91,6 +92,54 @@ when
 	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" or
 	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "true" or
 	solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed = "true") and
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"
+return
+	editable
+}
+
+/*
+ * Permiso "alegacionMensajeIntermedio"
+ * 
+ **/
+Permiso mensajeIntermedioAlegacionJuridica {
+vars
+	SolicitudGenerica solicitud
+when
+	((solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
+	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "true") or
+	solicitud.alegaciones.actual.registro.fasesRegistro.expedienteAed = "true") and
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"
+return
+	editable
+}
+
+/*
+* Permiso "alegacionMensajeIntermedioFirmar"
+* PERMISO SOBREESCRITO
+* 
+**/
+Permiso mensajeIntermedioAlegacionFirmar {
+vars
+	SolicitudGenerica solicitud
+when
+	solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"
+return
+	editable
+}
+
+/*
+* Permiso "alegacionMensajeIntermedioRegistrar"
+* PERMISO SOBREESCRITO
+* 
+**/
+Permiso mensajeIntermedioAlegacionRegistrar {
+vars
+	SolicitudGenerica solicitud
+when
+	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
+	(solicitud.alegaciones.actual.registro.fasesRegistro.registro = "true" or
+	solicitud.alegaciones.actual.estado != null)) and
 	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"
 return
 	editable
@@ -134,8 +183,9 @@ vars
 when
 	(_accion = leer) or
 	(solicitud.alegaciones.actual.registro.fasesRegistro.firmada = "true" and
-	solicitud.alegaciones.actual.registro.fasesRegistro.registro = "false" and
-	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false")
+	solicitud.alegaciones.actual.registro.oficial != null and
+	(solicitud.alegaciones.actual.registro.fasesRegistro.registro = "false" or
+	solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed = "false"))
 return
 	editable
 }

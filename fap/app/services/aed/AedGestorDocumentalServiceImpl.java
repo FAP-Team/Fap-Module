@@ -20,10 +20,12 @@ import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import messages.Messages;
 import models.Agente;
 import models.Convocatoria;
 import models.ExpedienteAed;
 import models.InformacionRegistro;
+import models.PersonaJuridica;
 import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -804,6 +806,42 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
+    
+
+    protected void clasificarDocumentosConsultaResolucion(String idAed, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
+        
+    	for (models.Documento documento : resolucion.docConsultaPortafirmasResolucion){
+	    	PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
+	        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
+	        // Marca como notificable
+	        if (notificable)
+	        	propAdmin.setNotificable(true);
+	        
+	        if(!documento.clasificado){
+	        	try {
+					if (!existeDocumento(documento.uri)){ //Si no existe lo clasifico -> Doc. nuevo
+						clasificarDocumento(idAed, documento, propiedades, interesados);
+					}
+					else{
+						//Ya existía en otro expediente:
+						//1) Se copia al expediente de la convocatoria
+						Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+						List<ExpedienteAed> expedientes = new ArrayList<ExpedienteAed>();
+						expedientes.add(convocatoria.expedienteAed);
+						copiarDocumentoEnExpediente(documento.uri, expedientes);
+						//2)Se marca como clasificado si no hubo errores
+						if (!Messages.hasErrors()){
+							documento.clasificado = true;
+						}
+					}
+				} catch (GestorDocumentalServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Messages.error("Error clasificando documentos en el Gestor Documental");
+				}
+	        }
+    	}
+    }
 
     protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
@@ -1333,6 +1371,31 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 		
 	}
+	
+	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
+		log.debug("Clasificando documento resolución");
+		
+	    Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+	    String idAed = convocatoria.expedienteAed.idAed;
+	    
+	    if(idAed == null)
+	        throw new NullPointerException();
+	    
+	    //Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
+	    Interesados interesados = new Interesados();
+	    PersonaJuridica aciisi = new PersonaJuridica();
+
+	    //Generalizado con properties
+	    aciisi.entidad = FapProperties.get("fap.docConsulta.portaFirma.interesado.nombre");
+	    aciisi.cif = FapProperties.get("fap.docConsulta.portaFirma.interesado.cif");
+	    interesados.add(aciisi);
+	    
+	    try {
+	    	clasificarDocumentosConsultaResolucion(idAed, interesados, resolucionFap, false);
+	    } catch (AedExcepcion e) {
+	    	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
+		}
+	}
 
 	@Override
 	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {
@@ -1445,6 +1508,49 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			e.printStackTrace();
 			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
 		}
+	}
+
+	@Override
+	public String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+	String descripcion = null;
+		try {
+			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
+			descripcion = propiedades.getDescripcion();
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al intentar obtener la descripción del documento", e);
+			e.printStackTrace();
+			new GestorDocumentalServiceException("Error al intentar obtener la descripción del documento", e);
+		}
+		return descripcion;
+	}
+
+	@Override
+	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		try {
+			if (aedPort.obtenerDocumento(uriDocumento) != null){
+				return true;
+			}
+			return false;
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error el documento no existe entre los documentos clasificados"+e);
+			e.printStackTrace();
+			//new GestorDocumentalServiceException("Error el documento no existe entre los documentos clasificados", e);
+			return false;
+		}
+	}
+
+	@Override
+	public String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+		String tipo = "";
+		try {
+			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
+			tipo = propiedades.getDescripcion();
+		} catch (AedExcepcion e) {
+			play.Logger.error("Error al intentar obtener el tipo del documento", e);
+			e.printStackTrace();
+			new GestorDocumentalServiceException("Error al intentar obtener el tipo del documento", e);
+		}
+		return tipo;
 	}
 
 }

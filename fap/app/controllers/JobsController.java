@@ -66,6 +66,8 @@ public class JobsController extends JobsControllerGen {
 	
 	@Util
 	public static void btnNotificaciones(AdministracionFapJobs administracionFapJobs) {
+		play.Logger.info("Actualización Manual de los Datos de las Notificaciones");
+		NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 		NotificacionUtils.recargarDocumentosNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 	}
 	

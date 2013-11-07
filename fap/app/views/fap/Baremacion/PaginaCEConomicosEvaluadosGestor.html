@@ -1,0 +1,142 @@
+
+#{fap.pagina 
+     accion:accion,
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar',
+     pagina:'PaginaCEConomicosEvaluadosGestor', 
+     permiso:'evaluacionFinalizada',
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true,
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Concepto económico Evaluado', 
+     urlCrear:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.crear' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id]),
+     urlBorrar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaCEConomicosEvaluadosGestorController.editar' , ['idSolicitud':solicitud?.id, 'idCEconomico':cEconomico?.id, 'duracion':duracion])
+}
+	
+<div class="wiki ">
+	<p>
+		<b>${cEconomico.tipo.nombre}</b>
+		<br/>
+		${cEconomico.tipo.descripcion}
+		<br/>		
+	</p>
+</div>
+	%{
+	 def totalSolicitadoGestor = 0.0;
+	 def totalPropuestoGestor = 0.0;
+	 def totalEstimadoGestor = 0.0;
+	 def totalConcedidoGestor = 0.0;
+	 String formato = properties.FapProperties.get("fap.format.double");
+	 def tipoEvaluacion = models.TipoEvaluacion.all().first();
+	 def anioInicio = tipoEvaluacion.inicio;
+	%}
+	#{list items:0..duracion, as:'anio'}
+		%{
+			def anioLabel = "Año "+(anio+anioInicio);
+			def paramName="cEconomico.valores[${anio}]";
+			def error = play.data.validation.Validation.errors(paramName + ".valor").join(",");  
+			def newValue = {name, label, value -> [name : name, label : label, value : messages.Messages.flashOrValue(name, value), error : play.data.validation.Validation.errors(name).join(",")]}
+			def valorSolicitado = newValue(paramName + ".valorSolicitado", "Valor Solicitado", cEconomico.valores[anio].valorSolicitado);
+			def valorPropuesto = newValue(paramName + ".valorPropuesto", "Valor Propuesto", cEconomico.valores[anio].valorPropuesto);
+			def valorEstimado = newValue(paramName + ".valorEstimado", "Valor Estimado", cEconomico.valores[anio].valorEstimado);
+			def valorConcedido = newValue(paramName + ".valorConcedido", "Valor Concedido", cEconomico.valores[anio].valorConcedido);
+			totalSolicitadoGestor += valorSolicitado.value;
+			totalPropuestoGestor += valorPropuesto.value;
+			totalEstimadoGestor += valorEstimado.value;
+			totalConcedidoGestor += valorConcedido.value;
+		%}
+		<b>${anioLabel}</b>
+		#{simple.uneditable label:valorSolicitado.label, value:valorSolicitado.value, id:valorSolicitado.name, format:'moneda'/}
+		#{simple.uneditable label:valorEstimado.label, value:valorEstimado.value, id:valorEstimado.name, format:'moneda' /}
+		#{if cEconomico.tipo.clase.equals("manual")}
+			#{simple.uneditable id:valorPropuesto.name, name:valorPropuesto.name, label:valorPropuesto.label, value:valorPropuesto.value, error:valorPropuesto.error, format:'moneda' /}
+			#{simple.text id:valorConcedido.name, name:valorConcedido.name, label:valorConcedido.label, value:valorConcedido.value, error:valorConcedido.error, format:'moneda' /}
+		#{/if}
+		#{else}
+			#{simple.uneditable label:valorPropuesto.label, value:valorPropuesto.value, id:valorPropuesto.name, format:'moneda' /}
+			#{simple.uneditable label:valorConcedido.label, value:valorConcedido.value, id:valorConcedido.name, format:'moneda' /}
+		#{/else}
+	#{/list}
+	
+	<b>Totales</b>
+	#{simple.uneditable label:"Total Valor Solicitado", value:totalSolicitadoGestor, id:"totalSolicitadoGestor", format:'moneda'/}
+	#{simple.uneditable label:"Total Valor Estimado", value:totalEstimadoGestor, id:"totalEstimadoGestor", format:'moneda' /}
+	#{simple.uneditable label:"Total Valor Propuesto", value:totalPropuestoGestor, id:"totalPropuestoGestor", format:'moneda' /}
+	#{simple.uneditable label:"Total Valor Concedido", value:totalConcedidoGestor, id:"totalConcedidoGestor", format:'moneda' /}
+
+%{ 
+	//Si es de tipo Otros, mostrar si tiene ceconomicosManuales
+	if (cEconomico.tipo.tipoOtro) {
+%}	
+#{fap.tabla 
+     campo:'cEconomico.otros', 
+     id:'tablaCeconomicosManuales', 
+     idEntidad:'idCEconomicosManuales', 
+     popupEditar:'PopUpEditarCEconomicosEvaluados', 
+     saveEntity:false, 
+     tipoContainer:'popup', 
+     titulo:'Tabla CEconomicosManuales', 
+     urlTabla:@PaginaCEConomicosEvaluadosGestorController.tablaCEconomicosManuales(cEconomico.id),
+     urlEditar:play.mvc.Router.reverse("popups.PopUpEditarCEconomicosEvaluadosController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idCEconomico':cEconomico?.id? cEconomico?.id:'_idCEconomico_', 'idCEconomicosManuales':cEconomicosManuales?.id? cEconomicosManuales?.id:'_idCEconomicosManuales_']),
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'CEconomicosManuales.tipo.jerarquia', campo:'tipo.jerarquia', cabecera:'Jerarquía' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'CEconomicosManuales.tipo.nombre', campo:'tipo.nombre', cabecera:'Nombre' /}
+		
+#{/fap.tabla}
+
+%{
+	} //Cierre de if de la tabla
+%}
+
+	
+#{/fap.pagina}
+
+<script>
+	// Para que se recalculen los totales, cada vez que se modifique algun input de los valores
+	
+	Number.prototype.formatMoney = function(c, d, t){
+		var n = this, 
+		    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+		    d = d == undefined ? "," : d, 
+		    t = t == undefined ? "." : t, 
+		    s = n < 0 ? "-" : "", 
+		    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+		    j = (j = i.length) > 3 ? j % 3 : 0;
+		   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+	};
+
+	var valores = $('input[id$="valorSolicitado"]');
+	var totalSolicitadoGestor=0.0;
+	for (i=0; i<valores.size(); i++){
+		totalSolicitadoGestor+=parseFloat(valores[i].value.replace(".",""));
+	}
+	$('#totalSolicitadoGestor').val(totalSolicitadoGestor.formatMoney());
+	
+	valores = $('input[id$="valorPropuesto"]');
+	var totalPropuestoGestor=0.0;
+	for (i=0; i<valores.size(); i++){
+		totalPropuestoGestor+=parseFloat(valores[i].value.replace(".",""));
+	}
+	$('#totalPropuestoGestor').val(totalPropuestoGestor.formatMoney());
+	
+	valores = $('input[id$="valorEstimado"]');
+	var totalEstimadoGestor=0.0;
+	for (i=0; i<valores.size(); i++){
+		totalEstimadoGestor+=parseFloat(valores[i].value.replace(".",""));
+	}
+	$('#totalEstimadoGestor').val(totalEstimadoGestor.formatMoney());
+	
+	valores = $('input[id$="valorConcedido"]');
+	var totalConcedidoGestor=0.0;
+	for (i=0; i<valores.size(); i++){
+		totalConcedidoGestor+=parseFloat(valores[i].value.replace(".",""));
+	}
+	$('#totalConcedidoGestor').val(totalConcedidoGestor.formatMoney());
+		
+	</script>
+		

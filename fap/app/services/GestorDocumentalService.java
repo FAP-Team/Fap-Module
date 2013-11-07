@@ -62,6 +62,8 @@ public interface GestorDocumentalService {
 
     public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException;
     
+    public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException;
+    
     public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException;
     
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
@@ -102,5 +104,11 @@ public interface GestorDocumentalService {
 	void copiarDocumentoEnExpediente(String uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException;
 	
 	void copiarListaDocumentoEnExpediente(List<String> uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException;
-    
+	
+	Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException;
+	
+	String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException;
+	
+	String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException;
+	
 }

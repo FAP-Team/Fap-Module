@@ -127,6 +127,8 @@ public class ResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
+	public Boolean copiadoExpedientes;
+
 	@OneToMany
 	@Transient
 	public List<Interesado> destinatarios;
@@ -165,6 +167,9 @@ public class ResolucionFAP extends FapModel {
 			registro = new Registro();
 		else
 			registro.init();
+
+		if (copiadoExpedientes == null)
+			copiadoExpedientes = false;
 
 		if (destinatarios == null)
 			destinatarios = new ArrayList<Interesado>();

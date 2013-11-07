@@ -434,6 +434,10 @@ Tabla:
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	   	& (color=Color)?
+	   	& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?
+	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
+	   	& ('nombreBotonBorrar' '=' nombreBotonBorrar=STRING)?
+	   	& ('nombreBotonCrear' '=' nombreBotonCrear=STRING)?
 	)
 	'{'
 		columnas += Columna*

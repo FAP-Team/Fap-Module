@@ -188,13 +188,23 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 		
 		try {
 			for (Interesado interesado: resolucionFAP.getInteresados(resolucionFAP.id)) {
-				PersonasResult wsPersonas = port.getDestinatario(usuario, interesado.persona.fisica.nip.valor);
-				
+				PersonasResult wsPersonas = null;
+				 if (interesado.persona.tipo.equals("fisica")) {
+					 wsPersonas = port.getDestinatario(usuario, interesado.persona.fisica.nip.valor);
+				 } else {
+					 wsPersonas = port.getDestinatario(usuario, interesado.persona.juridica.cif);
+				 }
 				if (wsPersonas.getPersonasList().getPersonas().size() == 0) {
 					// El destinatario no existe en el servicio. Es necesario crearlo.
+					 if (interesado.persona.tipo.equals("fisica")) {
 					wsPersonas = port.insertDestinatario(usuario, 
 							interesado.persona.fisica.nip.valor,
 							interesado.persona.fisica.getNombreCompleto());
+					 } else {
+						 wsPersonas = port.insertDestinatario(usuario,
+                                 interesado.persona.juridica.cif,
+                                 interesado.persona.juridica.entidad);
+					 }
 				}
 				
 				// Debo comprobar que no exista ya

@@ -50,6 +50,10 @@
 	String urlBorrar = _urlBorrar;
 	String urlLeer = _urlLeer;
 	String urlSubir = _urlSubir;
+	String nombreBotonEditar = _nombreBotonEditar ?: 'Editar';
+	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
+	String nombreBotonCrear = _nombreBotonCrear ?: 'Nuevo';
+	String nombreBotonBorrar = _nombreBotonBorrar ?: 'Borrar';
 
 	def combo = _combo;         // Cuando mostramos la tabla en función de lo elegido en un combo
 	
@@ -351,7 +355,7 @@
 			#{if urlEditar}
 			
 		    var boton_editar = new Ext.Button({
-		    	text: 'Editar',
+		    	text: '${nombreBotonEditar}',
 		    	icon: '@{'/public/images/table-editar.png'}',
 		    	disabled:true,
 		    	handler : function(){
@@ -411,7 +415,7 @@
 			#{if urlLeer}
 			
 		    var boton_leer = new Ext.Button({
-				text: 'Ver',
+				text: '${nombreBotonVer}',
 	    		icon: '@{'/public/images/table-leer.png'}',
 	    		disabled:true,
 	    		handler : function(){
@@ -465,7 +469,7 @@
 			#{if urlBorrar}
 			
 		    var boton_borrar = new Ext.Button({
-		    	text: 'Borrar',
+		    	text: '${nombreBotonBorrar}',
 	    		icon: '@{'/public/images/table-borrar.png'}',
 	    		disabled:true,
 	    		handler : function(){
@@ -493,7 +497,7 @@
 			#{if botonCrear}
 		   
 		    var boton_crear = new Ext.Button({
-		    	text: 'Nuevo',
+		    	text: '${nombreBotonCrear}',
 		    	disabled:false,
 	    		handler : function(){
 	    			var urlCrear = replaceAmpersand("${urlCrear}");
@@ -668,7 +672,6 @@
 			        }
 
 				    this.getSelectionModel().select(this.selectedRecords, true);
-				    Ext.defer(this.setScrollTop, 30, this, [this.getView().scrollState.top]);
 			    },
 			    #{if urlEditar || urlLeer}
 				plugins: [

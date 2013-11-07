@@ -1,0 +1,40 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Principal', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaFirmarOficioRemision', 
+     titulo:'PaginaFirmarOficioRemision', 
+     urlBorrar:play.mvc.Router.reverse('PaginaFirmarOficioRemisionController.borrar' , ['idResolucionFAP':resolucionFAP?.id, 'idLineaResolucionFAP':lineaResolucionFAP?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaFirmarOficioRemisionController.crear' , ['idResolucionFAP':resolucionFAP?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaFirmarOficioRemisionController.editar' , ['idResolucionFAP':resolucionFAP?.id, 'idLineaResolucionFAP':lineaResolucionFAP?.id])
+}
+	#{fap.grupo titulo:'Firma del Oficio de Remision'}
+				#{fap.permiso permiso:"permisoOficioRemision", accion:accion}
+					
+				#{form play.mvc.Router.reverse('PaginaFirmarOficioRemisionController.formFirmarOficioRemision' , ['idResolucionFAP':resolucionFAP?.id, 'idLineaResolucionFAP':lineaResolucionFAP?.id]) , class:"form-horizontal", id:"formFirmarOficioRemision"}
+
+			#{fap.firma firma:'firma', id:'firmaFirmarOficioRemision', titulo:'Firmar y Registrar Oficio de Remisión', uri:"${lineaResolucionFAP.registro.oficial.uri}" /}
+		
+				#{/form}
+
+				#{/fap.permiso}		
+			
+				#{form play.mvc.Router.reverse('PaginaFirmarOficioRemisionController.formVolver' , ['idResolucionFAP':resolucionFAP?.id, 'idLineaResolucionFAP':lineaResolucionFAP?.id]) , class:"form-horizontal", id:"formVolver"}
+					
+			#{fap.grupo borde:false}
+				
+			#{fap.enlace action:play.mvc.Router.reverse("PaginaNotificarResolucionController.index" , ['idResolucionFAP':resolucionFAP?.id]), estilo:'btn ', id:'botonVolverIDenlace', titulo:'Volver' /}
+		
+			#{/fap.grupo}
+		
+				#{/form}
+	#{/fap.grupo}
+			
+#{/fap.pagina}
+		

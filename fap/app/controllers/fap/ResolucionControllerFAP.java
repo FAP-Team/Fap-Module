@@ -13,6 +13,7 @@ import models.RepresentantePersonaJuridica;
 import models.ResolucionFAP;
 import models.TableKeyValue;
 import resolucion.ResolucionBase;
+import resolucion.ResolucionMultipleEjecucion;
 import resolucion.ResolucionMultipleTotal;
 import resolucion.ResolucionParcial;
 import resolucion.ResolucionSimple;
@@ -49,6 +50,8 @@ public class ResolucionControllerFAP extends InvokeClassController {
 			return new ResolucionSimple(resolucion);
 		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
 			return new ResolucionSimpleEjecucion(resolucion);
+		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())) {
+			return new ResolucionMultipleEjecucion(resolucion);
 		}
 		return new ResolucionBase(resolucion);
 	}
@@ -75,6 +78,7 @@ public class ResolucionControllerFAP extends InvokeClassController {
 				play.Logger.error("No se puede crear una nueva resolución habiendo otra activa.");
 				Messages.error("No se puede crear una nueva resolución habiendo otra activa.");
 				Messages.keep();
+				break;
 			}
 		}
 	}
@@ -130,14 +134,20 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		
 		for (LineaResolucionFAP linea: lineasResolucion) {
 			Interesado interesado = linea.solicitud.solicitante.getInteresado();
-			listaInteresados.add(interesado);
+			if (!listaInteresados.contains(interesado)){
+				listaInteresados.add(interesado);
+			}
 			if (linea.solicitud.solicitante.isPersonaFisica() && linea.solicitud.solicitante.representado) {
 				Interesado interesadoR = linea.solicitud.solicitante.representante.getInteresado();
-				listaInteresados.add(interesadoR);
+				if (!listaInteresados.contains(interesadoR)){
+					listaInteresados.add(interesadoR);
+				}
 			} else if (linea.solicitud.solicitante.isPersonaJuridica() && linea.solicitud.solicitante.representantes != null) {
 				for (RepresentantePersonaJuridica r : linea.solicitud.solicitante.representantes) {
 					Interesado interesadoR = r.getInteresado();
-					listaInteresados.add(interesadoR);
+					if (!listaInteresados.contains(interesadoR)){	
+						listaInteresados.add(interesadoR);
+					}
 				}
 			}
 		}

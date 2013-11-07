@@ -1,4 +1,5 @@
 %{
+	def anioInicio = evaluacion.tipo.inicio;
 	def valorDelCriterio = {criterio ->
 		def valorNumerico = criterio.valor
 		def valor
@@ -212,7 +213,7 @@ p {
 				def valor = services.BaremacionService.getDatoAdicional(tipoDatoAdicional.nombre, evaluacion)
 			}%
 			<tr>
-				<th>${tipoDatoAdicional.descripcion}:</th>
+				<th>${tipoDatoAdicional.descripcion.nl2br()}:</th>
 				<td>${valor}</td>
 			</tr>
 		#{/list}	
@@ -276,7 +277,10 @@ p {
 			<td>Valor</td>
 		</tr>
 		
-		#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+		%{
+			List<models.CEconomico> cEconomicosFiltrados = controllers.fap.FichaEvaluadorController.filtroConceptosEconomicos(evaluacion); 
+		%}
+		#{list items:cEconomicosFiltrados, as:'ceconomico'} 
 		<tr>
 			<th>${ceconomico.tipo.jerarquia} - ${ceconomico.tipo.nombre}</th>
 			
@@ -312,8 +316,8 @@ p {
 			${criterio.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${criterio.id} class="table-datos">
 			#{if (criterio.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
-				<p style="text-indent:25px">${criterio.tipo.descripcion}</p>
+			<p style="font-weight:bold">Descripción:</p>
+				<p style="text-indent:25px">${criterio.tipo.descripcion.nl2br()}</p>
 			#{/if}
 			<tr>
 				<th>Valor:</th>
@@ -344,33 +348,50 @@ p {
 		</tr>
 
 	</table>
-	#{list items:evaluacion.ceconomicos, as:'ceconomico'} 
+	#{list items:cEconomicosFiltrados, as:'ceconomico'} 
 	<div class="Criterio">
 		<p class="nombre" style="font-size:15px">${ceconomico.tipo.jerarquia} -
 			${ceconomico.tipo.nombre}</p>
 		<table id="tblCriteriosEvaluacion" +${ceconomico.id} class="table-datos">
 			#{if (ceconomico.tipo.descripcion)}
-			<p style="font-weight:bold">Descripcion:</p>
-				<p style="text-indent:25px">${ceconomico.tipo.descripcion}</p>
+			<p style="font-weight:bold">Descripción:</p>
+				<p style="text-indent:25px">${ceconomico.tipo.descripcion.nl2br()}</p>
 			#{/if}
+				<tr>
+					<th>Año</th>
+					<th>Valor Solicitado</th>
+					<th>Valor Estimado</th>
+					<th>Valor Propuesto</th>
+				</tr>
 			#{list items:0..duracion, as:'i'}
 				%{
-					def etiquetaAnio = "Valor Propuesto Año "+ (i+1);
+					def etiquetaAnio = "Año "+ (anioInicio+i);
+					def valorSolicitadoAnio = ceconomico.valores.get(i).valorSolicitado;
+					def valorEstimadoAnio = ceconomico.valores.get(i).valorEstimado;
 					def valorPropuestoAnio = ceconomico.valores.get(i).valorPropuesto;
 				%}
 				<tr>
 					<th>${etiquetaAnio}</th>
+					<td>${valorSolicitadoAnio}</td>
+					<td>${valorEstimadoAnio}</td>
 					<td>${valorPropuestoAnio}</td>
 				</tr>
 			#{/list}
 			%{
+				def valorSolicitadoTotal = 0.0;
+				def valorEstimadoTotal = 0.0;
 				def valorPropuestoTotal = 0.0;
+				
 				for (int i=0; i<=duracion ; i++){
+					valorSolicitadoTotal += ceconomico.valores.get(i).valorSolicitado;
+					valorEstimadoTotal += ceconomico.valores.get(i).valorEstimado;
 					valorPropuestoTotal += ceconomico.valores.get(i).valorPropuesto;
 				}
 			%}
 			<tr>
-				<th>Valor Propuesto Total:</th>
+				<th>Total:</th>
+				<td>${valorSolicitadoTotal}</td>
+				<td>${valorEstimadoTotal}</td>
 				<td>${valorPropuestoTotal}</td>
 			</tr>
 			#{if (ceconomico.comentariosAdministracion)}

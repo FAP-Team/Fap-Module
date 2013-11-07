@@ -1,0 +1,28 @@
+%{
+	String miTramite = properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") != null? properties.FapProperties.get("fap.aceptacionrenuncia.aportacion.tramite") : 'AceptacionRenuncia';
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'AportarDocumentacionAceptacionRenuncia', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Añadir Documentación Aceptación/Renuncia', 
+     urlBorrar:play.mvc.Router.reverse('AportarDocumentacionAceptacionRenunciaController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id]), 
+     urlCrear:play.mvc.Router.reverse('AportarDocumentacionAceptacionRenunciaController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('AportarDocumentacionAceptacionRenunciaController.editar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id])
+}
+	
+			#{fap.grupo titulo:'Documento'}
+				#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:false, requerido:true, tipo:'tipoCiudadano', tramite:miTramite /}	
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

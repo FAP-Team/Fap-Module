@@ -157,6 +157,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
 			Columna titulo="Tipo Documento" campo=Documento.tipo
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+			Columna campo=Documento.uri titulo="Uri"
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
 			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 		}
@@ -212,11 +213,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			
-			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
-				Wiki estilo ="box-warn box" {
-					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-				}
-			}
+//			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
+//				Wiki estilo ="box-warn box" {
+//					"Se produjo un error en la presentación de la aportación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//				}
+//			}
 			
 			// Sobreescrito HTML
 			
@@ -680,12 +681,26 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	//Sobreescrita TODO: REVISAR PERMISOS (con estado?)
-	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Evaluados" campo=SolicitudGenerica permiso=evaluacionFinalizada noForm  perteneceA ="Baremacion" {
+	Pagina PaginaCEconomicosEvaluados titulo= "Conceptos Económicos Propuestos y Concedidos" campo=SolicitudGenerica permiso=evaluacionFinalizada noForm  perteneceA ="Baremacion" {
 		Form Guardar { 
-			Boton botonGuardar titulo="Guardar" 
+			Boton botonGuardar titulo="Guardar"
+			Boton botonCopiarValores titulo="Copiar Propuestos a Concedidos"  
 		}
 	}
+	
+//	Popup temporal titulo="Temporal" campo=SolicitudGenerica.ceconomicos.otros {
+//		Tabla tablita titulo="Tablita" campo=CEconomicosManuales popupEditar=PopUpEditarCEconomicosEvaluados {
+//				Columna campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquia"
+//				Columna campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+//		}
+//	}
 
+Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.ceconomicos.otros {
+	Grupo noEditable borde=false permiso=noEditable{
+		Texto nombre campo=CEconomicosManuales.tipo.nombre titulo="Nombre"
+		Texto jerarquia campo=CEconomicosManuales.tipo.jerarquia titulo="Jerarquía"
+	}
+}
 	// ******************************************************************************************
 	// PAGINA CONCEPTOS ECONOMICOS COPIA
 	// *******************************************************************************************	
@@ -782,11 +797,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
             	    	Boton botonModificar titulo="Modificar aceptación/renuncia"
                 	}
                   
-                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-                        Wiki estilo ="box-warn box" {
-                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-                        }
-                  	}
+//                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
+//                        Wiki estilo ="box-warn box" {
+//                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//                        }
+//                  	}
             	}
 			}
             
@@ -794,7 +809,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				// Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado	
 				Form frmPresentar redirigir=AceptacionRenunciaPresentar {
 		 			Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar
+					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
 				}
 			}
 		
@@ -809,7 +824,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	/*
 	 * AportarDocumentacionAceptacionRenuncia
 	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos  perteneceA ="AceptarRenunciar"{
+	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
 		Accion crear redirigir=PaginaAceptacionRenuncia
 		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"	
     }
@@ -819,14 +834,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	}
 	
 	Pagina AceptacionRenunciaPresentar titulo="Presentar Aceptacion" noForm  perteneceA ="AceptarRenunciar"{
-		Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
 		
 		//Firma persona física	
-		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{			
+		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo="fisica" /*permiso=editarFirma*/{
+			Grupo mensajeIntermedioFisica permiso=mensajeIntermedioAceptarRenunciar borde=false {
+				Wiki estilo ="alert alert-error" {
+					"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+				}
+			}			
 			Form formFirma permiso=firmarRegistrarAceptarRenunciar redirigir=PaginaAceptacionRenuncia {
 		    	Wiki {"La aceptación/renuncia será firmada y registrada."}
 				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.aceptarRenunciar.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.aceptarRenunciar.registro.firmantes.todos
@@ -837,6 +852,13 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 						
 		//Firma Persona jurídica
 		Grupo titulo="Paso 3. Firmar y Registrar la Aceptación/Renuncia" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" {
+		
+			Grupo mensajeIntermedioJuridica permiso=mensajeIntermedioAceptarRenunciarJuridica borde=false {
+				Wiki estilo ="alert alert-error" {
+					"Se produjo un error en la presentación de la aceptación/renuncia. Revise los pasos de Firma y/o Registro."
+				}
+			}
+			
 			Wiki {"Debe indicar si se firmará la aceptación/renuncia con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la aceptación/renuncia debe firmarse por todos los representantes mancomunados"}
 			
 			Form tipoCertificadoFirma autoEnviar {
@@ -844,7 +866,14 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 					
 			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="representantes" {
-				Grupo titulo="Paso 3.1. Firmar la Aceptación/Renuncia" permiso=editarFirma{						
+				Grupo titulo="Paso 3.1. Firmar la Aceptación/Renuncia" permiso=editarFirmaAceptarRenunciar{
+				
+					Grupo mensajeIntermedioFirmar permiso=mensajeIntermedioAceptarRenunciarFirmar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
+						Wiki estilo ="alert alert-error" {
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Firmar' para intentar finalizar el proceso."
+						}
+					}
+					
 					Wiki {"La aceptación/renuncia será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la aceptación/renuncia."}
 					
 					Form formFirmaRepresentante permiso=firmarAceptarRenunciar {
@@ -864,17 +893,24 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				}
 				
 				Grupo titulo="Paso 3.2. Registrar la Aceptación/Renuncia" permiso=registrarAceptarRenunciar {
+				
+					Grupo mensajeIntermedioRegistrar permiso=mensajeIntermedioAceptarRenunciarRegistrar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
+						Wiki estilo ="alert alert-error" {
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Registrar' para intentar finalizar el proceso."
+						}
+					}
+				
 					Wiki {"Su aceptación/renuncia ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 					
 					Form formRegistrar redirigir=PaginaAceptacionRenuncia {
-						Boton botonRegistrar titulo="Registrar" pagina=PaginaAceptacionRenuncia
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 					
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}
 			}
 
-			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="cif" permiso=editarFirma{
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.aceptarRenunciar.registro.tipoFirma="cif" permiso=editarFirmaAceptarRenunciar{
 				Wiki {"La aceptación/renuncia será firmada y registrada."}			
 				
 				Form formFirmaCif redirigir=PaginaAceptacionRenuncia permiso=firmarRegistrarAceptarRenunciar {
@@ -930,11 +966,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	                        Boton botonModificar titulo="Modificar alegación"
 	                  }
                   
-	                  Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
-	                        Wiki estilo ="box-warn box" {
-	    	                    "Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-    	                    }
-	                  }
+//	                  Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
+//	                        Wiki estilo ="box-warn box" {
+//	    	                    "Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//    	                    }
+//	                  }
             	}
             }
             
@@ -963,33 +999,37 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	/*
 	 * AportarDocumentacionAlegacion
 	 */
-	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarSolicitud  perteneceA ="Alegacion"{
+	Pagina AportarDocumentacionAlegacion titulo="Añadir Documentación Alegación" campo=SolicitudGenerica.alegaciones.actual.documentos permiso=editarAlegacion  perteneceA ="Alegacion"{
 		Accion crear redirigir=Alegaciones
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Solicitud" aportadoPor="CIUDADANO"	
+		SubirArchivo fileAportacion campo=Documento requerido tramite="Alegacion" aportadoPor="CIUDADANO"	
     }
 	
 	Pagina AlegacionPresentar titulo="Presentar Alegación" noForm  perteneceA ="Alegacion"{
-		Grupo mensajeIntermedio permiso=mensajeIntermedioAlegacion borde=false {
-			Wiki estilo ="box-warn box" {
-				"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-			}
-		}
 
 		//Firma persona física	
-		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=editarFirma// permiso=presentacionFirmar 
-		{			
+		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "fisica" permiso=editarFirmaAlegaciones// permiso=presentacionFirmar 
+		{
+			Grupo mensajeIntermedioFisica permiso=mensajeIntermedioAlegacion borde=false {
+				Wiki estilo ="alert alert-error" {
+					"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+				}
+			}
 			Form formFirmaPF redirigir=Alegaciones permiso=firmarRegistrarAlegacion {
 		    	Wiki {"La alegación será firmada y registrada." }
 				FirmaSimple firmarRegistrarNif titulo="Firmar y registrar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
 			}
 			
-			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}			
+			Wiki {"Nota: La operación de firmar y registrar puede tardar varios minutos."}
 		}			
 						
 		//Firma Persona jurídica
 		Grupo titulo="Paso 1. Firmar y Registrar la Alegación" mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" // permiso=presentacionFirmar 
 		{
-
+			Grupo mensajeIntermedioJuridica permiso=mensajeIntermedioAlegacionJuridica borde=false {
+				Wiki estilo ="alert alert-error" {
+					"Se produjo un error en la presentación de la alegación. Revise los pasos de Firma y/o Registro."
+				}
+			}
 			Wiki {"Debe indicar si se firmará la alegación con el certificado electrónico de la empresa o con el certificado electrónico de los representates, si opta por esta última opción y la representación es mancomunada la aceptación/renuncia debe firmarse por todos los representantes mancomunados"}
 			
 			Form tipoCertificadoFirma autoEnviar {
@@ -1000,8 +1040,16 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 
 				// La firma y registro se hace en dos pasos
 
-				Grupo titulo="Paso 1.1. Firmar la Alegación"  permiso=editarFirma{						
-					Wiki {"La alegación será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la alegación."}
+				Grupo titulo="Paso 1.1. Firmar la Alegación"  permiso=editarFirmaAlegaciones {
+				
+					Grupo mensajeIntermedioFirmada mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=mensajeIntermedioAlegacionFirmar borde=false {
+			            Wiki estilo ="alert" {
+			            	"Se produjo un error en la presentación de la alegación. Pulse otra vez el botón 'Firmar' para intentar finalizar el proceso."
+			            }
+			        }
+	                
+	                Wiki {"La alegación será firmada. Cuando todos los representantes hayan firmado podrá registrarla y obtener el recibo de la presentación de la alegación."}
+					
 					Form formFirmaRepresentante permiso=firmarAlegacion {
 						FirmaSimple firmarRepresentante titulo="Firmar" documento=SolicitudGenerica.alegaciones.actual.registro.oficial calcularFirmantes=SolicitudGenerica.solicitante listaFirmantes=SolicitudGenerica.alegaciones.actual.registro.firmantes.todos
 					}
@@ -1019,17 +1067,23 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					
 				Grupo titulo="Paso 1.2. Registrar la Alegación" permiso=registrarAlegacion 
 				{
+					Grupo mensajeIntermedioRegistrada mostrarSiCampo SolicitudGenerica.solicitante.tipo = "juridica" permiso=mensajeIntermedioAlegacionRegistrar borde=false {
+						Wiki estilo ="alert" {
+							"Se produjo un error en la presentación de la solicitud. Pulse otra vez el botón 'Registrar' para intentar finalizar el proceso."
+						}
+					}
+					
 					Wiki {"Su alegación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 			
 					Form frmRegistrar redirigir=Alegaciones {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 			
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
 				}	
 			}								
 
-			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma="cif" permiso=editarFirma
+			Grupo borde=false mostrarSiCampo SolicitudGenerica.alegaciones.actual.registro.tipoFirma="cif" permiso=editarFirmaAlegaciones
 			{
 				Wiki {"La alegación será firmada y registrada. "}
 
@@ -1205,7 +1259,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Wiki {"Su solicitud ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 
 					Form frmRegistrar redirigir=PresentarFAP {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}
@@ -1372,11 +1426,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
 			}
 			
-			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
-				Wiki estilo ="box-warn box" {
-					"Se produjo un error en la presentación de la justificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-				}
-			}
+//			Grupo mensajeIntermedio permiso=aportacionMensajeIntermedio borde=false {
+//				Wiki estilo ="box-warn box" {
+//					"Se produjo un error en la presentación de la justificación. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
+//				}
+//			}
 			
 			// Sobreescrito HTML
 			
@@ -1579,7 +1633,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Wiki {"Su solicitud de modificación ha sido firmada correctamente. Ahora puede presentarla. Una vez presentada podrá obtener el recibo."}
 
 					Form frmRegistrar redirigir=PresentarModificacionFAP {
-						Boton botonRegistrar titulo="Registrar"
+						Boton botonRegistrar titulo="Registrar" waitPopup
 					}
 
 					Wiki {"Nota: La operación de registro puede tardar varios minutos."}

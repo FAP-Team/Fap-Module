@@ -11,6 +11,7 @@ import javax.persistence.EntityTransaction;
 import org.joda.time.DateTime;
 
 import config.InjectorConfig;
+import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 
 import platino.FirmaUtils;
@@ -24,10 +25,13 @@ import services.FirmaService;
 import services.FirmaServiceException;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import services.NotificacionService;
 import utils.ResolucionUtils.LineasResolucionSortComparator;
+import utils.NotificacionUtils;
 import utils.StringUtils;
 
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
+import enumerado.fap.gen.EstadoNotificacionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
@@ -36,10 +40,14 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
+import models.Agente;
 import models.Documento;
+import models.DocumentoNotificacion;
 import models.Evaluacion;
 import models.ExpedienteAed;
+import models.Firmante;
 import models.LineaResolucionFAP;
+import models.Notificacion;
 import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
@@ -383,7 +391,7 @@ public class ResolucionBase {
 		
 	}
 
-	public void publicarCopiarEnExpedientes (long idResolucion){
+	public void copiarEnExpedientes (long idResolucion){
 		//ResolucionFAP resolucion = ResolucionFAP.findById(idResolucion);
 			ResolucionBase resolucion = null;
 			try {
@@ -394,14 +402,13 @@ public class ResolucionBase {
 			
 			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
-			// ATENCIÓN:
-			// 		LISTAEXPEDIENTES SE CREA PERO NO SE MODIFICA NUNCA
-			//
+
 			int i = 1;
 			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
 			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 				SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
+				listaExpedientes.add(linea.solicitud.expedienteAed);
 				if ((i%10 == 0) || (i == resolucion.resolucion.lineasResolucion.size())) {
 					try {
 						gestorDocumental.copiarDocumentoEnExpediente(resolucion.resolucion.registro.oficial.uri, listaExpedientes);
@@ -430,48 +437,82 @@ public class ResolucionBase {
 				play.Logger.error("No se han podido copiar el documento de resolución a los expedientes: "+" -> "+e);
 				Messages.error("No se han podido copiar el documento de resolución a los expedientes");
 			}
-			
-			//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
-			//Si no hay, ha terminado la publicacion
-			
-			if (!resolucion.resolucion.conBaremacion) {
-				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
-				tx.begin();
-				if (EstadoResolucionEnum.notificada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-				else
-					resolucion.avanzarFase_Registrada_Publicada(resolucion.resolucion);
-				tx.commit();
-				tx.begin();
-		} 
+			if (!Messages.hasErrors()){
+				resolucion.resolucion.copiadoExpedientes = true;
+			}
 	 }
-	 
-	public void notificarCopiarEnExpedientes (long idResolucion) {
+
+	 public boolean notificarCopiarEnExpedientes (long idResolucion, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta){
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 		}catch (Throwable e) {
 			// TODO: handle exception
 		}
-		
-		List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
+
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
-		if (!Messages.hasErrors()) {
-			
+		
+		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		
+		boolean correcto = true;
+		
+		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+
+			if (!linea.notificada){
+				SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
+	
+				// Se crea la notificación y se añade a la solicitud correspondiente
+				
+				Notificacion notificacion = new Notificacion();
+				DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+				DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
+				notificacion.documentosANotificar.add(docANotificar2);
+				notificacion.documentosANotificar.add(docANotificar);
+				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
+				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
+				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
+				notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
+				notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
+				notificacion.frecuenciaRecordatorioRespuesta = fapNotificacionFrecuenciarecordatoriorespuesta;
+				notificacion.estado = EstadoNotificacionEnum.creada.name();
+				notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
+				notificacion.asunto = "Notificación de resolución";
+				notificacion.save();
+				solicitud.notificaciones.add(notificacion);
+				solicitud.save();
+	
+				// Se envía la notificación
+				
+				try {
+					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+					notificacion.fechaPuestaADisposicion = new DateTime();
+					notificacion.save();
+					linea.notificada = true;
+					play.Logger.info("Notificada la linea de resolución de la solicitud "+linea.solicitud.id);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					correcto = false;
+					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
+				}
+					
+				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+			}
 		}
 		
-		if (!resolucion.resolucion.conBaremacion) {
-				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
-				tx.begin();
-				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-				else
-					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-				tx.commit();
-				tx.begin();
+		if (correcto) {
+			EntityTransaction tx = JPA.em().getTransaction();
+			tx.commit();
+			tx.begin();
+			if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+				resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+			else
+				resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+			tx.commit();
+			tx.begin();
 		}
+		return correcto;
 	}
 	 
 	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
@@ -682,6 +723,16 @@ public class ResolucionBase {
 
 			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
 			res.resolucion.save();
+
+			tx.commit();
+
+			//Una vez clasificados todos los documentos, termina la publicacion
+			tx.begin();
+			if (EstadoResolucionEnum.notificada.name().equals(res.resolucion.estado))
+				res.avanzarFase_Registrada_PublicadaYNotificada(res.resolucion);
+			else
+				res.avanzarFase_Registrada_Publicada(res.resolucion);
+			res.resolucion.save();
 			tx.commit();
 
 		} catch (Throwable e) {
@@ -758,7 +809,7 @@ public class ResolucionBase {
 	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
 		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
 		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
-			if (linea.estado.equals("concedida")) // Base
+			if (linea.estado.equals("concedida") || linea.estado.equals("afectada")) // Base
 				lista.add(linea);
 		}
 		return lista;
@@ -1030,6 +1081,73 @@ public class ResolucionBase {
 		if (properties.FapProperties.getBoolean("fap.resoluciones.notificar"))
 			return true;
 		return false;
+	}
+
+	public File generarDocumentoOficioRemision (LineaResolucionFAP linea) {
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", linea.solicitud);
+		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", this.resolucion);
+		File report = null;
+		try {
+			report = new Report(getBodyReportOficioRemision())
+								.header(getHeaderReport())
+								.footer(getFooterReport())
+								.renderTmpFile(linea.solicitud, resolucion);
+			
+			linea.registro = new Registro();
+			linea.registro.oficial.descripcion = "Oficio de remisión";
+			linea.registro.oficial.tipo = getTipoDocumentoOficioRemision();
+			if (linea.registro.firmantes.todos == null || linea.registro.firmantes.todos.size() == 0) {
+				List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = 'gestor'").fetch();
+				for (int i = 0; i < agentes.size(); i++) {
+					Firmante firmante = new Firmante(agentes.get(i));
+					linea.registro.firmantes.todos.add(firmante);
+				}
+				linea.registro.firmantes.save();
+			}
+			linea.registro.save();
+		} catch (Exception e) {
+			Messages.error("Error Generando el Documento de Oficio de Remisión");
+			e.printStackTrace();
+			play.Logger.error("Error Generando el Documento de Oficio de Remisión");
+		}
+		return report;
+	}
+	
+	 public void generarOficioRemision (long idResolucion) {
+		ResolucionBase resolucion = null;
+		try {
+			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+		}catch (Throwable e) {
+			Messages.error("Error obteniendo el objeto Resolución");
+			e.printStackTrace();
+			play.Logger.error("Error obteniendo el objeto Resolución");			
+		}
+
+		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
+		
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+
+		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
+
+			if (!linea.generadoOficio){
+			
+				try  {
+					
+					// Se genera el documento oficio de remisión
+					File fileOficioRemision = generarDocumentoOficioRemision(linea);
+					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+					linea.generadoOficio = true;
+					linea.save();
+				} catch (Throwable e)   {
+					Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+					e.printStackTrace();
+					play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+				}
+			}
+		}
+		
+
+		play.Logger.info("Se ha generado el documento de oficio de remisión "+resolucion.resolucion.lineasResolucion+" para la resolucion "+idResolucion);
 	}
 	
 }

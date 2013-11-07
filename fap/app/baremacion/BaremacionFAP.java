@@ -162,6 +162,7 @@ public class BaremacionFAP {
 						if (conceptoS.tipo.jerarquia.equals(conceptoE.tipo.jerarquia)) {
 							for (int i=0; i<evaluacion.tipo.duracion; i++) {
 								conceptoS.valores.get(0).valorEstimado = conceptoE.valores.get(0).valorEstimado;
+								conceptoS.valores.get(0).valorPropuesto = conceptoE.valores.get(0).valorPropuesto;
 							}
 							conceptoS.save();
 							break;
@@ -193,5 +194,9 @@ public class BaremacionFAP {
 		}
 	}
 	
+	public static boolean checkFinalizarEvaluacion(Evaluacion evaluacion) {
+		//Sobreescribir si es necesario realizar una comprobacion antes de finalizar la evaluacion
+		return true;
+	}
 	
 }

@@ -86,5 +86,13 @@ bc. public static Object getDatoAdicional(String name, Evaluacion evaluacion){
 }
 
 De forma que se le pase como argumento el nombre (_name_) del dato Adicional en cuestión y la evaluación que se está tratando en ese momento, y devuelve un Objeto (ya que dependiendo el dato Adicional puede ser un String, Double, etc., no conocemos el tipo a priori) con el valor correspondiente a ese dato Adicional. Se establece un IF para conocer que dato Adicional es y se halla su valor simplemente obteniendolo de la llamada al _getter_ correspondiente del dato Adicional, que como vimos antes se crea como método privado.
-	
-	
+
+
+h2. Realizar comprobaciones adicionales al finalizar
+
+Suponiendo que se desean realizar comprobaciones de requisitos adicionales a la baremación, o comprobaciones que solo puedan ser realizadas una vez se rellene por completo el formulario de la baremación, se puede sobreescribir el método _checkFinalizarEvaluacion_. Por defecto, el método devuelve _true_.
+
+bc. public static boolean checkFinalizarEvaluacion(Evaluacion evaluacion) {
+	//Sobreescribir si es necesario realizar una comprobacion antes de finalizar la evaluacion
+	return true;
+}

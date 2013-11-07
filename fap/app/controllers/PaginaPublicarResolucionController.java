@@ -44,7 +44,21 @@ public class PaginaPublicarResolucionController extends PaginaPublicarResolucion
 			resolBase.publicarCambiarEstadoYDatos(idResolucionFAP);
 		}
 		if (!Messages.hasErrors()) {
-			dbResolucionFAP.estadoPublicacion=EstadoResolucionPublicacionEnum.estadoFecha.name();
+			//Existen dos pasos de cuando se copiaba el oficial de resolucion en expediente
+			//dbResolucionFAP.estadoPublicacion=EstadoResolucionPublicacionEnum.estadoFecha.name();
+			dbResolucionFAP.estadoPublicacion = EstadoResolucionPublicacionEnum.publicada.name();
+			
+			if (!dbResolucionFAP.conBaremacion) {
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				tx.begin();
+				if (EstadoResolucionEnum.notificada.name().equals(dbResolucionFAP.estado))
+					resolBase.avanzarFase_Registrada_PublicadaYNotificada(dbResolucionFAP);
+				else
+					resolBase.avanzarFase_Registrada_Publicada(dbResolucionFAP);
+				tx.commit();
+				tx.begin();
+		} 
 			dbResolucionFAP.save();
 			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada con éxito");
 		} else
@@ -53,37 +67,37 @@ public class PaginaPublicarResolucionController extends PaginaPublicarResolucion
 	}
 	
 	
-	@Util
-	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void copiaExpediente(Long idResolucionFAP, String btnCopiaExpediente) {
-		checkAuthenticity();
-		if (!permisoCopiaExpediente("editar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
-
-		if (!Messages.hasErrors()) {
-			PaginaPublicarResolucionController.copiaExpedienteValidateRules();
-		}
-		ResolucionBase resolBase = null;
-		if (!Messages.hasErrors()) {
-			try {
-				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
-			} catch (Throwable e) {
-				new Exception ("No se ha podido obtener el objeto resolución", e);
-			}
-		}
-		if (!Messages.hasErrors()) {
-			resolBase.publicarCopiarEnExpedientes(idResolucionFAP);
-			resolBase.resolucion.estadoPublicacion = EstadoResolucionPublicacionEnum.publicada.name();
-			resolBase.resolucion.save();
-		}
-		if (!Messages.hasErrors()) {
-
-			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada con éxito");
-		} else
-			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
-		PaginaPublicarResolucionController.copiaExpedienteRender(idResolucionFAP);
-	}
+//	@Util
+//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+//	public static void copiaExpediente(Long idResolucionFAP, String btnCopiaExpediente) {
+//		checkAuthenticity();
+//		if (!permisoCopiaExpediente("editar")) {
+//			Messages.error("No tiene permisos suficientes para realizar la acción");
+//		}
+//
+//		if (!Messages.hasErrors()) {
+//			PaginaPublicarResolucionController.copiaExpedienteValidateRules();
+//		}
+//		ResolucionBase resolBase = null;
+//		if (!Messages.hasErrors()) {
+//			try {
+//				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
+//			} catch (Throwable e) {
+//				new Exception ("No se ha podido obtener el objeto resolución", e);
+//			}
+//		}
+//		if (!Messages.hasErrors()) {
+//			resolBase.publicarCopiarEnExpedientes(idResolucionFAP);
+//			resolBase.resolucion.estadoPublicacion = EstadoResolucionPublicacionEnum.publicada.name();
+//			resolBase.resolucion.save();
+//		}
+//		if (!Messages.hasErrors()) {
+//
+//			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada con éxito");
+//		} else
+//			log.info("Acción Editar de página: " + "gen/PaginaPublicarResolucion/PaginaPublicarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
+//		PaginaPublicarResolucionController.copiaExpedienteRender(idResolucionFAP);
+//	}
 	
 //	@Util
 //	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).

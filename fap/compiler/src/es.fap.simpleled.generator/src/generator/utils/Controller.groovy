@@ -372,8 +372,8 @@ public class ${controllerName} extends ${controllerGenName} {
 				}.join("\n")}""";
 		
 		devolver +=	"""${getEntidad}
-				Agente agente = AgenteController.getAgente();
-				log.info("Visitando página: "+${renderView}+" Agente: "+agente);
+				Agente logAgente = AgenteController.getAgente();
+				log.info("Visitando página: "+${renderView}+" Agente: "+logAgente);
 				"""; 
 		if (isPopup()){
 			devolver += """renderTemplate(${StringUtils.params(
@@ -458,12 +458,12 @@ public class ${controllerName} extends ${controllerGenName} {
 					extraParams.collect{it.split(" ")[1]}
 				)});
 			}
-			Agente agente = AgenteController.getAgente();
+			Agente logAgente = AgenteController.getAgente();
 			if(!Messages.hasErrors()){
 				${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito "+" Agente: "+agente);
+				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito "+" Agente: "+logAgente);
 			}
-			else log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+agente);
+			else log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+logAgente);
 			${editarRenderCall}
 		}
 		""";
@@ -532,7 +532,7 @@ public class ${controllerName} extends ${controllerGenName} {
 					)});
 				}
 				${entidad.typeId} = null;
-				Agente agente = AgenteController.getAgente();
+				Agente logAgente = AgenteController.getAgente();
 				if(!Messages.hasErrors()){
 					$crearSaveCall
 					${saveEntities.collect{
@@ -540,10 +540,10 @@ public class ${controllerName} extends ${controllerGenName} {
 							return "${it.variableDb}.save();";
 						else return "";
 					}.join("\n")}
-					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito"+" Agente: "+agente);
+					log.info("Acción Crear de página: "+${renderView}+" , intentada con éxito"+" Agente: "+logAgente);
 				}
 				else{
-					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+agente);
+					log.info("Acción Crear de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+logAgente);
 				}
 				return ${entidad.id};
 			}
@@ -672,12 +672,12 @@ public class ${controllerName} extends ${controllerGenName} {
 					${backupCopia}
 					${codigoBorrar}
 				}
-					Agente agente = AgenteController.getAgente();
+					Agente logAgente = AgenteController.getAgente();
 				if(!Messages.hasErrors()){
 					$borrarEntidad
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito"+" Agente: "+agente);
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada con éxito"+" Agente: "+logAgente);
 				} else{
-					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+agente);
+					log.info("Acción Borrar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)"+" Agente: "+logAgente);
 				}
 				${controllerName}.borrarRender(${StringUtils.params(allEntities.collect{it.id})});
 			}

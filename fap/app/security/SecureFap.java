@@ -1,6 +1,8 @@
 
 package security;
 
+import messages.Messages;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import models.Agente;
 import models.AutorizacionesFAP;
 import models.Busqueda;
 import models.Documento;
+import models.FasesRegistro;
 import models.LineaResolucionFAP;
 import models.Participacion;
 import models.PeticionCesiones;
@@ -32,6 +35,7 @@ import enumerado.fap.gen.AccesoAgenteEnum;
 import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosPeticionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import enumerado.fap.gen.FaseRegistroEnum;
 import enumerado.fap.gen.ListaCesionesEnum;
 import enumerado.fap.gen.ListaEstadosEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
@@ -108,6 +112,19 @@ public class SecureFap extends Secure {
 			return noHayverificacion(_permiso, action, ids, vars);
 		else if ("permisoCopiaExpedientes".equals(id))
 			return permisoCopiaExpedientes(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAlegacionFirmar".equals(id))
+			return mensajeIntermedioAlegacionFirmar(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAlegacionRegistrar".equals(id))
+			return mensajeIntermedioAlegacionRegistrar(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAlegacionJuridica".equals(id))
+			return mensajeIntermedioAlegacionJuridica(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAceptarRenunciarFirmar".equals(id))
+			return mensajeIntermedioAceptarRenunciarFirmar(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAceptarRenunciarRegistrar".equals(id))
+			return mensajeIntermedioAlegacionRegistrar(_permiso, action, ids, vars);
+		else if ("mensajeIntermedioAceptarRenunciarJuridica".equals(id))
+			return mensajeIntermedioAlegacionJuridica(_permiso, action, ids, vars);
+		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
 
@@ -430,6 +447,69 @@ public class SecureFap extends Secure {
 
 		if ((registro != null && registro.fasesRegistro != null && registro.fasesRegistro.firmada.toString().equals("true".toString()) || registro != null && registro.fasesRegistro != null && registro.fasesRegistro.registro.toString().equals("true".toString()) || registro != null && registro.fasesRegistro != null && registro.fasesRegistro.expedienteAed.toString().equals("true".toString())) && registro != null && registro.fasesRegistro != null && registro.fasesRegistro.clasificarAed.toString().equals("false".toString()))
 			return new ResultadoPermiso(Accion.Editar);
+
+		return null;
+	}
+	
+	private ResultadoPermiso mensajeIntermedioAlegacionFirmar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		
+		if (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("false".toString()) && Messages.hasErrors()) {
+			return new ResultadoPermiso(Grafico.Editable);
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso mensajeIntermedioAlegacionRegistrar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if (Messages.hasErrors()) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso mensajeIntermedioAlegacionJuridica(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if (Messages.hasErrors()) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso mensajeIntermedioAceptarRenunciarFirmar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("false".toString()) && Messages.hasErrors()) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
 
 		return null;
 	}

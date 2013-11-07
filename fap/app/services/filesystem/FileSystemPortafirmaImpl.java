@@ -3,7 +3,14 @@ package services.filesystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
+import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
+import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
+import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 
 import models.Agente;
 import models.ResolucionFAP;
@@ -25,7 +32,15 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 		return response;
 	}
 
-
+	@Override
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (String titulo, String descripcion, TipoSolicitudEnumType tipoSolicitud, PrioridadEnumType prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String comentario, String emailNotificacion, String urlRedireccion, String urlNotificacion, String flujoSolicitud, ListaDocumentosAedType documentosAed, ListaDocumentosType documentos) throws PortafirmaFapServiceException {
+		// TODO: ¿Qué devolvemos en este mock?
+		PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
+		response.setIdSolicitud("fakeSolicitud");
+		response.setComentarios("fakeComentarios");
+		return response;
+	}
+	
 	@Override
 	public void eliminarSolicitudFirma() throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
@@ -40,6 +55,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	@Override
 	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
 		return true;
+		//return false;
 	}
 
 	public boolean isConfigured() {
@@ -68,9 +84,19 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(
-			ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
+//		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
+//		estadoSolicitudFirma.setEstado("Rechazada");
+//		return estadoSolicitudFirma;
+		return null;
+	}
+	
+	@Override
+	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+//		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
+//		estadoSolicitudFirma.setEstado("Rechazada");
+//		return estadoSolicitudFirma;
 		return null;
 	}
 

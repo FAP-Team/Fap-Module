@@ -27,9 +27,11 @@
      campo:'ResolucionFAP.lineasResolucion', 
      id:'tablaOficiosRemisionGenerados', 
      idEntidad:'idLineaResolucionFAP', 
+     popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
      titulo:'Lineas de resolución', 
+     urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionGenerados(idResolucionFAP)
 }
 	
@@ -62,6 +64,8 @@
 		
 			#{fap.grupo permiso:'permisoFirmarOficioRemision', titulo:'Firmar y Registrar de Salida los Oficios de Remisión'}
 				
+			#{fap.grupo borde:false, permiso:'permisoEnviarOficiosRemisionPortafirma'}
+				
 			<div class="wiki ">
 <p>Debe firmar los siguientes oficios de remisión: </p>
 
@@ -69,7 +73,7 @@
 		
 #{fap.tabla 
      campo:'ResolucionFAP.lineasResolucion', 
-     id:'tablaOficiosRemisionSinFirmar', 
+     id:'tablaOficiosRemisionSinFirmarManual', 
      idEntidad:'idLineaResolucionFAP', 
      nombreBotonEditar:'Firmar', 
      popupLeer:'popupOficioNotificacion', 
@@ -79,7 +83,7 @@
      urlBeforeOpenPageTable:play.mvc.Router.reverse("PaginaNotificarResolucionController.beforeOpenPageTable" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id, 'irDespuesDeValidar':'']), 
      urlEditar:play.mvc.Router.reverse("PaginaFirmarOficioRemisionController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
-     urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionSinFirmar(idResolucionFAP)
+     urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionSinFirmarManual(idResolucionFAP)
 }
 	
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
@@ -102,6 +106,93 @@
 
 			#{/fap.grupo}
 		
+			#{fap.grupo borde:false, permiso:'permisoOficiosRemisionPortaFirma'}
+				
+#{fap.tabla 
+     campo:'ResolucionFAP.lineasResolucion', 
+     id:'tablaOficiosRemisionSinFirmarPortaFirma', 
+     idEntidad:'idLineaResolucionFAP', 
+     popupLeer:'popupOficioNotificacion', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Lineas de resolución', 
+     urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
+     urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionSinFirmarPortaFirma(idResolucionFAP)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Solicitud', campo:'solicitud.estado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nif/Cif Solicitante', campo:'solicitud.solicitante.numeroId', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Línea', campo:'estado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Oficio de Remisión', campo:'registro.oficial.enlaceDescarga', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Justificante Oficio de Remisión', campo:'registro.justificante.enlaceDescarga', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Firmado Oficio de Remisión', campo:'registro.fasesRegistro.firmadaVisible', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'permisoOficiosRemisionProcesoPortaFirma', titulo:'Portafirma'}
+				
+			#{fap.grupo borde:false, permiso:'permisoEnviarOficiosRemisionPortafirma'}
+				
+			<div class="wiki ">
+<p>Puede enviar los Oficios de Remisión sin firmar aún al Portafirma.</p>
+
+			</div>
+		
+				#{fap.permiso permiso:"permisoEnviarOficiosRemisionPortafirma", accion:accion}
+					
+				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirma' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formEnviarOficiosRemisionPortaFirma"}
+					
+			#{fap.combo campo:'resolucionFAP.destinatarioOficioRemisionPortafirma', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
+		
+			#{fap.fecha campo:'resolucionFAP.fechaTopeFirmaOficiosRemision', requerido:true, titulo:'Fecha tope firma' /}		
+		
+			#{fap.boton id:'botonEnviarOficiosRemisionPortaFirma', titulo:'Enviar Oficios de Remisión sin firmar' /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+			#{/fap.grupo}
+		
+				#{fap.permiso permiso:"permisoComprobarFirmasOficiosRemisionPortaFirma", accion:accion}
+					
+				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formComprobarFirmasOficiosRemisionPortaFirma' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formComprobarFirmasOficiosRemisionPortaFirma"}
+					
+			#{fap.boton id:'botonComprobarFirmasOficiosRemisionPortaFirma', titulo:'Comprobar firmas pendientes' /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'permisoOficiosRemisionFirmados', titulo:'Registro'}
+				
+				#{fap.permiso permiso:"permisoOficiosRemisionFirmados", accion:accion}
+					
+				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formRegistrarOficiosRemision' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formRegistrarOficiosRemision"}
+					
+			#{fap.boton id:'botonRegistrarOficiosRemision', titulo:'Registrar Oficios de Remisión y justificantes' /}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
 			#{/fap.grupo}
 		
 			#{fap.grupo borde:false, permiso:'permisoNotificar'}
@@ -116,9 +207,11 @@
      campo:'ResolucionFAP.lineasResolucion', 
      id:'tablaOficiosRemisionFirmados', 
      idEntidad:'idLineaResolucionFAP', 
+     popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
      titulo:'Lineas de resolución', 
+     urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionFirmados(idResolucionFAP)
 }
 	

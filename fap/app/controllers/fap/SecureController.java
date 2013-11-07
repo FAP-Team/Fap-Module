@@ -271,7 +271,6 @@ public class SecureController extends GenericController{
 
     public static void authenticateFap(@Required String username, String password, boolean remember) throws Throwable {
     	checkAuthenticity();
-    	System.out.println("Autenticando");
     	if (!buscarAuthenticateOverwrite(username, password, remember))
     		authenticatePorDefecto(username, password, remember);
     }

@@ -151,7 +151,7 @@ function popupAddButton (popup, textButton, functionButton, type, enable) {
 	var typeLocal = type;
 	if (textButton == 'Borrar')
 		typeLocal = 'btn-danger';
-	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
+	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id_"+popup+"\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
 }
 
 function popupTitle (popup, title) {

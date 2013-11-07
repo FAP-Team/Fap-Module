@@ -13,8 +13,8 @@ public class ResolucionesFAPController extends ResolucionesFAPControllerGen {
 		
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		Long idResolucionFAP = ids.get("idResolucionFAP");
-		if ((idResolucionFAP != null) && (idResolucionFAP > 0)) {
-			ids.remove("idResolucionFAP");
+		if ((idResolucionFAP != null)) {
+		//	ids.remove("idResolucionFAP");
 			log.info("Se ha borrado la variable de sesion idResolucionFAP "+ idResolucionFAP);
 		}
 		

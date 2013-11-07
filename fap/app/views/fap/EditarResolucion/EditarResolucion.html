@@ -1,0 +1,421 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Principal', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'EditarResolucion', 
+     titulo:'Resolución', 
+     urlBorrar:play.mvc.Router.reverse('EditarResolucionController.borrar' , ['idResolucionFAP':resolucionFAP?.id]), 
+     urlCrear:play.mvc.Router.reverse('EditarResolucionController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('EditarResolucionController.editar' , ['idResolucionFAP':resolucionFAP?.id])
+}
+	
+			#{fap.grupo permiso:'seleccionarUnExpediente', titulo:'Seleccionar expediente'}
+				
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'tablaExpedientesUnico', 
+     idEntidad:'idSolicitud', 
+     saveEntity:false, 
+     seleccionable:'Crear Resolucion', 
+     tipoContainer:'pagina', 
+     urlSeleccionable:'EditarResolucionController.crearResolucion', 
+     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'expedienteAed.idAed' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Estado Interno', campo:'estadoValue' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre Solicitante', campo:'solicitante.nombreCompleto', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, mostrarSi:['resolucionMultiple'].contains(resolucionFAP?.modalidad?.toString())}
+				
+			#{fap.grupo permiso:'seleccionarExpedientes', titulo:'Expedientes afectados'}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.formSeleccionarExpedientes' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formSeleccionarExpedientes"}
+					
+			#{fap.grupo titulo:'Seleccionar Expedientes'}
+				
+			#{fap.combo campo:'resolucionFAP.tipoMultiple', id:'cmbTipo', requerido:true, titulo:'Seleccionar' /}		
+		
+			#{fap.boton id:'btnGuardar', titulo:'Guardar' /}
+		
+			#{/fap.grupo}
+		
+				#{/form}
+			
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'tablaExpedientes', 
+     idEntidad:'idSolicitud', 
+     saveEntity:false, 
+     seleccionable:'Seleccionar', 
+     tipoContainer:'pagina', 
+     urlSeleccionable:'EditarResolucionController.seleccionar', 
+     urlTabla:@EditarResolucionController.tablatablaExpedientes(),
+     idP:resolucionFAP?.id
+}
+	
+	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'expedienteAed.idAed' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Estado Interno', campo:'estadoValue' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre Solicitante', campo:'solicitante.nombreCompleto', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'noSeleccionarExpedientes', titulo:'Preparar la Resolución'}
+				
+			<div class="wiki ">
+<p>Si su resolución está lista para crearla, pulse el siguiente botón.</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('EditarResolucionController.frmCrearResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"frmCrearResolucion"}
+					
+			#{fap.boton id:'btnCrearResolucion', titulo:'Crear Líneas de Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'prepararResolucion', titulo:'Preparar la Resolución'}
+				
+			<div class="wiki ">
+<p>Si su resolución está lista para firmar, pulse el siguiente botón.</p>
+
+			</div>
+		
+#{fap.tabla 
+     campo:'ResolucionFAP.lineasResolucion', 
+     id:'lineasResolucionAntesPreparar', 
+     idEntidad:'idLineaResolucionFAP', 
+     popupEditar:'ModificarEstadoExpediente', 
+     popupLeer:'VerExpediente', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Lineas Resolución', 
+     urlEditar:play.mvc.Router.reverse("popups.ModificarEstadoExpedienteController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
+     urlLeer:play.mvc.Router.reverse("popups.VerExpedienteController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
+     urlTabla:@EditarResolucionController.tablalineasResolucionAntesPreparar(idResolucionFAP)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Id', campo:'id', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Solicitud', campo:'solicitud.estado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nif/Cif Solicitante', campo:'solicitud.solicitante.numeroId', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+		
+#{/fap.tabla}
+
+				#{form play.mvc.Router.reverse('EditarResolucionController.prepararResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"prepararResolucion"}
+					
+			#{fap.boton id:'btnPrepararResolucion', titulo:'Preparar Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'solicitudFirmaResolucion', titulo:'Preparar Solicitud de Firma'}
+				
+			#{fap.grupo borde:false, permiso:'portafirmaJefeServicio'}
+				
+			#{fap.grupo borde:false}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.frmFirmarJefeServicio' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"frmFirmarJefeServicio"}
+					
+#{fap.tabla 
+     campo:'ResolucionFAP.registro.firmantes.todos', 
+     id:'firFirmarResolucionFirmantes', 
+     idEntidad:'idFirmante', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Interesados', 
+     urlTabla:@EditarResolucionController.tablafirFirmarResolucionFirmantes(idResolucionFAP)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nº', campo:'idvalor', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre', campo:'nombre', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Cardinalidad', campo:'cardinalidad', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Firmado', campo:'fechaFirma', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.firma firma:'firma', id:'firFirmarResolucion', titulo:'Firmar Resolucion', uri:"${resolucionFAP.registro.oficial.uri}" /}
+		
+				#{/form}
+			
+			<div class="wiki ">
+<p>Nota: La operación de firmar y registrar puede tardar varios minutos.</p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, permiso:'firmaJefeServicio'}
+				
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.resoluciones.generarDocumentoResolucion")==true}
+				
+			#{fap.enlace estilo:'btn', id:'enlaceDocumentoResolucionNoGenerado', target:'_blank', titulo:'Obtener documento de Resolución', url:resolucionFAP.registro.borrador.urlDescarga /}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.resoluciones.generarDocumentoResolucion")==false}
+				
+			#{fap.enlace estilo:'btn', id:'enlaceDocumentoResolucionGenerado', target:'_blank', titulo:'Obtener documento de Resolución', url:resolucionFAP.registro.oficial.urlDescarga /}
+		
+			#{/fap.grupo}
+		
+#{fap.tabla 
+     campo:'ResolucionFAP.docConsultaPortafirmasResolucion', 
+     crearEntidad:accion == 'crear', 
+     id:'documentosPortafirma', 
+     idContainer:'idResolucionFAP', 
+     idEntidad:'idDocumento', 
+     nameContainer:'EditarResolucion', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Documentos de Consulta Portafirmas', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("EditarResolucionController.beforeOpenPageTable" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id, 'irDespuesDeValidar':'']), 
+     urlContainerCrear:play.mvc.Router.reverse("EditarResolucionController.index" , ['accion':'crear']), 
+     urlContainerEditar:play.mvc.Router.reverse("EditarResolucionController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_']), 
+     urlCrear:play.mvc.Router.reverse("DocConsultaPortafirmaCrearController.index" , ['accion':'crear', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'redirigir': 'anterior']), 
+     urlCrearEntidad:play.mvc.Router.reverse('EditarResolucionController.crearForTablas' , ['idResolucionFAP':resolucionFAP?.id]), 
+     urlEditar:play.mvc.Router.reverse("DocConsultaPortafirmaEditarController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idDocumento':documento?.id? documento?.id:'_idDocumento_', 'redirigir': 'anterior']), 
+     urlTabla:@EditarResolucionController.tabladocumentosPortafirma(idResolucionFAP)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo', campo:'tipo' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Ver', funcion:'<a href=\"${urlDescarga}\" target=\"_blank\">Descargar</a>' /}
+		
+#{/fap.tabla}
+
+				#{form play.mvc.Router.reverse('EditarResolucionController.formSelectJefeServicio' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formSelectJefeServicio"}
+					
+			#{fap.combo campo:'resolucionFAP.jefeDeServicio', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
+		
+			#{fap.combo campo:'resolucionFAP.prioridadFirma', id:'selectPrioridadFirma', requerido:true, titulo:'Prioridad Firma' /}		
+		
+			#{fap.fecha campo:'resolucionFAP.fechaTopeFirma', requerido:true, titulo:'Fecha Tope Firma' /}		
+		
+			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}		
+		
+			#{fap.boton id:'enviarFirmaJSPortafirma', titulo:'Enviar al portafirma' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'esperaFirmaJefeServicio', titulo:'Firma del Jefe de Servicio'}
+				
+			#{fap.grupo borde:false, permiso:'noEditable'}
+				
+			#{fap.combo campo:'resolucionFAP.jefeDeServicio', id:'selectJefeServicio', titulo:'Jefe de Servicio Seleccionado' /}		
+		
+			#{/fap.grupo}
+		
+			<div class="wiki ">
+<p><em>El jefe de servicio aún no ha firmado en el portafirma</em></p>
+
+			</div>
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'firmaDirector', titulo:'Firma del Director'}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.firmaDirectorPortafirma' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"firmaDirectorPortafirma"}
+					
+			#{fap.boton id:'enviarFirmaDirectorPortafirma', titulo:'Solicitar firma al Director' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'esperaFirmaDirector', titulo:'Firma Director'}
+				
+			<div class="wiki ">
+<p><em>El Director aún no ha firmado en el portafirma. Si quiere comprobar si ya se firmó darle al siguiente botón.</em></p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('EditarResolucionController.frmComprobarFirmas' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"frmComprobarFirmas"}
+					
+			#{fap.boton id:'comprobarFirmado', titulo:'Comprobar' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'registrarResolucion', titulo:'Registro de la Resolución'}
+				
+			#{fap.grupo borde:false}
+				
+			#{fap.enlace estilo:'btn', target:'_blank', titulo:'Obtener Documento Resolución', url:resolucionFAP.registro.oficial.urlDescargaFirmado /}
+		
+			#{/fap.grupo}
+		
+			<div class="wiki ">
+<p>Para proceder a registrar la resolución pulse el siguiente botón: "Registrar resolución"</p>
+
+			</div>
+		
+				#{form play.mvc.Router.reverse('EditarResolucionController.enviarRegistrarResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"enviarRegistrarResolucion"}
+					
+			#{fap.boton id:'btnRegistrarResolucion', titulo:'Registrar Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo mostrarSi:(properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios")==true), permiso:'publicarResolucion', titulo:'Publicar la Resolución en el tablón de Anuncios'}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.publicacionResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"publicacionResolucion"}
+					
+			#{fap.enlace action:play.mvc.Router.reverse("PaginaPublicarResolucionController.index" , ['idResolucionFAP':resolucionFAP?.id]), estilo:'btn', id:'publicarResolucionPasos', titulo:'Publicar la Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo mostrarSi:(properties.FapProperties.getBoolean("fap.resoluciones.notificar")==true), permiso:'notificarResolucion', titulo:'Notificar la Resolución'}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.formNotificarResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formNotificarResolucion"}
+					
+			#{fap.enlace action:play.mvc.Router.reverse("PaginaNotificarResolucionController.index" , ['idResolucionFAP':resolucionFAP?.id]), estilo:'btn', id:'notificarResolucionPasos', titulo:'Notificar la Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, permiso:'verDocumentoResolucion'}
+				
+				#{fap.permiso permiso:"permisoCopiaExpedientes", accion:accion}
+					
+				#{form play.mvc.Router.reverse('EditarResolucionController.copiaExpediente' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"copiaExpediente"}
+					
+			#{fap.grupo titulo:'Copia de la Resolución a los expedientes afectados'}
+				
+			#{fap.enlace estilo:'boton', target:'_blank', titulo:'Resolución', url:resolucionFAP.registro.oficial.urlDescargaFirmado /}
+		
+			#{fap.boton id:'btnCopiaExpediente', titulo:'Copiar', waitPopup:true /}
+		
+			#{/fap.grupo}
+		
+				#{/form}
+			
+				#{/fap.permiso}		
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'finalizarResolucion', titulo:'Finalizar la Resolución'}
+				
+				#{form play.mvc.Router.reverse('EditarResolucionController.formFinalizarResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formFinalizarResolucion"}
+					
+			#{fap.enlace action:play.mvc.Router.reverse("PaginaFinalizarResolucionController.index" , ['idResolucionFAP':resolucionFAP?.id]), estilo:'btn', id:'enlaceFinalizarResolucion', titulo:'Finalizar la Resolución' /}
+		
+				#{/form}
+			
+			#{/fap.grupo}
+		
+			#{fap.grupo permiso:'mostrarDatosResolucion', titulo:'Datos de la Resolución actual'}
+				
+			#{fap.combo campo:'resolucionFAP.tipoDefinidoResolucion', titulo:'Resolución' /}		
+		
+			#{fap.combo campo:'resolucionFAP.tipo', titulo:'Tipo' /}		
+		
+			#{fap.combo campo:'resolucionFAP.modalidad', requerido:true, titulo:'Modalidad de la Resolución' /}		
+		
+			#{fap.combo campo:'resolucionFAP.estado', titulo:'Estado' /}		
+		
+			#{fap.texto campo:'resolucionFAP.tituloInterno', requerido:true, titulo:'Título' /}		
+		
+			#{fap.areaTexto campo:'resolucionFAP.sintesis', requerido:true, titulo:'Síntesis' /}		
+		
+			#{fap.areaTexto campo:'resolucionFAP.descripcion', titulo:'Descripción' /}		
+		
+			#{fap.areaTexto campo:'resolucionFAP.observaciones', titulo:'Observaciones' /}		
+		
+			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'Área resolución' /}		
+		
+			#{fap.combo campo:'resolucionFAP.tiposResolucion', id:'tiposResolucion', requerido:true, titulo:'Tipo resolución' /}		
+		
+			#{fap.check campo:'resolucionFAP.conBaremacion', titulo:'¿Tiene Baremación?' /}		
+		
+			#{fap.grupo borde:false, permiso:'mostrarDatosResolucion'}
+				
+#{fap.tabla 
+     campo:'ResolucionFAP.lineasResolucion', 
+     id:'lineasResolucion', 
+     idEntidad:'idLineaResolucionFAP', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Lineas Resolución', 
+     urlTabla:@EditarResolucionController.tablalineasResolucion(idResolucionFAP)
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Id', campo:'id', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Solicitud', campo:'solicitud.estado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nif/Cif Solicitante', campo:'solicitud.solicitante.numeroId', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Oficio de remisión', campo:'registro.oficial.enlaceDescargaFirmado', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Justificante oficio de remisión', campo:'registro.justificante.enlaceDescarga', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.texto campo:'resolucionFAP.folio_inicio', titulo:'Folio Inicial' /}		
+		
+			#{fap.texto campo:'resolucionFAP.folio_final', titulo:'Folio Final' /}		
+		
+			#{fap.texto campo:'resolucionFAP.codigoResolucion', titulo:'Numero' /}		
+		
+			#{fap.fecha campo:'resolucionFAP.fechaRegistroResolucion', titulo:'Fecha Resolución' /}		
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

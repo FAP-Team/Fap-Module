@@ -358,33 +358,34 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     
     @Override
     public models.JustificanteRegistro registroDeSalida(Solicitante solicitante, Documento documento,ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
-		log.info("Preparando registro de salida");
+    	play.Logger.info("Preparando registro de salida");
 
 		DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
 		String datosAFirmar = getDatosRegistroNormalizados(expediente, datosRegistro);
-		log.info(datosAFirmar);
+		play.Logger.info(datosAFirmar);
 
 		String datosFirmados;
 		try {
 			datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
-			log.info("Datos normalizados firmados");
+			play.Logger.info("Datos normalizados firmados");
 		} catch(Exception e){
             throw new RegistroServiceException("Error firmando los datos de registro de Salida"+ e);
         }
 
 		try {	
 			JustificanteRegistro justificantePlatino = registroDeSalida(datosAFirmar, datosFirmados);
-			log.info("Registro de entrada realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
-			log.info("RegistrarEntrada -> EXIT OK");
+			play.Logger.info("Registro de entrada realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			play.Logger.info("RegistrarEntrada -> EXIT OK");
 			models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
-	        log.info("Realizando un Registro de Salida: " +
+			play.Logger.info("Realizando un Registro de Salida: " +
 	        		"Agente: "+AgenteController.getAgente().name+
 	        		"Número de Registro: "+justificante.getNumeroRegistro()+
 	        		"Fecha: "+justificante.getFechaRegistro());
+			play.Logger.info("Registro de Salida realizado con éxito");
 			return justificante;
 		} catch (Exception e) {
-			log.error("Error al obtener el justificante y EXIT "+e);
-			log.error("RegistrarEntrada -> EXIT ERROR");
+			play.Logger.info("Error al obtener el justificante y EXIT "+e);
+			play.Logger.info("RegistrarEntrada -> EXIT ERROR");
 			throw new RegistroServiceException("Error al registrar de salida: "+e.getMessage());
 		}		
 	}	

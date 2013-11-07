@@ -92,29 +92,29 @@ public class Documento extends FapModel {
 	}
 
 	public String getEnlaceDescarga() {
-		//if (fechaRegistro != null) {
-		try {
+		if (uri != null) {
 			String ret = "<a href=\"";
 			ret += AedUtils.crearUrl(uri);
 			ret += "\" target=\"_blank\">Descargar</a>";
 			return ret;
-		} catch (Exception e) {
-			return "";
 		}
+		return "";
 	}
 
 	public String getEnlaceDescargaFirmado() {
-		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		try {
-			String firma = gestorDocumental.getDocumentoFirmaByUri(uri);
-			if (firma != null && !firma.isEmpty()) {
-				String ret = "<a href=\"";
-				ret += AedUtils.crearUrlConInformeDeFirma(uri);
-				ret += "\" target=\"_blank\">Descargar Firmado</a>";
-				return ret;
+		if (uri != null) {
+			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+			try {
+				String firma = gestorDocumental.getDocumentoFirmaByUri(uri);
+				if (firma != null && !firma.isEmpty()) {
+					String ret = "<a href=\"";
+					ret += AedUtils.crearUrlConInformeDeFirma(uri);
+					ret += "\" target=\"_blank\">Descargar Firmado</a>";
+					return ret;
+				}
+			} catch (Exception e) {
+				play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
 			}
-		} catch (Exception e) {
-			//play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
 		}
 		return "";
 	}

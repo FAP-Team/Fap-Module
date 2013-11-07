@@ -402,14 +402,13 @@ public class ResolucionBase {
 			
 			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			List<ExpedienteAed> listaExpedientes = new ArrayList<ExpedienteAed>();
-			// ATENCIÓN:
-			// 		LISTAEXPEDIENTES SE CREA PERO NO SE MODIFICA NUNCA
-			//
+
 			int i = 1;
 			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
 			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 				SolicitudGenerica sol = SolicitudGenerica.findById(linea.solicitud.id);
+				listaExpedientes.add(linea.solicitud.expedienteAed);
 				if ((i%10 == 0) || (i == resolucion.resolucion.lineasResolucion.size())) {
 					try {
 						gestorDocumental.copiarDocumentoEnExpediente(resolucion.resolucion.registro.oficial.uri, listaExpedientes);
@@ -443,7 +442,7 @@ public class ResolucionBase {
 			}
 	 }
 
-	 public void notificarCopiarEnExpedientes (long idResolucion){
+	 public boolean notificarCopiarEnExpedientes (long idResolucion, int fapNotificacionPlazoacceso, int fapNotificacionFrecuenciarecordatorioacceso, int fapNotificacionPlazorespuesta, int fapNotificacionFrecuenciarecordatoriorespuesta){
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
@@ -455,60 +454,65 @@ public class ResolucionBase {
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		
+		boolean correcto = true;
+		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
-			SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
-
-			// Se crea la notificación y se añade a la solicitud correspondiente
-			
-			Notificacion notificacion = new Notificacion();
-			DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-			DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
-			notificacion.documentosANotificar.add(docANotificar2);
-			notificacion.documentosANotificar.add(docANotificar);
-			notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
-			notificacion.descripcion = "Notificación de resolución de la fase de ejecución";
-			notificacion.plazoAcceso = FapProperties.getInt("fap.notificacion.plazoacceso");
-			notificacion.plazoRespuesta = FapProperties.getInt("fap.notificacion.plazorespuesta");
-			notificacion.frecuenciaRecordatorioAcceso = FapProperties.getInt("fap.notificacion.frecuenciarecordatorioacceso");
-			notificacion.frecuenciaRecordatorioRespuesta = FapProperties.getInt("fap.notificacion.frecuenciarecordatoriorespuesta");
-			notificacion.estado = EstadoNotificacionEnum.creada.name();
-			notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
-			notificacion.asunto = "Notificación de resolución";
-			notificacion.save();
-			solicitud.notificaciones.add(notificacion);
-			solicitud.save();
-
-			// Se envía la notificación
-			
-			try {
-				notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
-				play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
-				notificacion.fechaPuestaADisposicion = new DateTime();
-				notificacion.save();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
-				Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
-			}
+			if (!linea.notificada){
+				SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
+	
+				// Se crea la notificación y se añade a la solicitud correspondiente
 				
-			NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+				Notificacion notificacion = new Notificacion();
+				DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+				DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
+				notificacion.documentosANotificar.add(docANotificar2);
+				notificacion.documentosANotificar.add(docANotificar);
+				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
+				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
+				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
+				notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
+				notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
+				notificacion.frecuenciaRecordatorioRespuesta = fapNotificacionFrecuenciarecordatoriorespuesta;
+				notificacion.estado = EstadoNotificacionEnum.creada.name();
+				notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
+				notificacion.asunto = "Notificación de resolución";
+				notificacion.save();
+				solicitud.notificaciones.add(notificacion);
+				solicitud.save();
+	
+				// Se envía la notificación
+				
+				try {
+					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+					notificacion.fechaPuestaADisposicion = new DateTime();
+					notificacion.save();
+					linea.notificada = true;
+					play.Logger.info("Notificada la linea de resolución de la solicitud "+linea.solicitud.id);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					correcto = false;
+					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
+					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
+				}
+					
+				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+			}
 		}
 		
-		//Una vez copiados los expedientes se comprueba si hay documentos de baremacion
-		//y se avanza de fase segun el tipo de la resolucion
-		if (!resolucion.resolucion.conBaremacion) {
-				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
-				tx.begin();
-				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-				else
-					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-				tx.commit();
-				tx.begin();
+		if (correcto) {
+			EntityTransaction tx = JPA.em().getTransaction();
+			tx.commit();
+			tx.begin();
+			if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+				resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+			else
+				resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+			tx.commit();
+			tx.begin();
 		}
+		return correcto;
 	}
 	 
 	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
@@ -719,6 +723,16 @@ public class ResolucionBase {
 
 			res.resolucion.estadoDocBaremacionResolucion=EstadosDocBaremacionEnum.clasificado.name(); //Estado a docs Generados
 			res.resolucion.save();
+
+			tx.commit();
+
+			//Una vez clasificados todos los documentos, termina la publicacion
+			tx.begin();
+			if (EstadoResolucionEnum.notificada.name().equals(res.resolucion.estado))
+				res.avanzarFase_Registrada_PublicadaYNotificada(res.resolucion);
+			else
+				res.avanzarFase_Registrada_Publicada(res.resolucion);
+			res.resolucion.save();
 			tx.commit();
 
 		} catch (Throwable e) {
@@ -795,7 +809,7 @@ public class ResolucionBase {
 	public List<LineaResolucionFAP> getLineasDocBaremacion(ResolucionFAP resolucion){
 		List<LineaResolucionFAP> lista = new ArrayList<LineaResolucionFAP>();
 		for (LineaResolucionFAP linea : resolucion.lineasResolucion) {
-			if (linea.estado.equals("concedida")) // Base
+			if (linea.estado.equals("concedida") || linea.estado.equals("afectada")) // Base
 				lista.add(linea);
 		}
 		return lista;
@@ -1115,16 +1129,20 @@ public class ResolucionBase {
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
-			try  {
-				
-				// Se genera el documento oficio de remisión
-				File fileOficioRemision = generarDocumentoOficioRemision(linea);
-				gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
-				linea.save();
-			} catch (Throwable e)   {
-				Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
-				e.printStackTrace();
-				play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+			if (!linea.generadoOficio){
+			
+				try  {
+					
+					// Se genera el documento oficio de remisión
+					File fileOficioRemision = generarDocumentoOficioRemision(linea);
+					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+					linea.generadoOficio = true;
+					linea.save();
+				} catch (Throwable e)   {
+					Messages.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+					e.printStackTrace();
+					play.Logger.error("Error Generando o subiendo al GestorDocumental el Documento de Oficio de Remisión");
+				}
 			}
 		}
 		

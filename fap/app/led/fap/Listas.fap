@@ -8803,6 +8803,7 @@ Lista estadoConvocatoria crearEnumerado {
 	presentacion : "Presentación"
 	instruccion : "Instrucción"	
 	ejecucion : "Ejecucion"
+	resolucion: "Resolucion"
 }
 
 Lista estadosVerificacion crearEnumerado {

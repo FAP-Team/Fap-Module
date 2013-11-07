@@ -1008,7 +1008,7 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
-			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionConComentarios == null && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor") && resolucion.resolucion.estadoInformeBaremacionConComentarios == null && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
 					&& resolucion.resolucion.estadoInformeBaremacionConComentarios == null) {
 				return new ResultadoPermiso(Grafico.Editable);
 	
@@ -1038,7 +1038,7 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 		if(resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios()){
-			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor") && (resolucion.resolucion.estadoDocBaremacionResolucion != null && "clasificado".toString().equals(resolucion.resolucion.estadoDocBaremacionResolucion.toString()))
 					&& resolucion.resolucion.estadoInformeBaremacionSinComentarios == null) {
 				return new ResultadoPermiso(Grafico.Editable);
 	
@@ -1068,7 +1068,7 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 		if(resolucion.isGenerarDocumentoBaremacionCompletoConComentarios()){
-			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionConComentarios != null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("generado".toString())) {
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor") && resolucion.resolucion.estadoInformeBaremacionConComentarios != null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("generado".toString())) {
 				return new ResultadoPermiso(Grafico.Editable);
 			}
 		}
@@ -1095,7 +1095,7 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 		if(resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios()){
-			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.estadoInformeBaremacionSinComentarios != null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("generado".toString())) {
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor") && resolucion.resolucion.estadoInformeBaremacionSinComentarios != null && resolucion.resolucion.estadoInformeBaremacionSinComentarios.toString().equals("generado".toString())) {
 				return new ResultadoPermiso(Grafico.Editable);
 			}
 		}
@@ -1119,7 +1119,7 @@ public class SecureFap extends Secure {
 				// TODO: handle exception
 			}
 
-			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.resolucion.conBaremacion.toString().equals("true".toString()) && resolucion.resolucion.estadoPublicacion != null && !resolucion.resolucion.estado.equals("publicada")){
+			if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor") && resolucion.resolucion.conBaremacion.toString().equals("true".toString()) && resolucion.resolucion.estadoPublicacion != null && !resolucion.resolucion.estado.equals("publicada")){
 				//Tengo que generar todos los docs
 					if (resolucion.isGenerarDocumentoBaremacionCompletoConComentarios() && resolucion.resolucion.estadoInformeBaremacionConComentarios!= null && resolucion.resolucion.estadoInformeBaremacionConComentarios.toString().equals("clasificado".toString())
 							&& resolucion.isGenerarDocumentoBaremacionCompletoSinComentarios() 
@@ -1140,10 +1140,9 @@ public class SecureFap extends Secure {
 		Agente agente = AgenteController.getAgente();
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
-
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar
+				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar o no esten notificados
 				if ((linea.registro.oficial.uri == null) || (linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) {
 					return new ResultadoPermiso(Accion.All);
 				}
@@ -1160,7 +1159,7 @@ public class SecureFap extends Secure {
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
 				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar
 				if (linea.registro.oficial.uri == null) {
@@ -1178,7 +1177,7 @@ public class SecureFap extends Secure {
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
 				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y quede alguno sin firmar
 				if ((linea.registro.oficial.uri != null) && ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
@@ -1196,7 +1195,7 @@ public class SecureFap extends Secure {
 
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
 				if ((linea.registro.oficial.uri == null) || ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
 					return null;

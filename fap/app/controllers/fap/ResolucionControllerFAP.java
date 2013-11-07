@@ -134,14 +134,20 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		
 		for (LineaResolucionFAP linea: lineasResolucion) {
 			Interesado interesado = linea.solicitud.solicitante.getInteresado();
-			listaInteresados.add(interesado);
+			if (!listaInteresados.contains(interesado)){
+				listaInteresados.add(interesado);
+			}
 			if (linea.solicitud.solicitante.isPersonaFisica() && linea.solicitud.solicitante.representado) {
 				Interesado interesadoR = linea.solicitud.solicitante.representante.getInteresado();
-				listaInteresados.add(interesadoR);
+				if (!listaInteresados.contains(interesadoR)){
+					listaInteresados.add(interesadoR);
+				}
 			} else if (linea.solicitud.solicitante.isPersonaJuridica() && linea.solicitud.solicitante.representantes != null) {
 				for (RepresentantePersonaJuridica r : linea.solicitud.solicitante.representantes) {
 					Interesado interesadoR = r.getInteresado();
-					listaInteresados.add(interesadoR);
+					if (!listaInteresados.contains(interesadoR)){	
+						listaInteresados.add(interesadoR);
+					}
 				}
 			}
 		}

@@ -2,7 +2,7 @@
             package enumerado.fap.gen;
             
             public enum EstadoConvocatoriaEnum{
-                presentacion("Presentación"),instruccion("Instrucción"),ejecucion("Ejecucion");
+                presentacion("Presentación"),instruccion("Instrucción"),ejecucion("Ejecucion"),resolucion("Resolucion");
             
                 private String value;
             

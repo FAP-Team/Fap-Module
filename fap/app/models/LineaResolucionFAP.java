@@ -48,6 +48,16 @@ public class LineaResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
 
+	public Boolean notificada;
+
+	@Transient
+	public String visibleNotificada;
+
+	public Boolean generadoOficio;
+
+	@Transient
+	public String visibleGeneradoOficio;
+
 	@Transient
 	public String importeTotal_formatFapTabla;
 
@@ -90,6 +100,12 @@ public class LineaResolucionFAP extends FapModel {
 		else
 			registro.init();
 
+		if (notificada == null)
+			notificada = false;
+
+		if (generadoOficio == null)
+			generadoOficio = false;
+
 		postInit();
 	}
 
@@ -109,6 +125,18 @@ public class LineaResolucionFAP extends FapModel {
 		}
 
 		return firmantes.todos;
+	}
+
+	public String getVisibleNotificada() {
+		if (notificada)
+			return "Sí";
+		return "No";
+	}
+
+	public String getVisibleGeneradoOficio() {
+		if (generadoOficio)
+			return "Sí";
+		return "No";
 	}
 
 	// === MANUAL REGION END ===

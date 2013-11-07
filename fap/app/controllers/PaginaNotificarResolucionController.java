@@ -261,7 +261,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			int dias = 0;
 			// Comprobar la fecha de tope de firma con el ResolucionBase
 			try {
-				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
+				//dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
+				dias = 1;
 				DateTime diaLimite = new DateTime();
 				diaLimite = diaLimite.plusDays(dias);
 				if (diaLimite.isBefore(dbResolucionFAP.fechaTopeFirmaOficiosRemision)) {

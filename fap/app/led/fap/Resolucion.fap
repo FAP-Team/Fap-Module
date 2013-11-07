@@ -233,7 +233,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -399,7 +399,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -1111,7 +1111,7 @@ Permiso permisoEnviarOficiosRemisionPortafirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("noNotificada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1121,7 +1121,7 @@ Permiso permisoComprobarFirmasOficiosRemisionPortaFirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1131,7 +1131,7 @@ Permiso permisoOficiosRemisionFirmados {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionFirmados")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1141,7 +1141,7 @@ Permiso permisoOficiosRemisionPortaFirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1151,7 +1151,7 @@ Permiso permisoOficiosRemisionProcesoPortaFirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }

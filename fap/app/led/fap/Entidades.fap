@@ -320,6 +320,8 @@ Entidad FasesRegistro {
 	// Probando
 	String fase
 	String firmadaVisible transient
+	String registroVisible transient
+	String clasificarAedVisible transient
 }
 
 // Representación del expediente en platino

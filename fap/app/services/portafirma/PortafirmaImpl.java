@@ -124,6 +124,38 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		return solFirma;
 	}
 	
+	@Override
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(String titulo, String descripcion, TipoSolicitudEnumType tipoSolicitud, PrioridadEnumType prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String comentario, String emailNotificacion, String urlRedireccion, String urlNotificacion, String flujoSolicitud, ListaDocumentosAedType documentosAed, ListaDocumentosType documentos) throws PortafirmaFapServiceException {
+
+		CrearSolicitudType solFirma = new CrearSolicitudType();
+		solFirma.setTitulo(titulo);
+		solFirma.setDescripcion(descripcion);
+		solFirma.setTipoSolicitud(tipoSolicitud);	
+		solFirma.setPrioridad(prioridad);
+		solFirma.setFechaTopeFirma(fechaTopeFirma);
+		solFirma.setIdSolicitante(idSolicitante);
+		solFirma.setIdDestinatario(idDestinatario);
+		solFirma.setComentario(comentario);
+		solFirma.setEmailNotificacion(emailNotificacion);
+		solFirma.setUrlRedireccion(urlRedireccion);
+		solFirma.setUrlNotificacion(urlNotificacion);
+		solFirma.setFlujoSolicitud(flujoSolicitud);
+		solFirma.setDocumentosAed(documentosAed);
+		solFirma.setDocumentos(documentos);
+		
+		CrearSolicitudResponseType wsType = new CrearSolicitudResponseType();
+		try {
+			wsType = portafirmaService.crearSolicitud(solFirma);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new PortafirmaFapServiceException(e.getMessage(), e);
+		}
+		PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
+		response.setIdSolicitud(wsType.getIdSolicitud());
+		response.setComentarios(wsType.getComentario());
+		return response;
+	}
+	
 	private static XMLGregorianCalendar DateTime2XMLGregorianCalendar(DateTime fecha) throws DatatypeConfigurationException {
 		if (fecha == null)
 			return null;
@@ -136,7 +168,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	private PrioridadEnumType getEnumTypeFromValue (String strPrioridad) {
 		if (strPrioridad.equalsIgnoreCase("ALTA"))
 			return PrioridadEnumType.ALTA;
-		if (strPrioridad.equalsIgnoreCase("NORMAL"))
+		if ((strPrioridad.equalsIgnoreCase("NORMAL")) || (strPrioridad.equalsIgnoreCase("MEDIA"))) // En el portafirma es normal
 			return PrioridadEnumType.NORMAL;
 		return PrioridadEnumType.BAJA;
 	}
@@ -172,6 +204,18 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		}
 	}
 
+	@Override
+	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+		try {
+			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
+			oEstado.setIdSolicitud(idSolicitudFirma);
+			oEstado.setIdUsuario(idUsuario);
+			return portafirmaService.obtenerEstadoSolicitud(oEstado);
+		} catch (Exception e) {
+			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
+		}
+	}
+	
 	@Override
 	public void eliminarSolicitudFirma() throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub

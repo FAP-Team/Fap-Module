@@ -4,6 +4,7 @@ import services.GestorDocumentalService;
 import java.util.List;
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoResolucionNotificacionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.ModalidadResolucionEnum;
@@ -29,6 +30,7 @@ public class ResolucionSimple extends ResolucionBase {
 		resolucion.permitirRegistrar = true;
 		resolucion.permitirPublicar = true;
 		resolucion.estado = EstadoResolucionEnum.borrador.name();
+		resolucion.estadoNotificacion = EstadoResolucionNotificacionEnum.noNotificada.name();
 		resolucion.save();
 	}
 	

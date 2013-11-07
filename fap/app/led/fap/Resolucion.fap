@@ -86,6 +86,9 @@ Lista estadoResolucionPublicacion crearEnumerado {
 }
 
 Lista estadoResolucionNotificacion crearEnumerado {
+	noNotificada: "No notificada"
+	oficiosRemisionPendientesPortafirma: "Oficios de remisión pendientes en portafirma"
+	oficiosRemisionFirmados: "Oficios de remisión firmados"
 	notificada: "Notificada"
 }
 
@@ -188,6 +191,10 @@ Entidad ResolucionFAP {
 		////Para poder firmar y crear el el metodo calcular firmantes
 		//Solicitante solicitanteJefeServicio transient
 
+	String idSolicitudFirmaOficiosRemision
+	DateTime fechaTopeFirmaOficiosRemision
+	Agente hacePeticionPortafirmaOficiosRemision noConstruct
+	String destinatarioOficioRemisionPortafirma 
 }
 
 Entidad SolicitudPortafirmaFAP {
@@ -206,7 +213,7 @@ Entidad SolicitudPortafirmaFAP {
 	
 
 Formulario Principal {
-	Pagina ResolucionesFAP titulo="Lista de Resoluciones" permiso=noUsuario{
+	Pagina ResolucionesFAP titulo="Lista de Resoluciones" permiso=adminOrGestor{
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
 			Columna campo=ResolucionFAP.id titulo="ID" ancho="40"
@@ -226,7 +233,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -392,12 +399,12 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución"  popupLeer=popupOficioNotificacion  {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -541,7 +548,7 @@ Formulario Principal {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
 				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
-						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
+						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -555,16 +562,48 @@ Formulario Principal {
 					}
 				}
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
-					Wiki { "Debe firmar los siguientes oficios de remisión: "  } 
-					Tabla tablaOficiosRemisionSinFirmar campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar"{
-						Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
-						Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
-						Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
-						Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
-						Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
-						Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de Remisión" expandir
-						Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
-						Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de Remisión" expandir
+					Grupo grupoOficiosRemisionFirmaManual borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
+						Wiki {"Debe firmar los siguientes oficios de remisión: "}
+						Tabla tablaOficiosRemisionSinFirmarManual campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar" {
+							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+							Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+							Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de Remisión" expandir
+							Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
+							Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de Remisión" expandir
+						}
+					}
+					Grupo grupoOficiosRemisionPortaFirma borde=false permiso=permisoOficiosRemisionPortaFirma {
+						Tabla tablaOficiosRemisionSinFirmarPortaFirma campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
+							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
+							Columna campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" expandir
+							Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
+							Columna campo=LineaResolucionFAP.registro.oficial.enlaceDescarga titulo="Oficio de Remisión" expandir
+							Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
+							Columna campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de Remisión" expandir
+						}
+					}
+					Grupo grupoOficiosRemisionProcesoPortaFirma titulo="Portafirma" permiso=permisoOficiosRemisionProcesoPortaFirma {
+						Grupo grupoEnviarOficiosRemisionPortafirma borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
+							Wiki {"Puede enviar los Oficios de Remisión sin firmar aún al Portafirma."}
+							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
+								Combo selectJefeServicio campo=ResolucionFAP.destinatarioOficioRemisionPortafirma titulo="Destinatario Portafirma" requerido
+								Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirmaOficiosRemision titulo="Fecha tope firma" requerido
+								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar"
+							}
+						}
+						Form formComprobarFirmasOficiosRemisionPortaFirma permiso=permisoComprobarFirmasOficiosRemisionPortaFirma {
+							Boton botonComprobarFirmasOficiosRemisionPortaFirma titulo="Comprobar firmas pendientes"
+						}
+					}
+					Grupo grupoRegistroOficiosRemision titulo="Registro" permiso=permisoOficiosRemisionFirmados {
+						Form formRegistrarOficiosRemision permiso=permisoOficiosRemisionFirmados {
+      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes"
+    					}
 					}
 				}
 			}
@@ -572,7 +611,7 @@ Formulario Principal {
 				Grupo borde=false {
 					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 				}
-				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" {
+				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -582,7 +621,7 @@ Formulario Principal {
 					Columna campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Justificante Oficio de Remisión" expandir
 					Columna campo=LineaResolucionFAP.visibleNotificada titulo="Notificada" expandir
 				}
-				// Aquí van los inputs de los plazos asociados a la notificación y el botón notificar
+				Wiki {" Aquí van los inputs de los plazos asociados a la notificación y el botón notificar"}
 			}
 			Grupo grupoVolver borde=false {
 				Form formVolver {
@@ -592,16 +631,30 @@ Formulario Principal {
 		}
 	}
 	
-	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Lineas de Resolución"{
-		Grupo titulo="Datos de la Línea de Resolución y el Oficio de Remisión" {
+	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Lineas de Resolución" maximizar {
+		Grupo titulo="Datos de la Línea de Resolución" {
 			Texto campo=LineaResolucionFAP.id titulo="Id"
 			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
 			Texto campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud"
 			Texto campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" 
 			Texto campo=LineaResolucionFAP.solicitud.solicitante.nombreCompleto titulo="Solicitante" 
-			Combo campo=LineaResolucionFAP.estado titulo="Estado" 
-			Texto campo=LineaResolucionFAP.registro.id titulo="Id Oficio de remisión" 
-			Texto campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado Oficio de remisión" 
+			Combo campo=LineaResolucionFAP.estado titulo="Estado Línea"
+			Texto campo=LineaResolucionFAP.visibleGeneradoOficio titulo="Generado oficio de Remisión"
+			Grupo titulo="Oficio de Remisión" mostrarSiCampo LineaResolucionFAP.generadoOficio="true" {
+				Texto campo=LineaResolucionFAP.registro.id titulo="Id"
+				Texto campo=LineaResolucionFAP.registro.oficial.descripcionVisible titulo="Descripción"
+				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener oficio de remisión no firmado" destino="_blank"
+				Texto campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado"
+				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.firmada = "true" {
+					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener oficio de remisión firmado" destino="_blank"
+				}
+				Texto campo=LineaResolucionFAP.registro.fasesRegistro.registroVisible titulo="Registrado"
+				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.registro = "true" {
+					Enlace campo=ResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
+				}
+				Texto campo=LineaResolucionFAP.registro.fasesRegistro.clasificarAedVisible titulo="Clasificado"
+			}
+			Texto campo=LineaResolucionFAP.visibleNotificada titulo="Notificada"
 		}
 	}
 
@@ -1026,7 +1079,7 @@ Permiso notificarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada", "publicada")
-		and resolucion.estadoNotificacion = null
+		and resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
@@ -1049,6 +1102,56 @@ Permiso verDocumentoResolucion {
 	when
 		resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+	return
+		all
+}
+
+Permiso permisoEnviarOficiosRemisionPortafirma {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoNotificacion in ("noNotificada")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso permisoComprobarFirmasOficiosRemisionPortaFirma {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso permisoOficiosRemisionFirmados {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoNotificacion in ("oficiosRemisionFirmados")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso permisoOficiosRemisionPortaFirma {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
+	return
+		all
+}
+
+Permiso permisoOficiosRemisionProcesoPortaFirma {
+	vars
+		ResolucionFAP resolucion
+	when
+		resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma")
+		and agente.rolActivo in ("gestor", "administrador", "jefeServicio")
 	return
 		all
 }

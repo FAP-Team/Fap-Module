@@ -40,6 +40,12 @@ public class FasesRegistro extends FapModel {
 	@Transient
 	public String firmadaVisible;
 
+	@Transient
+	public String registroVisible;
+
+	@Transient
+	public String clasificarAedVisible;
+
 	public void init() {
 
 		postInit();
@@ -63,6 +69,18 @@ public class FasesRegistro extends FapModel {
 
 	public String getFirmadaVisible() {
 		if ((this.firmada != null) && (this.firmada == true))
+			return "Sí";
+		return "No";
+	}
+
+	public String getRegistroVisible() {
+		if ((this.registro != null) && (this.registro == true))
+			return "Sí";
+		return "No";
+	}
+
+	public String getClasificarAedVisible() {
+		if ((this.clasificarAed != null) && (this.clasificarAed == true))
 			return "Sí";
 		return "No";
 	}

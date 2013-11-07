@@ -145,6 +145,17 @@ public class ResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Agente hacePeticionPortafirma;
 
+	public String idSolicitudFirmaOficiosRemision;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaTopeFirmaOficiosRemision"), @Column(name = "fechaTopeFirmaOficiosRemisionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaTopeFirmaOficiosRemision;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Agente hacePeticionPortafirmaOficiosRemision;
+
+	public String destinatarioOficioRemisionPortafirma;
+
 	public ResolucionFAP() {
 		init();
 	}

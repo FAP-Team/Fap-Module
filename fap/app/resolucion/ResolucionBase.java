@@ -33,6 +33,7 @@ import utils.StringUtils;
 import enumerado.fap.gen.EstadoLineaResolucionEnum;
 import enumerado.fap.gen.EstadoNotificacionEnum;
 import enumerado.fap.gen.EstadoResolucionEnum;
+import enumerado.fap.gen.EstadoResolucionNotificacionEnum;
 import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
 import enumerado.fap.gen.EstadoTipoMultipleEnum;
 import enumerado.fap.gen.EstadosDocBaremacionEnum;
@@ -164,6 +165,7 @@ public class ResolucionBase {
 		resolucion.permitirRegistrar = true;
 		resolucion.permitirPublicar = true;
 		resolucion.estado = EstadoResolucionEnum.borrador.name();
+		resolucion.estadoNotificacion = EstadoResolucionNotificacionEnum.noNotificada.name();
 		resolucion.save();
 	}
 	

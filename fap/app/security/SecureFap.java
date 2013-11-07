@@ -1222,8 +1222,8 @@ public class SecureFap extends Secure {
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar o sin firmar o no esten notificados
-				if ((linea.registro.oficial.uri == null) || (linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) {
+				// Se da permiso mientras haya alguna línea con el oficio de remisión sin generar, firmar, registrar o clasificar
+				if ((linea.registro.oficial.uri == null) || (((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) || ((linea.registro.fasesRegistro.registro == null) || (linea.registro.fasesRegistro.registro == false)) || ((linea.registro.fasesRegistro.clasificarAed == null) || (linea.registro.fasesRegistro.clasificarAed == false)))) {
 					return new ResultadoPermiso(Accion.All);
 				}
 			 }
@@ -1259,8 +1259,8 @@ public class SecureFap extends Secure {
 
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y quede alguno sin firmar
-				if ((linea.registro.oficial.uri != null) && ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
+				// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y quede alguno sin firmar, registrar y/o clasificar
+				if ((linea.registro.oficial.uri != null) && (((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) || ((linea.registro.fasesRegistro.registro == null) || (linea.registro.fasesRegistro.registro == false)) || ((linea.registro.fasesRegistro.clasificarAed == null) || (linea.registro.fasesRegistro.clasificarAed == false)))) {
 					return new ResultadoPermiso(Accion.All);
 				}
 			 }
@@ -1277,12 +1277,12 @@ public class SecureFap extends Secure {
 
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
 			for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-				if ((linea.registro.oficial.uri == null) || ((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false))) {
+				if ((linea.registro.oficial.uri == null) || (((linea.registro.fasesRegistro.firmada == null) || (linea.registro.fasesRegistro.firmada == false)) || ((linea.registro.fasesRegistro.registro == null) || (linea.registro.fasesRegistro.registro == false)) || ((linea.registro.fasesRegistro.clasificarAed == null) || (linea.registro.fasesRegistro.clasificarAed == false)))) {
 					return null;
 				}
 			 }
 		}
-		// Se da permiso cuando todas las líneas tengan el oficio de remisión generado y firmado
+		// Se da permiso cuando todas las líneas tengan el oficio de remisión generado, firmado, registrado y clasificado
 		return new ResultadoPermiso(Accion.All);
 	}
 

@@ -543,7 +543,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				tx.begin();
 				try {
 					await(gestorDocumentalServiceAsync.clasificarDocumentoResolucion(dbResolucionFAP));
-					gestorDocumentalService.clasificarDocumentosConsulta(dbResolucionFAP);
+					await(gestorDocumentalServiceAsync.clasificarDocumentosConsulta(dbResolucionFAP));
 					dbResolucionFAP.registro.fasesRegistro.clasificarAed = true;
 					dbResolucionFAP.save();
 				} catch (GestorDocumentalServiceException e) {

@@ -288,7 +288,7 @@ Formulario Principal {
 				Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
 			}
 			Form prepararResolucion {
-				Boton  btnPrepararResolucion titulo="Preparar Resolución"
+				Boton  btnPrepararResolucion titulo="Preparar Resolución" waitPopup
 			}
 		}
 		

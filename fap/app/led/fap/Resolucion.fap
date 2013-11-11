@@ -233,7 +233,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -399,7 +399,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -558,7 +558,7 @@ Formulario Principal {
 							Columna campo=LineaResolucionFAP.visibleGeneradoOficio titulo="Generado Oficio de Remisión" expandir
 						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
-						Boton botonGenerarOficioRemision titulo="Generar"
+						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
 					}
 				}
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
@@ -593,7 +593,7 @@ Formulario Principal {
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
 								Combo selectJefeServicio campo=ResolucionFAP.destinatarioOficioRemisionPortafirma titulo="Destinatario Portafirma" requerido
 								Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirmaOficiosRemision titulo="Fecha tope firma" requerido
-								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar"
+								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}
 						Form formComprobarFirmasOficiosRemisionPortaFirma permiso=permisoComprobarFirmasOficiosRemisionPortaFirma {
@@ -602,7 +602,7 @@ Formulario Principal {
 					}
 					Grupo grupoRegistroOficiosRemision titulo="Registro" permiso=permisoOficiosRemisionFirmados {
 						Form formRegistrarOficiosRemision permiso=permisoOficiosRemisionFirmados {
-      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes"
+      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes" waitPopup
     					}
 					}
 				}
@@ -643,14 +643,14 @@ Formulario Principal {
 			Grupo titulo="Oficio de Remisión" mostrarSiCampo LineaResolucionFAP.generadoOficio="true" {
 				Texto campo=LineaResolucionFAP.registro.id titulo="Id"
 				Texto campo=LineaResolucionFAP.registro.oficial.descripcionVisible titulo="Descripción"
-				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener oficio de remisión no firmado" destino="_blank"
+				Enlace campo=LineaResolucionFAP.registro.oficial.urlDescarga titulo="Obtener oficio de remisión no firmado" destino="_blank"
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado"
 				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.firmada = "true" {
-					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener oficio de remisión firmado" destino="_blank"
+					Enlace campo=LineaResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener oficio de remisión firmado" destino="_blank"
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.registroVisible titulo="Registrado"
 				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.registro = "true" {
-					Enlace campo=ResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
+					Enlace campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.clasificarAedVisible titulo="Clasificado"
 			}

@@ -88,6 +88,10 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(TicketingService.class, FilesystemTicketingServiceImpl.class);
 	}
 	
+	protected void mensaje() {
+	//	bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeImpl.class);
+	}
+	
 	protected void secure() {
 		bind(Secure.class).toInstance(new SecureFap(new SecureFapGen(null)));
 	}

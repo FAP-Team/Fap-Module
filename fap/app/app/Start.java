@@ -82,6 +82,7 @@ import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
+import services.MensajeService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -231,6 +232,9 @@ public class Start extends Job {
 
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
+		
+		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+		mensajeService.mostrarInfoInyeccion();
 		
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

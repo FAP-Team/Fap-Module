@@ -56,7 +56,7 @@
 
 			</div>
 		
-			#{fap.boton id:'botonGenerarOficioRemision', titulo:'Generar' /}
+			#{fap.boton id:'botonGenerarOficioRemision', titulo:'Generar', waitPopup:true /}
 		
 				#{/form}
 			
@@ -157,7 +157,7 @@
 		
 			#{fap.fecha campo:'resolucionFAP.fechaTopeFirmaOficiosRemision', requerido:true, titulo:'Fecha tope firma' /}		
 		
-			#{fap.boton id:'botonEnviarOficiosRemisionPortaFirma', titulo:'Enviar Oficios de Remisión sin firmar' /}
+			#{fap.boton id:'botonEnviarOficiosRemisionPortaFirma', titulo:'Enviar Oficios de Remisión sin firmar', waitPopup:true /}
 		
 				#{/form}
 			
@@ -183,7 +183,7 @@
 					
 				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formRegistrarOficiosRemision' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formRegistrarOficiosRemision"}
 					
-			#{fap.boton id:'botonRegistrarOficiosRemision', titulo:'Registrar Oficios de Remisión y justificantes' /}
+			#{fap.boton id:'botonRegistrarOficiosRemision', titulo:'Registrar Oficios de Remisión y justificantes', waitPopup:true /}
 		
 				#{/form}
 			

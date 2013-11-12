@@ -25,6 +25,7 @@ import models.PeticionCesiones;
 import models.Registro;
 import models.RegistroModificacion;
 import models.ResolucionFAP;
+import models.SolicitudGenerica;
 
 import models.SolicitudGenerica;
 import models.Verificacion;
@@ -124,6 +125,18 @@ public class SecureFap extends Secure {
 			return mensajeIntermedioAlegacionRegistrar(_permiso, action, ids, vars);
 		else if ("mensajeIntermedioAceptarRenunciarJuridica".equals(id))
 			return mensajeIntermedioAlegacionJuridica(_permiso, action, ids, vars);
+		else if ("firmarRegistrarAceptarRenunciar".equals(id))
+			return firmarRegistrarAceptarRenunciar(_permiso, action, ids, vars);
+		else if ("firmarAceptarRenunciar".equals(id))
+			return firmarAceptarRenunciar(_permiso, action, ids, vars);
+		else if ("registrarAceptarRenunciar".equals(id))
+			return registrarAceptarRenunciar(_permiso, action, ids, vars);
+		else if ("firmarRegistrarAlegacion".equals(id))
+			return firmarRegistrarAlegacion(_permiso, action, ids, vars);
+		else if ("firmarAlegacion".equals(id))
+			return firmarAlegacion(_permiso, action, ids, vars);
+		else if ("registrarAlegacion".equals(id))
+			return registrarAlegacion(_permiso, action, ids, vars);	
 		
 		return nextCheck(id, _permiso, action, ids, vars);
 	}
@@ -1367,6 +1380,202 @@ public class SecureFap extends Secure {
 		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio")) {
 			return new ResultadoPermiso(Grafico.Visible);
 		}
+		return null;
+	}
+	
+	private ResultadoPermiso firmarRegistrarAceptarRenunciar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAceptacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAceptacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAceptacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((accion.toString().equals("leer".toString())) 
+		|| (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.registro.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.registro.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()))
+		) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}	
+	
+	
+	private ResultadoPermiso firmarAceptarRenunciar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAceptacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAceptacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAceptacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((accion.toString().equals("leer".toString())) 
+		    || (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("false".toString()) && !sobrepasada)
+			) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}	
+	
+	private ResultadoPermiso registrarAceptarRenunciar(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAceptacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAceptacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAceptacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if ((accion.toString().equals("leer".toString())) 
+		|| (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.registro.toString().equals("false".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.aceptarRenunciar.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.registro.toString().equals("true".toString()) && solicitud.aceptarRenunciar.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()))) {
+			if ("editar".equals(accion))
+				return new ResultadoPermiso(Accion.Editar);
+			else
+				return null;
+
+		}
+
+		return null;
+	}
+	
+
+	private ResultadoPermiso firmarRegistrarAlegacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAlegacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAlegacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAlegacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		
+		if ((accion.toString().equals("leer".toString())) 
+		|| (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.registro.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.registro.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()))
+		) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}
+	
+	private ResultadoPermiso firmarAlegacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAlegacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAlegacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAlegacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		
+		if ((accion.toString().equals("leer".toString())) 
+		    || (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("false".toString()) && !sobrepasada)
+		) {
+			return new ResultadoPermiso(Grafico.Editable);
+
+		}
+
+		return null;
+	}
+
+	private ResultadoPermiso registrarAlegacion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+		
+		DateTime currentDate = new DateTime();
+
+		boolean sobrepasada = false;
+
+		if (solicitud.fechaFinDeAlegacion == null) return null;
+
+		//for (LineaResolucion lr : solicitud.lineasResolucion) {
+		if (solicitud.fechaFinDeAlegacion != null &&
+			currentDate.toString("yyyyMMdd").compareTo(solicitud.fechaFinDeAlegacion.toString("yyyyMMdd"))> 0) {
+			sobrepasada = true;
+			//break;
+		}
+		
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+		
+		if ((accion.toString().equals("leer".toString())) 
+		|| (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.registro.toString().equals("false".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()) && !sobrepasada)
+		|| (solicitud.alegaciones.actual.registro.fasesRegistro.firmada.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.registro.toString().equals("true".toString()) && solicitud.alegaciones.actual.registro.fasesRegistro.clasificarAed.toString().equals("false".toString()))) {
+			return new ResultadoPermiso(Grafico.Editable);
+		}
+
 		return null;
 	}
 }

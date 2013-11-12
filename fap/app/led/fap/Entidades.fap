@@ -57,6 +57,8 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
 	String fechaARestaurarStr transient
+	DateTime fechaFinDeAceptacion
+	DateTime fechaFinDeAlegacion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)

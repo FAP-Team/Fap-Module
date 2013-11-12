@@ -82,14 +82,14 @@ require:
         transitive: false
     - es.gobcan.eadmon -> gestordocumental v20130607:
         transitive: false
-    - es.gobcan -> certificados 1.1:
+    - es.gobcan -> certificados v20140220:
         transitive: false
     - es.gobcan -> resoluciones v20130529:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
     
-    - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
+    - es.gobcan.aciisi ->  notificaciones v20140221:
         transitive: false
     
     - es.mityc -> facturae 2.0:
@@ -114,7 +114,7 @@ repositories:
             - platinowssinterceptor -> *
             - platinosecurityheader -> *
             - es.mityc -> * 
-            - es.gobcan.platino.servicios.enotificacion -> * 
+            - es.gobcan.aciisi -> * 
             - de.devsurf.components.converter.integrations -> *
 
     - fap-devel modules repository:

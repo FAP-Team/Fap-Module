@@ -130,6 +130,14 @@ public class SolicitudGenerica extends FapModel {
 	@Transient
 	public String fechaARestaurarStr;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinDeAceptacion"), @Column(name = "fechaFinDeAceptacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinDeAceptacion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinDeAlegacion"), @Column(name = "fechaFinDeAlegacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaFinDeAlegacion;
+
 	public SolicitudGenerica() {
 		init();
 	}

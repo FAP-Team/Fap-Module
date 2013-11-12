@@ -33,6 +33,26 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
+	Pagina DatosTramites noForm titulo="Datos Tramites" campo=SolicitudGenerica {
+		Grupo grFechaFinAceptacion titulo="Fecha Fin de Aceptación" ayuda="Info. Aquí se introduce la fecha limite para aceptar acorde con el acceso a la sede." (popover) {
+			Form frmFinAceptacion redirigir=DatosTramites {
+				Grupo borde=false{
+						Fecha titulo="Fecha Fin de Aceptación" campo=SolicitudGenerica.fechaFinDeAceptacion requerido
+				}
+				Boton btnGuardarFechaFinAceptacion titulo="Guardar"
+			}
+		}
+	
+		Grupo grFechaFinAlegacion titulo="Fecha Fin de Alegación" ayuda="Info. Aquí se introduce la fecha limite para aceptar acorde con el acceso a la sede." (popover) {
+			Form frmFinAlegacion redirigir=DatosTramites {
+				Grupo borde=false{
+						Fecha titulo="Fecha Fin de Alegación" campo=SolicitudGenerica.fechaFinDeAlegacion requerido
+				}
+				Boton btnGuardarFechaFinAlegacion titulo="Guardar"
+			}
+		}
+	} 
+	
 	
 	// Sobreescrito
 	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{

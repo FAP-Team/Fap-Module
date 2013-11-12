@@ -1,13 +1,33 @@
 h2. Changelog
 
+h3 Versión 2.3.2RC9
+* Actualizada documentación.
+* Cambiado los permisos de resolución para admitir al rol revisor.
+* Se han modificado algunos permisos (firmarRegistrarAceptarRenunciar, firmarAceptarRenunciar, registrarAceptarRenunciar, firmarRegistrarAlegacion, firmarAlegacion y registrarAlegacion) que otorgan acceso teniendo en cuenta estos nuevos campos (para tener permiso la fecha actual debe ser menor a la fecha del campo)
+* Fixed minor bug en property que da la descripción de la notificación de los oficios de remisión
+* Fixed minor bug en filtro de tabla de notificaciones para no mostrar en estado "creada"
+* Modificaciones en envio de documentos de consulta al portaFirmas
+* Añadidas properties para indicar quien es la personaJuridica interesada en dicho envio.
+* Reestructurada la clasificacion de docs de consulta del portafirma. (Copia en expediente convocatoria).
+* Permitiendo actualizar informacion de notificaciones desde Administración.
+* FixeBug: Se permite mantener varias resoluciones a la vez, en varias pestañas del navegador sin que se solapen sus atributos.
+* Fixed minor bug: Eliminación de logs innecesarios
+* Añadiendo más informacion a los logs en la ejecución de los logs de notificación.
+* Modificada la condicion de entrada al job de documentos (se ejecuta a la 10 nuevamente)
+* Corregidos mensajes de error en los procesos de firma y registro de Alegación y Aceptación/Renuncia
+* Añadida alternativa de firma de oficios de remisión usando portafirma
+* Fixed tiny bug: corregido nombre de property en TramiteDesistimiento
+* Añadido waitPopup en algunos botones de resolución
+* Se han añadido los campos FechaFinDeAceptacion y FechaFinDeAlegacion a la SolicitudGenerica
+* Se ha creado la página DatosTramites, la cual permite modificar dichos campos
+
 h3 Versión 2.3.2RC8
 * Fixedbug en lectura de trámite de aportación AceptacionRenuncia.
 * Añadida recuperacion de errores en registro de AceptacionRenuncia.
 * Fixed bug varios.
 * Adicion de permiso a popup de documentacion de AceptacionRenuncia.
 * Fixed bug en redireccion de AceptacionRenuncia.
-* Añadidos multiples volcados de datos a los logs a la hroa de registrar de salida.
-* 
+* Añadidos multiples volcados de datos a los logs a la hora de registrar de salida.
 
 h3 Versión 2.3.2RC7
 * Añadido plazo acceso y plazo respuesta al notificar.

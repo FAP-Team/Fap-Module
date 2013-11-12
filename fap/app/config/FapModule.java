@@ -14,6 +14,7 @@ import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
+import services.MensajeService;
 import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
@@ -27,6 +28,7 @@ import services.filesystem.FilesystemTicketingServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
 import services.openofice.OpenOfficeConversor;
 import services.platino.PlatinoTercerosServiceImpl;
+import services.platino.PlatinoMensajeServiceImpl;
 import services.ticketing.TicketingService;
 import services.NotificacionService;
 
@@ -45,6 +47,7 @@ public class FapModule extends PlayAbstractModule {
 		registroLibroResoluciones();
 		terceros();
 		ticketing();
+		mensaje();
 //		conversor();
 	}
 	
@@ -89,7 +92,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 	
 	protected void mensaje() {
-	//	bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeImpl.class);
+		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
 	}
 	
 	protected void secure() {

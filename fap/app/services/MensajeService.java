@@ -1,6 +1,6 @@
 package services;
 
-import platino.Firma;
+import platino.*;
 
 public interface MensajeService {
 

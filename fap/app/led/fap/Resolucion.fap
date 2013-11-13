@@ -241,6 +241,7 @@ Formulario Principal {
 		}
 	}
 
+	// HTML modificado
 	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
 		Grupo titulo="Seleccionar expediente" permiso=seleccionarUnExpediente {

@@ -1,4 +1,4 @@
-package services.platino;
+package services.filesystem;
 
 import java.net.URL;
 import java.util.List;
@@ -23,6 +23,7 @@ import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeAreaType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeOficioType;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.RemesaType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ResultadoBusquedaMensajeType;
 import es.gobcan.platino.servicios.edmyce.mensajes.*;
@@ -31,56 +32,25 @@ import services.MensajeServiceException;
 import utils.WSUtils;
 
 @InjectSupport
-public class PlatinoMensajeServiceImpl implements services.MensajeService {
+public class FileSystemMensajeServiceImpl implements services.MensajeService {
 
 	private PropertyPlaceholder propertyPlaceholder;
 	
 	private MensajePortType mensajePort;
-	
-	@Inject
-	public PlatinoMensajeServiceImpl(PropertyPlaceholder propertyPlaceholder) {
-		
-        this.propertyPlaceholder = propertyPlaceholder;
-
-        URL wsdlURL = PlatinoGestorDocumentalService.class.getClassLoader().getResource("wsdl/mensaje.wsdl");
-        mensajePort = new MensajeService(wsdlURL).getMensajeService();
-
-        WSUtils.configureEndPoint(mensajePort, getEndPoint());
-        WSUtils.configureSecurityHeaders(mensajePort, propertyPlaceholder);
-        PlatinoProxy.setProxy(mensajePort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(mensajePort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-    }
     
-
-	
-	public boolean isConfigured(){
-	    return hasConnection();
-	}
-	
-	@Override
-    public void mostrarInfoInyeccion() {
-		if (isConfigured())
-			play.Logger.info("El servicio de Mensajes ha sido inyectado con Platino y está operativo.");
-		else
-			play.Logger.info("El servicio de Mensajes ha sido inyectado con Platino y NO está operativo.");
+    @Override
+    public boolean isConfigured() {
+        //No necesita configuración
+        return true;
     }
 	
-	private boolean hasConnection() {
-		boolean hasConnection = false;
-		try {
-			hasConnection =  getVersion() != null;
-			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
-		}catch(Exception e){
-			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
-		}
-		return hasConnection; 
-	}
+	 @Override
+	 public void mostrarInfoInyeccion() {
+		 if (isConfigured())
+			play.Logger.info("El servicio de Mensaje ha sido inyectado con FileSystem y está operativo.");
+		else
+			play.Logger.info("El servicio de Mensaje ha sido inyectado con FileSystem y NO está operativo.");
+	 }
 	
     private String getVersion() {
         return mensajePort.getVersion();
@@ -102,6 +72,7 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 	 * @param correo
 	 * @return 
 	 */
+	
 	@Override
 	public  String enviarMensajeOficio (String mensaje, String correo) throws MensajeServiceException {
 		
@@ -117,7 +88,9 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		mensajeDeOficio.setCorreosElectronicos(correos);
 		
 		try{
-			return mensajePort.enviarMensajeOficio(mensajeDeOficio);
+			System.out.println("Se está enviando el correo: " + mensajeDeOficio.getTextoEmail() + " a la dirección " + correo);
+			//return mensajePort.enviarMensajeOficio(mensajeDeOficio);
+			return ("Se está enviando el correo: " + mensajeDeOficio.getTextoEmail() + " a la dirección " + correo);
 		}
 		catch(Exception e){
 			System.out.println("No se ha podido mandar el e-mail. Causa: " + e);
@@ -154,7 +127,12 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		mensajeDeOficio.setCorreosElectronicos(mails);
 		
 		try{
-			return mensajePort.enviarMensajeOficio(mensajeDeOficio);
+			System.out.println("Se está enviando el correo: " + mensajeDeOficio.getTextoEmail() + " a las direcciones: ");
+			for (String correo:correos){
+				System.out.println(correo);
+			}
+			//return mensajePort.enviarMensajeOficio(mensajeDeOficio);
+			return ("Se está enviando el correo: " + mensajeDeOficio.getTextoEmail());
 		}
 		catch(Exception e){
 			System.out.println("No se ha podido mandar el e-mail. Causa: " + e);
@@ -170,6 +148,7 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		MensajeOficioType message = new MensajeOficioType();
 		
 		CanalMensajeEnumType canal = CanalMensajeEnumType.EMAIL;
+		ArrayOfUriRemesaType remesa = new ArrayOfUriRemesaType();
 		
 		ArrayOfCorreoElectronicoType correos = new ArrayOfCorreoElectronicoType();
 		correos.getCorreoElectronico().add(correo);
@@ -181,9 +160,14 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 			mensajesDeOficio.getMensajeOficio().add(message);	
 		}
 		try{
-			return mensajePort.enviarMensajesOficio(mensajesDeOficio);
+			System.out.println("Se están enviando los siguientes mensajes: ");
+			for (String mensaje:mensajes){
+				System.out.println(mensaje);
+			}
+			//return mensajePort.enviarMensajesOficio(mensajesDeOficio);
+			return remesa;
 		}
-		catch(MensajeException e){
+		catch(Exception e){
 			play.Logger.error("No se han podido mandar los correos. Causa: " + e.getMessage());
 			throw new MensajeServiceException("No se están enviando los emails", e.getCause());
 		}
@@ -196,13 +180,23 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		
 		CanalMensajeEnumType canal = CanalMensajeEnumType.fromValue(via);
 		
+		ArrayOfMensajeType mensajes = new ArrayOfMensajeType();
+		
+		MensajeType mensaje = new MensajeType();
+		mensaje.setCanal(canal);
+		mensajes.getMensaje().add(mensaje);
+		
+		ResultadoBusquedaMensajeType resultado = new ResultadoBusquedaMensajeType();
+		resultado.setMensajes(mensajes);
+		
 		criterioBusqueda.setCanal(canal);
 		criterioBusqueda.setCorreoElectronico(mail);
 		criterioBusqueda.setNumeroResultados(repeticiones);
 		try{
-			return mensajePort.buscarMensajes(criterioBusqueda);
+			System.out.println("Mensaje encontrado");
+			return resultado;
 		}
-		catch(MensajeException e){
+		catch(Exception e){
 			play.Logger.error("La búsqueda no ha sido satisfactoria: " + e.getMessage());
 			throw new MensajeServiceException("La búsqueda de mensajes no se ha ejecutado correctamente", e.getCause());
 		}

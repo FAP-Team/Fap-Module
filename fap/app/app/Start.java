@@ -48,6 +48,7 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 
 import messages.Messages;
 import models.*;
@@ -76,6 +77,7 @@ import properties.Properties;
 import services.BaremacionService;
 import services.FirmaService;
 import services.GestorDocumentalService;
+import services.MensajeServiceException;
 import services.NotificacionService;
 import services.PortafirmaFapService;
 import services.PublicarService;
@@ -235,7 +237,35 @@ public class Start extends Job {
 		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
-		
+//		try{
+//			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
+//		}
+//		catch(Exception e){
+//			System.out.println("Como que no tira esto");
+//		};
+////		try{
+////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);
+////		}
+////		catch(Exception e){
+////			play.Logger.error("Algo está fallando", e.getMessage());
+////		};
+////		
+//		try{
+//			List<String> lista = new ArrayList<String>();
+//			lista.add("eleazar87@gmail.com");
+//			lista.add("alecabdia@gmail.com");
+//			lista.add("aletepe@gmail.com");
+//			lista.add("yurena.cabcas@gmail.com");
+//		mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
+//		mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
+//		mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
+//		}
+//		catch (MensajeServiceException e){
+//			play.Logger.error("No se han podido mandar los correos el de fuera!!. Causa: " + e.getMessage());
+//		};
+//		
+//		
+
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){
         	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");

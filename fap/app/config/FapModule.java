@@ -18,6 +18,7 @@ import services.MensajeService;
 import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+import services.filesystem.FileSystemMensajeServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemPublicarServiceImpl;
@@ -92,7 +93,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 	
 	protected void mensaje() {
-		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
+		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
 	}
 	
 	protected void secure() {

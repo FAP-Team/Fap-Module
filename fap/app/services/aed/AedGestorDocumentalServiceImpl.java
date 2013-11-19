@@ -288,7 +288,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
     /**
-     * Obtiene la lista de documentos que se corresponden a un determinado tipo y donde el interesado es el agente logueado.
+     * Obtiene la lista de documentos que se corresponden a un determinado tipo y 
+     * donde el interesado es el agente logueado.
      * @throws AedExcepcion 
      * 
      */

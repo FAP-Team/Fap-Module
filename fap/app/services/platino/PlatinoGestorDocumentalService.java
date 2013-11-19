@@ -155,7 +155,6 @@ public class PlatinoGestorDocumentalService {
             UUID uuidDocumento = UUID.randomUUID();
             String ruta = expedientePlatinoRuta + "/" + uuidDocumento;
 
-            DocumentoBase docBase;
             // Insertar documento en el Gestor Documental
             DataHandler dataHandler = new DataHandler(documentoRegistrar.getContenido());
             log.info("Inserta documento en el gestor documental");

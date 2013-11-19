@@ -104,7 +104,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace titulo="Consultar recibos de aportaciones" pagina=AportacionRecibos estilo="btn"
 		
 		Grupo titulo="Paso 1. Agregar Nuevos Documentos"{
-			Wiki {"A partir de las plantillas que se adjuntan en la convocatoria, y una vez rellenadas correctamente, deberá añadirlas como documentación indicando el tipo de documento correspondiente."}
+			//Wiki {"A partir de las plantillas que se adjuntan en la convocatoria, y una vez rellenadas correctamente, deberá añadirlas como documentación indicando el tipo de documento correspondiente."}
 	
 			Tabla documentos 
 			    titulo="Documentos nuevos pendientes de aportar" 

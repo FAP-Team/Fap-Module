@@ -1,0 +1,12 @@
+Formulario PruebasPlatino permiso=solicitudes{
+
+	Pagina pruebaPlatinoGestorDocumental noForm campo=SolicitudGenerica {
+		Form formBuscarDocEnExpediente{
+			Grupo grupoBuscarDocEnExpediente titulo="Buscar documentos de expediente en Platino"{
+				Wiki {"Para poder probar este método, la solicitud debe tener creado el expediente en el GestorDoc de Platino y configurado el GestorDoc de Platino"}
+				Boton btnBuscarDocEnExpediente titulo="Buscar docs en expediente"
+			}
+		}
+	}
+	
+}

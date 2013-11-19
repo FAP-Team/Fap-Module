@@ -92,6 +92,9 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Ejemplo: Factura electrónica" {
 				Enlace "Factura electrónica" pagina=FacturaElectronica
 			}
+			Grupo "Uso del GestorDocumental"{
+				Enlace "GDPlatino" pagina=pruebaPlatinoGestorDocumental
+			}
     	}
     	    	
     	Grupo "Módulo FAP" {
@@ -976,7 +979,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		Texto campo=TablaDeNombres.apellido titulo="Apellido"
 	}
 
-Pagina DireccionesCopia campo=Solicitud copia{
+	Pagina DireccionesCopia campo=Solicitud copia{
 		Grupo grupoCanaria /*mostrarSiCombo comboDireccion = "canaria"*/ titulo="Direccion" {
 			Combo comboProvincia campo=Solicitud.direccionTest.direccion.provincia titulo= "Provincia" requerido
 			Combo comboIsla campo=Solicitud.direccionTest.direccion.isla titulo="Isla" dependeDe=comboProvincia requerido
@@ -987,6 +990,6 @@ Pagina DireccionesCopia campo=Solicitud copia{
 			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
 		}
 	}
-
+	
 }
 

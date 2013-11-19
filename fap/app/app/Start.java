@@ -210,6 +210,7 @@ public class Start extends Job {
 		
 		// Para mostrar información acerca de la inyección de los servicios
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		System.out.println("Tipo: "+gestorDocumentalService.getClass());
 		gestorDocumentalService.mostrarInfoInyeccion();
 		
 		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
@@ -233,8 +234,8 @@ public class Start extends Job {
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
 		
-		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
-		mensajeService.mostrarInfoInyeccion();
+//		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+//		mensajeService.mostrarInfoInyeccion();
 		
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

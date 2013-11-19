@@ -265,6 +265,14 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         }
         return datosRegistro;
     }
+    
+    /**
+     * 
+     * @param expedientePlatino
+     * @param datosRegistro
+     * @return
+     * @throws RegistroServiceException
+     */
 	
     private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
         log.info("Ruta expediente " + datosRegistro.getExpediente().getRuta());

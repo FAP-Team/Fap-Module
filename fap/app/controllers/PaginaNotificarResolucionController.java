@@ -193,29 +193,11 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			}
 			String idSolicitante = FapProperties.get("portafirma.usuario");
 			String idDestinatario = dbResolucionFAP.destinatarioOficioRemisionPortafirma;
-			String comentario = null; // No hace falta
 			String emailNotificacion = agenteActual.email;
-			String urlRedireccion = null; // No hace falta
-			String urlNotificacion = null; // No hace falta
-			String flujoSolicitud = null; // No hace falta
-			ListaDocumentosAedType documentosAed = new ListaDocumentosAedType();
-			Integer numOrden = new Integer(1);
-			for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
-				if (!linea.registro.fasesRegistro.firmada) {
-					DocumentoAedType docAedType = new DocumentoAedType();
-					docAedType.setUriAed(linea.registro.oficial.uri);
-					docAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
-					docAedType.setNumeroOrden(numOrden.toString());
-					docAedType.setDescripcion(linea.registro.oficial.descripcionVisible);
-					documentosAed.getListaDocumento().add(docAedType);
-					numOrden++;
-				}
-			}
-			ListaDocumentosType documentos = null; // No hace falta
 	
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(titulo, descripcion, tipoSolicitud, prioridad, fechaTopeFirma, idSolicitante, idDestinatario, comentario, emailNotificacion, urlRedireccion, urlNotificacion, flujoSolicitud, documentosAed, documentos);
+				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(titulo, descripcion, tipoSolicitud.name(), prioridad.name(), fechaTopeFirma, idSolicitante, idDestinatario, emailNotificacion, resolucionFAP);
 				dbResolucionFAP.idSolicitudFirmaOficiosRemision = response.getIdSolicitud();
 				dbResolucionFAP.hacePeticionPortafirmaOficiosRemision = AgenteController.getAgente();
 				dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionPendientesPortafirma.name();
@@ -305,13 +287,15 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 					play.Logger.warn("Los oficios de remisión de la resolución ["+dbResolucionFAP.id+"] asociados a la solicitud de firma no han sido firmados y finalizados.");
 					Messages.warning("Los oficios de remisión de la resolución asociados a la solicitud de firma no han sido firmados y finalizados.");
 					
-					ObtenerEstadoSolicitudResponseType response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP.idSolicitudFirmaOficiosRemision, FapProperties.get("portafirma.usuario"));
+					String response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP.idSolicitudFirmaOficiosRemision, FapProperties.get("portafirma.usuario"));
 					if (response == null) {
 						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null.");
 					}
-					play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response.getEstado()+ ": "+response.getComentario());
-					Messages.warning("El estado de la solicitud de firma en el portafirma es: "+response.getEstado());
-					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
+					//TODO: Recuperar comentario del response (que ahora no existe)
+					//play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response+ ": "+response.getComentario());
+					play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response);
+					Messages.warning("El estado de la solicitud de firma en el portafirma es: "+response);
+					if (response.equalsIgnoreCase("Rechazada")) {
 						dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.noNotificada.name();
 						dbResolucionFAP.save();
 					}

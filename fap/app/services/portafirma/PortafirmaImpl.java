@@ -17,6 +17,8 @@ import controllers.fap.ResolucionControllerFAP;
 
 import models.Agente;
 import models.Documento;
+import models.LineaResolucionFAP;
+import models.Registro;
 import models.ResolucionFAP;
 
 import enumerado.fap.gen.EstadoPortafirmaEnum;
@@ -125,23 +127,33 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(String titulo, String descripcion, TipoSolicitudEnumType tipoSolicitud, PrioridadEnumType prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String comentario, String emailNotificacion, String urlRedireccion, String urlNotificacion, String flujoSolicitud, ListaDocumentosAedType documentosAed, ListaDocumentosType documentos) throws PortafirmaFapServiceException {
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (String titulo, String descripcion, String tipoSolicitud, String prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String emailNotificacion, ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 
 		CrearSolicitudType solFirma = new CrearSolicitudType();
 		solFirma.setTitulo(titulo);
 		solFirma.setDescripcion(descripcion);
-		solFirma.setTipoSolicitud(tipoSolicitud);	
-		solFirma.setPrioridad(prioridad);
+		solFirma.setTipoSolicitud(TipoSolicitudEnumType.fromValue(tipoSolicitud));	
+		solFirma.setPrioridad(PrioridadEnumType.fromValue(prioridad));
 		solFirma.setFechaTopeFirma(fechaTopeFirma);
 		solFirma.setIdSolicitante(idSolicitante);
 		solFirma.setIdDestinatario(idDestinatario);
-		solFirma.setComentario(comentario);
 		solFirma.setEmailNotificacion(emailNotificacion);
-		solFirma.setUrlRedireccion(urlRedireccion);
-		solFirma.setUrlNotificacion(urlNotificacion);
-		solFirma.setFlujoSolicitud(flujoSolicitud);
+		
+		ListaDocumentosAedType documentosAed = new ListaDocumentosAedType();
+		Integer numOrden = new Integer(1);
+		for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+			if (!linea.registro.fasesRegistro.firmada) {
+				DocumentoAedType docAedType = new DocumentoAedType();
+				docAedType.setUriAed(linea.registro.oficial.uri);
+				docAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
+				docAedType.setNumeroOrden(numOrden.toString());
+				docAedType.setDescripcion(linea.registro.oficial.descripcionVisible);
+				documentosAed.getListaDocumento().add(docAedType);
+				numOrden++;
+			}
+		}
+		
 		solFirma.setDocumentosAed(documentosAed);
-		solFirma.setDocumentos(documentos);
 		
 		CrearSolicitudResponseType wsType = new CrearSolicitudResponseType();
 		try {
@@ -193,24 +205,24 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		try {
 			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
 			oEstado.setIdSolicitud(resolucion.idSolicitudFirma);
 			oEstado.setIdUsuario(FapProperties.get("portafirma.usuario"));
-			return portafirmaService.obtenerEstadoSolicitud(oEstado);
+			return portafirmaService.obtenerEstadoSolicitud(oEstado).getEstado();
 		} catch (Exception e) {
 			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
 		}
 	}
 
 	@Override
-	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
 		try {
 			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
 			oEstado.setIdSolicitud(idSolicitudFirma);
 			oEstado.setIdUsuario(idUsuario);
-			return portafirmaService.obtenerEstadoSolicitud(oEstado);
+			return portafirmaService.obtenerEstadoSolicitud(oEstado).getEstado();
 		} catch (Exception e) {
 			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
 		}

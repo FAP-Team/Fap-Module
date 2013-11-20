@@ -438,13 +438,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					play.Logger.warn("La resolución ["+dbResolucionFAP.id+"] no ha sido firmada y finalizada ");
 					Messages.warning("El documento de resolución no ha sido firmado y finalizado");
 					
-					ObtenerEstadoSolicitudResponseType response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP);
-					if (response == null) {
+					String estado = portafirmaService.obtenerEstadoFirma(dbResolucionFAP);
+					if (estado == null) {
 						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null. ");
 					}
-					play.Logger.info("El estado de la solicitud en el portafirma es: "+response.getEstado());
-					Messages.warning("El estado de la solicitud en el portafirma es: "+response.getEstado());
-					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
+					play.Logger.info("El estado de la solicitud en el portafirma es: "+estado);
+					Messages.warning("El estado de la solicitud en el portafirma es: "+estado);
+					if (estado.equalsIgnoreCase("Rechazada")) {
 						// TODO: Volver a estado anterior
 						ResolucionBase resolBase = null;
 						try {
@@ -454,8 +454,11 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 						}
 						resolBase.retrocederFase_Modificacion(dbResolucionFAP);
 					} else {
-						play.Logger.warn("La Solicitud está en el estado: "+response.getEstado()+ ": "+response.getComentario());
-						Messages.warning("La Solicitud está en el estado: "+response.getEstado());
+						play.Logger.warn("La Solicitud está en el estado: "+estado);
+						//TODO: Recuperar comentario del response (que ahora no existe)
+						//play.Logger.warn("La Solicitud está en el estado: "+estado+ ": "+response.getComentario());
+						play.Logger.warn("La Solicitud está en el estado: "+estado);
+						Messages.warning("La Solicitud está en el estado: "+estado);
 					}
 				}
 			} catch (PortafirmaFapServiceException e) {

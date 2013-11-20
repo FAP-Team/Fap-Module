@@ -33,8 +33,11 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (String titulo, String descripcion, TipoSolicitudEnumType tipoSolicitud, PrioridadEnumType prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String comentario, String emailNotificacion, String urlRedireccion, String urlNotificacion, String flujoSolicitud, ListaDocumentosAedType documentosAed, ListaDocumentosType documentos) throws PortafirmaFapServiceException {
-		// TODO: ¿Qué devolvemos en este mock?
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(String titulo,
+			String descripcion, String tipoSolicitud, String prioridad,
+			XMLGregorianCalendar fechaTopeFirma, String idSolicitante,
+			String idDestinatario, String emailNotificacion,
+			ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
 		response.setIdSolicitud("fakeSolicitud");
 		response.setComentarios("fakeComentarios");
@@ -84,7 +87,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
 //		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
 //		estadoSolicitudFirma.setEstado("Rechazada");
@@ -93,7 +96,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-	public ObtenerEstadoSolicitudResponseType obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
 //		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
 //		estadoSolicitudFirma.setEstado("Rechazada");
 //		return estadoSolicitudFirma;

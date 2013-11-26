@@ -909,7 +909,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		BinaryResponse br = getDocumentoByUri(uriDocumento);
 		if (br == null)
 			return null;
-		return br.toString();
+		//return br.toString();
+		return null;
 	}
 
 	@Override

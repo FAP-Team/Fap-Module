@@ -27,6 +27,7 @@ Firma._firmarUrl = function(url, certificado){
 }
 
 Firma._firmarDocumento = function(url, certificado){
+	alert("Método: _firmarDocumento (firma-platino.js) | url: "+url+" | certificado: "+certificado.clave);
 	return signFile(certificado.clave, url);
 }
 

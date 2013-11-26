@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import org.eclipse.emf.ecore.EObject
-import org.apache.commons.lang3.StringEscapeUtils
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.emf.ecore.EObject;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import generator.utils.*;
 import es.fap.simpleled.led.*;
@@ -16,22 +16,24 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 
 import generator.utils.CampoUtils;
 
-public class GTabla extends GElement{
+public class GFirmaMultiple extends GElement{
 
-	Tabla tabla;
+	FirmaMultiple firmaMultiple;
 	GElement gPaginaPopup;
 	Controller controller;
 	CampoUtils campo;
-	boolean botonBorrar;
 	String stringParamsAdded;
 	Set<Entity> globalSetEntityParent;
 	
-	public GTabla(Tabla tabla, GElement container){
-		super(tabla, container);
-		this.tabla = tabla;
-		campo = CampoUtils.create(tabla.campo);
+	public GFirmaMultiple(FirmaMultiple firmaMultiple, GElement container){
+		super(firmaMultiple, container);
+		System.out.println("----------------------------> HOLA GFIRMAMULTIPLE <----------------------------");
+		this.firmaMultiple = firmaMultiple;
+		campo = CampoUtils.create(firmaMultiple.campo);
 		gPaginaPopup = getPaginaOrPopupContainer();
 		//stringParamsAdded = new ArrayList<String>();
+		System.out.println("----------------------------> ADIOS GFIRMAMULTIPLE <----------------------------");
+		
 	}
 	
 	public String viewWithParams (Set<Entity> setEntityParent){
@@ -51,52 +53,42 @@ public class GTabla extends GElement{
 				finalStrParams = StringUtils.params(globalSetEntityParent.collect{if (!entidad.id.equals(it.id)) if ((it.id) != null) it.id});
 				// Debemos eliminar los que no empiezan por id y los que ya están en params
 				if (finalStrParams.trim().length() > 0)
-					params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id}, "+finalStrParams+")";
+					params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id}, "+finalStrParams+")";
 				else
-					params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+					params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
 			} else {
-				params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+				params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
 			}
 		}
 		else
-			params.put 'urlTabla', "@${controllerName}.${controllerMethodName()}(${StringUtils.params(globalSetEntityParent.collect{it.id})})";
-        if (tabla.titulo)
-			params.putStr 'titulo', tabla.titulo;
+			params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${StringUtils.params(globalSetEntityParent.collect{it.id})})";
+        if (firmaMultiple.titulo)
+			params.putStr 'titulo', firmaMultiple.titulo;
 		params.putStr 'campo', campo.str;
-		if (tabla.alto)
-			params.putStr 'alto', tabla.alto;
-		if (tabla.color){
+		if (firmaMultiple.alto)
+			params.putStr 'alto', firmaMultiple.alto;
+		if (firmaMultiple.color){
 			String consulta = "";
-			if(tabla.color.codePrint){
-				params.putStr 'codePrint', tabla.color.codePrint;
+			if(firmaMultiple.color.codePrint){
+				params.putStr 'codePrint', firmaMultiple.color.codePrint;
 			}
-			else if (tabla.color.default) {
+			else if (firmaMultiple.color.default) {
 				consulta = "if (record.data.permisoEditar) { return \\'filaEditable\\'; } else { return \\'filaNoEditable\\'; }";
 				params.putStr 'codePrint', consulta;
 			}
 			else{
-				if(tabla.color.textoB){
-					consulta += "if (record.data.permisoBorrar) { return \\'${tabla.color.claseB}\\'; } "
-				}
-				if(tabla.color.textoE){
-					consulta += "if (record.data.permisoEditar) { return \\'${tabla.color.claseE}\\'; }";
-				}
-				if(tabla.color.textoL){
-					consulta += "if (record.data.permisoLeer) { return \\'${tabla.color.claseL}\\'; }";
+				if(firmaMultiple.color.textoL){
+					consulta += "if (record.data.permisoLeer) { return \\'${firmaMultiple.color.claseL}\\'; }";
 				}
 				params.putStr 'codePrint', consulta;
 			}
 		}
-			
+
 		botonesPopup(params);
 		botonesPagina(params);
-		if (tabla.recargarPagina)
+		if (firmaMultiple.recargarPagina)
 			params.put("recargarPagina", true)
 	    List <Attribute> excludes, includes;
-		if (tabla.seleccionable) {
-			params.putStr("seleccionable", tabla.seleccionable)
-			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
-		}
 		if (gPaginaPopup instanceof GPopup)
 			params.putStr 'tipoContainer', "popup";
 		else
@@ -104,61 +96,36 @@ public class GTabla extends GElement{
 		params.putStr("idEntidad", "${Entidad.create(campo.ultimaEntidad).id}");
 	
 		controller = Controller.create(getPaginaOrPopupContainer());
-		if (tabla.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (tabla.pagina || tabla.paginaCrear || tabla.popup || tabla.popupCrear) && !controller.entidad.isSingleton()){
-			params.put 'crearEntidad', "accion == 'crear'";
-			params.putStr 'nameContainer', gPaginaPopup.name;
-			params.putStr 'idContainer', controller.entidad.id;
-			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
-			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
-			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForTablas");
-		}
 		
 		//Nombre de los botones (opcional)
-		if(tabla.nombreBotonEditar != null){
-			params.putStr 'nombreBotonEditar', tabla.nombreBotonEditar;
-		}
-		if(tabla.nombreBotonVer != null){
-			params.putStr 'nombreBotonVer', tabla.nombreBotonVer;
-		}
-		if(tabla.nombreBotonBorrar != null){
-			params.putStr 'nombreBotonBorrar', tabla.nombreBotonBorrar;
-		}
-		if(tabla.nombreBotonCrear != null){
-			params.putStr 'nombreBotonCrear', tabla.nombreBotonCrear;
-		}
-		
-		if (tabla.popup || tabla.popupCrear){
-			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
-		}
-		
-		if (tabla.pagina || tabla.paginaCrear || tabla.paginaBorrar || tabla.paginaEditar || tabla.paginaLeer){
-			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
+		if(firmaMultiple.nombreBotonVer != null){
+			params.putStr 'nombreBotonVer', firmaMultiple.nombreBotonVer;
 		}
 		
 		StringBuffer columnasView = new StringBuffer();
 		
-		if (tabla.columnasAutomaticas){
+		if (firmaMultiple.columnasAutomaticas){
 			List <Columna> listaAtributos;
-			if (tabla.exclude != null){
-			   excludes = tabla.exclude.atributos;
+			if (firmaMultiple.exclude != null){
+			   excludes = firmaMultiple.exclude.atributos;
 			   // listaAtributos: Devuelve la lista de columnas que hay que mostrar (es decir, en este caso, todas menos las excludes)
 			   listaAtributos = ColumnasUtils.columnasExclude(campo.campo, excludes);
-			} else if (tabla.include != null){
-			   includes = tabla.include.atributos;
+			} else if (firmaMultiple.include != null){
+			   includes = firmaMultiple.include.atributos;
 			   listaAtributos = ColumnasUtils.columnasInclude(campo.campo, includes);
 			} else{
 			   listaAtributos = ColumnasUtils.columnas(campo.campo);
 			}
-			List <Columna> aux = tabla.columnas;
+			List <Columna> aux = firmaMultiple.columnas;
 			boolean listo = false;
 			if (aux.isEmpty()){
-				tabla.columnas.addAll(listaAtributos);
+				firmaMultiple.columnas.addAll(listaAtributos);
 			}
 			else{
 				Columna co=null;
 				// Para que en caso de que haya 'columnasAutomaticas' y 'Columna' normal, se coja la 'Columna' normal
 				for(Columna lA : listaAtributos){
-					for(Columna c : tabla.columnas){
+					for(Columna c : firmaMultiple.columnas){
 						if ((CampoUtils.create(c.getCampo()).getUltimaEntidad().name.equals(CampoUtils.create(lA.getCampo()).getUltimaEntidad().name))
 							&&(CampoUtils.create(c.getCampo()).getUltimoAtributo().name.equals(CampoUtils.create(lA.getCampo()).getUltimoAtributo().name))){
 							aux.remove(lA);
@@ -178,12 +145,12 @@ public class GTabla extends GElement{
 				}
 			}
 	    }
-		if(tabla.columnas.isEmpty()){
+		if(firmaMultiple.columnas.isEmpty()){
 			Columna c = LedFactory.eINSTANCE.createColumna();
-			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(tabla.campo).name}.id").campo;
-			tabla.columnas.add(c);
+			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMultiple.campo).name}.id").campo;
+			firmaMultiple.columnas.add(c);
 		}
-		for(Columna c : tabla.columnas)
+		for(Columna c : firmaMultiple.columnas)
 			columnasView.append (columnaView(c));
 
 		if (controller.algoQueGuardar())
@@ -192,75 +159,28 @@ public class GTabla extends GElement{
 			params.put("saveEntity", false);
 
 		String view = """
-#{fap.tabla ${params.lista(true)}
+#{fap.firmaMultiple ${params.lista(true)}
 }
 	${columnasView}
-#{/fap.tabla}
+#{/fap.firmaMultiple}
 """
 		return view;
 	}
 	
 	private String id(){
-		return tabla.name ?: campo.str.replace(".", "_");
+		return firmaMultiple.name ?: campo.str.replace(".", "_");
 	}
 	
 	private void botonesPopup(TagParameters params){
-		if (tabla.popup != null) {
-			Controller popupUtil = Controller.create(GElement.getInstance(tabla.popup, null));
-			params.put 'urlLeer', popupUtil.getRouteIndex("leer", true, true);
-			params.putStr 'popupLeer', tabla.popup.name;
-			params.put 'urlCrear', popupUtil.getRouteIndex("crear", true, true);
-			params.putStr 'popupCrear', tabla.popup.name;
-			params.put 'urlEditar', popupUtil.getRouteIndex("editar", true, true);
-			params.putStr 'popupEditar', tabla.popup.name;
-			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
-			params.putStr 'popupBorrar', tabla.popup.name;
-			if (tabla.popup.permiso)
-				params.putStr 'permisoCrear', tabla.popup.permiso.name;
-		}
-		if (tabla.popupLeer != null) {
-			params.put 'urlLeer', Controller.create(GElement.getInstance(tabla.popupLeer, null)).getRouteIndex("leer", true, true);
-			params.putStr 'popupLeer', tabla.popupLeer.name;
-		}
-		
-		
-		if (tabla.popupCrear != null) {
-			params.put 'urlCrear', Controller.create(GElement.getInstance(tabla.popupCrear, null)).getRouteIndex("crear", true, true);
-			params.putStr 'popupCrear', tabla.popupCrear.name;
-			if (tabla.popupCrear.permiso)
-				params.putStr 'permisoCrear', tabla.popupCrear.permiso.name;
-		}
-		if (tabla.popupEditar != null) {
-			params.put 'urlEditar', Controller.create(GElement.getInstance(tabla.popupEditar, null)).getRouteIndex("editar", true, true);
-			params.putStr 'popupEditar', tabla.popupEditar.name;
-		}
-		if (tabla.popupBorrar != null) {
-			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.popupBorrar, null)).getRouteIndex("borrar", true, true);
-			params.putStr 'popupBorrar', tabla.popupBorrar.name;
+		if (firmaMultiple.popupLeer != null) {
+			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.popupLeer, null)).getRouteIndex("leer", true, true);
+			params.putStr 'popupLeer', firmaMultiple.popupLeer.name;
 		}
 	}
 	
 	private void botonesPagina(TagParameters params){
-		if (tabla.pagina != null) {
-			Controller pagUtil = Controller.create(GElement.getInstance(tabla.pagina, null));
-			params.put 'urlLeer', pagUtil.getRouteIndex("leer", true, true);
-			params.put 'urlCrear', pagUtil.getRouteIndex("crear", true, true);
-			params.put 'urlEditar', pagUtil.getRouteIndex("editar", true, true);
-			params.put 'urlBorrar', pagUtil.getRouteIndex("borrar", true, true);
-			if (tabla.pagina.permiso)
-				params.putStr 'permisoCrear', tabla.pagina.permiso.name;
-		}
-		if (tabla.paginaLeer != null)
-			params.put 'urlLeer', Controller.create(GElement.getInstance(tabla.paginaLeer, null)).getRouteIndex("leer", true, true);
-		if (tabla.paginaCrear != null) {
-			params.put 'urlCrear', Controller.create(GElement.getInstance(tabla.paginaCrear, null)).getRouteIndex("crear", true, true);
-			if (tabla.paginaCrear.permiso)
-				params.putStr 'permisoCrear', tabla.paginaCrear.permiso.name;
-		}
-		if (tabla.paginaEditar != null)
-			params.put 'urlEditar', Controller.create(GElement.getInstance(tabla.paginaEditar, null)).getRouteIndex("editar", true, true);
-		if (tabla.paginaBorrar != null)
-			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.paginaBorrar, null)).getRouteIndex("borrar", true, true);
+		if (firmaMultiple.paginaLeer != null)
+			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.paginaLeer, null)).getRouteIndex("leer", true, true);
 	}
 	
 	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
@@ -275,7 +195,7 @@ public class GTabla extends GElement{
 	}
 	
 	private String columnaView(Columna c){
-		List<CampoUtils> campos = GTabla.camposDeColumna(c);
+		List<CampoUtils> campos = GFirmaMultiple.camposDeColumna(c);
 		c.titulo = c.titulo ?: campos.collect{it.str}.join(', ');
 		c.ancho  = c.ancho ?: "200";
 				
@@ -374,9 +294,9 @@ public class GTabla extends GElement{
 			return  "return '" + (strFuncion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
 	}
 	
-	public List<CampoUtils> uniqueCamposTabla(Tabla tabla){
+	public List<CampoUtils> uniqueCamposFirmaMultiple(FirmaMultiple firmaMultiple){
 		List<CampoUtils> campos = new ArrayList<CampoUtils>();
-		for(Columna c : tabla.columnas){
+		for(Columna c : firmaMultiple.columnas){
 			campos.addAll(camposDeColumna(c));
 		}
 		//Añade el ID de la entidad
@@ -392,7 +312,7 @@ public class GTabla extends GElement{
 	}
 	
 	public String controller(){
-		List<CampoUtils> campos = uniqueCamposTabla(tabla);
+		List<CampoUtils> campos = uniqueCamposFirmaMultiple(firmaMultiple);
 				
 		// Si tiene permiso definido la tabla
 		String renderCode = "";
@@ -409,8 +329,8 @@ public class GTabla extends GElement{
 		String param = "";
 		String idSingleton = "";
 		
-		if (tabla.metodoFilas)
-			query = """${tabla.metodoFilas}""";
+		if (firmaMultiple.metodoFilas)
+			query = """${firmaMultiple.metodoFilas}""";
 		else if (!campo.getCampo().getAtributos()) //Lista todas las entidades de ese tipo
 			query = """${entidad.clase}.find("select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}").fetch()""";
 		else{ //Acceso a los campos de una entidad
@@ -445,7 +365,6 @@ public class GTabla extends GElement{
 				renderJSON(response.toJSON($rowsStr));
 			}
 
-			${seleccionableMethod()}
 		"""
 	}
 	
@@ -458,7 +377,7 @@ public class GTabla extends GElement{
 	 * @return
 	 */
 	private String getCodePermiso(Entidad entidad) {
-		if(tabla.permiso == null){
+		if(firmaMultiple.permiso == null){
 			return """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -470,7 +389,7 @@ public class GTabla extends GElement{
 			for(${entidad.clase} ${entidad.variable}: rows){
 				Map<String, Object> vars = new HashMap<String, Object>();
 				vars.put("${entidad.variable}", ${entidad.variable});
-				if (secure.checkAcceso("${tabla.permiso.name}", "leer", ids, vars)) {
+				if (secure.checkAcceso("${firmaMultiple.permiso.name}", "leer", ids, vars)) {
 					rowsFiltered.add(${entidad.variable});
 				}
 			}
@@ -481,90 +400,36 @@ public class GTabla extends GElement{
 		String ret="";
 		String paramsPermiso="";
 		String paramsNombrePermiso="";
-		if (tabla.pagina != null){
-			Pagina pagina = (Pagina)tabla.pagina;
+		
+		paramsPermiso+="false, ";
+		paramsNombrePermiso+="\"\", ";
+		
+		paramsPermiso+="false, ";
+		paramsNombrePermiso+="\"\", ";
+		
+		if(firmaMultiple.paginaLeer != null){
+			Pagina pagina = (Pagina)firmaMultiple.paginaLeer;
 			if (pagina.permiso != null){
-				paramsPermiso+="true, true, true, \"${pagina.permiso.name}\", \"${pagina.permiso.name}\", \"${pagina.permiso.name}\", getAccion(), ids";
-			} else {
-				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
-			}
-		}
-		else if(tabla.popup != null){
-			Popup popUp = (Popup)tabla.popup;
-			if (popUp.permiso != null){
-				paramsPermiso+="true, true, true, \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", getAccion(), ids";
-			} else {
-				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
-			}
-		} else {
-			if(tabla.paginaEditar != null){
-				Pagina pagina = (Pagina)tabla.paginaEditar;
-				if (pagina.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${pagina.permiso.name}\", ";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\", ";
-				}
-			} else if(tabla.popupEditar != null){
-				Popup popUp = (Popup)tabla.popupEditar;
-				if (popUp.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\", ";
-				}
-			} else {
-				paramsPermiso+="false, ";
-				paramsNombrePermiso+="\"\", ";
-			}
-			if(tabla.paginaBorrar != null){
-				Pagina pagina = (Pagina)tabla.paginaBorrar;
-				if (pagina.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${pagina.permiso.name}\", ";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\", ";
-				}
-			} else if(tabla.popupBorrar != null){
-				Popup popUp = (Popup)tabla.popupBorrar;
-				if (popUp.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\", ";
-				}
-			} else {
-				paramsPermiso+="false, ";
-				paramsNombrePermiso+="\"\", ";
-			}
-			if(tabla.paginaLeer != null){
-				Pagina pagina = (Pagina)tabla.paginaLeer;
-				if (pagina.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${pagina.permiso.name}\"";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\"";
-				}
-			} else if(tabla.popupLeer != null){
-				Popup popUp = (Popup)tabla.popupLeer;
-				if (popUp.permiso != null){
-					paramsPermiso+="true, ";
-					paramsNombrePermiso+="\"${popUp.permiso.name}\"";
-				} else{
-					paramsPermiso+="false, ";
-					paramsNombrePermiso+="\"\"";
-				}
-			} else {
+				paramsPermiso+="true, ";
+				paramsNombrePermiso+="\"${pagina.permiso.name}\"";
+			} else{
 				paramsPermiso+="false, ";
 				paramsNombrePermiso+="\"\"";
 			}
-			paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
+		} else if(firmaMultiple.popupLeer != null){
+			Popup popUp = (Popup)firmaMultiple.popupLeer;
+			if (popUp.permiso != null){
+				paramsPermiso+="true, ";
+				paramsNombrePermiso+="\"${popUp.permiso.name}\"";
+			} else{
+				paramsPermiso+="false, ";
+				paramsNombrePermiso+="\"\"";
+			}
+		} else {
+			paramsPermiso+="false, ";
+			paramsNombrePermiso+="\"\"";
 		}
+		paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
 
 		ret+="""tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered, ${paramsPermiso});
 			"""
@@ -572,37 +437,14 @@ public class GTabla extends GElement{
 	}
 	
 	private controllerMethodName(){
-		return "tabla" + id();
+		return "firmaMultiple" + id();
 	}
 	
 	public String routes(){
 		String url = gPaginaPopup.url() + "/" + id();
 		String action = gPaginaPopup.controllerFullName() + "." + controllerMethodName();
 		
-		//Si es una tabla de elementos seleccionables añadir la ruta del metodo que se aplica
-		if(tabla.seleccionable){
-			String urlSeleccionable = gPaginaPopup.url() + "/" +seleccionableMethodName();
-			String accionSeleccionable = gPaginaPopup.controllerFullName() + "." +seleccionableMethodName();
-			return RouteUtils.to("GET", url, action).toString() + "\n"+RouteUtils.to("POST", urlSeleccionable, accionSeleccionable).toString() + "\n";
-		}
 		return RouteUtils.to("GET", url, action).toString() + "\n";
-	}
-	
-	private String seleccionableMethodName () {
-		//Quitar las tildes!
-		return StringUtils.firstLower(tabla.seleccionable.replaceAll(" ", ""))
-	}
-
-	private String seleccionableMethod () {
-		if (! tabla.seleccionable)
-			return "";
-		return """
-			public static void ${seleccionableMethodName()}(Long id, List<Long> idsSeleccionados){
-				//Sobreescribir para incorporar funcionalidad
-				//No olvide asignar los permisos
-				//index();
-			}
-		"""
 	}
 	
 	public void addParams2Controller (String stringParams) {

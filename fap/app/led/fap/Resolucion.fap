@@ -361,7 +361,7 @@ Formulario Principal {
 			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
-      			Boton btnRegistrarResolucion titulo="Registrar Resolución"
+      			Boton btnRegistrarResolucion titulo="Registrar Resolución" waitPopup
     		}
 		}
 		

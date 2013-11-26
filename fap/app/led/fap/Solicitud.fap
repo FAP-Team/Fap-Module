@@ -1,8 +1,8 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
-	Pagina FirmaMultipleDocumentos titulo = "Firma de múltiples documentos" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
-	
-		Tabla documentos titulo="Documentos a firmar" campo=SolicitudGenerica.documentacion.documentos seleccionable="Firmar" {
+	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
+
+		FirmaMultiple documentos titulo="Documentos a firmar" campo=SolicitudGenerica.documentacion.documentos {
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
             Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
 			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir

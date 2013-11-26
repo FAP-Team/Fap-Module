@@ -18,5 +18,8 @@ var addCertInfo = function(data, certificado){
 
 Firma._firmarDocumento = function(url, certificado){
 	//Firma la url en vez del contenido del fichero
-    return Firma._firmarTexto(url, certificado);
+	alert("Método: _firmarDocumento (firma-fs.js) | Simulación: correcta | url: "+url+" | certificado: "+certificado.clave);
+	return Firma._firmarTexto(url, certificado);
+	//alert("Método: _firmarDocumento (firma-fs.js) | Simulación: fallo | url: "+url+" | certificado: "+certificado.clave);
+	//return null;
 }

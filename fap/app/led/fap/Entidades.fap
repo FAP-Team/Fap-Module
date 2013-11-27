@@ -808,7 +808,6 @@ Entidad ResultadoPeticion {
 	String valorDateTime
 	Boolean valorBoolean
 }
-
 Entidad TipoCertificado {
 	String nombre
 	String descripcion

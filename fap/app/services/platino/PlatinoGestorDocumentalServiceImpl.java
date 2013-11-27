@@ -1,5 +1,8 @@
 package services.platino;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -7,13 +10,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.inject.Inject;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.MTOMFeature;
 
@@ -22,6 +30,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
+import org.apache.log4j.lf5.util.StreamUtils;
 
 import platino.DatosDocumento;
 import platino.DatosFirmante;
@@ -36,31 +45,43 @@ import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosInterface;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
+import es.gobcan.platino.servicios.sgrde.DocumentoSimple;
+import es.gobcan.platino.servicios.sgrde.ElementoNoEncontradoException;
 import es.gobcan.platino.servicios.sgrde.ErrorInternoException;
 import es.gobcan.platino.servicios.sgrde.Expediente;
 import es.gobcan.platino.servicios.sgrde.FirmasElectronicas;
 import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
+import es.gobcan.platino.servicios.sgrde.Interesado;
 import es.gobcan.platino.servicios.sgrde.MetaInformacionException;
+import es.gobcan.platino.servicios.sgrde.RutaNoValidaException;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
+import es.gobcan.platino.servicios.sgrde.TamanoMaximoExcedidoException;
+import es.gobcan.platino.servicios.sgrde.TipoContenidoNoPermitidoException;
+import es.gobcan.platino.servicios.sgrde.UsuarioNoValidoException;
 
+import messages.Messages;
 import models.Agente;
 import models.Documento;
 import models.ExpedienteAed;
 import models.ExpedientePlatino;
 import models.Firma;
 import models.InformacionRegistro;
+import models.Persona;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
+import services.FirmaService;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.filesystem.TipoDocumentoEnTramite;
-import services.filesystem.TipoDocumentoGestorDocumental;
 import utils.BinaryResponse;
 import utils.WSUtils;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 
+import config.InjectorConfig;
 import controllers.fap.AgenteController;
 
 import es.gobcan.platino.servicios.procedimientos.DBProcedimientosException_Exception;
@@ -75,7 +96,8 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 
 	    private PropertyPlaceholder propertyPlaceholder;
 	    private SGRDEServicePortType gestorDocumentalPort;
-        //private final DBProcedimientosServiceBean servicioProcedimientosPort;	    
+        private PlatinoProcedimientosServiceImpl procedimientosPort;	   
+        private PlatinoSoporteTramitacionServiceImpl tramitacionPort;
 
 	    @Inject
 	    public PlatinoGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder) {
@@ -83,9 +105,6 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 
 	        URL wsdlURL = PlatinoGestorDocumentalServiceImpl.class.getClassLoader().getResource("wsdl/sgrde.wsdl");
 	        gestorDocumentalPort = new SGRDEServiceProxy(wsdlURL).getSGRDEServiceProxyPort(new MTOMFeature());
-
-//	        DBProcedimientosServiceBeanService servicioProcedimientos = new DBProcedimientosServiceBeanService();
-//	        servicioProcedimientosPort = servicioProcedimientos.getDBProcedimientosServiceBeanPort();
 	        
 	        WSUtils.configureEndPoint(gestorDocumentalPort, getEndPoint());
 	        WSUtils.configureSecurityHeaders(gestorDocumentalPort, propertyPlaceholder);
@@ -96,22 +115,22 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
 			httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 			httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-			httpConduit.setClient(httpClientPolicy);			
+			httpConduit.setClient(httpClientPolicy);	
+			
+			procedimientosPort = InjectorConfig.getInjector().getInstance(PlatinoProcedimientosServiceImpl.class);
+			procedimientosPort.mostrarInfoInyeccion();
+			
+			tramitacionPort = InjectorConfig.getInjector().getInstance(PlatinoSoporteTramitacionServiceImpl.class);
+			tramitacionPort.mostrarInfoInyeccion();
+			
 	    }
 
 
 	// Configura el gestorDocumental
 	@Override
 	public void configure() throws GestorDocumentalServiceException {
-//		//Comprobar que existe el procedimiento -> Configurado el GestorDoc
-//		 try {
-//			 ProcedimientoWSItem respuesta = servicioProcedimientosPort.consultarProcedimiento(FapProperties.get("fap.aed.procedimientos.procedimiento.uri"), null);
-//		} catch (DBProcedimientosException_Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			log.error("El gestor documental de Platino no está configurado correctamente, asegúrese de que existe el procedimiento");
-//		}
-//		
+		if (!procedimientosPort.buscarProcedimientos(FapProperties.get("fap.platino.procedimientos.procedimiento")));
+			throw new GestorDocumentalServiceException("El procedimiento "+FapProperties.get("fap.aed.procedimientos.procedimiento.uri")+" no existe en la BDProcedimientos de Platino");
 	}
 
 	@Override
@@ -132,6 +151,14 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 
 	@Override
 	public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		
+		/**
+		 * TODO
+		 * AQUI, debería tener en cuenta que el GDPlatino sea el gestorDoc inyectado, para no crear el
+		 * expediente dos veces para la misma solicitud
+		 * 
+		 */
+		
 		 log.info("CrearExpediente Platino -> IN");
 		 	ExpedientePlatino exp = solicitud.expedientePlatino;
 	        Expediente expediente = new Expediente();
@@ -174,49 +201,69 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
         return uris;
 	}
 
+	/*
+	 * METODO INCOMPLETO FALTA EL INTERESADO <-------------
+	 * @see services.GestorDocumentalService#getDocumentosPorTipo(java.lang.String)
+	 */
+	
 	@Override
 	public List<Documento> getDocumentosPorTipo(String tipoDocumento) throws GestorDocumentalServiceException {
 		if (tipoDocumento == null || tipoDocumento.isEmpty())
 			return Collections.emptyList();
-    	
-			Agente agente = AgenteController.getAgente();
-			// 1) Añadiendo el procedimiento a la consulta
-			String consulta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
-			// Conjunto de documentos donde su tipo es 'tipoDocumento' y el interesado es el usuario logueado
-			List<String> listaDocsUris;
-			List<PropiedadesDocumento> listaDocs;
-			List<models.Documento> listaDocumentos = new ArrayList<models.Documento>();
-			List<models.Documento> listaDocumentosUris = new ArrayList<models.Documento>();
-			try {
-				//Buscar por procedimiento, tipoDoc e interesado 
-				// 2) Añadiendo el interesado a la consulta
-				
-				// 3) Añadiendo el tipo de documento a la consulta
-				
-				// Obtengo lista de uris que cumplen las tres condiciones
-				listaDocsUris = gestorDocumentalPort.buscarDocumentos(consulta, 90);
-				if(listaDocsUris.isEmpty())
-		    		return Collections.emptyList();
-		
-		    	//Obtener las propiedades de los documentos que nos ha devuelto la búsqueda
-				// DESCOMENTAR
-//		    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
-//		    		models.Documento doc = new models.Documento();
-//		    		propiedadesDoc.getIdentificador();
-//		    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
-//		    		listaDocumentos.add(doc);
-//		    		doc.delete();
-//		    	}
-			} catch (ErrorInternoException e) {
-				throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo");
-				e.printStackTrace();
-			}
-			    	return listaDocumentos;
 			
+		Agente agente = AgenteController.getAgente();
+			
+		// 1) Añadiendo el procedimiento a la consulta
+		String consulta = FapProperties.get("fap.platino.gestordocumental.procedimiento");
+		// Conjunto de documentos donde su tipo es 'tipoDocumento' y el interesado es el usuario logueado
+		List<String> listaDocsUris;
+		List<models.Documento> listaDocumentos = new ArrayList<models.Documento>();
+		try {
+			//Buscar por procedimiento, tipoDoc e interesado 
+			// 2) Añadiendo el interesado a la consulta. Necesito doc con Interesado para probar
+			// 2.1) Obtener la persona a la que coressponde ese agente y crear interesado para la búsqueda. 
+			
+			play.Logger.info("Buscando documentos en Platino para:"+
+					" Agente "+agente.username+
+					" Procedimiento: "+FapProperties.get("fap.platino.gestordocumental.procedimiento")+
+					" Tipo de documento: "+tipoDocumento);
+			
+			Interesado interesado = new Interesado();
+			interesado.setIdInteresado(agente.username); //dni, cif,..
+			interesado.setDescInteresado(agente.name);
+			
+			// TODO consulta +="Interesado: \""; //Tira de agente
+			// 3) Añadiendo el tipo de documento a la consulta
+			consulta+= ", Tipo_Doc: \""+tipoDocumento+"\"";
+			// Obtengo lista de uris que cumplen las tres condiciones
+			listaDocsUris = gestorDocumentalPort.buscarDocumentos(consulta, 90);
+			
+			if(listaDocsUris.isEmpty())
+		   		return Collections.emptyList();
+					
+			for (String uri : listaDocsUris) {
+				DocumentoBase metadatos = gestorDocumentalPort.obtenerMetaDoc(uri);
+				System.out.println("DescripcionDoc: "+metadatos.getDescDoc());
+				models.Documento doc = new models.Documento();
+				doc.docPlatino2Doc(metadatos, tipoDocumento);
+				listaDocumentos.add(doc);
+				doc.delete();
+			}
+		} catch (ErrorInternoException e) {
+			throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo");
+			//e.printStackTrace();
+		} catch (ElementoNoEncontradoException e) {
+			play.Logger.error("Error obteniendo los metadatos de algún documento de respuesta");
+			e.printStackTrace();
+		} catch (UsuarioNoValidoException e) {
+			play.Logger.error("Error, interesado no válido");
+			e.printStackTrace();
+		}
+		return listaDocumentos;
 	}
 
 	@Override
-	public BinaryResponse getDocumento(Documento documento)
+	public BinaryResponse getDocumento(Documento documento) 
 			throws GestorDocumentalServiceException {
 		// TODO Auto-generated method stub
 		return null;
@@ -237,15 +284,66 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 	}
 
 	@Override
-	public String saveDocumentoTemporal(Documento documento,
-			InputStream inputStream, String filename)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
+		checkNotNull(documento.tipo, "tipo del documento no puede ser null");
+	    checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
+	    checkNotNull(contenido, "contenido no puede ser null");
+	    checkNotNull(filename, "filename del documento no puede ser null");
+	        
+	    checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
+	    checkArgument(!documento.descripcionVisible.isEmpty(), "La descripción del documento no puede estar vacía");
+	    checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
+	    checkDocumentoNotInGestorDocumental(documento);
+	    
+//		La ruta sería el expediente donde se almacena -> Obtenerlo de Solicitud
+		String ruta = solicitud.expedientePlatino.ruta+"/"+filename;
+	
+		DataHandler documentoDH = utils.StreamUtils.getDataHandler(contenido, "application/octet-stream");
+		DocumentoSimple metainformacion = new DocumentoSimple();
+		
+		//TODO el tipo de solicitud tiene q venir de documento.tipo
+		metainformacion.setTipoDoc("SOL");
+		metainformacion.setDescDoc(documento.descripcion);
+		metainformacion.setAdmiteVersionado(false);
+		metainformacion.setTipoMime(documento.tipo);
+		XMLGregorianCalendar fecha = null;
+		try {
+			fecha = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+			metainformacion.setFechaDoc(fecha);
+			metainformacion.setDocCiudadano(true);
+			metainformacion.setDocArchivo(false);
+		} catch (DatatypeConfigurationException e) {
+			play.Logger.error("Error intentando asignar la Fecha en la subida del documento al gestor documental de Platino");
+			Messages.error("Error subiendo documento al gestor documental de Platino");
+			e.printStackTrace();
+		}	
+		
+		try {
+			return gestorDocumentalPort.insertarDocumento(documentoDH, ruta, metainformacion);
+		} catch (MetaInformacionException e) {
+			play.Logger.error("Error: La metainformación del documento "+documento.uri);
+			e.printStackTrace();
+		} catch (UsuarioNoValidoException e) {
+			play.Logger.error("Error: el usuario no es válido");
+			e.printStackTrace();
+		} catch (RutaNoValidaException e) {
+			play.Logger.error("Error: La ruta no es válida "+ruta);
+			e.printStackTrace();
+		} catch (ErrorInternoException e) {
+			play.Logger.error("Error: Error interno de Platino");
+			e.printStackTrace();
+		} catch (TamanoMaximoExcedidoException e) {
+			play.Logger.error("Error: El documento excede el tamaño máximo permitido");
+			e.printStackTrace();
+		} catch (TipoContenidoNoPermitidoException e) {
+			play.Logger.error("Error: El tipo del contenido del documento no está permitido");
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	@Override
-	public String saveDocumentoTemporal(Documento documento, File file)
+	public String saveDocumentoTemporal(Documento documento, File file, SolicitudGenerica solicitud)
 			throws GestorDocumentalServiceException {
 		// TODO Auto-generated method stub
 		return null;
@@ -579,4 +677,11 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
     		return false;
     	}
     }
+    
+    private void checkDocumentoNotInGestorDocumental(models.Documento documento) throws GestorDocumentalServiceException {
+        if(documento.uri != null){
+            throw new GestorDocumentalServiceException("El documento ya tiene uri, ya está subido al gestor documental de Platino");
+        }        
+    }
+    
 }

@@ -95,7 +95,8 @@ public class PeticionATC extends PeticionBase{
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	doc.descripcion = "Descripcion Peticion ATC";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" ATC"+obtenerFechaNombre()+".txt");
+        	//TODO Quitar null
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" ATC"+obtenerFechaNombre()+".txt", null);
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionATC");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -231,7 +232,7 @@ public class PeticionATC extends PeticionBase{
 	                	Documento doc = new Documento();
 	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaATC");
 	                	doc.descripcion = "Descripcion ATC";
-	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionATC"+obtenerFechaNombre()+".pdf");
+	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionATC"+obtenerFechaNombre()+".pdf", sol);
 	                	sol.documentacionCesion.documentos.add(doc);
 	                	pt.respCesion.fechaActuacionGestor = new DateTime();
 	                	pt.respCesion.uri = doc.uri;

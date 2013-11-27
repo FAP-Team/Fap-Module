@@ -7,6 +7,21 @@ Formulario PruebasPlatino permiso=solicitudes{
 				Boton btnBuscarDocEnExpediente titulo="Buscar docs en expediente"
 			}
 		}
+		
+		Form formBuscarDocPorTipo{
+			Grupo grupoBuscarDocPorTipo titulo="Buscar documentos por tipo en Platino"{
+				Wiki {"Para poder probar este método, la solicitud debe tener creado el expediente en el GestorDoc de Platino y configurado el GestorDoc de Platino"}
+				Boton btnBuscarDocPorTipo titulo="Buscar docs por tipo"
+			}
+		}
+		
+		Form formSubirDoc{
+			Grupo grupoSubirDoc titulo="subir documento en GDPlatino"{
+				Wiki {"Para poder probar este método, la solicitud debe tener creado el expediente en el GestorDoc de Platino y configurado el GestorDoc de Platino"}
+				SubirArchivo docSubir campo=SolicitudGenerica.aportaciones.actual.oficial listarDocumentosSubidos
+			}
+		}
+		
 	}
 	
 }

@@ -75,7 +75,8 @@ public class PeticionINSSA008 extends PeticionBase{
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSA008"+obtenerFechaNombre()+".txt");
+            	//TODO Quitar null
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSA008"+obtenerFechaNombre()+".txt", null);
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSA008");
             	pt.fichPeticion.uri =  doc.uri; 
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -182,7 +183,7 @@ public class PeticionINSSA008 extends PeticionBase{
 		                	Documento doc = new Documento();
 		                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSA008");
 		                	doc.descripcion = "Descripcion INSSA008";
-		                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSA008"+obtenerFechaNombre()+".pdf");
+		                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSA008"+obtenerFechaNombre()+".pdf", sol);
 		                	sol.documentacionCesion.documentos.add(doc);
 		                	pt.respCesion.fechaActuacionGestor = new DateTime();
 		                	pt.respCesion.uri = doc.uri;

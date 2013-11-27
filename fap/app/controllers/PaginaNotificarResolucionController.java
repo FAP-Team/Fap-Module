@@ -366,7 +366,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 						documento.save();
 						play.Logger.info("Creado el documento de justificante en local, se procede a almacenar en el AED");
 						InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-						gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
+						gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf", lineaResolucionFAP.solicitud);
 						play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
 						lineaResolucionFAP.registro.fasesRegistro.registro = true;
 	

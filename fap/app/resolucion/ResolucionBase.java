@@ -42,6 +42,7 @@ import enumerado.fap.gen.ModalidadResolucionEnum;
 import enumerado.fap.gen.TipoResolucionEnum;
 import messages.Messages;
 import models.Agente;
+import models.Convocatoria;
 import models.Documento;
 import models.DocumentoNotificacion;
 import models.Evaluacion;
@@ -339,8 +340,11 @@ public class ResolucionBase {
 	 public void almacenarEnGestorDocumentalResolucion(ResolucionFAP resolucion, File borrador, File oficial){
 		if (!Messages.hasErrors()) {
 			try {
-				gestorDocumentalService.saveDocumentoTemporal(resolucion.registro.borrador, borrador);
-				gestorDocumentalService.saveDocumentoTemporal(resolucion.registro.oficial, oficial);
+				// Si trabajo con Platino, se almacenan en el exp de la convocatoria???
+				//Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+				//TODO NULL temporales
+				gestorDocumentalService.saveDocumentoTemporal(resolucion.registro.borrador, borrador, null);
+				gestorDocumentalService.saveDocumentoTemporal(resolucion.registro.oficial, oficial, null);
 			} catch (Exception e) {
 				Messages.error("Error almacenando documentos en el aed");
 				play.Logger.error("Error almacenando documentos en el aed: " + e.getMessage());
@@ -651,7 +655,7 @@ public class ResolucionBase {
 							// 1. TODO: Generar documento en linea.docBaremacion
 							File docBaremacionOficial = res.generarDocumentoBaremacion(linea);
 							// 2. Subir al AED el File anterior
-							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial);
+							gestorDocumentalService.saveDocumentoTemporal(linea.docBaremacion, docBaremacionOficial, linea.solicitud);
 							play.Logger.info("Línea "+linea.id+": Guardado el documento de Evaluación "+linea.docBaremacion);
 						}
 						tx.commit();
@@ -911,7 +915,7 @@ public class ResolucionBase {
 								// 1. TODO: Generar documento en linea.docBaremacion
 								File docBaremacionOficial = res.generarDocumentoOficialBaremacionConComentarios(linea);
 								// 2. Subir al AED el File anterior
-								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompletoConComentarios, docBaremacionOficial);
+								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompletoConComentarios, docBaremacionOficial, linea.solicitud);
 							}
 							tx.commit();
 						}
@@ -950,7 +954,7 @@ public class ResolucionBase {
 								// 1. TODO: Generar documento en linea.docBaremacion
 								File docBaremacionOficial = res.generarDocumentoOficialBaremacionSinComentarios(linea);
 								// 2. Subir al AED el File anterior
-								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompleto, docBaremacionOficial);
+								gestorDocumentalService.saveDocumentoTemporal(linea.docEvaluacionCompleto, docBaremacionOficial, linea.solicitud);
 							}
 							tx.commit();
 						}
@@ -1137,7 +1141,7 @@ public class ResolucionBase {
 					
 					// Se genera el documento oficio de remisión
 					File fileOficioRemision = generarDocumentoOficioRemision(linea);
-					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
+					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision, linea.solicitud);
 					linea.generadoOficio = true;
 					linea.save();
 				} catch (Throwable e)   {

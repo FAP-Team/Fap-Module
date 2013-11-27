@@ -84,7 +84,7 @@ public class FirmaUtils {
 				solicitud.registro.oficial.tipo = FapProperties.get("fap.aed.tiposdocumentos.solicitud");
 				solicitud.registro.oficial.descripcion = "Descripción del documento";
 				solicitud.registro.fasesRegistro.borrador = true;
-				gestorDocumentalService.saveDocumentoTemporal(solicitud.registro.oficial, oficial);
+				gestorDocumentalService.saveDocumentoTemporal(solicitud.registro.oficial, oficial, solicitud);
 				solicitud.save();
 				play.Logger.info("Documento creado y subido al AED: ");
 			} catch (Exception e) {

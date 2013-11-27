@@ -166,7 +166,8 @@ public class EditarCesionController extends EditarCesionControllerGen {
 		if (!validation.hasErrors()) {
 			try {
 				services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-				gestorDocumentalService.saveDocumentoTemporal(dbPeticionCesiones.fichRespuesta, subirArchivo);
+				//TODO Quitar ese null
+				gestorDocumentalService.saveDocumentoTemporal(dbPeticionCesiones.fichRespuesta, subirArchivo, null);
 				dbPeticionCesiones.save();
 				Messages.ok("El fichero de peticiones se ha subido correctamente");
 			} catch (services.GestorDocumentalServiceException e) {

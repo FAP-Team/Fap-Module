@@ -93,7 +93,8 @@ public class PeticionAEAT extends PeticionBase{
 			Documento doc = new Documento();
         	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	doc.descripcion = "Descripcion Peticion AEAT";
-        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" AEAT"+obtenerFechaNombre()+".txt");
+        	//TODO Quitar null
+        	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" AEAT"+obtenerFechaNombre()+".txt", null);
         	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionAEAT");
         	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 			pt.estado = EstadosPeticionEnum.creada.name();
@@ -184,7 +185,7 @@ public class PeticionAEAT extends PeticionBase{
 	                	Documento doc = new Documento();
 	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaAEAT");
 	                	doc.descripcion = "Descripcion AEAT";
-	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionAEAT"+obtenerFechaNombre()+".pdf");
+	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionAEAT"+obtenerFechaNombre()+".pdf", sol);
 	                	sol.documentacionCesion.documentos.add(doc);
 	                	pt.respCesion.fechaActuacionGestor = new DateTime();
 	                	pt.respCesion.uri = doc.uri;

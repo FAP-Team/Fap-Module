@@ -103,7 +103,8 @@ public class PeticionINSSR001 extends PeticionBase{
 				Documento doc = new Documento();
             	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	doc.descripcion = "Descripcion Peticion INSS";
-            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSR001"+obtenerFechaNombre()+".txt");
+            	//TODO Quitar null
+            	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(file), FapProperties.get("fap.prefijo.peticion.provincia")+" INSSR001"+obtenerFechaNombre()+".txt", null);
             	pt.fichPeticion.tipo = FapProperties.get("fap.aed.tiposdocumentos.peticionINSSR001");
             	pt.fichPeticion.uri =  doc.uri; //Almaceno donde está ANTES getAbsolutepath
 				pt.estado = EstadosPeticionEnum.creada.name();
@@ -196,7 +197,7 @@ public class PeticionINSSR001 extends PeticionBase{
 	                	Documento doc = new Documento();
 	                	doc.tipo = FapProperties.get("fap.aed.tiposdocumentos.respuestaINSSR001");
 	                	doc.descripcion = "Descripcion INSSR001";
-	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSR001"+obtenerFechaNombre()+".pdf");
+	                	gestorDocumentalService.saveDocumentoTemporal(doc, new FileInputStream(report), "cesionINSSR001"+obtenerFechaNombre()+".pdf", sol);
 	                	sol.documentacionCesion.documentos.add(doc);
 	                	pt.respCesion.fechaActuacionGestor = new DateTime();
 	                	pt.respCesion.uri = doc.uri;

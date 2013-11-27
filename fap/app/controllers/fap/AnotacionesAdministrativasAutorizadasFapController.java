@@ -65,7 +65,7 @@ public class AnotacionesAdministrativasAutorizadasFapController extends InvokeCl
 			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 			certificadoPDF = new Report("reports/"+tipoCertificado.nombrePlantilla+".html").registroSize().renderTmpFile(solicitud);
 			certificado.documento.tipo=tipoCertificado.tipoDocumento;
-			gestorDocumentalService.saveDocumentoTemporal(certificado.documento, certificadoPDF);
+			gestorDocumentalService.saveDocumentoTemporal(certificado.documento, certificadoPDF, solicitud);
 			certificado.fechaCreacion=new DateTime();
 			certificado.tipo=tipoCertificado;
 			// Firma con sello de la ACIISI

@@ -2,6 +2,7 @@ package controllers;
 
 import messages.Messages;
 import models.Documento;
+import models.SolicitudGenerica;
 import play.mvc.Util;
 import utils.DocumentosUtils;
 import utils.GestorDocumentalUtils;
@@ -61,7 +62,9 @@ public class DocConsultaPortafirmaCrearController extends DocConsultaPortafirmaC
 				if (file != null) {
 					try {
 						services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-						gestorDocumentalService.saveDocumentoTemporal(dbDocumento, file);
+						Long idSolicitud = Long.parseLong(params.get("idSolicitud"));
+						SolicitudGenerica solicitud = SolicitudGenerica.findById(idSolicitud);
+						gestorDocumentalService.saveDocumentoTemporal(dbDocumento, file, solicitud);
 					} catch (services.GestorDocumentalServiceException e) {
 						play.Logger.error(e, "Error al subir el documento al Gestor Documental");
 						validation.addError("", "Error al subir el documento al Gestor Documental");

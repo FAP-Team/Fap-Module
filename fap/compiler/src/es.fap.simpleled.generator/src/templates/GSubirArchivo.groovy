@@ -137,7 +137,9 @@ public class GSubirArchivo extends GSaveCampoElement{
 		out += """
 					try {
 						services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);
-						gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name});
+						Long idSolicitudGD = Long.parseLong(params.get("idSolicitud"));
+						SolicitudGenerica solicitudGD = SolicitudGenerica.findById(idSolicitudGD);
+						gestorDocumentalService.saveDocumentoTemporal(${campo.dbStr()}, ${subirArchivo.name}, solicitudGD);
 					}
 					catch(services.GestorDocumentalServiceException e) {
 						play.Logger.error(e, "Error al subir el documento al Gestor Documental");

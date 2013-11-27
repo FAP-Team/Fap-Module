@@ -343,7 +343,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							requerimiento.oficial.descripcion = "Requerimiento";
 							requerimiento.oficial.clasificado=false;
 							
-							gestorDocumentalService.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName());
+							gestorDocumentalService.saveDocumentoTemporal(requerimiento.oficial, new FileInputStream(oficial), oficial.getName(), dbSolicitud);
 							
 							requerimiento.estado = "borrador";
 							requerimiento.save();
@@ -523,7 +523,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			        documento.save();
 
 			        InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
-			        gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteRequerimiento" + dbSolicitud.verificacion.requerimiento.id + ".pdf");
+			        gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteRequerimiento" + dbSolicitud.verificacion.requerimiento.id + ".pdf", dbSolicitud);
 			        play.Logger.info("Justificante del Requerimiento almacenado en el AED");
 			        
 			        List<Documento> documentos = new ArrayList<Documento>();

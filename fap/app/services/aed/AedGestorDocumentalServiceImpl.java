@@ -483,7 +483,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      * Almacena un documento temporal
      */
 	@Override
-	public String saveDocumentoTemporal(models.Documento documento, InputStream contenido, String filename) throws GestorDocumentalServiceException {
+	public String saveDocumentoTemporal(models.Documento documento, InputStream contenido, String filename, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
 
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
         checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
@@ -539,9 +539,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
 	
 	@Override
-    public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException {
+    public String saveDocumentoTemporal(models.Documento documento, File file, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
         try {
-            return saveDocumentoTemporal(documento, new FileInputStream(file), file.getName());
+            return saveDocumentoTemporal(documento, new FileInputStream(file), file.getName(), solicitud);
         } catch (FileNotFoundException e) {
             throw new GestorDocumentalServiceException("File not found", e);
         }

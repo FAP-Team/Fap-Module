@@ -21,6 +21,7 @@ import utils.AedUtils;
 import utils.DocumentosUtils;
 import properties.FapProperties;
 import config.InjectorConfig;
+import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 
 // === IMPORT REGION END ===
 
@@ -169,6 +170,18 @@ public class Documento extends FapModel {
 		uri = propiedadesDoc.getUri();
 		tipo = tipoDocumento;
 		descripcion = propiedadesDoc.getDescripcion();
+	}
+
+	/**
+	 * Transformamos el documento del gestor documental de Platino, en una entidad Documento de FAP.
+	 * @param metadatos
+	 * @param tipoDocumento
+	 */
+
+	public void docPlatino2Doc(DocumentoBase metadatos, String tipoDocumento) {
+		uri = metadatos.getURI();
+		tipo = tipoDocumento;
+		descripcion = metadatos.getDescDoc();
 	}
 
 	public static Documento findByUri(String uri) {

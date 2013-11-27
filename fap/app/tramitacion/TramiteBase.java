@@ -191,8 +191,8 @@ public abstract class TramiteBase {
     public void almacenarEnGestorDocumental(File borrador, File oficial){
         if(!Messages.hasErrors()){
             try {
-                gestorDocumentalService.saveDocumentoTemporal(registro.borrador, borrador);
-                gestorDocumentalService.saveDocumentoTemporal(registro.oficial, oficial);
+                gestorDocumentalService.saveDocumentoTemporal(registro.borrador, borrador, this.solicitud);
+                gestorDocumentalService.saveDocumentoTemporal(registro.oficial, oficial, this.solicitud);
             }catch(Exception e){
                 Messages.error("Error almacenando documentos en el aed");
                 play.Logger.error("Error almacenando documentos en el aed: "+e.getMessage());
@@ -304,8 +304,8 @@ public abstract class TramiteBase {
 					documento.tipo = this.getJustificanteRegistro();
 					documento.descripcion = this.getDescripcionJustificante();
 					documento.save();
-					gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
-					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
+					gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf(), this.solicitud);
+					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el GestorDocumental", this.getTipoTramite());
 					
 					registro.fasesRegistro.registro = true;
 					getRegistro().fasesRegistro.registro=true;

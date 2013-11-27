@@ -39,10 +39,10 @@ public interface GestorDocumentalService {
 
     public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException;
     
-    public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
+    public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename, SolicitudGenerica solicitud)
             throws GestorDocumentalServiceException;
 
-    public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException;
+    public String saveDocumentoTemporal(models.Documento documento, File file, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
 
     public void updateDocumento(Documento documento) throws GestorDocumentalServiceException;
 

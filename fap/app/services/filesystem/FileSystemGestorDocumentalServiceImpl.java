@@ -256,7 +256,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      * @throws GestorDocumentalServiceException si el documento ya tiene uri
      */
     @Override
-    public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename)
+    public String saveDocumentoTemporal(Documento documento, InputStream contenido, String filename, SolicitudGenerica solicitud)
             throws GestorDocumentalServiceException {
     	
         checkNotNull(documento.tipo, "tipo del documento no puede ser null");
@@ -308,9 +308,9 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     }
     
     @Override
-    public String saveDocumentoTemporal(Documento documento, File file) throws GestorDocumentalServiceException {
+    public String saveDocumentoTemporal(Documento documento, File file, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
         try {
-            return saveDocumentoTemporal(documento, new FileInputStream(file), file.getName());
+            return saveDocumentoTemporal(documento, new FileInputStream(file), file.getName(), solicitud);
         } catch (FileNotFoundException e) {
             throw new GestorDocumentalServiceException("File not found", e);
         }

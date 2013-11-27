@@ -121,7 +121,7 @@ public class BaremacionFAP {
             	evaluacion.solicitudEnEvaluacion.descripcion="Solicitud a Evaluar";
                 evaluacion.solicitudEnEvaluacion.tipo = FapProperties.get("fap.baremacion.evaluacion.documento.solicitud");
                 evaluacion.save();
-                gestorDocumentalService.saveDocumentoTemporal(evaluacion.solicitudEnEvaluacion, solicitudEnEvaluacion);
+                gestorDocumentalService.saveDocumentoTemporal(evaluacion.solicitudEnEvaluacion, solicitudEnEvaluacion, solicitud);
                 List<Documento> documentos = new ArrayList();
                 documentos.add(evaluacion.solicitudEnEvaluacion);
                 gestorDocumentalService.clasificarDocumentos(solicitud, documentos);

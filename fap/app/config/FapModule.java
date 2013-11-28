@@ -47,7 +47,7 @@ public class FapModule extends PlayAbstractModule {
 		registroLibroResoluciones();
 		terceros();
 		ticketing();
-		mensaje();
+//		mensaje();
 //		conversor();
 	}
 	
@@ -91,9 +91,9 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(TicketingService.class, FilesystemTicketingServiceImpl.class);
 	}
 	
-	protected void mensaje() {
-		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
-	}
+//	protected void mensaje() {
+//		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
+//	}
 	
 	protected void secure() {
 		bind(Secure.class).toInstance(new SecureFap(new SecureFapGen(null)));

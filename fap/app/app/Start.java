@@ -78,6 +78,7 @@ import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
 import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
@@ -224,6 +225,15 @@ public class Start extends Job {
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
 		
+		//Testear servicio de portafirma
+		try {
+			System.out.println(portafirmaService.obtenerVersion());
+			ResolucionFAP res = new ResolucionFAP();
+			portafirmaService.crearSolicitudFirma(res);
+		} catch (PortafirmaFapServiceException e) {
+			
+		}
+		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
 		
@@ -233,8 +243,8 @@ public class Start extends Job {
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
 		
-		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
-		mensajeService.mostrarInfoInyeccion();
+//		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+//		mensajeService.mostrarInfoInyeccion();
 		
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

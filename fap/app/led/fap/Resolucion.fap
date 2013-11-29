@@ -195,6 +195,10 @@ Entidad ResolucionFAP {
 	DateTime fechaTopeFirmaOficiosRemision
 	Agente hacePeticionPortafirmaOficiosRemision noConstruct
 	String destinatarioOficioRemisionPortafirma 
+	
+	Boolean resolucionReintegro default="false"
+	String textoResolucionReintegro length=1000
+	
 }
 
 Entidad SolicitudPortafirmaFAP {
@@ -559,8 +563,15 @@ Formulario Principal {
 							Columna campo=LineaResolucionFAP.visibleGeneradoOficio titulo="Generado Oficio de Remisión" expandir
 						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
+						Grupo grupoJustificanteReintegro titulo="Resolución de Justificación de Reintegro"{
+							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolucion de justificacion con reintegro" alineadoAIzquierdas
+//							//Grupo textoJustificacion mostrarSiCheck justificacionReintegro=true{
+							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolucion de justificación de reintegro"
+//							//}
+						}
 						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
 					}
+					
 				}
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
 					Grupo grupoOficiosRemisionFirmaManual borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
@@ -603,7 +614,7 @@ Formulario Principal {
 					}
 					Grupo grupoRegistroOficiosRemision titulo="Registro" permiso=permisoOficiosRemisionFirmados {
 						Form formRegistrarOficiosRemision permiso=permisoOficiosRemisionFirmados {
-      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes" waitPopup
+      						Boton botonRegistrarOficiosRemision titulo="Registrar de salida Oficios de Remisión" waitPopup
     					}
 					}
 				}

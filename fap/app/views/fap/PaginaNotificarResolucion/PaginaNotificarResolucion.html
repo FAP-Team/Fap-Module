@@ -55,6 +55,15 @@
 <p>Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas</p>
 
 			</div>
+				
+		#{fap.grupo titulo:'Resolución de Justificación de Reintegro'}
+				
+			#{fap.check alineadoAIzquierdas:true, campo:'resolucionFAP.resolucionReintegro', id:'justificacionReintegro', titulo:'Resolucion de justificacion con reintegro' /}		
+		
+			#{fap.areaTexto campo:'resolucionFAP.textoResolucionReintegro', id:'textoJustificacionReintegro', titulo:'Texto de la Resolucion de justificación de reintegro' /}		
+		
+		#{/fap.grupo}
+		
 		
 			#{fap.boton id:'botonGenerarOficioRemision', titulo:'Generar', waitPopup:true /}
 		
@@ -183,7 +192,7 @@
 					
 				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formRegistrarOficiosRemision' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formRegistrarOficiosRemision"}
 					
-			#{fap.boton id:'botonRegistrarOficiosRemision', titulo:'Registrar Oficios de Remisión y justificantes', waitPopup:true /}
+			#{fap.boton id:'botonRegistrarOficiosRemision', titulo:'Registrar de salida Oficios de Remisión', waitPopup:true /}
 		
 				#{/form}
 			

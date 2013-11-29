@@ -290,7 +290,7 @@ public class PlatinoRegistro {
 	}
 	
 	public static JustificanteRegistro registroDeSalida(DatosRegistro datosRegistro) throws Exception {
-		log.info("Preparando registro de salida");
+		log.info("Preparando registro de salida del expediente "+datosRegistro.getExpediente());
 
 		String datosAFirmar = obtenerDatosAFirmarRegisto(datosRegistro);
 		log.info(datosAFirmar);
@@ -300,12 +300,12 @@ public class PlatinoRegistro {
 
 		try {	
 			JustificanteRegistro justificante = registroDeSalida(datosAFirmar, datosFirmados);
-			log.info("Registro de entrada realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
-			log.info("RegistrarEntrada -> EXIT OK");
+			log.info("Registro de salida realizado con justificante con NDE " + justificante.getNDE() + " Numero Registro General: " + justificante.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificante.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificante.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			log.info("RegistrarSalida -> EXIT OK");
 			return justificante;
 		} catch (Exception e) {
 			log.error("Error al obtener el justificante y EXIT "+e);
-			log.error("RegistrarEntrada -> EXIT ERROR");
+			log.error("RegistrarSalida -> EXIT ERROR");
 			throw e;
 		}		
 	}	

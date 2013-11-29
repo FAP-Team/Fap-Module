@@ -8,7 +8,7 @@ import play.jobs.On;
 import properties.FapProperties;
 import utils.NotificacionUtils;
 
-@On("0 0 1 * * ?")
+@On("0 0 10 * * ?")
 public class ActualizarDocumentacionNotificaciones extends Job {
 		
 	@Transactional

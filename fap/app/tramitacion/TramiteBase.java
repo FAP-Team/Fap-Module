@@ -394,7 +394,7 @@ public abstract class TramiteBase {
 				
 				
 				// Creamos el nuevo tercero, si no existe
-				if ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty())) {
+				if ((FapProperties.getBoolean("fap.platino.tercero.activa")) && ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty()))) {
 					try {
 						String tipoNumeroIdentificacion;
 						if (solicitud.solicitante.isPersonaFisica()){

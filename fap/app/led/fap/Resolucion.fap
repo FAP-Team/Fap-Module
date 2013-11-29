@@ -614,7 +614,7 @@ Formulario Principal {
 					}
 					Grupo grupoRegistroOficiosRemision titulo="Registro" permiso=permisoOficiosRemisionFirmados {
 						Form formRegistrarOficiosRemision permiso=permisoOficiosRemisionFirmados {
-      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes" waitPopup
+      						Boton botonRegistrarOficiosRemision titulo="Registrar de salida Oficios de Remisión" waitPopup
     					}
 					}
 				}

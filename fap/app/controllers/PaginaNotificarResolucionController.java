@@ -303,7 +303,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				//dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
 				dias = 1;
 				DateTime diaLimite = new DateTime();
-				diaLimite = diaLimite.plusDays(dias);
+				diaLimite = diaLimite.minusDays(dias);
 				if (diaLimite.isBefore(dbResolucionFAP.fechaTopeFirmaOficiosRemision)) {
 					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
 					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);					

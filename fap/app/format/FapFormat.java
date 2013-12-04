@@ -1,7 +1,5 @@
 package format;
 
-import java.math.BigDecimal;
-
 public class FapFormat {
 
 	public static String format(Object value) {

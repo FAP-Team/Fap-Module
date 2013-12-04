@@ -190,10 +190,13 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     }
 	
     public String firmarTexto(byte[] texto) throws FirmaServiceException {
+    	log.info("[firmarTexto] Iniciando firmarTexto -> Datos de Registro"); 
         String firma = null;
         try {
             firma = firmaPort.signPKCS7(texto, INVOKING_APP, ALIAS);
+            log.info("[firmarTexto] Texto firmado correctamente"); 
         }catch (Exception e) {
+        	log.error("[firmarDatosRegistro] Error en firmaPort.signPKCS7()");
             throw newFirmaServiceException("Error al realizar firma pkcs7", e);
         }
         return firma;

@@ -203,7 +203,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	
     private DatosRegistro getDatosRegistro(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
         XMLGregorianCalendar fechaApertura = WSUtils.getXmlGregorianCalendar(expediente.fechaApertura); 
-
+        log.info("[getDatosRegistro] Obteniendo los datos de registro para el expediente: "+expediente.ruta);
         // Rellenamos datos expediente
         DatosExpediente datosExp = new DatosExpediente();
         datosExp.setNumero(expediente.numero);
@@ -229,7 +229,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         try {
             models.Firma firma = gestorDocumentalService.getFirma(documento);
             if (firma != null){
-                play.Logger.info("Poniendo firma");
+            	log.info("[getDatosRegistro] Poniendo firma");
                 datosDoc.setFirma(firma);
             }else{
                 play.Logger.info("El documento no está firmado");
@@ -247,7 +247,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         }
         
         
-        log.info("Contenido del documento obtenido");
+        log.info("[getDatosRegistro] Contenido del documento obtenido");
         DatosRegistro datosRegistro = new DatosRegistro();
         datosRegistro.setExpediente(datosExp);
         datosRegistro.setDocumento(datosDoc);
@@ -263,6 +263,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             datosRegistro.setNumeroDocumento(solJuridica.cif);
             datosRegistro.setTipoDocumento("C");// CIF
         }
+        log.info("[getDatosRegistro] Datos de Registro obtenidos correctamente");
         return datosRegistro;
     }
     
@@ -275,7 +276,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
      */
 	
     private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
-        log.info("Ruta expediente " + datosRegistro.getExpediente().getRuta());
+    	log.info("[getDatosRegistroNormalizados] Ruta expediente " + datosRegistro.getExpediente().getRuta());
         
         crearExpedienteSiNoExiste(expedientePlatino);
         
@@ -305,6 +306,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         if (datosRegistro.getUnidadOrganica() != null)
         	organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
 
+        log.info("[getDatosRegistroNormalizados] normalizando datos firmados");
         try {
             String datosAFirmar = registroPort.normalizaDatosFirmados(
             		organismo, // Organismo
@@ -316,6 +318,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
                     fecha, // Fecha en la que se produce la solicitud
                     documentosRegistrar);
             datosAFirmar = CharsetUtils.fromISO2UTF8(datosAFirmar);
+            log.info("[getDatosRegistroNormalizados] datos firmados normalizados correctamente");
             return datosAFirmar;
         } catch (Exception e) {
             log.error("Error normalizando los datos " + e.getMessage());
@@ -347,8 +350,10 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     }
     
     private String firmarDatosRegistro(String datosAFirmar) throws RegistroServiceException {
+    	log.info("[firmarDatosRegistro] Iniciando la firma de los datos de registro");
         try {
             String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
+            log.info("[firmarDatosRegistro] Datos de registro firmados correctamente");
             return datosFirmados;
         }catch(Exception e){
             throw new RegistroServiceException("Error firmando los datos de registro", e);
@@ -357,7 +362,9 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     
     private JustificanteRegistro registroDeEntrada(String datos, String datosFirmados) throws RegistroServiceException {
         try {
+        	log.info("[registroDeEntrada] Iniciando el registro de entrada");
             JustificanteRegistro justificante = registroPort.registrarEntrada(USERNAME,  PASSWORD_ENC, datos, datosFirmados, ALIAS, null, null);
+            log.info("[registroDeEntrada] Registro de Entrada realizado correctamente en Platino");
             return justificante;
         }catch(Exception e){
             throw new RegistroServiceException("Error en la llamada de registro de entrada"+ e);
@@ -409,6 +416,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	}
     
     private models.JustificanteRegistro getJustificanteRegistroModel(JustificanteRegistro justificantePlatino) {
+    	log.info("[getJustificanteRegistroModel] Iniciando la obtencion del justificanteFap a partir del justificantePlatino");
         DateTime fechaRegistro = getRegistroDateTime(justificantePlatino);
         
         String unidadOrganica = justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina();
@@ -419,6 +427,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         documento.contenido = justificantePlatino.getReciboPdf();
         documento.nombre = "Justificante";
         models.JustificanteRegistro result = new models.JustificanteRegistro(documento, fechaRegistro, unidadOrganica, numeroRegistro, numeroRegistroGeneral);
+        log.info("[getJustificanteRegistroModel] Obtención correcta del justificanteFap");
         return result;
     }
 	

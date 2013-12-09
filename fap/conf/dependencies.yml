@@ -72,11 +72,11 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre v20131115:
+    - es.gobcan.platino -> platino.pre v20131119:
         transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
-    - es.gobcan.eadmon -> procedimientos v20130607:
+    - es.gobcan.eadmon -> procedimientos v20131015:
         transitive: false
     - es.gobcan.eadmon -> gestordocumental v20130607:
         transitive: false

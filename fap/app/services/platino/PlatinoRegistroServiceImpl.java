@@ -190,7 +190,9 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    		|| datosRegistro.getNumeroDocumento().equals("A99999999")) {
 	    	datosRegistro.setNumeroDocumento("A99999997");
 	    }
+	    log.info("Llamando al getDatosRegistroNormalizados");
 	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
+	    log.info("Llamando a firmarDatosRegistro");
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
         models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
@@ -275,7 +277,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
      */
 	
     private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
-        log.info("Ruta expediente " + datosRegistro.getExpediente().getRuta());
+        log.info("[getDatosRegistroNormalizados] Ruta expediente " + datosRegistro.getExpediente().getRuta());
         
         crearExpedienteSiNoExiste(expedientePlatino);
         
@@ -316,6 +318,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
                     fecha, // Fecha en la que se produce la solicitud
                     documentosRegistrar);
             datosAFirmar = CharsetUtils.fromISO2UTF8(datosAFirmar);
+            
+            log.info("Datos de Registro Normalizados correctamente");
             return datosAFirmar;
         } catch (Exception e) {
             log.error("Error normalizando los datos " + e.getMessage());
@@ -348,6 +352,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     
     private String firmarDatosRegistro(String datosAFirmar) throws RegistroServiceException {
         try {
+        	log.info("Llamando a firmarTexto para firmar datosRegistro");
             String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
             return datosFirmados;
         }catch(Exception e){

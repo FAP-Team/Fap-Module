@@ -209,7 +209,7 @@ public class PlatinoGestorDocumentalServiceImpl implements GestorDocumentalServi
 //		    	}
 			} catch (ErrorInternoException e) {
 				throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo");
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			    	return listaDocumentos;
 			

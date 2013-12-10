@@ -415,7 +415,7 @@ Form:
 FirmaMultiple:
 	elemento='FirmaMultiple' name=ID
 	(
-		('campo' '=' campo=Campo)
+		(documentos=FirmaDocumentos)
 		& ('titulo' '=' titulo=STRING)?
         & ('alto' '=' alto=STRING)? 
         & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
@@ -432,6 +432,9 @@ FirmaMultiple:
 	'}'
 ;
 
+FirmaDocumentos:
+	"campo" "=" campo=Campo	
+;
 
 Tabla:
 	elemento='Tabla' name=ID

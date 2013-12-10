@@ -28,6 +28,7 @@ import es.fap.simpleled.led.EntidadAutomatica;
 import es.fap.simpleled.led.Entity;
 import es.fap.simpleled.led.Fecha;
 import es.fap.simpleled.led.FirmaDocumento;
+import es.fap.simpleled.led.FirmaDocumentos;
 import es.fap.simpleled.led.FirmaFirmantes;
 import es.fap.simpleled.led.FirmaSetCampo;
 import es.fap.simpleled.led.FirmaSetTrue;
@@ -270,6 +271,9 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof FirmaDocumento) {
 			return new SimpleEntidadValidator(container, "Documento", false);
+		}
+		if (container instanceof FirmaDocumentos) {
+			return new ListaEntidadValidator(container, "Registro");
 		}
 		if (container instanceof FirmaFirmantes) {
 			return new ListaEntidadValidator(container, "Firmante");

@@ -245,12 +245,8 @@ public class GElement {
 			else if(element instanceof GrupoRadioButtons)
 				cache.put(element, new GGrupoRadioButtons(element, container));
 				
-			else if(element instanceof FirmaMultiple) {
-				System.out.println("----------------------------> HOLA ELEMENT <----------------------------");
+			else if(element instanceof FirmaMultiple)
 				cache.put(element, new GFirmaMultiple(element, container));
-				System.out.println("----------------------------> ADIOS ELEMENT <----------------------------");
-				
-			}
 		}
 		
 		return cache.get(element);

@@ -27,13 +27,10 @@ public class GFirmaMultiple extends GElement{
 	
 	public GFirmaMultiple(FirmaMultiple firmaMultiple, GElement container){
 		super(firmaMultiple, container);
-		System.out.println("----------------------------> HOLA GFIRMAMULTIPLE <----------------------------");
 		this.firmaMultiple = firmaMultiple;
-		campo = CampoUtils.create(firmaMultiple.campo);
+		campo = CampoUtils.create(firmaMultiple.documentos.campo);
 		gPaginaPopup = getPaginaOrPopupContainer();
 		//stringParamsAdded = new ArrayList<String>();
-		System.out.println("----------------------------> ADIOS GFIRMAMULTIPLE <----------------------------");
-		
 	}
 	
 	public String viewWithParams (Set<Entity> setEntityParent){
@@ -147,7 +144,7 @@ public class GFirmaMultiple extends GElement{
 	    }
 		if(firmaMultiple.columnas.isEmpty()){
 			Columna c = LedFactory.eINSTANCE.createColumna();
-			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMultiple.campo).name}.id").campo;
+			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMultiple.documentos.campo).name}.id").campo;
 			firmaMultiple.columnas.add(c);
 		}
 		for(Columna c : firmaMultiple.columnas)
@@ -364,6 +361,100 @@ public class GFirmaMultiple extends GElement{
 			    ${getCodeFilasPermiso(entidad)}
 				renderJSON(response.toJSON($rowsStr));
 			}
+
+	public static String obtenerIdDocumento${id()}(Long idRegistro){
+		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
+		if (registro != null) {
+			play.Logger.info("El documento oficial del registro "+registro.id+" tiene el id "+registro.oficial.id+" y la uri "+registro.oficial.uri);
+			return registro.oficial.id.toString();
+		}
+		play.Logger.info("Error al obtener el registro "+idRegistro);
+		return null;
+	}
+
+	public static String obtenerUrlDocumento${id()}(Long idDocumento){
+		return FirmaUtils.obtenerUrlDocumento(idDocumento);
+	}
+
+	public static String obtenerFirmadoDocumento${id()}(Long idRegistro) {
+		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
+		if (registro != null) {
+			play.Logger.info("El documento oficial del registro "+registro.id+" tiene el id "+registro.oficial.id+", la uri " + registro.oficial.uri+" y firmado a "+registro.fasesRegistro.firmada);
+			return registro.fasesRegistro.firmada.toString();
+		}
+		play.Logger.info("Error al obtener el registro "+idRegistro);
+		return null;
+	}
+
+	@Util
+	public static boolean firmar${id()}(Long idRegistro, String firma) {
+		
+		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
+		
+		play.Logger.info("Firmando documento "+registro.oficial.uri);
+		
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		Map<String, Object> vars = new HashMap<String, Object>();
+		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
+			if (registro.firmantes.todos == null || registro.firmantes.todos.size() == 0) {
+				Long idSolicitud = ids.get("idSolicitud");
+				registro.firmantes.todos = calcularFirmantes${id()}(idSolicitud);
+				registro.firmantes.save();
+			}
+			FirmaUtils.firmar(registro.oficial, registro.firmantes.todos, firma, null);
+		} else {
+			//ERROR
+			Messages.error("No tiene permisos suficientes para realizar la acción++");
+		}
+		
+		if (!Messages.hasErrors()) {
+			registro.fasesRegistro.firmada = true;
+			registro.save();
+			play.Logger.info("Firma de documento "+registro.oficial.uri+" con éxito");
+			return true;
+		}
+		play.Logger.info("Firma de documento "+registro.oficial.uri+" sin éxito");
+		return false;
+	}
+	
+	public static List<Firmante> calcularFirmantes${id()}(Long idSolicitud) {
+
+		SolicitudGenerica solicitud = null;
+		if (idSolicitud == null) {
+			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro idSolicitud"))
+				Messages.fatal("Falta parámetro idSolicitud");
+		} else {
+			solicitud = SolicitudGenerica.findById(idSolicitud);
+			if (solicitud == null) {
+				Messages.fatal("Error al recuperar SolicitudGenerica");
+			}
+		}
+		
+		Firmantes firmantes = new Firmantes();
+		//Solicitante de la solicitud
+		Firmante firmanteSolicitante = new Firmante(solicitud.solicitante, "unico");
+		firmantes.todos.add(firmanteSolicitante);
+
+		//Comprueba los representantes
+		if (solicitud.solicitante.isPersonaFisica() && solicitud.solicitante.representado) {
+			// Representante de persona física
+			Firmante representante = new Firmante(solicitud.solicitante.representante, "representante", "unico");
+			firmantes.todos.add(representante);
+		} else if (solicitud.solicitante.isPersonaJuridica()) {
+			//Representantes de la persona jurídica
+			for (RepresentantePersonaJuridica r : solicitud.solicitante.representantes) {
+				String cardinalidad = null;
+				if (r.tipoRepresentacion.equals("mancomunado")) {
+					cardinalidad = "multiple";
+				} else if ((r.tipoRepresentacion.equals("solidario")) || (r.tipoRepresentacion.equals("administradorUnico"))) {
+					cardinalidad = "unico";
+				}
+				Firmante firmante = new Firmante(r, "representante", cardinalidad);
+				firmantes.todos.add(firmante);
+			}
+		}
+		return firmantes.todos;
+	}
 
 		"""
 	}

@@ -1,17 +1,14 @@
 *{
-  Tabla
-  ==================================
-  Algunos argumentos
-  	- crearEntidad: indica, cuando se lanza el evento del boton 'nuevo', si va a ser necesario llamar por ajax a la accion que crea la entidad
-  		de la página o popup que contiene a la tabla. Los parámetros idContainer, nameContainer, urlContainerCrear, urlContainerEditar y urlCrearEntidad
-  		solo es necesario especificarlos cuando crearEntidad es true.
-  	- idContainer: contiene el string del parámetro id de la entidad de la página o popup. Ejemplo: "idSolicitud".
-  	- nameContainer: contiene el nombre de la página o popup.
-  	- urlContainerCrear: url del index correspondiente a la accion crear de la página o popup.
-  	- urlCrearEntidad: url de la accion que crea la entidad.
+	Firma de múltiples documentos
+	================================================================================
+	Algunos argumentos
+		- idContainer: contiene el string del parámetro id de la entidad de la página o popup. Ejemplo: "idSolicitud".
+		- nameContainer: contiene el nombre de la página o popup.
 }*
 
 %{
+
+	// ---------- ---------- ---------- ---------- TABLA ---------- ---------- ---------- ----------
 	
 	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMultiple, "urlFirmaMultiple");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
@@ -79,9 +76,12 @@
 		play.Logger.error("firmaMultiple.html t-> "+t.getMessage());
 	}
 
-	// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+	// ---------- ---------- ---------- ---------- FIRMA ---------- ---------- ---------- ----------
 
-	def urlCrearFullUrlId  = play.mvc.Router.reverse('paginaFirmaMultiplesDocumentosController.crearFullUrlId');
+	def urlObtenerUrlDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerUrlDocumento'+id);
+	def urlObtenerIdDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerIdDocumento'+id);
+	def urlObtenerFirmadoDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerFirmadoDocumento'+id);
+	def urlFirmar = play.mvc.Router.reverse(controllerNameAndPackage+'.firmar'+id);
 	def id_row = id + "_row";
 	def label = "Selecciona un certificado"
 	def ayuda = _ayuda
@@ -95,8 +95,6 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
 	
 	def id_cert = id.replace('-', '');
-	
-	// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 	
 %}
 
@@ -390,35 +388,61 @@
 		    	handler : function(){
 					var i;
 		    		var selected = sm${id}.getSelection();
+		    		var idDocumento;
+		    		var firmadoDocumento;
 		    		var urlDocumento;
 		    		var firma;
+		    		var resultado;
 		    		mensajes.clear();
 		    		if (selected.length == 0) {
-		    			mensajes.error('No hay documentos seleccionados.');
+		    			mensajes.error('No hay documentos seleccionados para firmar.');
 		    		} else {
 			    		for (i in selected) {
-			    			j = parseInt(i) + 1;
-			    			alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+selected[i].data.id+" | firmado: "+selected[i].data.firmadoVisible);
-			    			if (selected[i].data.firmadoVisible == "No") {
-			    				urlDocumento = crearFullUrlId(selected[i].data.id);
-								firma = Firma.firmarDocumento('#${id_cert}certificado', urlDocumento, "", {mensajes: mensajes});
-								if (firma == null) {
-									alert("No se ha firmado el documento "+j+" | id: "+selected[i].data.id+" | firmado: "+selected[i].data.firmadoVisible+" | url: "+urlDocumento);
-									break;
-								} else {
-									alert("Se ha firmado el documento: "+j+" | id: "+selected[i].data.id+" | firmado: "+selected[i].data.firmadoVisible+" | url: "+urlDocumento+" | firma: "+firma);
+			    			resultado = "false";
+							firma = null;
+			    			idDocumento = obtenerIdDocumento(selected[i].data.id);
+			    			firmadoDocumento = obtenerFirmadoDocumento(selected[i].data.id);
+			    			if ((idDocumento != null) && (firmadoDocumento != null)) {
+			    				j = parseInt(i) + 1;
+				    			if (firmadoDocumento == "false") {
+				    				alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
+				    				urlDocumento = obtenerUrlDocumento(idDocumento);
+				    				if (urlDocumento != null) {
+										firma = Firma.firmarDocumento('#${id_cert}certificado', urlDocumento, "", {mensajes: mensajes});
+										if (firma != null) {
+											alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
+											resultado = firmar(selected[i].data.id, firma);
+											if (resultado == "true")
+												alert("Se ha firmado el documento: "+j+" | id: "+idDocumento);
+											else {
+												alert("No se ha firmado el documento: "+j+" | id: "+idDocumento);
+												break;
+											}
+										} else {
+											alert("No se ha obtenido la firma del documento "+j+" | id: "+idDocumento);
+											break;
+										}
+									} else {
+										alert("Error al obtener urlDocumento");
+										break;
+									}
+								} else if (firmadoDocumento == "true") {
+									resultado = "true";
+									alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
 								}
 							} else {
-								alert("El documento: "+j+" ya está firmado | id: "+selected[i].data.id+" | firmado: "+selected[i].data.firmadoVisible+" | url: "+urlDocumento);
+								alert("Error al obtener idDocumento o firmadoDocumento");
+								break;
 							}
-			    		}
+			    		} // for
 						i = parseInt(i) + 1;
-			    		if ((i == selected.length) && (firma != null)) {
+			    		if ((i == selected.length) && (resultado == "true")) {
 			    			mensajes.ok('Se han firmado todos los documentos seleccionados.');
 			    		} else {
 			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
 		    			}
 		    		}
+		    		selected = null;
 		    		// Se actualiza contenido de la tabla
 					grid.body.mask("Cargando....");
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
@@ -629,11 +653,11 @@
 			}
 		});
 
-	function crearFullUrlId(id) {
+	function obtenerUrlDocumento(id) {
 		var url;
 		$.ajax({
 			type: "POST",
-			url: "${urlCrearFullUrlId}",
+			url: "${urlObtenerUrlDocumento}",
 				data: {
 					idDocumento: id
 				},
@@ -643,6 +667,55 @@
 				}
 		});
 		return url;
+	}
+
+	function obtenerIdDocumento(id) {
+		var idDocumento;
+		$.ajax({
+			type: "POST",
+			url: "${urlObtenerIdDocumento}",
+				data: {
+					idRegistro: id
+				},
+				async: false,
+				success: function(data) {
+					idDocumento = data;
+				}
+		});
+		return idDocumento;
+	}
+
+	function obtenerFirmadoDocumento(id) {
+		var firmado;
+		$.ajax({
+			type: "POST",
+			url: "${urlObtenerFirmadoDocumento}",
+				data: {
+					idRegistro: id
+				},
+				async: false,
+				success: function(data) {
+					firmado = data;
+				}
+		});
+		return firmado;
+	}
+
+	function firmar(id, firma) {
+		var resultado;
+		$.ajax({
+			type: "POST",
+			url: "${urlFirmar}",
+				data: {
+					idRegistro: id,
+					firma: firma
+				},
+				async: false,
+				success: function(data) {
+					resultado = data;
+				}
+		});
+		return resultado;
 	}
 
 </script>

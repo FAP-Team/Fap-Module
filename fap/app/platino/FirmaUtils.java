@@ -3,26 +3,33 @@ package platino;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 
 import config.InjectorConfig;
 
 import messages.Messages;
+import messages.Messages.MessageType;
 import models.Documento;
 import models.Firmante;
+import models.Firmantes;
 import models.Registro;
 import models.RepresentantePersonaJuridica;
 import models.Solicitante;
 import models.SolicitudGenerica;
 import play.modules.guice.InjectSupport;
 import play.mvc.Controller;
+import play.mvc.Router;
+import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import utils.AedUtils;
 
 @InjectSupport
 public class FirmaUtils {
@@ -160,5 +167,20 @@ public class FirmaUtils {
 		return multiple;
 	}
 	
+	// --------------------------------------------------------------------------------
+	// Métodos para firma de múltiples documentos
+	// --------------------------------------------------------------------------------
+
+	public static String obtenerUrlDocumento(Long idDocumento) {
+		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+		if (documento != null) {
+			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri);
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("k", AedUtils.encriptarUri(documento.uri));
+			return Router.getFullUrl("fap.DescargasAedController.descargar", params).toString();
+		}
+		play.Logger.info("Error al obtener el documento "+idDocumento);
+		return null;
+	}
 	
 }

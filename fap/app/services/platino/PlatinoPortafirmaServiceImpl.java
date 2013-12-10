@@ -25,23 +25,19 @@ import org.joda.time.DateTime;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
-
 import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-
 import models.Agente;
 import models.Documento;
 import models.ResolucionFAP;
-
 import services.GestorDocumentalService;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import utils.WSUtils;
-
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoAedType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
@@ -227,6 +223,8 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 			//Subir documentos anexos (de consulta) a gestor documental y adjuntar
 			//TipoDocumentacionEnumType.ANEXA
 			
+			//Firmar solicitud de firma
+			
 			//response.setIdSolicitud(resolucion.idSolicitudFirma);
 			//response.setComentarios(sfpt.getSolicitudEstadoComentario());
 			System.out.println(resolucion.idSolicitudFirma);
@@ -253,50 +251,54 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 
 	@Override
 	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		
 		try {
+			
 			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(resolucion.idSolicitudFirma, true);
+			
 			return solFirma.getPropiedades().getSolicitudEstado().value();
+			
 		} catch (SolicitudFirmaExcepcion e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma");
 		}
-		
-		return null;
 	}
 
 	@Override
 	public String obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
 		try {
 			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(idSolicitudFirma, true);
-			List<EntradaHistoricoEstadoType> listaEstados = solFirma.getHistoricoEstado().getEntradaHistoricoEstado();
 			
-			for(int i = listaEstados.size(); i >= 0; i--) {
-				listaEstados.get(i).getUriFuncionario();
-			}
+			return solFirma.getPropiedades().getSolicitudEstado().value();
 			
-			return solFirma.getHistoricoEstado().getEntradaHistoricoEstado().get(listaEstados.size()).getEstado().value();
 		} catch (SolicitudFirmaExcepcion e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma");
 		}
-		return null;
 	}
 
 	@Override
 	public void eliminarSolicitudFirma() throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
+		//portafirmaPort.eliminarSolicitudFirma(uriSolicitud, comentario);
 	}
 
 	@Override
 	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(idSolicitudFirma, true);
+			
+			return (solFirma.getPropiedades().getSolicitudEstado().equals(EstadoSolicitudEnumType.FIRMADA));
+			
+		} catch (SolicitudFirmaExcepcion e) {
+			e.printStackTrace();
+			throw new PortafirmaFapServiceException("Error al comprobar si la solicitud de firma ha sido firmada");
+		}
 	}
 
 	@Override
 	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
+		portafirmaPort.
 		return null;
 	}
 

@@ -149,11 +149,12 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 
 	public List<TerceroListItem> buscarTercerosDetalladosByItem(TerceroMinimalItem tmi) throws TercerosServiceException{
 		try {
-			log.info("[buscarTercerosDetalladosByNumeroIdentificacion] Numero doc: "+tmi.getNumeroDocumento());
-			log.info("[buscarTercerosDetalladosByNumeroIdentificacion] Tipo doc: "+tmi.getTipoDocumento());
-			return tercerosPort.buscarTercerosDetalladosByItem(tmi);
+			List<TerceroListItem> resultado = tercerosPort.buscarTercerosDetalladosByItem(tmi);
+			play.Logger.info("Consultado el tercero "+tmi.getId()+" en el Servicio de Terceros de Platino");
+			return resultado;
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 			throw newTercerosServiceException("Fallo al buscar el Terceros Detallados por tmi: "+tmi.getUri()+" - "+e.getMessage(), e);
 		}
 	}
@@ -224,7 +225,9 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 	
 	private String crearTerceroMinimal(TerceroMinimalItem tercero) throws TercerosServiceException{
 		try {
-			return tercerosPort.crearTerceroMinimal(tercero);
+			String resultado = tercerosPort.crearTerceroMinimal(tercero);
+			play.Logger.info("Creado el tercero en el Servicio de Terceros de Platino para "+tercero.getNumeroDocumento());
+			return resultado;
 		} catch (Exception e) {
 			throw newTercerosServiceException("Fallo al intentar crear un Tercero en Platino: "+tercero.getNumeroDocumento()+" - "+e.getMessage(), e);
 		}

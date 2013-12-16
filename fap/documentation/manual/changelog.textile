@@ -1,16 +1,25 @@
 h2. Changelog
 
-h3. Versión 2.4RC1
+h3. Versión 2.4RC3
+Inclusi�n del servicio SVD
 
 * Migración de los servicios de firma, registro y terceros de Platino a Platino 2.0
 
-h3. Versión 2.3.2RC10
 
 * Añadida la Resolución de Justificacion de Reintegro.
 * Modificado el permiso de las Verificaciones, ya no dependen de la convocatoria.
 * Mejorado el volcado de información en el log.
 
-h3. Versión 2.3.2RC9
+
+* Añadida la firma de múltiples documentos.
+* Añadidos diversos waitPopup en la parte de Resolución.
+* Corregido formato de valores monetarios de los conceptos económicos.
+
+
+* Añadida la Resolucion de justificación.
+* Modificado el permiso de las Verificaciones, ya no dependen del estado.
+* Añadido un mayor volcado de información en el log en el Registro.
+
 
 * Actualizada documentación.
 * Cambiado los permisos de resolución para admitir al rol revisor.

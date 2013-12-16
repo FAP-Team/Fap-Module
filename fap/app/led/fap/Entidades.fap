@@ -53,6 +53,8 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Boolean activoFH default="false"
 	OneToMany CertificadoSolicitado certificados
 	Cesion cesion
+	//Comunicaciones Internas
+	OneToMany ComunicacionInterna comunicacionesInternas
 	Boolean activoModificacion transient
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
@@ -958,4 +960,71 @@ Entidad JsonPeticionModificacion{
 	LongText jsonPeticion
 	DateTime fechaRestauracion
 	Boolean restaurado default = "false"
+}
+
+// -----------------------------------------------------------------------
+//	 Entidades necesarias para el servicio de Comunicaciones Internas
+// -----------------------------------------------------------------------
+
+Entidad ComunicacionInterna{
+	AsientoCIFap asiento
+	ReturnComunicacionInternaFap respuesta
+}
+
+Entidad AsientoCIFap {
+	String observaciones //No ob
+	String resumen
+	Integer numeroDocumentos  //No ob
+	String interesado //No ob
+	Long unidadOrganicaDestino  //No ob si asunto codificado existe
+	String asuntoCodificado  //No ob
+	String userId
+	String password //String utf-16 unicode
+	String tipoTransporte  //No ob
+	OneToMany ListaUris uris  //Array de uris  //No ob
+}
+	
+Entidad ReturnComunicacionInternaFap {
+	String usuario
+	String resumen
+	String observaciones
+	//String referencia //Solo existe en la doc no en el WS
+	String fecha //Ojo formato: dd/mm/yyyy
+	String hora //Ojo formato hh:mm:ss
+	String tipoComunicacion // I = interna E = Externa
+	String ejercicio //Año
+	Long numeroGeneral
+	String contadorUO
+	Long numeroRegistro
+	String asunto
+	String unidadOrganica
+	ReturnInteresadoFap interesado
+	String tipoTransporte
+	OneToMany ListaUris uris
+	Lista listaReturnErrorFap error	
+}	
+	
+Entidad ReturnInteresadoFap {
+	String nombre
+//	Lista tipoDocumentoCI tipoDocumento //Tira de la lista
+//	String numeroDocumento
+//	String letra
+}	
+	
+	
+	
+//	String referenciaCantidadDocumentos  //Hacerle un ToString cuando lo devuelva el servicio
+//	Integer tipoDocumento //lista Tipos de documentos
+//	String numeroDocumento
+//	String letraDocumento
+//	String nombreInteresado
+//	Integer numeroAsientoAsociado
+//	String userId
+//	String password //UTF16 Unicode!!
+//	String tipoTransporte
+//	OneToMany ListaUris uris  //Array de uris
+//}
+
+Entidad ListaUris {
+	String uri
 }

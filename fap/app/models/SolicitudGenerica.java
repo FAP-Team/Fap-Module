@@ -118,6 +118,10 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Cesion cesion;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_comunicacionesinternas")
+	public List<ComunicacionInterna> comunicacionesInternas;
+
 	@Transient
 	public Boolean activoModificacion;
 
@@ -251,6 +255,9 @@ public class SolicitudGenerica extends FapModel {
 			cesion = new Cesion();
 		else
 			cesion.init();
+
+		if (comunicacionesInternas == null)
+			comunicacionesInternas = new ArrayList<ComunicacionInterna>();
 
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();

@@ -9038,3 +9038,24 @@ Lista estadosModificacion crearEnumerado{
 	expirada: "Expirada"      //Pasada de fecha
 	
 }
+
+Lista listaReturnErrorFap crearEnumerado {
+	1: "Autenticación del usuario"
+	2: "Validación de datos de entrada"
+	3: "Errores de HiperReg"
+	4: "Errores no esperados"
+	5: "Permisos del usuario a efectuar una acción con HiperReg"
+	6: "Notificaciones: puede que no se haya encontrado un dato"
+}
+
+Lista tipoDocumentoCI crearEnumerado {
+	0: "Sin documento"
+	1: "DNI-NIF"
+	2: "Pasaporte Nacional"
+	3: "Tarjeta de Residencia"
+	4: "CIF"
+	5: "Pasaporte Extranjero"
+	6: "Persona juridica sin CIF"
+	7: "CIF Organismo Público"
+	8: "Sin normalizar"
+}

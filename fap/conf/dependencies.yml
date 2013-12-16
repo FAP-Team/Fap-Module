@@ -74,6 +74,8 @@ require:
         transitive: false
     - es.gobcan.platino -> platino.pre v20131119:
         transitive: false   
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
+       transitive: false
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
     - es.gobcan.eadmon -> procedimientos v20131015:
@@ -103,6 +105,7 @@ repositories:
             - es.gobcan -> *
             - es.gobcan.aciisi -> *
             - es.gobcan.platino -> *
+            - es.gobcan.hiperreg -> *
             - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *

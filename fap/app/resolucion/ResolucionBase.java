@@ -336,6 +336,7 @@ public class ResolucionBase {
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", resolucion);
 				oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).normalSize().renderTmpFile(resolucion);
 				resolucion.registro.oficial = new Documento();
+				resolucion.registro.oficial.descripcion = resolucion.tituloInterno;
 				resolucion.registro.oficial.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {

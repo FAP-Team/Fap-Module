@@ -15,33 +15,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-import org.hibernate.annotations.DiscriminatorOptions;
 
-@DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
+
 @Entity
-public class Convocatoria extends Singleton {
+public class ReturnInteresadoFap extends FapModel {
 	// Código de los atributos
 
-	@ValueFromTable("estadoConvocatoria")
-	public String estado;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ExpedienteAed expedienteAed;
-
-	public Convocatoria() {
-		init();
-	}
+	public String nombre;
 
 	public void init() {
-		super.init();
-		if (estado == null)
-			estado = "presentacion";
-
-		if (expedienteAed == null)
-			expedienteAed = new ExpedienteAed();
-		else
-			expedienteAed.init();
 
 		postInit();
 	}

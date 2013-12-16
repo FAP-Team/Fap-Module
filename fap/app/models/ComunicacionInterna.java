@@ -15,33 +15,34 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
-import org.hibernate.annotations.DiscriminatorOptions;
 
-@DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
+
 @Entity
-public class Convocatoria extends Singleton {
+public class ComunicacionInterna extends FapModel {
 	// Código de los atributos
 
-	@ValueFromTable("estadoConvocatoria")
-	public String estado;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public AsientoCIFap asiento;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ExpedienteAed expedienteAed;
+	public ReturnComunicacionInternaFap respuesta;
 
-	public Convocatoria() {
+	public ComunicacionInterna() {
 		init();
 	}
 
 	public void init() {
-		super.init();
-		if (estado == null)
-			estado = "presentacion";
 
-		if (expedienteAed == null)
-			expedienteAed = new ExpedienteAed();
+		if (asiento == null)
+			asiento = new AsientoCIFap();
 		else
-			expedienteAed.init();
+			asiento.init();
+
+		if (respuesta == null)
+			respuesta = new ReturnComunicacionInternaFap();
+		else
+			respuesta.init();
 
 		postInit();
 	}

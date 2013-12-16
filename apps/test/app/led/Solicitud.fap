@@ -83,6 +83,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Páginas Especiales" {
 				Enlace "Firma" pagina=PaginaFirma
 				Enlace "Firma en Servidor" pagina=CrearDocYFirma
+				Enlace "Firma de múltiples documentos" pagina=paginaFirmaMultiplesDocumentos
 			}
 			
 			Grupo "Anotación Inject"{
@@ -990,6 +991,61 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
 		}
 	}
+
+	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
+
+		Grupo grupoFirmaMultiple titulo="Firma de múltiples documentos" {
+			Tabla tablaDocumentos titulo="Documentos" campo=Solicitud.registros paginaCrear=paginaSubirDocumento {
+				Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
+				Columna campo=Registro.oficial.enlaceDescarga titulo="Descargar" expandir
+			}
 	
+			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.registros  {
+				Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
+				Columna campo=Registro.oficial.enlaceDescarga titulo="Descargar" expandir
+				Columna campo=Registro.oficial.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
+				//Columna funcion="<a href=\"${Registro.oficial.urlDescarga}\" target=\"_blank\">Descargar 2</a>" titulo="Descargar 2" expandir
+				//Columna funcion="<a href=\"${Registro.oficial.urlDescargaFirmado}\" target=\"_blank\">Descargar firmado 2</a>" titulo="Descargar firmado 2" expandir
+				Columna campo=Registro.fasesRegistro.firmadaVisible titulo="Firmado" expandir
+			}
+		}
+		
+		Grupo grupoFirmaSimple titulo="Firma de un único documento" {
+			Boton botonSubirDocumento pagina=paginaSubirDocumentoDos titulo="Subir documento"
+			
+			Enlace campo=Solicitud.registro.oficial.urlDescarga titulo="Descargar documento no firmado" destino="_blank" estilo="boton"
+			
+			Form formFirmaSimplePrueba { 
+				FirmaSimple firmaSimplePrueba titulo="Firmar"
+					documento=Solicitud.registro.oficial
+					listaFirmantes=Solicitud.registro.firmantes.todos
+					calcularFirmantes=Solicitud.solicitante
+			}
+			
+			Enlace campo=Solicitud.registro.oficial.urlDescargaFirmado titulo="Descargar documento firmado" destino="_blank" estilo="boton"
+			
+		}
+	}
+
+	Pagina paginaSubirDocumento titulo="Nuevo Documento" campo=Solicitud.registros permiso=editarSolicitud perteneceA ="Documentacion"{
+		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
+			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+		}
+	}
+
+	Pagina paginaSubirDocumentoDos titulo="Nuevo Documento" campo=Solicitud.registro permiso=editarSolicitud perteneceA ="Documentacion"{
+		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
+			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+		}
+	}
+
 }
 

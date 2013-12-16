@@ -412,9 +412,9 @@
 										if (firma != null) {
 											//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
 											resultado = firmar(selected[i].data.id, firma);
-											if (resultado == "true")
+											if (resultado == "true") {
 												//alert("Se ha firmado el documento: "+j+" | id: "+idDocumento);
-											else {
+											} else {
 												//alert("No se ha firmado el documento: "+j+" | id: "+idDocumento);
 												break;
 											}

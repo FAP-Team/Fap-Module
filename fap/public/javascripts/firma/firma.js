@@ -73,6 +73,6 @@ Firma.firmarDocumento = function(elCertificado, url, elFirma, opciones){
 		firma = Firma._firmarDocumento(url, certificadoSeleccionado);
 		$firma.val(firma);
 	}
-	alert("Método: firmarDocumento (firma.js) | url: "+url+" | certificado: "+certificadoSeleccionado.clave+ " | firma: "+firma);
+	//alert("Método: firmarDocumento (firma.js) | url: "+url+" | certificado: "+certificadoSeleccionado.clave+ " | firma: "+firma);
 	return firma;
 }

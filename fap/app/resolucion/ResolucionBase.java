@@ -509,7 +509,7 @@ public class ResolucionBase {
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
 					
-				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+				//NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			}
 		}
 		

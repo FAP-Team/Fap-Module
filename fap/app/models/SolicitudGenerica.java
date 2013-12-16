@@ -139,6 +139,7 @@ public class SolicitudGenerica extends FapModel {
 	public DateTime fechaFinDeAlegacion;
 
 
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Respuesta respuestaSvd;
 
@@ -148,7 +149,6 @@ public class SolicitudGenerica extends FapModel {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_registros")
 	public List<Registro> registros;
-
 
 	public SolicitudGenerica() {
 		init();

@@ -149,8 +149,11 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 
 	public List<TerceroListItem> buscarTercerosDetalladosByItem(TerceroMinimalItem tmi) throws TercerosServiceException{
 		try {
+			log.info("[buscarTercerosDetalladosByNumeroIdentificacion] Numero doc: "+tmi.getNumeroDocumento());
+			log.info("[buscarTercerosDetalladosByNumeroIdentificacion] Tipo doc: "+tmi.getTipoDocumento());
 			return tercerosPort.buscarTercerosDetalladosByItem(tmi);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw newTercerosServiceException("Fallo al buscar el Terceros Detallados por tmi: "+tmi.getUri()+" - "+e.getMessage(), e);
 		}
 	}
@@ -159,7 +162,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		TerceroMinimalItem tercero = new TerceroMinimalItem();
 		tercero.setNumeroDocumento(numeroIdentificacion);
 		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
-		
+	
 		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
 		
 		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){

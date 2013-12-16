@@ -328,7 +328,7 @@ Formulario Principal {
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
-					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
+					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
 				} 
 			}
 			
@@ -341,7 +341,7 @@ Formulario Principal {
 			
 			Grupo gEnviarFirmaDirectorPortafirma permiso=firmaDirector titulo="Firma del Director" {
 				Form firmaDirectorPortafirma {
-					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director"
+					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director" waitPopup
 				}
 			}
 			

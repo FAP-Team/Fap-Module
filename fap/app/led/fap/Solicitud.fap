@@ -1,28 +1,5 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
-	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
-
-		Tabla documentosTabla titulo="Documentos" campo=SolicitudGenerica.registros paginaCrear=RegistroFAP {
-			Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" ancho="80"
-            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" ancho="85"
-			Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
-            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
-			Columna funcion="<a href=\"${Registro.oficial.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
-			Columna funcion="${Registro.oficial.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
-			Columna campo=Registro.fasesRegistro.firmadaVisible titulo="Firmado" expandir
-		}
-
-		FirmaMultiple documentosFirma titulo="Documentos a firmar" campo=SolicitudGenerica.registros  {
-			Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" ancho="80"
-            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" ancho="85"
-			Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
-            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
-			Columna funcion="<a href=\"${Registro.oficial.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
-			Columna funcion="${Registro.oficial.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
-			Columna campo=Registro.fasesRegistro.firmadaVisible titulo="Firmado" expandir
-		}
-	}
-
 	// Sobreescrita
 	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
@@ -83,13 +60,6 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
 			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
-		}
-	}
-	
-	Pagina RegistroFAP titulo="Nuevo Documento" campo=SolicitudGenerica.registros permiso=editarSolicitud perteneceA ="Documentacion"{
-		Accion crear redirigir=DocumentacionFAP	
-		Grupo gSubirDocumento titulo="Adjuntar Documento"{
-			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 	

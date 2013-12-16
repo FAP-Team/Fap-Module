@@ -66,10 +66,10 @@ public class FirmaUtils {
 		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
 		if (!Messages.hasMessages()) {
-			Messages.ok("El documento se firmó correctamente");
+			Messages.ok("Documento firmado correctamente");
 			
 			if(hanFirmadoTodos(listaFirmantes)){
-				Messages.ok("La solicitud está preparada para el registro");
+				Messages.ok("Documento preparado para el registro");
 			}
 		}
 		Messages.keep();	
@@ -175,9 +175,12 @@ public class FirmaUtils {
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri);
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("k", AedUtils.encriptarUri(documento.uri));
-			return Router.getFullUrl("fap.DescargasAedController.descargar", params).toString();
+			String url = AedUtils.crearFullUrl(documento.uri);
+			if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
+				play.Logger.info("change url from: <"+url+"> -> <"+AedUtils.crearExternalFullUrl(documento.uri)+">");
+				url = AedUtils.crearExternalFullUrl(documento.uri);
+			}
+			return url;
 		}
 		play.Logger.info("Error al obtener el documento "+idDocumento);
 		return null;

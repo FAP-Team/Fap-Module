@@ -10,6 +10,7 @@ import properties.FapProperties;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
+import services.TercerosService;
 import tags.ComboItem;
 import utils.StringUtils;
 import validation.CustomValidation;
@@ -123,6 +124,15 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	}
 	
 	/*
+	 * Retorna false si el servicio de Terceros de Platino no está disponible, true en caso contrario. 
+	 * 
+	 */
+	private static boolean TercerosIsConfigured() {
+		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		return tercerosService.isConfigured();
+	}
+	
+	/*
 	 * Retorna false si el servicio Notificación no está disponible, true en caso contrario. 
 	 * 
 	 */
@@ -150,6 +160,12 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		String msg = "";
 		if (!platinoIsConfigured())
 			msg += "Platino";
+		if (!TercerosIsConfigured()){
+			if (msg.isEmpty())
+				msg += "Terceros";
+			else
+				msg += ", Terceros";
+		}
 		if (FapProperties.getBoolean("fap.notificacion.activa")){
 			if (!notificacionIsConfigured()) {
 				if (msg.isEmpty())

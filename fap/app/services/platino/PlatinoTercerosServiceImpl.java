@@ -150,7 +150,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 	public List<TerceroListItem> buscarTercerosDetalladosByItem(TerceroMinimalItem tmi) throws TercerosServiceException{
 		try {
 			List<TerceroListItem> resultado = tercerosPort.buscarTercerosDetalladosByItem(tmi);
-			play.Logger.info("Consultado el tercero "+tmi.getId()+" en el Servicio de Terceros de Platino");
+			play.Logger.info("Consultado el tercero "+tmi.getNumeroDocumento()+" en el Servicio de Terceros de Platino");
 			return resultado;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -359,8 +359,9 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 								s.domicilio.otros+=", ";
 							s.domicilio.otros+="Puerta: "+d.getPuerta();
 						} if (d.getOtros()!= null){
-							if (!s.domicilio.otros.isEmpty())
+							if ((!s.domicilio.otros.isEmpty()) && (s.domicilio.otros != null))
 								s.domicilio.otros+=", ";
+							if (d.getBloque()!=null)
 							s.domicilio.otros+=d.getBloque();
 						}
 						PaisItem pais = recuperarPais(d.getIdPais());

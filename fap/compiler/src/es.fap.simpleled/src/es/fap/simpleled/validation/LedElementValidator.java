@@ -273,7 +273,7 @@ public abstract class LedElementValidator {
 			return new SimpleEntidadValidator(container, "Documento", false);
 		}
 		if (container instanceof FirmaDocumentos) {
-			return new ListaEntidadValidator(container, "Registro");
+			return new ListaEntidadValidator(container, "Documento");
 		}
 		if (container instanceof FirmaFirmantes) {
 			return new ListaEntidadValidator(container, "Firmante");

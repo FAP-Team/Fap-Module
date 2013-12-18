@@ -362,58 +362,57 @@ public class GFirmaMultiple extends GElement{
 				renderJSON(response.toJSON($rowsStr));
 			}
 
-	public static String obtenerIdDocumento${id()}(Long idRegistro){
-		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
-		if (registro != null) {
-			play.Logger.info("El documento oficial del registro "+registro.id+" tiene el id "+registro.oficial.id+" y la uri "+registro.oficial.uri);
-			return registro.oficial.id.toString();
-		}
-		play.Logger.info("Error al obtener el registro "+idRegistro);
-		return null;
-	}
-
 	public static String obtenerUrlDocumento${id()}(Long idDocumento){
 		return FirmaUtils.obtenerUrlDocumento(idDocumento);
 	}
 
-	public static String obtenerFirmadoDocumento${id()}(Long idRegistro) {
-		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
-		if (registro != null) {
-			play.Logger.info("El documento oficial del registro "+registro.id+" tiene el id "+registro.oficial.id+", la uri " + registro.oficial.uri+" y firmado a "+registro.fasesRegistro.firmada);
-			return registro.fasesRegistro.firmada.toString();
+	public static String obtenerFirmadoDocumento${id()}(Long idDocumento) {
+		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+		if (documento != null) {
+			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
+			if (documento.firmado != null && documento.firmado == true) {
+				return "true";
+			}
+			return "false";
 		}
-		play.Logger.info("Error al obtener el registro "+idRegistro);
+		play.Logger.info("Error al obtener el documento "+idDocumento);
 		return null;
 	}
 
 	@Util
-	public static boolean firmar${id()}(Long idRegistro, String firma) {
+	public static boolean firmar${id()}(Long idDocumento, String firma) {
+
+		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		
-		Registro registro = Registro.find("select registro from Registro registro where registro.id=?", idRegistro).first();
-		
-		play.Logger.info("Firmando documento "+registro.oficial.uri);
-		
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		Map<String, Object> vars = new HashMap<String, Object>();
-		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
-			if (registro.firmantes.todos == null || registro.firmantes.todos.size() == 0) {
-				Long idSolicitud = ids.get("idSolicitud");
-				registro.firmantes.todos = calcularFirmantes${id()}(idSolicitud);
-				registro.firmantes.save();
+		if (documento != null) {
+			play.Logger.info("Firmando documento " + documento.uri);
+	
+			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+			Map<String, Object> vars = new HashMap<String, Object>();
+			if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
+				if (documento.firmantes == null) {
+					documento.firmantes = new Firmantes();
+					documento.save();
+				}
+				if (documento.firmantes.todos == null || documento.firmantes.todos.size() == 0) {
+					Long idSolicitud = ids.get("idSolicitud");
+					documento.firmantes.todos = calcularFirmantes${id()}(idSolicitud);
+					documento.firmantes.save();
+				}
+				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
+			} else {
+				//ERROR
+				Messages.error("No tiene permisos suficientes para realizar la acción++");
 			}
-			FirmaUtils.firmar(registro.oficial, registro.firmantes.todos, firma, null);
+	
+			if (!Messages.hasErrors()) {
+				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
+				return true;
+			}
+			play.Logger.info("Firma de documento " + documento.uri + " sin éxito");
 		} else {
-			//ERROR
-			Messages.error("No tiene permisos suficientes para realizar la acción++");
+			play.Logger.info("Error al obtener el documento "+idDocumento);
 		}
-		
-		if (!Messages.hasErrors()) {
-			registro.fasesRegistro.firmada = true;
-			registro.save();
-			play.Logger.info("Firma de documento "+registro.oficial.uri+" con éxito");
-			return true;
-		}
-		play.Logger.info("Firma de documento "+registro.oficial.uri+" sin éxito");
 		return false;
 	}
 	

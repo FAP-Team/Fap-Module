@@ -995,24 +995,24 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
 
 		Grupo grupoFirmaMultiple titulo="Firma de múltiples documentos" {
-			Tabla tablaDocumentos titulo="Documentos" campo=Solicitud.registros paginaCrear=paginaSubirDocumento {
-				Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" expandir
-	            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
-				Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
-	            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
-				Columna campo=Registro.oficial.enlaceDescarga titulo="Descargar" expandir
+			Tabla tablaDocumentos titulo="Documentos" campo=Solicitud.documentacion.documentos paginaCrear=paginaSubirDocumento {
+				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
 			}
 	
-			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.registros  {
-				Columna campo=Registro.oficial.fechaSubida titulo="Fecha Subida" expandir
-	            Columna campo=Registro.oficial.fechaRegistro titulo="Fecha Registro" expandir
-				Columna campo=Registro.oficial.descripcionVisible titulo="Descripción" expandir
-	            Columna campo=Registro.oficial.tipo titulo="Tipo Documento"expandir
-				Columna campo=Registro.oficial.enlaceDescarga titulo="Descargar" expandir
-				Columna campo=Registro.oficial.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
-				//Columna funcion="<a href=\"${Registro.oficial.urlDescarga}\" target=\"_blank\">Descargar 2</a>" titulo="Descargar 2" expandir
-				//Columna funcion="<a href=\"${Registro.oficial.urlDescargaFirmado}\" target=\"_blank\">Descargar firmado 2</a>" titulo="Descargar firmado 2" expandir
-				Columna campo=Registro.fasesRegistro.firmadaVisible titulo="Firmado" expandir
+			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos  {
+				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
+				Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
+				Columna campo=Documento.enlaceDescargaFirmadoLocal titulo="Descargar Firmado 2" expandir
+				Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+				Columna campo=Documento.firmadoVisibleLocal titulo="Firmado 2" expandir
 			}
 		}
 		
@@ -1033,10 +1033,10 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		}
 	}
 
-	Pagina paginaSubirDocumento titulo="Nuevo Documento" campo=Solicitud.registros permiso=editarSolicitud perteneceA ="Documentacion"{
+	Pagina paginaSubirDocumento titulo="Nuevo Documento" campo=Solicitud.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=paginaFirmaMultiplesDocumentos
 		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
-			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 

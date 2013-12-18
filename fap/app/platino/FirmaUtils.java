@@ -66,10 +66,12 @@ public class FirmaUtils {
 		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
 		if (!Messages.hasMessages()) {
-			Messages.ok("Documento firmado correctamente");
+			Messages.ok("El documento se firmó correctamente");
 			
 			if(hanFirmadoTodos(listaFirmantes)){
-				Messages.ok("Documento preparado para el registro");
+				documento.firmado = true;
+				documento.save();
+				Messages.ok("La solicitud está preparada para el registro");
 			}
 		}
 		Messages.keep();	
@@ -184,6 +186,31 @@ public class FirmaUtils {
 		}
 		play.Logger.info("Error al obtener el documento "+idDocumento);
 		return null;
+	}
+
+	public static void firmarDocumento(Documento documento, List<Firmante> listaFirmantes, String firma, String valorDocumentofirmanteSolicitado){
+		firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		
+		if (documento == null) {
+			Messages.error("No existe ningún documento para firmar");
+			Messages.keep();
+			return;			
+		}
+		if (firma == null) {
+			Messages.error("La firma es null");
+			return;
+		}
+		
+		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
+		
+		if (!Messages.hasMessages()) {
+			if(hanFirmadoTodos(listaFirmantes)){
+				documento.firmado = true;
+				documento.save();
+			}
+		}
+		
+		Messages.keep();	
 	}
 	
 }

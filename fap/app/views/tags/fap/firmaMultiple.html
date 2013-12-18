@@ -79,7 +79,6 @@
 	// ---------- ---------- ---------- ---------- FIRMA ---------- ---------- ---------- ----------
 
 	def urlObtenerUrlDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerUrlDocumento'+id);
-	def urlObtenerIdDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerIdDocumento'+id);
 	def urlObtenerFirmadoDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerFirmadoDocumento'+id);
 	def urlFirmar = play.mvc.Router.reverse(controllerNameAndPackage+'.firmar'+id);
 	def id_row = id + "_row";
@@ -400,8 +399,8 @@
 			    		for (i in selected) {
 			    			resultado = "false";
 							firma = null;
-			    			idDocumento = obtenerIdDocumento(selected[i].data.id);
-			    			firmadoDocumento = obtenerFirmadoDocumento(selected[i].data.id);
+			    			idDocumento = selected[i].data.id;
+			    			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
 			    			if ((idDocumento != null) && (firmadoDocumento != null)) {
 			    				j = parseInt(i) + 1;
 				    			if (firmadoDocumento == "false") {
@@ -411,7 +410,7 @@
 										firma = Firma.firmarDocumento('#${id_cert}certificado', urlDocumento, "", {mensajes: mensajes});
 										if (firma != null) {
 											//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
-											resultado = firmar(selected[i].data.id, firma);
+											resultado = firmar(idDocumento, firma);
 											if (resultado == "true") {
 												//alert("Se ha firmado el documento: "+j+" | id: "+idDocumento);
 											} else {
@@ -669,29 +668,13 @@
 		return url;
 	}
 
-	function obtenerIdDocumento(id) {
-		var idDocumento;
-		$.ajax({
-			type: "POST",
-			url: "${urlObtenerIdDocumento}",
-				data: {
-					idRegistro: id
-				},
-				async: false,
-				success: function(data) {
-					idDocumento = data;
-				}
-		});
-		return idDocumento;
-	}
-
 	function obtenerFirmadoDocumento(id) {
 		var firmado;
 		$.ajax({
 			type: "POST",
 			url: "${urlObtenerFirmadoDocumento}",
 				data: {
-					idRegistro: id
+					idDocumento: id
 				},
 				async: false,
 				success: function(data) {
@@ -707,7 +690,7 @@
 			type: "POST",
 			url: "${urlFirmar}",
 				data: {
-					idRegistro: id,
+					idDocumento: id,
 					firma: firma
 				},
 				async: false,

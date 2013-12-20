@@ -13,6 +13,8 @@ import services.aed.TiposDocumentosService;
 
 import com.google.inject.Injector;
 
+import es.gobcan.platino.servicios.edmyce.mensajes.MensajeService;
+
 public class InjectorConfigTest extends UnitTest {
 
 	@Test
@@ -22,6 +24,7 @@ public class InjectorConfigTest extends UnitTest {
 		assertInjectedSingleton(PropertyPlaceholder.class);
 		assertInjectedSingleton(FirmaService.class);
 		assertInjectedSingleton(RegistroService.class);
+		assertInjectedSingleton(MensajeService.class);
 	}
 		
 	private void assertInjectedSingleton(Class clazz){

@@ -88,6 +88,9 @@ require:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
+        transitive: false
+    
     
     - es.gobcan.aciisi ->  notificaciones v20140221:
         transitive: false

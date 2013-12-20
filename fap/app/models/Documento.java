@@ -152,7 +152,7 @@ public class Documento extends FapModel {
 	}
 
 	public String getEnlaceDescargaFirmadoLocal() {
-		if (firmado != null && firmado == true) {
+		if (uri != null && firmado != null && firmado == true) {
 			String ret = "<a href=\"";
 			ret += AedUtils.crearUrlConInformeDeFirma(uri);
 			ret += "\" target=\"_blank\">Descargar Firmado</a>";
@@ -263,9 +263,11 @@ public class Documento extends FapModel {
 		hash = doc.hash;
 		fechaSubida = doc.fechaSubida;
 		fechaRegistro = doc.fechaRegistro;
-		urlDescarga = doc.urlDescarga;
 		verificado = doc.verificado;
 		refAed = doc.refAed;
+		estadoDocumento = doc.estadoDocumento;
+		firmado = doc.firmado;
+		firmantes = doc.firmantes;
 	}
 
 	// === MANUAL REGION END ===

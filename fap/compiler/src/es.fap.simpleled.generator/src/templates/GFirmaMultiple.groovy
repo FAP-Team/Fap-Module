@@ -64,28 +64,12 @@ public class GFirmaMultiple extends GElement{
 		params.putStr 'campo', campo.str;
 		if (firmaMultiple.alto)
 			params.putStr 'alto', firmaMultiple.alto;
-		if (firmaMultiple.color){
-			String consulta = "";
-			if(firmaMultiple.color.codePrint){
-				params.putStr 'codePrint', firmaMultiple.color.codePrint;
-			}
-			else if (firmaMultiple.color.default) {
-				consulta = "if (record.data.permisoEditar) { return \\'filaEditable\\'; } else { return \\'filaNoEditable\\'; }";
-				params.putStr 'codePrint', consulta;
-			}
-			else{
-				if(firmaMultiple.color.textoL){
-					consulta += "if (record.data.permisoLeer) { return \\'${firmaMultiple.color.claseL}\\'; }";
-				}
-				params.putStr 'codePrint', consulta;
-			}
-		}
 
 		botonesPopup(params);
 		botonesPagina(params);
 		if (firmaMultiple.recargarPagina)
 			params.put("recargarPagina", true)
-	    List <Attribute> excludes, includes;
+
 		if (gPaginaPopup instanceof GPopup)
 			params.putStr 'tipoContainer', "popup";
 		else
@@ -100,48 +84,7 @@ public class GFirmaMultiple extends GElement{
 		}
 		
 		StringBuffer columnasView = new StringBuffer();
-		
-		if (firmaMultiple.columnasAutomaticas){
-			List <Columna> listaAtributos;
-			if (firmaMultiple.exclude != null){
-			   excludes = firmaMultiple.exclude.atributos;
-			   // listaAtributos: Devuelve la lista de columnas que hay que mostrar (es decir, en este caso, todas menos las excludes)
-			   listaAtributos = ColumnasUtils.columnasExclude(campo.campo, excludes);
-			} else if (firmaMultiple.include != null){
-			   includes = firmaMultiple.include.atributos;
-			   listaAtributos = ColumnasUtils.columnasInclude(campo.campo, includes);
-			} else{
-			   listaAtributos = ColumnasUtils.columnas(campo.campo);
-			}
-			List <Columna> aux = firmaMultiple.columnas;
-			boolean listo = false;
-			if (aux.isEmpty()){
-				firmaMultiple.columnas.addAll(listaAtributos);
-			}
-			else{
-				Columna co=null;
-				// Para que en caso de que haya 'columnasAutomaticas' y 'Columna' normal, se coja la 'Columna' normal
-				for(Columna lA : listaAtributos){
-					for(Columna c : firmaMultiple.columnas){
-						if ((CampoUtils.create(c.getCampo()).getUltimaEntidad().name.equals(CampoUtils.create(lA.getCampo()).getUltimaEntidad().name))
-							&&(CampoUtils.create(c.getCampo()).getUltimoAtributo().name.equals(CampoUtils.create(lA.getCampo()).getUltimoAtributo().name))){
-							aux.remove(lA);
-							listo=true;
-							co = c;
-							break;
-						}
-						co = null;
-					}
-					if (!listo){
-						if (co != null)
-						   aux.remove(co);
-						aux.add(lA);
-					} else{
-						listo = false;
-					}
-				}
-			}
-	    }
+
 		if(firmaMultiple.columnas.isEmpty()){
 			Columna c = LedFactory.eINSTANCE.createColumna();
 			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMultiple.documentos.campo).name}.id").campo;

@@ -418,13 +418,11 @@ FirmaMultiple:
 		(documentos=FirmaDocumentos)
 		& ('titulo' '=' titulo=STRING)?
         & ('alto' '=' alto=STRING)? 
-        & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
 	   	& ('popupLeer' '=' popupLeer=[Popup|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
-	   	& (color=Color)?
 	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
 	)
 	'{'

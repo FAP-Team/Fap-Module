@@ -42,7 +42,7 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		
         this.propertyPlaceholder = propertyPlaceholder;
 
-        URL wsdlURL = PlatinoGestorDocumentalService.class.getClassLoader().getResource("wsdl/mensaje.wsdl");
+        URL wsdlURL = PlatinoMensajeServiceImpl.class.getClassLoader().getResource("wsdl/mensaje.wsdl");
         mensajePort = new MensajeService(wsdlURL).getMensajeService();
 
         WSUtils.configureEndPoint(mensajePort, getEndPoint());

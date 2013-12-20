@@ -61,6 +61,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String fechaARestaurarStr transient
 	DateTime fechaFinDeAceptacion
 	DateTime fechaFinDeAlegacion
+	Respuesta respuestaSvd
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -857,6 +858,7 @@ Entidad AutorizacionCesion noConstruct{
 	Boolean inssA008
 	OneToMany Trabajador trabajadores
 	Boolean idi
+	Boolean platino
 }
 
 Entidad Trabajador {

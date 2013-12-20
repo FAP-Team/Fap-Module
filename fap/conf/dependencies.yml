@@ -86,6 +86,9 @@ require:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
+        transitive: false
+    
     
     - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
         transitive: false
@@ -103,6 +106,7 @@ repositories:
             - es.gobcan -> *
             - es.gobcan.aciisi -> *
             - es.gobcan.platino -> *
+            - es.gobcan.hiperreg -> *
             - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *

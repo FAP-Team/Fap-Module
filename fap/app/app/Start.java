@@ -75,6 +75,7 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
+import services.ComunicacionesInternasService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -238,6 +239,10 @@ public class Start extends Job {
 		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
+		
+		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
+		comunicacionesService.mostrarInfoInyeccion();
+		
 //		try{
 //			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
 //		}

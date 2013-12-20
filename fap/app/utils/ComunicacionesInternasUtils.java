@@ -2,10 +2,19 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import config.InjectorConfig;
+
+import es.gobcan.platino.servicios.procedimientos.UnidadOrganicaWSItem;
+import services.ComunicacionesInternasService;
+import services.FirmaService;
 import swhiperreg.ciservices.ArrayOfString;
 import swhiperreg.ciservices.ReturnComunicacionInterna;
 import swhiperreg.ciservices.ReturnInteresado;
 import swhiperreg.ciservices.ReturnInteresadoCI;
+import swhiperreg.service.ArrayOfReturnUnidadOrganica;
+import swhiperreg.service.ReturnUnidadOrganica;
+import tags.ComboItem;
 import models.ListaUris;
 import models.ReturnComunicacionInternaFap;
 import models.ReturnInteresadoFap;
@@ -53,5 +62,26 @@ public class ComunicacionesInternasUtils {
 //		interesadoFap.numeroDocumento = interesado.getNumeroDocumento();
 //		interesadoFap.letra = interesado.getLetra();
 		return interesadoFap;
+	}
+	
+	public static List<String> ArrayOfReturnUnidadOrganica2List (ArrayOfReturnUnidadOrganica uo){
+		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
+		List<String> resultado = new ArrayList<String>();
+		for (ReturnUnidadOrganica unidad : unidades) {
+			if (unidad.getEsReceptora().equals("S")){
+				resultado.add(unidad.getDescripcion());
+			}
+		}
+		return resultado;
+	}
+
+	public static List<ComboItem> unidadesOrganicas2Combo (String userId, String password){
+		List<ComboItem> resultado = new ArrayList<ComboItem>();
+		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
+		List<String> unidades = comunicacionesService.obtenerUnidadesOrganicas(userId, password);
+		for (String unidad : unidades) {
+			resultado.add(new ComboItem(unidad));
+		}
+		return resultado;
 	}
 }

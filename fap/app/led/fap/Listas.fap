@@ -9059,3 +9059,10 @@ Lista tipoDocumentoCI crearEnumerado {
 	7: "CIF Organismo Público"
 	8: "Sin normalizar"
 }
+
+Lista estadosComunicacionInterna crearEnumerado{
+	creada: "Creada"
+	docAdjuntos: "Documentos adjuntados"
+	datosCompletos: "Asiento completo"
+	enviada: "Enviada"
+}

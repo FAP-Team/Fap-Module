@@ -1,7 +1,7 @@
 package controllers.popups;
 
-import controllers.gen.popups.popupDatosComunicacionInternaControllerGen;
+import controllers.gen.popups.PopupDatosComunicacionInternaControllerGen;
 
-public class popupDatosComunicacionInternaController extends popupDatosComunicacionInternaControllerGen {
+public class PopupDatosComunicacionInternaController extends PopupDatosComunicacionInternaControllerGen {
 
 }

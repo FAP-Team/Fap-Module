@@ -6,6 +6,7 @@ import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
+import services.ComunicacionesInternasService;
 import services.ConversorService;
 import services.FirmaService;
 import services.GestorDocumentalService;
@@ -15,6 +16,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
@@ -49,6 +51,7 @@ public class FapModule extends PlayAbstractModule {
 		terceros();
 		ticketing();
 		mensaje();
+		comunicacionesInternas();
 //		conversor();
 	}
 	
@@ -94,6 +97,10 @@ public class FapModule extends PlayAbstractModule {
 	
 	protected void mensaje() {
 		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
+	}
+	
+	protected void comunicacionesInternas(){
+		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);
 	}
 	
 	protected void secure() {

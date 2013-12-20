@@ -1,6 +1,8 @@
 package services.comunicacionesInternas;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -27,13 +29,16 @@ import swhiperreg.entradaservices.ReturnEntrada;
 import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 
-public class ComunicacionesInternasImpl implements ComunicacionesInternasService{
+public class ComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
 
 	private CIServicesSoap comunicacionesServices;
+	private ServiciosGenericosServiceImpl genericosService;
 	private PropertyPlaceholder propertyPlaceholder;
 	
-	public ComunicacionesInternasImpl (PropertyPlaceholder propertyPlaceholder){
-		URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/com-internas.wsdl");
+	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
+		this.propertyPlaceholder = propertyPlaceholder;
+		
+		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/com-internas.wsdl");
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
 		WSUtils.configureEndPoint(comunicacionesServices, getEndPoint());
         WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder);
@@ -45,6 +50,9 @@ public class ComunicacionesInternasImpl implements ComunicacionesInternasService
 		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
+		
+		this.genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
+		this.genericosService.mostrarInfoInyeccion();
 	}
 	
 	public boolean isConfigured(){
@@ -54,9 +62,9 @@ public class ComunicacionesInternasImpl implements ComunicacionesInternasService
 	@Override
     public void mostrarInfoInyeccion() {
 		if (isConfigured())
-			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado y está operativo.");
+			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con Hiperreg y está operativo.");
 		else
-			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado y NO está operativo.");
+			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con Hiperreg y NO está operativo.");
     }
 	
 	
@@ -64,7 +72,10 @@ public class ComunicacionesInternasImpl implements ComunicacionesInternasService
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			hasConnection = true; //QUE USO AQUI??  //getVersion() != null;
+			String usuario = FapProperties.get("fap.fap.platino.registro.username");
+			String password = password2utf16(FapProperties.get("fap.platino.registro.password"));
+			System.out.println("+++++++++++++++++++ PASSWORD: "+password);
+			hasConnection = this.genericosService.validarUsuario(usuario, password); //QUE USO AQUI??
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
@@ -73,7 +84,7 @@ public class ComunicacionesInternasImpl implements ComunicacionesInternasService
 	}
 	
 	private String getEndPoint() {
-		return propertyPlaceholder.get("fap.entrada.comunicaciones.internas.url");
+		return FapProperties.get("fap.services.comunicaciones.internas.url");
 	}
 
 
@@ -98,5 +109,22 @@ public class ComunicacionesInternasImpl implements ComunicacionesInternasService
 											listaUris));
 		
 	}
+
+	@Override
+	public List<String> obtenerUnidadesOrganicas(String userId, String password){
+		System.out.println("Llamando a CI de Hyperreg");
+		return this.genericosService.consultaUnidadesOrganicas(userId, password2utf16(password));
+	}
 	
+	public String password2utf16(String password){
+		//Comprobamos que el password está en UTF-16
+		String password16="";
+		try {
+			password16= new String(password.getBytes(), "UTF-16");
+		} catch (UnsupportedEncodingException e) {
+			play.Logger.error("Error tranformando la contraseña de usuario a UTF-16: "+password);
+			e.printStackTrace();
+		}
+		return password16;
+	}
 }

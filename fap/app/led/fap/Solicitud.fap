@@ -1661,20 +1661,22 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 			}
 	}
 	
-	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas"{
-		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas popupLeer=popupDatosComunicacionInterna{
+	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" noForm{
+		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas popupLeer=PopupDatosComunicacionInterna{
 			Columna campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
 			Columna campo=ComunicacionInterna.asiento.numeroDocumentos titulo="Cantidad documentos aportados"
 			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino titulo="Unidad orgánica destino"
 			Columna campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones"
 		}
-		Grupo titulo="Datos Destino" {
-			Boton botonNuevaComunicacion titulo="Crear Comunicacion Interna" pagina=paginaNuevaComunicacion
+		Form formBoton {
+			Grupo titulo="Datos Destino" {
+				Boton botonNuevaComunicacion titulo="Crear Comunicacion Interna" 
+			}
 		}
 		
 	}
 	
-	Popup popupDatosComunicacionInterna campo=SolicitudGenerica.comunicacionesInternas {
+	Popup PopupDatosComunicacionInterna campo=SolicitudGenerica.comunicacionesInternas {
 		Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
 		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino titulo="Unidad orgánica destino"
 		Texto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
@@ -1685,16 +1687,20 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		}
 	}
 
-	Pagina paginaNuevaComunicacion titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
+	Pagina PaginaNuevaComunicacionDocumentos titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas  noForm{
 		Grupo titulo = "Selección de Documentos"{
-			Wiki{"Seleccione los documentos que desea enviar en la comunicación"}
-			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" {
-				Columna titulo="Descripción" campo=Documento.descripcion
+			Wiki{"Paso 1: Seleccione los documentos que desea enviar en la comunicación"}
+			Wiki{"Selecciones TODOS los documentos que desea adjuntar antes de pulsar el botón Seleccionar"}
+			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Documentos a enviar en la comunicación"{
+				Columna titulo="Descripción" campo=Documento.descripcionVisible
 				Columna titulo="Tipo" campo=Documento.tipo
 				Columna titulo="Descarga" campo=Documento.enlaceDescarga
 			}
 		}
-		Grupo titulo="Datos de la Comunicacion Interna"{
+	}
+	Pagina PaginaNuevaComunicacionDatos titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
+		Accion editar crearSiempre 
+		Grupo titulo="Paso 2: Datos de la Comunicacion Interna"{
 			//Otros datos necesarios para crear una CI
 			Texto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones requerido
 			Texto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido

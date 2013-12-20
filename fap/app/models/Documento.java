@@ -30,6 +30,8 @@ public class Documento extends FapModel {
 
 	public String uri;
 
+	public String uriPlatino;
+
 	@ValueFromTable("tiposDocumentos")
 	public String tipo;
 
@@ -77,6 +79,7 @@ public class Documento extends FapModel {
 	// === MANUAL REGION START ===
 	public Documento() {
 		clasificado = false;
+		uriPlatino = null;
 	}
 
 	public boolean isMultiple() {

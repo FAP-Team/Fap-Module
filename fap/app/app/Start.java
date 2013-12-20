@@ -49,6 +49,8 @@ import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
+import es.gobcan.platino.servicios.svd.Respuesta;
+import es.gobcan.platino.servicios.svd.RespuestaPdf;
 
 import messages.Messages;
 import models.*;
@@ -87,6 +89,8 @@ import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
 import services.comunicacionesInternas.ServiciosGenericosServiceImpl;
+import services.VerificarDatosService;
+import services.VerificarDatosServiceException;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -213,37 +217,33 @@ public class Start extends Job {
 		}
 		
 		// Para mostrar información acerca de la inyección de los servicios
-//		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-//		gestorDocumentalService.mostrarInfoInyeccion();
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		System.out.println("Tipo: "+gestorDocumentalService.getClass());
+		gestorDocumentalService.mostrarInfoInyeccion();
 //		
-//		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-//		firmaService.mostrarInfoInyeccion();
+		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		firmaService.mostrarInfoInyeccion();
 //		
-//		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
-//		registroService.mostrarInfoInyeccion();
+		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
+		registroService.mostrarInfoInyeccion();
 //		
-//		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
-//		notificacionService.mostrarInfoInyeccion();
+		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		notificacionService.mostrarInfoInyeccion();
 //		
-//		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-//		portafirmaService.mostrarInfoInyeccion();
+		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+		portafirmaService.mostrarInfoInyeccion();
 //		
-//		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
-//		publicarService.mostrarInfoInyeccion();
-//		
-//		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
-//		registroLibroResolucionesService.mostrarInfoInyeccion();
+		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
+		publicarService.mostrarInfoInyeccion();
 //
-//		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
-//		tercerosService.mostrarInfoInyeccion();
-//		
-//		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
-//		mensajeService.mostrarInfoInyeccion();
+		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
+		registroLibroResolucionesService.mostrarInfoInyeccion();
 
-		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
-		comunicacionesService.mostrarInfoInyeccion();
+		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+		tercerosService.mostrarInfoInyeccion();
 		
-		//Probando crear un asiento A MANO -> Todo esto tiene una página en el módulo -> TODO
+		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+		mensajeService.mostrarInfoInyeccion();
 		
 //		AsientoCIFap asientoEntrada = new AsientoCIFap();
 //		asientoEntrada.resumen = "TEST";

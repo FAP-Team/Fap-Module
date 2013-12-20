@@ -36,6 +36,8 @@ public class AutorizacionCesion extends FapModel {
 
 	public Boolean idi;
 
+	public Boolean platino;
+
 	public void init() {
 
 		if (trabajadores == null)
@@ -50,6 +52,7 @@ public class AutorizacionCesion extends FapModel {
 		inssR001 = false;
 		atc = false;
 		inssA008 = false;
+		platino = false;
 	}
 	// === MANUAL REGION END ===
 

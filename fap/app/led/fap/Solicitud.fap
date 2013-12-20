@@ -285,6 +285,26 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		}
 	}
 	
+	
+	// ******************************************************************************************
+	// VERIFICACION DE DATOS
+	// *******************************************************************************************
+	Pagina VerificacionDatos titulo="Verificación de datos" noForm perteneceA="Verificacion"{
+		Wiki {"En esta página se procederá a la verificación de Datos del usuario siempre y cuando el usuario haya consentido
+				el acceso a la base de datos"}
+		
+		Grupo VerificaDatos titulo="Crear una nueva verificación de datos" permiso=noHayverificacion mostrarSiCampo SolicitudGenerica.cesion.autorizacionCesion.platino="true"{
+			Form verificacionNueva {
+				Wiki {"Pulse el botón para verificar los datos del solicitante."}
+				Boton botonIniciarVerificacionDatos titulo="Verificar Datos"  
+			}
+		}
+	}
+	//SOBREESCRITA (HTML)
+	Pagina DatosVerificados titulo= "Resultado de Verificación de datos" noForm perteneceA="Verificacion" campo=SolicitudGenerica{
+		Texto campo=SolicitudGenerica.respuestaSvd.atributos.codigoCertificado titulo="codigo certificado"
+	}
+	
 		
 	// ******************************************************************************************
 	// VERIFICACION
@@ -728,6 +748,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	//Sobreescrita
 	Pagina PCEconomicosCopia titulo="Conceptos Económicos" permiso=modificacionTrasPresentacionDeSolicitud guardarParaPrepararCopia{
 		Form Guardar {
+			
 			Boton botonGuardar titulo="Guardar" 
 		}
 	}

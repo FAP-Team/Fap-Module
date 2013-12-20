@@ -33,7 +33,6 @@
 	def recargarPagina = _recargarPagina;
 
 	String popupLeer = _popupLeer;
-	
 	String urlLeer = _urlLeer;
 	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
 
@@ -54,8 +53,6 @@
 	def saveEntity = _saveEntity ?: false;
 	
 	def idCampoUri = _idCampoUri ?: "";
-	
-	def codePrint = _codePrint ?: "";
 	
 	def submitPage = _submitPage ?: false;
 	
@@ -385,6 +382,7 @@
 		    var boton_firmar = new Ext.Button({
 		    	text: "Firmar",
 		    	handler : function(){
+		    		popupWait_open();
 					var i;
 		    		var selected = sm${id}.getSelection();
 		    		var idDocumento;
@@ -402,7 +400,7 @@
 			    			idDocumento = selected[i].data.id;
 			    			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
 			    			if ((idDocumento != null) && (firmadoDocumento != null)) {
-			    				j = parseInt(i) + 1;
+			    				//j = parseInt(i) + 1;
 				    			if (firmadoDocumento == "false") {
 				    				//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
 				    				urlDocumento = obtenerUrlDocumento(idDocumento);
@@ -441,12 +439,11 @@
 			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
 		    			}
 		    		}
-		    		selected = null;
 		    		// Se actualiza contenido de la tabla
+		    		popupWait_close();
 					grid.body.mask("Cargando....");
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
 		    		peticionJSON${id}();
-		    		//location.reload();
 			   	}
 		    });
 
@@ -456,9 +453,14 @@
 		    var boton_actualizar = new Ext.Button({
 		    	text: 'Actualizar',
 		    	handler : function(){
-		    		grid.body.mask("Cargando....");
-		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-		    		peticionJSON${id}();
+		    		#{if recargarPagina}
+						window.location.reload();
+					#{/if}
+					#{else}
+		    			grid.body.mask("Cargando....");
+		    			grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+		    			peticionJSON${id}();
+					#{/else}
 		    	}
 		    });
 
@@ -514,16 +516,13 @@
 			           	#{if urlLeer}
 				        	boton_leer,
 				        #{/if}
-                        boton_firmar, // PONER UNA CONDICIÓN PARA MOSTRAR EL BOTÓN
+                        boton_firmar,
 			            boton_actualizar
         				]
     				}
 				],
 				viewConfig: {
 					getRowClass: function(record, index, rowParams, ds) {
-						#{if codePrint}
-							${codePrint.raw()}
-						#{/if}
 					}
 				},
 				listeners : {

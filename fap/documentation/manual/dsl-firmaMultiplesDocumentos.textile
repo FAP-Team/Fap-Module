@@ -1,0 +1,64 @@
+h1. FirmaMultiple
+
+h2. Descripción
+
+Permite la firma de múltiples documentos. Crea una tabla con los documentos a firmar y un selector de certificado, además de realizar las llamadas necesarias para la firma.
+
+h2. Parámetros
+
+* **_[name]_** : Identificador del elemento FirmaMultiple.
+* **campo = _[campo]_** : Atributo donde se encuentran los documentos a firmar. Debe ser OneToMany Documento.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
+* **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
+* **permisoFilas = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
+* **recargarPagina** (opcional) : Si se define, hace que la página se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
+* **metodoFilas = _[string]_** (opcional): Al emplear este parámetro se ejecutará el controlador indicado que devolverá la lista de elementos que se mostrarán en la tabla.
+* **popupLeer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
+* **paginaLeer = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **nombreBotonVer = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón ver de la tabla (sustituyendo al valor por defecto _Ver_)
+
+h2. Definición
+
+bc. FirmaMultiple:
+	elemento='FirmaMultiple' name=ID
+	(
+		(documentos=FirmaDocumentos)
+		& ('titulo' '=' titulo=STRING)?
+		& ('alto' '=' alto=STRING)? 
+		& ("permisoFilas" "=" permiso=[Permiso])?
+		& (recargarPagina?="recargarPagina")?
+		& ('metodoFilas' "=" metodoFilas=STRING)?
+		& ('popupLeer' '=' popupLeer=[Popup|IDS])?
+		& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
+		& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
+	)
+	'{'
+		columnas += Columna*
+	'}'
+;
+FirmaDocumentos:
+	"campo" "=" campo=Campo	
+;
+
+h2. Ejemplo de uso
+
+bc. FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos {
+	Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+	Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+	Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+	Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
+	Columna campo=Documento.enlaceDescargaFirmadoLocal titulo="Descargar Firmado" expandir
+	Columna campo=Documento.firmadoVisibleLocal titulo="Firmado" expandir
+}
+
+h2. Resultado
+
+!images/dsl-firmaMultiplesDocumentos1!
+!images/dsl-firmaMultiplesDocumentos2!
+!images/dsl-firmaMultiplesDocumentos3!
+
+Si todos los documentos fueron firmados correctamente se muestra un mensaje indicándolo.
+
+En el caso de que se seleccione un documento ya firmado, éste no se tiene en cuenta a la hora de firmar.
+
+Si ocurre un problema a la hora de firmar un documento se para el proceso de firma.

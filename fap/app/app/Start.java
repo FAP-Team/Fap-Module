@@ -49,6 +49,8 @@ import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
+import es.gobcan.platino.servicios.svd.Respuesta;
+import es.gobcan.platino.servicios.svd.RespuestaPdf;
 
 import messages.Messages;
 import models.*;
@@ -85,6 +87,8 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.VerificarDatosService;
+import services.VerificarDatosServiceException;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -238,6 +242,39 @@ public class Start extends Job {
 		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
+		
+		//SERVICIO SVD comentado, se inyecta en VerificacionDatosSVDController. El resto de los comentarios son pruebas con el servicio de mensajería y SVD.
+		//Se eliminarán cuando estén resueltas las incidencias pendientes en la OTP
+		
+//		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
+//		verificarDatosService.mostrarInfoInyeccion();
+		
+//		try{
+//			RespuestaPdf response = verificarDatosService.peticionPDF("GobCanPR00000034", "PRE0000000171359", "desarrollo");
+//			System.out.println("El pdf es: " + response.getPdf().toString());
+//		}
+//		catch(VerificarDatosServiceException e){
+//			play.Logger.error("No se han podido obtener el PDF. Causa: " + e.getMessage());
+//		}
+		
+//		try{
+//			Respuesta response = verificarDatosService.peticionRecover("desarrollo", "GobCanPR00000041") ;
+//			System.out.println("El pdf es: " + response.getAtributos().getCodigoCertificado().toString());
+//		}
+//		catch(VerificarDatosServiceException e){
+//			play.Logger.error("No se han podido resolver la petición. Causa: " + e.getMessage());
+//		}
+		
+//		try{
+//		Respuesta response = verificarDatosService.peticionSincronaIdentidad("CDISFWS01", "desarrollo", "S2833002E", "MINISTERIO DE HACIENDA Y AP", 
+//				"PRUEBAS DE INTEGRACION SCSP", "", "SG COORD ESTUDIOS E IMPULSO ADMELECLT(MINHAP)", "SVDR_20101117_000254", 
+//				"PRUEBAS PARA LA INTEGRACION Y SOLUCION DE INCIDENCIAS", "Luz Diaz Soto", "00000003A", "Si", "10000322Z", "", "", "", "", "NIF");
+//		System.out.println("El codigo es es: " + response.getAtributos().getCodigoCertificado().toString());
+//		}
+//		catch(VerificarDatosServiceException e){
+//			play.Logger.error("No se han podido resolver la petición. Causa: " + e.getMessage());
+//		}
+		
 //		try{
 //			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
 //		}

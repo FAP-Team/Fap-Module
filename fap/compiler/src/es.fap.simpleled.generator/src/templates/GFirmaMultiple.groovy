@@ -332,7 +332,7 @@ public class GFirmaMultiple extends GElement{
 	
 			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 			Map<String, Object> vars = new HashMap<String, Object>();
-			if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
+			if (secure.checkAcceso("editarFirmaDocumento", "editar", ids, vars)) {
 				if (documento.firmantes == null) {
 					documento.firmantes = new Firmantes();
 					documento.save();

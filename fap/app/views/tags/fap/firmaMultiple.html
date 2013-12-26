@@ -328,51 +328,31 @@
 	    		icon: '@{'/public/images/table-leer.png'}',
 	    		disabled:true,
 	    		handler : function(){
-	    			var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-	    			#{if popupLeer}
-	    				popup_open(
-	    					"${popupLeer}_popup",
-	    					replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
-						)
-					#{/if}
-			   		#{else}
-						#{if saveBefore && saveEntity && !"leer".equals(primeraAccionMock)}
-	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
-	    					alert("${urlLeer} \n\n "+urlBeforeOpenPageTableLeer);
-    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
+	    			var selected = grid.getSelectionModel().getSelection();
+	    			if (selected.length == 1) {
+			    		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+		    			#{if popupLeer}
+		    				popup_open(
+		    					"${popupLeer}_popup",
+		    					replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
+							)
 						#{/if}
-						#{else}
-							window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+				   		#{else}
+							#{if saveBefore && saveEntity && !"leer".equals(primeraAccionMock)}
+		    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+		    					alert("${urlLeer} \n\n "+urlBeforeOpenPageTableLeer);
+	    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
+							#{/if}
+							#{else}
+								window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+							#{/else}
 						#{/else}
-					#{/else}
+		    		} else {
+		    			mensajes.error('Debe seleccionar sólo un documento.');
+					}
 	    		}
 		    });
-			
-		    var readRow = new Ext.create('Ext.grid.plugin.Editing', {
-		    	clicksToEdit: 2,
-				startEdit: function(record, columnHeader) {
-    				var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
-    				var registro = store${id}.getAt(store${id}.find("id", selected_id));
-		    		if (!registro.get("permisoEditar") && registro.get("permisoLeer")){	
-    				#{if popupLeer}
-			   			popup_open(
-			   				"${popupLeer}_popup",
-			   				replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
-			   			);
-			   		#{/if}
-					#{else}
-						#{if saveBefore && saveEntity}
-	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
-    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
-						#{/if}
-						#{else}
-							window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
-						#{/else}
-					#{/else}
-            		}
-				}
-			});
-			
+
 		    #{/if}
 
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -381,6 +361,7 @@
 
 		    var boton_firmar = new Ext.Button({
 		    	text: "Firmar",
+		    	disabled:true,
 		    	handler : function(){
 		    		popupWait_open();
 					var i;
@@ -439,6 +420,9 @@
 			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
 		    			}
 		    		}
+		    		if(grid.getSelectionModel().hasSelection()) {
+		    			grid.getSelectionModel().deselectAll();
+		    		}
 		    		// Se actualiza contenido de la tabla
 		    		popupWait_close();
 					grid.body.mask("Cargando....");
@@ -482,6 +466,7 @@
 			            this.selectedRecords.push(newRecordsToSelect);
 
 			        this.getView().saveScrollState();
+			        boton_firmar.setDisabled(false);
 			    },
 			    delSelected: function(recordToDelete) {
 			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
@@ -493,11 +478,6 @@
 
 				    this.getSelectionModel().select(this.selectedRecords, true);
 			    },
-			    #{if urlLeer}
-				plugins: [
-					readRow
-				],
-	            #{/if}
 				dockedItems: [
 					{
 						itemId: 'barraInferior',
@@ -597,16 +577,22 @@
 		    });
 		    
 		    grid.addListener("selectionchange", function(){
-		    	if ( grid.getSelectionModel().hasSelection()){
+		    	if (grid.getSelectionModel().hasSelection()){
 		    		var registro = store${id}.getAt(store${id}.find("id", grid.getSelectionModel().getSelection()[0].data.id));
 		    		#{if urlLeer}
-		    		boton_leer.setDisabled(!registro.get("permisoLeer"));
+		    		if (grid.getSelectionModel().getSelection().length == 1) {
+		    			boton_leer.setDisabled(!registro.get("permisoLeer"));
+		    		} else {
+		    			boton_leer.setDisabled(true);
+		    		}
 			    	#{/if}
+			    	boton_firmar.setDisabled(false);
 		    	}
 		    	else{
 		    		#{if urlLeer}
 		    		boton_leer.setDisabled(true);
 			    	#{/if}
+			    	boton_firmar.setDisabled(true);
 		    	}
 		    });
 

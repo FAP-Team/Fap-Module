@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import controllers.fap.FirmaController;
 
@@ -145,6 +146,11 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){
+//		int i = 0;
+//		Firmante firmante = firmantes.get(i);
+//		play.Logger.info("Archivo: FileSystemFirmaServiceImpl.java | Método: firmar | Nota: No se está firmando. Sólo se cambia la fecha de firma del firmante "+i+": "+firmante.idvalor);
+//		firmante.fechaFirma = new DateTime();
+//		firmante.save();
 	}
 
 	@Override

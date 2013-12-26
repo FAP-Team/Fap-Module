@@ -992,6 +992,26 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		}
 	}
 
+	Popup PopupDetallesDocumento campo=Documento titulo="Detalles documento" maximizar {
+		Fecha campo=Documento.fechaSubida titulo="Fecha subida"
+		Texto campo=Documento.descripcionVisible titulo="Descripción"
+		Texto campo=Documento.uri titulo="URI"
+		Combo campo=Documento.tipo titulo="Tipo"
+		Enlace campo=Documento.enlaceDescarga titulo="Descargar documento" destino="_blank"
+		Texto campo=Documento.firmadoVisibleLocal titulo="Firmado"
+		Grupo borde=false mostrarSiExpresion "documento.firmado != null && documento.firmado == true" {
+			Enlace campo=Documento.enlaceDescargaFirmadoLocal titulo="Descargar documento firmado" destino="_blank"
+		}
+		Grupo borde=false mostrarSiExpresion "documento.firmantes != null && documento.firmantes.todos != null && documento.firmantes.todos.size() > 0" {
+			Tabla tablaInteresados titulo="Interesados" campo=Documento.firmantes.todos {
+				Columna titulo="Nombre" campo=Firmante.nombre expandir
+				Columna titulo="Tipo" campo=Firmante.tipo expandir
+				Columna titulo="Cardinalidad" campo=Firmante.cardinalidad expandir
+				Columna titulo="Firmado" campo=Firmante.fechaFirma expandir
+			}
+		}
+    }
+
 	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
 
 		Grupo grupoFirmaMultiple titulo="Firma de múltiples documentos" {
@@ -1003,7 +1023,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
 			}
 	
-			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos  {
+			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos popupLeer=PopupDetallesDocumento {
 				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
 	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir

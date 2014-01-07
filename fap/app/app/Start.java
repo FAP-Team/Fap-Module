@@ -86,6 +86,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.comunicacionesInternas.ServiciosGenericosServiceImpl;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -212,36 +213,38 @@ public class Start extends Job {
 		}
 		
 		// Para mostrar información acerca de la inyección de los servicios
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		System.out.println("Tipo: "+gestorDocumentalService.getClass());
-		gestorDocumentalService.mostrarInfoInyeccion();
-		
-		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
-		firmaService.mostrarInfoInyeccion();
-		
-		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
-		registroService.mostrarInfoInyeccion();
-		
-		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
-		notificacionService.mostrarInfoInyeccion();
-		
-		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-		portafirmaService.mostrarInfoInyeccion();
-		
-		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
-		publicarService.mostrarInfoInyeccion();
-		
-		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
-		registroLibroResolucionesService.mostrarInfoInyeccion();
+//		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+//		gestorDocumentalService.mostrarInfoInyeccion();
+//		
+//		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+//		firmaService.mostrarInfoInyeccion();
+//		
+//		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
+//		registroService.mostrarInfoInyeccion();
+//		
+//		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+//		notificacionService.mostrarInfoInyeccion();
+//		
+//		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+//		portafirmaService.mostrarInfoInyeccion();
+//		
+//		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
+//		publicarService.mostrarInfoInyeccion();
+//		
+//		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
+//		registroLibroResolucionesService.mostrarInfoInyeccion();
+//
+//		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
+//		tercerosService.mostrarInfoInyeccion();
+//		
+//		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+//		mensajeService.mostrarInfoInyeccion();
 
-		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
-		tercerosService.mostrarInfoInyeccion();
+//		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
+//		comunicacionesService.mostrarInfoInyeccion();
 		
-		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
-		mensajeService.mostrarInfoInyeccion();
-		
-		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
-		comunicacionesService.mostrarInfoInyeccion();
+		ServiciosGenericosServiceImpl genericosService = InjectorConfig.getInjector().getInstance(ServiciosGenericosServiceImpl.class);
+		genericosService.mostrarInfoInyeccion();
 		
 //		try{
 //			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");

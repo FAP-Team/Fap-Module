@@ -3,16 +3,25 @@ package services.comunicacionesInternas;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.inject.Inject;
+
+import java.util.regex.Matcher;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
+import messages.Messages;
+
 import platino.PlatinoProxy;
+import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 
+import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.Service;
 import swhiperreg.service.ServiceSoap;
@@ -24,10 +33,11 @@ public class ServiciosGenericosServiceImpl {
 	private ServiceSoap genericosServices;
 	private PropertyPlaceholder propertyPlaceholder;
 	
+	@Inject
 	public ServiciosGenericosServiceImpl (PropertyPlaceholder propertyPlaceholder){
 		this.propertyPlaceholder = propertyPlaceholder;
 		
-		URL wsdlURL = ServiciosGenericosServiceImpl.class.getClassLoader().getResource("wsdl/com-internas.wsdl");
+		URL wsdlURL = ServiciosGenericosServiceImpl.class.getClassLoader().getResource("wsdl/Service.wsdl");
 		genericosServices = new Service(wsdlURL).getServiceSoap();
 		WSUtils.configureEndPoint(genericosServices, getEndPoint());
         WSUtils.configureSecurityHeaders(genericosServices, propertyPlaceholder);
@@ -42,7 +52,7 @@ public class ServiciosGenericosServiceImpl {
 	}
 	
 	private String getEndPoint() {
-		return FapProperties.get("fap.services.genericos.comunicaciones.internas.url");
+		return propertyPlaceholder.get("fap.services.genericos.comunicaciones.internas.url");
 	}
 	
 	public boolean isConfigured(){
@@ -61,10 +71,10 @@ public class ServiciosGenericosServiceImpl {
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			String usuario = FapProperties.get("fap.fap.platino.registro.username");
-			String password = password2utf16(FapProperties.get("fap.platino.registro.password"));
-			System.out.println("+++++++++++++++++++ PASSWORD: "+password);
-			hasConnection = validarUsuario(usuario, password); //QUE USO AQUI??
+			String usuario = FapProperties.get("fap.platino.registro.username");
+			String password = FapProperties.get("fap.platino.registro.password");
+			System.out.println("+++++++++++++++++++ PASSWORD Genericos: "+password);
+			hasConnection = validarUsuario(usuario, password);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
@@ -78,22 +88,33 @@ public class ServiciosGenericosServiceImpl {
 	}
 
 	public boolean validarUsuario (String userId, String password){
-		String usuario = genericosServices.validarUsuario(userId, password);
-		if (!usuario.isEmpty()){
+		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg");
+		String resultado = "";
+		try {
+			//"&#x4BE2;&#x961B;&#xBAEE;&#xA432;&#x2EAF;&#xC63A;&#x1E07;&#x53DD;";
+			resultado = genericosServices.validarUsuario(userId, encriptarPassword(password));
+		} catch (Exception e) {
+			play.Logger.error("Error comprobando la validez del usuario: "+userId+" en Hiperreg");
+		}
+		System.out.println("Respuesta: "+resultado);
+		//Comprobar que no hay mensaje de error:
+		Pattern patron = Pattern.compile("<MensajeError>(.*?)</MensajeError>");
+		Matcher matcher = patron.matcher(resultado);
+		
+		if(matcher.find()){ //Hay error
+			play.Logger.error(matcher.group(1));
+			Messages.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
 			return false;
 		}
+		
 		return true;
 	}
 	
-	public String password2utf16(String password){
-		//Comprobamos que el password está en UTF-16
-		String password16="";
-		try {
-			password16= new String(password.getBytes(), "UTF-16");
-		} catch (UnsupportedEncodingException e) {
-			play.Logger.error("Error tranformando la contraseña de usuario a UTF-16: "+password);
-			e.printStackTrace();
-		}
-		return password16;
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
 	}
 }

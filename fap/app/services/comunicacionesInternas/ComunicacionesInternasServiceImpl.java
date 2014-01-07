@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.tools.corba.common.WSDLUtils;
@@ -13,6 +15,7 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import es.gobcan.platino.servicios.sfst.FirmaService;
 
 import platino.PlatinoProxy;
+import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import models.AsientoCIFap;
@@ -35,10 +38,10 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private ServiciosGenericosServiceImpl genericosService;
 	private PropertyPlaceholder propertyPlaceholder;
 	
+	@Inject
 	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
 		this.propertyPlaceholder = propertyPlaceholder;
-		
-		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/com-internas.wsdl");
+		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/CIServices.wsdl");
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
 		WSUtils.configureEndPoint(comunicacionesServices, getEndPoint());
         WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder);
@@ -51,8 +54,8 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
 		
-		this.genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
-		this.genericosService.mostrarInfoInyeccion();
+		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
+		genericosService.mostrarInfoInyeccion();
 	}
 	
 	public boolean isConfigured(){
@@ -73,18 +76,18 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		boolean hasConnection = false;
 		try {
 			String usuario = FapProperties.get("fap.fap.platino.registro.username");
-			String password = password2utf16(FapProperties.get("fap.platino.registro.password"));
-			System.out.println("+++++++++++++++++++ PASSWORD: "+password);
-			hasConnection = this.genericosService.validarUsuario(usuario, password); //QUE USO AQUI??
+			String password = FapProperties.get("fap.platino.registro.password");
+			//hasConnection = genericosService.validarUsuario(usuario, password);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
+			e.printStackTrace();
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
 		}
 		return hasConnection; 
 	}
 	
 	private String getEndPoint() {
-		return FapProperties.get("fap.services.comunicaciones.internas.url");
+		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
 	}
 
 
@@ -113,18 +116,29 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	@Override
 	public List<String> obtenerUnidadesOrganicas(String userId, String password){
 		System.out.println("Llamando a CI de Hyperreg");
-		return this.genericosService.consultaUnidadesOrganicas(userId, password2utf16(password));
+		return this.genericosService.consultaUnidadesOrganicas(userId, encriptarPassword(password));
 	}
 	
-	public String password2utf16(String password){
-		//Comprobamos que el password está en UTF-16
-		String password16="";
-		try {
-			password16= new String(password.getBytes(), "UTF-16");
-		} catch (UnsupportedEncodingException e) {
-			play.Logger.error("Error tranformando la contraseña de usuario a UTF-16: "+password);
-			e.printStackTrace();
-		}
-		return password16;
+//	public String password2utf16(String password){
+//		//Comprobamos que el password está en UTF-16
+//		String password16="";
+//		password="PLATIN";
+//		try {
+//			password16 = new String(password.getBytes(), "UTF-16LE");
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		int codePoint = Character.codePointAt(password16, 1);
+//		//System.out.println("codePoint: "+Integer.toHexString(codePoint));
+//		return password16;
+//	}
+	
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPassword(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
 	}
 }

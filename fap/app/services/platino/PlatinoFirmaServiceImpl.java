@@ -140,7 +140,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     }
 	
 	private String getEndPoint() {
-		System.out.println("propertyPlaceholder: "+propertyPlaceholder);
 		return propertyPlaceholder.get("fap.platino.firma.url");
 	}
 

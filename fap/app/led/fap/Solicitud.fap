@@ -1701,6 +1701,10 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	Pagina PaginaNuevaComunicacionDatos titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
 		Accion editar crearSiempre 
 		Grupo titulo="Paso 2: Datos de la Comunicacion Interna"{
+			Grupo grupoUsuario titulo="Datos de usuario"{
+				Texto usuario titulo="Usuario de Hiperreg" campo=ComunicacionInterna.asiento.userId
+				Texto password titulo="Password" campo=ComunicacionInterna.asiento.password
+			}
 			//Otros datos necesarios para crear una CI
 			Texto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones requerido
 			Texto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido

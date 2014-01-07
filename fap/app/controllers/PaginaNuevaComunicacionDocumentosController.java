@@ -82,7 +82,7 @@ public class PaginaNuevaComunicacionDocumentosController extends PaginaNuevaComu
 		AsientoCIFap asiento = new AsientoCIFap();
 		Long idComunicacionInterna = id;
 		ComunicacionInterna comunicacionInterna = ComunicacionInterna.findById(idComunicacionInterna);
-		if (!idsSeleccionados.isEmpty()){
+		if (!idsSeleccionados.isEmpty() && idsSeleccionados != null){
 			for (Long idFila : idsSeleccionados) {
 				// El documento puede no estar subido a Platino -> ¿uri en platino?
 				Documento doc = Documento.findById(idFila);
@@ -94,9 +94,8 @@ public class PaginaNuevaComunicacionDocumentosController extends PaginaNuevaComu
 				System.out.println("Documento seleccionado: "+doc.descripcionVisible);
 				//TODO Queda adjuntar los documentos, por ahora se prueba sin envio de docs 
 			}
-			comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 		}
-		
+		comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 		SolicitudGenerica solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.comunicacionesInternas comunicacionesInternas where comunicacionesInternas.id = ?", idComunicacionInterna).first();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		ids.put("idSolicitud", solicitud.id);

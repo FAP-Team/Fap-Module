@@ -1,5 +1,10 @@
 h2. Changelog
 
+h3. Versión 2.3.2RC12
+
+* Actualizada la documentación de firma múltiple.
+* Añadida la opción de ver detalles de documento firmado (firmaMultiple) 
+
 h3. Versión 2.3.2RC11
 
 * Añadida la firma de múltiples documentos.

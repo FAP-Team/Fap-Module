@@ -88,16 +88,13 @@ public class ServiciosGenericosServiceImpl {
 	}
 
 	public boolean validarUsuario (String userId, String password){
-		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg");
+		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg con password: "+password);
 		String resultado = "";
 		try {
-			//"&#x4BE2;&#x961B;&#xBAEE;&#xA432;&#x2EAF;&#xC63A;&#x1E07;&#x53DD;";
 			resultado = genericosServices.validarUsuario(userId, encriptarPassword(password));
 		} catch (Exception e) {
 			play.Logger.error("Error comprobando la validez del usuario: "+userId+" en Hiperreg");
 		}
-		System.out.println("Respuesta: "+resultado);
-		//Comprobar que no hay mensaje de error:
 		Pattern patron = Pattern.compile("<MensajeError>(.*?)</MensajeError>");
 		Matcher matcher = patron.matcher(resultado);
 		
@@ -105,9 +102,11 @@ public class ServiciosGenericosServiceImpl {
 			play.Logger.error(matcher.group(1));
 			Messages.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
 			return false;
+		} else {
+			play.Logger.error("Validación correcta del usuario "+userId+" en Comunicaciones Internas");
+			return true;
 		}
 		
-		return true;
 	}
 	
 	private String encriptarPassword(String password){

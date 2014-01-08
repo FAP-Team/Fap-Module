@@ -1,5 +1,6 @@
 h2. Changelog
 
+
 h3. Versi贸n 2.4RC3
 Inclusi髇 del servicio SVD
 
@@ -9,6 +10,10 @@ Inclusi髇 del servicio SVD
 * A帽adida la Resoluci贸n de Justificacion de Reintegro.
 * Modificado el permiso de las Verificaciones, ya no dependen de la convocatoria.
 * Mejorado el volcado de informaci贸n en el log.
+
+
+* Actualizada la documentaci贸n de firma m煤ltiple.
+* A帽adida la opci贸n de ver detalles de documento firmado (firmaMultiple) 
 
 
 * A帽adida la firma de m煤ltiples documentos.

@@ -36,7 +36,8 @@ public class ComunicacionesInternasUtils {
 		respuestaFap.numeroRegistro = respuesta.getNumeroRegistro();
 		respuestaFap.asunto = respuesta.getAsunto();
 		respuestaFap.unidadOrganica = respuesta.getUnidadOrganica();
-		respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
+		//TODO REVISAR bien que devuelve esta parte -> ¿Solo un nombre?
+		//respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
 		respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
 		respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
 		
@@ -46,11 +47,13 @@ public class ComunicacionesInternasUtils {
 	
 	public static List<ListaUris> urisCI2UrisFap (ArrayOfString uris){
 		List<ListaUris> urisFap = new ArrayList<ListaUris>();
-		for (Object listaUris : uris.getString().toArray()) {
-			ListaUris nuevo = new ListaUris();
-			nuevo.uri = listaUris.toString();
-			System.out.println("Nuevo Uri: "+nuevo.uri);
-			urisFap.add(nuevo);
+		if (uris != null) {
+			for (Object listaUris : uris.getString().toArray()) {
+				ListaUris nuevo = new ListaUris();
+				nuevo.uri = listaUris.toString();
+				System.out.println("Nuevo Uri: "+nuevo.uri);
+				urisFap.add(nuevo);
+			}
 		}
 		return urisFap;
 	}

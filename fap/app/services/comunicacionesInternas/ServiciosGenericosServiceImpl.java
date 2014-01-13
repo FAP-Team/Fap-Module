@@ -98,7 +98,7 @@ public class ServiciosGenericosServiceImpl {
 		Pattern patron = Pattern.compile("<MensajeError>(.*?)</MensajeError>");
 		Matcher matcher = patron.matcher(resultado);
 		
-		if(matcher.find()){ //Hay error
+		if ((matcher.find() || resultado.isEmpty())){ //Hay error
 			play.Logger.error(matcher.group(1));
 			Messages.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
 			return false;

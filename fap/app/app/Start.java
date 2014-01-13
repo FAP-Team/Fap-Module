@@ -240,11 +240,22 @@ public class Start extends Job {
 //		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 //		mensajeService.mostrarInfoInyeccion();
 
-//		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
-//		comunicacionesService.mostrarInfoInyeccion();
+		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
+		comunicacionesService.mostrarInfoInyeccion();
 		
-		ServiciosGenericosServiceImpl genericosService = InjectorConfig.getInjector().getInstance(ServiciosGenericosServiceImpl.class);
-		genericosService.mostrarInfoInyeccion();
+		//Probando crear un asiento A MANO -> Todo esto tiene una página en el módulo -> TODO
+		
+//		AsientoCIFap asientoEntrada = new AsientoCIFap();
+//		asientoEntrada.resumen = "TEST";
+//		asientoEntrada.interesado = "TES";
+//		asientoEntrada.unidadOrganicaDestino = new Long(1607);
+//		asientoEntrada.userId = "PLATIN";
+//		asientoEntrada.numeroDocumentos = new Integer(0);
+//		asientoEntrada.password=comunicacionesService.encriptarPassword("PLATIN");
+//		System.out.println("SALE: "+comunicacionesService.crearNuevoAsiento(asientoEntrada).fecha);
+		
+//		ServiciosGenericosServiceImpl genericosService = InjectorConfig.getInjector().getInstance(ServiciosGenericosServiceImpl.class);
+//		genericosService.mostrarInfoInyeccion();
 		
 //		try{
 //			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");

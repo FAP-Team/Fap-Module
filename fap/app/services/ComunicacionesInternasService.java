@@ -13,4 +13,7 @@ public interface ComunicacionesInternasService {
 	
 	public List<String> obtenerUnidadesOrganicas(String userId, String password);
 	
+	//TODO poner privada y quitar de aqui
+	public String encriptarPassword(String password);
+	
 }

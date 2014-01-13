@@ -56,4 +56,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		return resultado;
 	}
 
+	@Override
+	public String encriptarPassword(String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

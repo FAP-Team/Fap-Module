@@ -75,9 +75,9 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			String usuario = FapProperties.get("fap.fap.platino.registro.username");
+			String usuario = FapProperties.get("fap.platino.registro.username");
 			String password = FapProperties.get("fap.platino.registro.password");
-			//hasConnection = genericosService.validarUsuario(usuario, password);
+			hasConnection = genericosService.validarUsuario(usuario, password);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -115,26 +115,11 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 
 	@Override
 	public List<String> obtenerUnidadesOrganicas(String userId, String password){
-		System.out.println("Llamando a CI de Hyperreg");
 		return this.genericosService.consultaUnidadesOrganicas(userId, encriptarPassword(password));
 	}
 	
-//	public String password2utf16(String password){
-//		//Comprobamos que el password está en UTF-16
-//		String password16="";
-//		password="PLATIN";
-//		try {
-//			password16 = new String(password.getBytes(), "UTF-16LE");
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		int codePoint = Character.codePointAt(password16, 1);
-//		//System.out.println("codePoint: "+Integer.toHexString(codePoint));
-//		return password16;
-//	}
-	
-	private String encriptarPassword(String password){
+	//TODO poner privado y quitar del service
+	public String encriptarPassword(String password){
         try {
             return PlatinoSecurityUtils.encriptarPassword(password);
         } catch (Exception e) {

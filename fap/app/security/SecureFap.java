@@ -1365,21 +1365,23 @@ public class SecureFap extends Secure {
 		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
-		if(!resolucion.copiadoExpedientes) { //Si no ha sido copiado previamente
-			if ((resolucion.estadoPublicacion != null && resolucion.estadoPublicacion.toString().equals("publicada".toString()) && utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio")) 
-					//Si está notificada y no tengo que publicar true, si hay que publicar debe esperarse a eso
-					|| (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio") && resolucion.estadoNotificacion != null && resolucion.estadoNotificacion.toString().equals("notificada".toString()) && (FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios") == false)) 
-					|| (resolucion.estado != null && resolucion.estado.toString().equals("publicadaYNotificada".toString()) && utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio"))) {
-				if ("editar".equals(accion))
-					return new ResultadoPermiso(Accion.Editar);
-				else
-					return null;
-			}
+
+		if ((!resolucion.copiadoExpedientes.toString().equals("true".toString()))
+				&& (resolucion.estado != null)
+				&& (resolucion.estado.toString().equals("publicada".toString()) || (resolucion.estado.toString().equals("notificada".toString()) && FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios") == false) || resolucion.estado.toString().equals("publicadaYNotificada".toString()))
+				&& (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor"))) {
+			if ("editar".equals(accion))
+				return new ResultadoPermiso(Accion.Editar);
+			else
+				return null;
+
 		}
 
-		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio")) {
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor")) {
 			return new ResultadoPermiso(Grafico.Visible);
+
 		}
+
 		return null;
 	}
 	

@@ -1,10 +1,7 @@
 Firma._getCertificados = function(){
 		try {			
 			//initPlatinoWebSigner();
-			//@firma
-			initFirma();			
-			// Usar metodo de init certificados de @Firma??
-			
+
 			arrCAs = getArrayCAs();
 			arrRestrictions = getArrayRestrictions();
 			
@@ -49,11 +46,7 @@ var Platino = {
 
 		try {			
 			//initPlatinoWebSigner();
-			
-			//@Firma
-			initFirma();
-			alert("Platino");
-			
+
 			arrCAs = getArrayCAs();
 			arrRestrictions = getArrayRestrictions();
 			
@@ -135,11 +128,7 @@ function actualizarCertificadosValidos(elementId, options) {
 			return;
 		
 		//initPlatinoWebSigner();
-		
-		//@Firma
-		initFirma();
-		alert("ActualizarCertificadosValidos");
-		
+
 		arrCAs = getArrayCAs();
 		arrRestrictions = getArrayRestrictions();
 		

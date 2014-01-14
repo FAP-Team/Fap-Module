@@ -64,6 +64,11 @@
 	
 
 	<script>
+		// @firma
+		//alert("desactiva vpn gobcan");
+		initFirma();
+		//alert("activa vpn gobcan");
+		
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
 			Firma.listarCertificados("#certificado", {mensajes: mensajes});

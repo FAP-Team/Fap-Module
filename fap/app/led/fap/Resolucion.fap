@@ -811,18 +811,15 @@ Permiso permisoCopiaExpedientes {
 		ResolucionFAP resolucion
 	when
 		(
-			resolucion.estadoPublicacion != null and
-			resolucion.estadoPublicacion = "publicada" and
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
-		)
-		or(
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
-			resolucion.estadoNotificacion != null and
-			resolucion.estadoNotificacion = "notificada"
-		)
-		or (
-			resolucion.estado != null and
-			resolucion.estado = "publicadaYNotificada" and
+			resolucion.copiadoExpedientes != true
+		) and
+		(
+			resolucion.estado != null
+		) and (
+			resolucion.estado = "publicada" or
+			resolucion.estado = "notificada" or
+			resolucion.estado = "publicadaYNotificada"
+		) and (
 			agente.rolActivo  in ("administrador", "gestor", "jefeServicio", "revisor")
 		)
 	return

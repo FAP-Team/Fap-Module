@@ -32,22 +32,48 @@ public class DatosVerificadosController extends DatosVerificadosControllerGen {
 				accion = "editar";
 			}
 
-		} else if (!"borrado".equals(accion))
+		} else if (!"borrado".equals(accion)){
 			solicitud = DatosVerificadosController.getSolicitudGenerica(idSolicitud);
-
+//			System.out.println("Solicitante: " + solicitud.peticion.solicitudTransmision.get(solicitud.peticion.solicitudTransmision.size()-1).datosGenericos.solicitante.nombreSolicitante);
+//			System.out.println("Codigo:" + solicitud.peticion.codigoCertificado);
+//			System.out.println("Usuario: " +  solicitud.peticion.uidUsuario);
+		}
+		Integer ultimaSolicitud = solicitud.peticion.solicitudTransmision.size()-1;
+		String codigo = solicitud.peticion.codigoCertificado;
+		String usuario = solicitud.peticion.uidUsuario;
+		String idSolicitante = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.identificadorSolicitante;
+		String nombreSolicitante = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.nombreSolicitante;
+		String finalidad = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.finalidad;
+		String unidadTramitadora = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.unidadTramitadora;
+		String idExpediente = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.idExpediente;
+		String codProcedimiento = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.procedimiento.codigoProcedimiento;
+		String nombreProcedimiento = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.procedimiento.nombreProcedimiento;
+		String nombreFuncionario = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.funcionario.nombreCompletoFuncionario;
+		String nifFuncionario = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.funcionario.nifFuncionario;
+		String consentimiento = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.solicitante.consentimiento.toString();
+		String nifTitular = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.documentacion;
+		String tipoDocumentacion = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.tipoDocumentacion.toString();
+		String nombreCompleto = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.getNombreCompleto();
+		String nombre = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.nombre;
+		String apellido1 = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.apellido1;
+		String apellido2 = solicitud.peticion.solicitudTransmision.get(ultimaSolicitud).datosGenericos.titular.apellido2;
+		
 		Agente logAgente = AgenteController.getAgente();
 		
 		try{
 			VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
-			Respuesta response = verificarDatosService.peticionSincronaIdentidad("CDISFWS01", "desarrollo", "S2833002E", "MINISTERIO DE HACIENDA Y AP", 
-					"PRUEBAS DE INTEGRACION SCSP", "", "SG COORD ESTUDIOS E IMPULSO ADMELECLT(MINHAP)", "SVDR_20101117_000254", 
-					"PRUEBAS PARA LA INTEGRACION Y SOLUCION DE INCIDENCIAS", "Luz Diaz Soto", "00000003A", "Si", "10000322Z", "", "", "", "", "NIF");
+			Respuesta response = verificarDatosService.peticionSincronaIdentidad(codigo, usuario, idSolicitante, nombreSolicitante, 
+					finalidad, idExpediente, unidadTramitadora, codProcedimiento, nombreProcedimiento, nombreFuncionario, nifFuncionario, 
+					consentimiento, nifTitular, nombreCompleto, nombre, apellido1, apellido2, tipoDocumentacion);
+			
 			System.out.println("El codigo es es: " + response.getAtributos().getCodigoCertificado().toString());
 			
 			solicitud.respuestaSvd = VerificacionUtils.convertRespuestaSvdToRespuesta(response);
-			
+
 			}
 			catch(VerificarDatosServiceException e){
+				log.info("Visitando página: " + "fap/DatosVerificados/DatosVerificadosB.html" + " Agente: " + logAgente);
+				renderTemplate("fap/DatosVerificados/DatosVerificadosB.html", accion, idSolicitud, solicitud);
 				play.Logger.error("No se han podido resolver la petición. Causa: " + e.getMessage());
 			}
 		

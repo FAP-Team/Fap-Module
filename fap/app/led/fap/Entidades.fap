@@ -62,6 +62,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	DateTime fechaFinDeAceptacion
 	DateTime fechaFinDeAlegacion
 	Respuesta respuestaSvd
+	PeticionSVD peticion
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)

@@ -24,8 +24,7 @@
 <p>A continuación se muestran los resultados de la verificación:</p>
 		
 			<div class="wiki ">
-<p><div style="width:100%;padding:10px;align:right;background-color: #EEEEEE;"></p>
-<p><b><u>RESPUESTA </u></b><br/></p>
+#{fap.grupo titulo:'Respuesta'}
 <p><table style="width:99%;text-align:center;align:center;"></p>
 <p><tr></p>
 <p><td style=" text-align:left;"><b><i><u>Atributos</u>:</i></b></td></p>
@@ -40,11 +39,13 @@
 <p><td style=" text-align:right;"><b><i>TimeStamp:</i></b></td><td style=" text-align:right;">${respuesta.atributos.timestamp}</td></p>
 <p></tr></p>
 <p></table></div></p>
+#{/fap.grupo}
 
 
-<p><div style="width:100%;padding:10px;align:right;background-color: #EEEEEE;"></p>
-<p><b><u>TRANSMISIONES </u></b><br/></p>
+#{fap.grupo titulo:'Transmisiones'}
 #{list items:respuesta.transmisiones.transmisionDatos, as: 'transmision'}
+%{def transmision_b = "Transmisión " + transmision.id %} 
+#{fap.grupo titulo:transmision_b}
 <p><table style="width:99%;text-align:center;align:center;"></p>
 <p><tr></p>
 <p><td style=" text-align:left;"><b><i><u>Emisor:</u></i></b></td></p>
@@ -152,9 +153,12 @@
 <p><td style=" text-align:left;"><b><i>Vía:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosDireccion.datosVia}</td></p>
 <p></tr></p>
 <p></table></div></p>
+#{/fap.grupo}
 #{/list}
 
+#{/fap.grupo}
+
+#{fap.enlace action:play.mvc.Router.reverse("VerificacionDatosSVDController.index") , estilo:'btn', id:'volverVerificacionDatos', titulo:'Volver' /}
 </div>
-		
 #{/fap.pagina}
 		

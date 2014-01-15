@@ -130,7 +130,7 @@ Formulario Principal {
 	}//endVerificacionDatosSVD
 	
 		//Sobreescrita
-		Pagina PeticionRecuperada titulo= "Petición Recuperada" noForm perteneceA="Verificacion" campo=Respuesta{
+		Pagina PeticionRecuperada titulo= "Petición Recuperada" noForm perteneceA="Verificacion" campo=Respuesta permiso=adminOrGestor{
 			Grupo Recuperacion titulo="Recuperar petición"{
 				Form Recupera{
 				Wiki {"Introduzca el código de petición y el ID de usuario. Luego pulse el botón para recuperar la petición."}
@@ -140,7 +140,7 @@ Formulario Principal {
 		}
 		
 		//Sobreescrita
-		Pagina PeticionPDFRecuperada titulo= "Petición PDF Recuperada" noForm perteneceA="Verificacion" {
+		Pagina PeticionPDFRecuperada titulo= "Petición PDF Recuperada" noForm perteneceA="Verificacion" campo=Respuesta permiso=adminOrGestor{
 			Grupo Recuperacion titulo="Recuperar petición"{
 				Form RecuperaPDF{
 				Wiki {"Introduzca el código de petición, el ID de transmisión y el ID de usuario. Luego pulse el botón para recuperar la petición."}

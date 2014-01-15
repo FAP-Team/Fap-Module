@@ -134,7 +134,6 @@ public class SolicitudGenerica extends FapModel {
 	@Transient
 	public String fechaARestaurarStr;
 
-
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinDeAceptacion"), @Column(name = "fechaFinDeAceptacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFinDeAceptacion;
@@ -146,7 +145,9 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Respuesta respuestaSvd;
 
-	 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public PeticionSVD peticion;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -271,6 +272,11 @@ public class SolicitudGenerica extends FapModel {
 			respuestaSvd = new Respuesta();
 		else
 			respuestaSvd.init();
+
+		if (peticion == null)
+			peticion = new PeticionSVD();
+		else
+			peticion.init();
 
 		postInit();
 	}

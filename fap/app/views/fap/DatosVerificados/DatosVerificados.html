@@ -20,8 +20,8 @@
 <p>A continuación se muestran los resultados de la verificación:</p>
 		
 			<div class="wiki ">
-<p><div style="width:100%;padding:10px;align:right;background-color: #EEEEEE;"></p>
-<p><b><u>RESPUESTA </u></b><br/></p>
+#{fap.grupo titulo:'Respuesta'}
+
 <p><table style="width:99%;text-align:center;align:center;"></p>
 <p><tr></p>
 <p><td style=" text-align:left;"><b><i><u>Atributos</u>:</i></b></td></p>
@@ -36,10 +36,10 @@
 <p><td style=" text-align:right;"><b><i>TimeStamp:</i></b></td><td style=" text-align:right;">${solicitud.respuestaSvd.atributos.timestamp}</td></p>
 <p></tr></p>
 <p></table></div></p>
+#{/fap.grupo}
 
 
-<p><div style="width:100%;padding:10px;align:right;background-color: #EEEEEE;"></p>
-<p><b><u>TRANSMISIONES </u></b><br/></p>
+#{fap.grupo titulo:'Transmisiones'}
 #{list items:solicitud.respuestaSvd.transmisiones.transmisionDatos, as: 'transmision'}
 <p><table style="width:99%;text-align:center;align:center;"></p>
 <p><tr></p>
@@ -149,7 +149,8 @@
 <p></tr></p>
 <p></table></div></p>
 #{/list}
-
 </div>
+#{/fap.grupo}
 
+#{fap.enlace action:play.mvc.Router.reverse("VerificacionDatosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', id:'volverVerificacionDatos', titulo:'Volver' /}
 #{/fap.pagina}

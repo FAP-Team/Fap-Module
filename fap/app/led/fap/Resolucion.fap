@@ -237,7 +237,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -404,7 +404,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -811,18 +811,15 @@ Permiso permisoCopiaExpedientes {
 		ResolucionFAP resolucion
 	when
 		(
-			resolucion.estadoPublicacion != null and
-			resolucion.estadoPublicacion = "publicada" and
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
-		)
-		or(
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
-			resolucion.estadoNotificacion != null and
-			resolucion.estadoNotificacion = "notificada"
-		)
-		or (
-			resolucion.estado != null and
-			resolucion.estado = "publicadaYNotificada" and
+			resolucion.copiadoExpedientes = null or
+			resolucion.copiadoExpedientes = false
+		) and (
+			resolucion.estado != null
+		) and (
+			resolucion.estado = "publicada" or
+			resolucion.estado = "notificada" or
+			resolucion.estado = "publicadaYNotificada"
+		) and (
 			agente.rolActivo  in ("administrador", "gestor", "jefeServicio", "revisor")
 		)
 	return

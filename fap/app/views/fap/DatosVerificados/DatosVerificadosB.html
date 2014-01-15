@@ -1,0 +1,23 @@
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'DatosVerificados', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Resultado de Verificación de datos', 
+     urlBorrar:play.mvc.Router.reverse('DatosVerificadosController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('DatosVerificadosController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('DatosVerificadosController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			<div class="wiki ">
+				<p>La petición no ha podido ser resuelta.</p>
+			</div>
+	#{fap.enlace action:play.mvc.Router.reverse("VerificacionDatosController.index" , ['idSolicitud':solicitud?.id]), estilo:'btn', id:'volverVerificacionDatos', titulo:'Volver' /}
+#{/fap.pagina}

@@ -1,9 +1,47 @@
 Entidad PeticionSVD{
 	String uidUsuario
-	String idPeticion
+	String codigoCertificado
 	String idTransmision
+	OneToMany SolicitudTransmision solicitudTransmision
 }
 
+Entidad SolicitudTransmision{
+	DatosGenericosPeticion datosGenericos
+}
+Entidad DatosGenericosPeticion{
+	SolicitantePeticion solicitante
+	TitularPeticion titular
+}
+
+Entidad SolicitantePeticion{
+	String identificadorSolicitante
+	String nombreSolicitante
+	String finalidad
+	String idExpediente
+	String unidadTramitadora
+	Procedimiento procedimiento
+	Funcionario funcionario
+	Lista TipoConsentimiento consentimiento
+}
+
+Entidad Procedimiento {
+	String codigoProcedimiento
+	String nombreProcedimiento
+}
+
+Entidad Funcionario{
+	String nombreCompletoFuncionario
+	String nifFuncionario
+	
+}
+Entidad TitularPeticion{
+	String documentacion
+	String nombreCompleto transient
+	String nombre
+	String apellido1
+	String apellido2
+	Lista TipoDocumentacion tipoDocumentacion
+}
 //--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
 Entidad Respuesta {	
 	AtributosRespuesta atributos

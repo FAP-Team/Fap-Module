@@ -19,27 +19,30 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class PeticionSVD extends FapModel {
+public class DatosGenericosPeticion extends FapModel {
 	// Código de los atributos
 
-	public String uidUsuario;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public SolicitantePeticion solicitante;
 
-	public String codigoCertificado;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public TitularPeticion titular;
 
-	public String idTransmision;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "peticionsvd_solicitudtransmision")
-	public List<SolicitudTransmision> solicitudTransmision;
-
-	public PeticionSVD() {
+	public DatosGenericosPeticion() {
 		init();
 	}
 
 	public void init() {
 
-		if (solicitudTransmision == null)
-			solicitudTransmision = new ArrayList<SolicitudTransmision>();
+		if (solicitante == null)
+			solicitante = new SolicitantePeticion();
+		else
+			solicitante.init();
+
+		if (titular == null)
+			titular = new TitularPeticion();
+		else
+			titular.init();
 
 		postInit();
 	}

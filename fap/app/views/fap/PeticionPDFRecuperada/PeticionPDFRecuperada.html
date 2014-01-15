@@ -20,44 +20,8 @@
 				#{form play.mvc.Router.reverse('PeticionPDFRecuperadaController.recuperaPDF' ) , class:"form-horizontal", id:"recuperaPDF"}
 					
 			<div class="wiki ">
-<p>Introduzca el código de petición, el ID de transmisión y el ID de usuario. Luego pulse el botón para recuperar la petición.</p>
-
+				<p>Aquí se debería mostrar el pdf.</p>
 			</div>
-			
-						<div class="control-group " id="cg1">
-				<label class="control-label" for="codigoPeticion" style="" id="codigoPeticionLabel">Código de Petición: </label>
-				<div class="controls" id="ext-gen1117">
-					<input class="input-manual" id="codigoPeticion" type="text" name="codigoPeticion" >
-				</div> 
-			</div>
-			<div class="control-group " id="cg2">
-				<label class="control-label" for="idTransmision" style="" id="idTransmisionLabel">ID Transmision: </label>
-				<div class="controls" id="ext-gen1117">
-					<input class="input-manual" id="idTransmision" type="text" name="idTransmision" >
-				</div> 
-			</div>
-			<div class="control-group " id="cg2">
-				<label class="control-label" for="uidUsuario" style="" id="uidUsuarioLabel">ID usuario: </label>
-				<div class="controls" id="ext-gen1117">
-					<input class="input-manual" id="uidUsuario" type="text" name="uidUsuario" >
-				</div> 
-			</div>
-			
-			<script>	
-				function recuperar() {
-					$.ajax({
-						type: "POST",
-						url: "${urlRecuperar}",
-						data: {
-							codigoPeticion: $('#codigoPeticion').val(),
-							uidUsuario: $('#uidUsuario').val()
-						}
-					});
-				}
-			</script>
-
-			<a id="botonRecuperarPeticionPdf" class="btn " onclick="notificar()">Recuperar PDF</a>
-		
 				#{/form}
 			
 			#{/fap.grupo}

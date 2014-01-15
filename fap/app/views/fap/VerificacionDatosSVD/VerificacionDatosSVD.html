@@ -1,8 +1,11 @@
 %{
 	def urlRecuperar = play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticion');
 	def urlRecuperada = play.mvc.Router.reverse('PeticionRecuperadaController.index');
+	def urlRecuperarPDF = play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticionPDF');
+	def urlRecuperadaPDF = play.mvc.Router.reverse('PeticionPDFRecuperadaController.index');
 	
 %}
+
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -20,12 +23,8 @@
      urlEditar:play.mvc.Router.reverse('VerificacionDatosSVDController.editar' )
 }
 	
-			<div class="wiki ">
-<p>Un grupo para las peticiones asincronas</p>
-
-			</div>
 		
-			#{fap.grupo titulo:'Realizar peticiones asincronas'}
+<!--			#{fap.grupo titulo:'Realizar peticiones asincronas'}
 				
 #{fap.tabla 
      campo:'Solicitud', 
@@ -55,14 +54,9 @@
 
 			#{fap.boton id:'botonRealizarPeticionAsincrona', titulo:'Verificar Datos' /}
 		
-			#{/fap.grupo}
+			#{/fap.grupo} -->
 		
-			<div class="wiki ">
-<p>Un grupo para la recuperación de peticiones</p>
-
-			</div>
-		
-			#{fap.grupo titulo:'Crear una nueva verificación de datos'}
+		 #{fap.grupo titulo:'Crear una nueva verificación de datos'} 
 				
 				#{form play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticionCodigo' ) , class:"form-horizontal", id:"recuperaPeticionCodigo"}
 
@@ -97,8 +91,8 @@
 						$('#cg2').parent().attr('style', 'display:block');
 						$('#cg5').parent().attr('style', 'display:none');
 						$('#botonRecuperarPeticion').attr('style', 'display:none');
-						$('#botonRecuperarPeticionB').attr('style', 'display:block');
-						$('#botonRecuperarPeticionPdf').attr('style', 'display:block');
+						$('#botonRecuperarPeticionB').attr('style', 'display:inline');
+						$('#botonRecuperarPeticionPdf').attr('style', 'display:inline');
 						$('#botonRecuperarPeticionPdfB').attr('style', 'display:none');
 						
 				}
@@ -106,30 +100,52 @@
 				function notificar() {
 						$('#cg2').parent().attr('style', 'display:none');
 						$('#cg5').parent().attr('style', 'display:block');
-						$('#botonRecuperarPeticion').attr('style', 'display:block');
+						$('#botonRecuperarPeticion').attr('style', 'display:inline');
 						$('#botonRecuperarPeticionB').attr('style', 'display:none');
 						$('#botonRecuperarPeticionPdf').attr('style', 'display:none');
-						$('#botonRecuperarPeticionPdfB').attr('style', 'display:block');
+						$('#botonRecuperarPeticionPdfB').attr('style', 'display:inline');
 				}
 				
 				function recuperaPeticion(){
+					popupWait_open();
 					$.ajax({
 						type: "POST",
 						url: "${urlRecuperar}",
 						data: {
 							codigoPeticion: $('#codigoPeticion').val(),
-							uidUsuario: $('#uidUsuario').val()
-						}
-					}).done(function(msg) {
-						if (msg != "") {
+							uidUsuario: $('#uidUsuario').val(),
+							}
+						}).done(function(msg) {
+						popupWait_close();
+						if (msg.match(/\\?idRespuesta\=(\d+)\&accion\=editar/)) {
 							location.href = "${urlRecuperada}" + msg;
-							alert(msg);
-							alert("Notificación con éxito");
  						}
  						else {
-							alert("Notificación sin éxito");
+							alert("No se pudo realizar la recuperación. Los campos son erróneos.");
 						}
 					});
+
+				}
+				
+				function recuperaPeticionPDF(){
+				popupWait_open();
+					$.ajax({
+						type: "POST",
+						url: "${urlRecuperarPDF}",
+						data: {
+							codigoPeticion: $('#codigoPeticionB').val(),
+							idTransmision: $('#idTransmision').val(),
+							uidUsuario: $('#uidUsuarioB').val()
+						}
+						}).done(function(msg) {
+						popupWait_close();
+							if (msg.match(/\\?idRespuesta\=(\d+)\&accion\=editar/)) {
+								location.href = "${urlRecuperadaPDF}"+ msg;
+	 						}
+	 						else {
+							alert("No se pudo realizar la recuperación. Los campos son erróneos.");
+							}
+						});
 				}
 				
 				function ocultarTodo() {
@@ -143,7 +159,7 @@
 				
 			</script>
 			<a id="botonRecuperarPeticion" class="btn " onclick="recuperar()">Recuperar petición</a>
-			<a id="botonRecuperarPeticionB" class="btn " onclick="recuperaPeticion()">Recuperar petición B</a>
+			<a id="botonRecuperarPeticionB" class="btn " onclick="recuperaPeticion()" style='width:70px'>Recuperar petición</a>
 		
 			#{/fap.grupo}
 		
@@ -161,9 +177,9 @@
 
 			</div>
 			<div class="control-group " id="cg3">
-				<label class="control-label" for="codigoPeticion" style="" id="codigoPeticionLabel">Código de Petición: </label>
+				<label class="control-label" for="codigoPeticionB" style="" id="codigoPeticionBLabel">Código de Petición: </label>
 				<div class="controls" id="ext-gen1117">
-					<input class="input-manual" id="codigoPeticion" type="text" name="codigoPeticion" >
+					<input class="input-manual" id="codigoPeticionB" type="text" name="codigoPeticionB" >
 				</div> 
 			</div>
 			<div class="control-group " id="cg4">
@@ -173,16 +189,16 @@
 				</div> 
 			</div>
 			<div class="control-group " id="cg5">
-				<label class="control-label" for="uidUsuario" style="" id="uidUsuarioLabel">ID usuario: </label>
+				<label class="control-label" for="uidUsuarioB" style="" id="uidUsuarioBLabel">ID usuario: </label>
 				<div class="controls" id="ext-gen1117">
-					<input class="input-manual" id="uidUsuario" type="text" name="uidUsuario" >
+					<input class="input-manual" id="uidUsuarioB" type="text" name="uidUsuarioB" >
 				</div> 
 			</div>
 			
 				#{/form}
 				
 			<a id="botonRecuperarPeticionPdf" class="btn " onclick="notificar()">Recuperar PDF</a>
-			<a id="botonRecuperarPeticionPdfB" class="btn " onclick="notificar()">Recuperar PDF B</a>
+			<a id="botonRecuperarPeticionPdfB" class="btn " onclick="recuperaPeticionPDF()">Recuperar PDF</a>
 			
 			#{/fap.grupo}
 		

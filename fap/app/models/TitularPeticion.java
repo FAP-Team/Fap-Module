@@ -19,33 +19,36 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class PeticionSVD extends FapModel {
+public class TitularPeticion extends FapModel {
 	// Código de los atributos
 
-	public String uidUsuario;
+	public String documentacion;
 
-	public String codigoCertificado;
+	@Transient
+	public String nombreCompleto;
 
-	public String idTransmision;
+	public String nombre;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "peticionsvd_solicitudtransmision")
-	public List<SolicitudTransmision> solicitudTransmision;
+	public String apellido1;
 
-	public PeticionSVD() {
-		init();
-	}
+	public String apellido2;
+
+	@ValueFromTable("TipoDocumentacion")
+	public String tipoDocumentacion;
 
 	public void init() {
-
-		if (solicitudTransmision == null)
-			solicitudTransmision = new ArrayList<SolicitudTransmision>();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-
+	/**
+	 * Nombre completo: Unión de nombre, primerApellido y segundoApellido
+	 * @return
+	 */
+	public String getNombreCompleto() {
+		return utils.StringUtils.join(" ", nombre, apellido1, apellido2);
+	}
 	// === MANUAL REGION END ===
 
 }

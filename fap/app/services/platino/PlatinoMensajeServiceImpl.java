@@ -125,6 +125,20 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		}
 	}
 	
+	@Override
+	public  ArrayOfMensajeType obtenerMensajes (String uriRemesa) throws MensajeServiceException {
+		
+		
+		
+		try{
+			return mensajePort.obtenerMensajes(uriRemesa); 
+		}
+		catch(Exception e){
+			System.out.println("No se ha podido mandar el e-mail. Causa: " + e);
+			throw new MensajeServiceException("No se pudo enviar el correo al email solicitado");
+		}
+	}
+	
 	/**
 	 * Realiza el envío de un mensaje a varias direcciones de correo (e-mail).
 	 * 

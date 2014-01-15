@@ -48,6 +48,7 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
@@ -276,9 +277,9 @@ public class Start extends Job {
 //			lista.add("alecabdia@gmail.com");
 //			lista.add("aletepe@gmail.com");
 //			lista.add("yurena.cabcas@gmail.com");
-//		mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
-//		mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
-//		mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
+//		//mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
+//		//mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
+//		//mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
 //		}
 //		catch (MensajeServiceException e){
 //			play.Logger.error("No se han podido mandar los correos el de fuera!!. Causa: " + e.getMessage());

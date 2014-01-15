@@ -48,6 +48,7 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
@@ -248,39 +249,24 @@ public class Start extends Job {
 		
 //		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 //		verificarDatosService.mostrarInfoInyeccion();
+			
+
+		String uriRemesa = "";
+		try{
+			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
+		}
+		catch(Exception e){
+			System.out.println("Como que no tira esto");
+		};
 		
-//		try{
-//			RespuestaPdf response = verificarDatosService.peticionPDF("GobCanPR00000034", "PRE0000000171359", "desarrollo");
-//			System.out.println("El pdf es: " + response.getPdf().toString());
-//		}
-//		catch(VerificarDatosServiceException e){
-//			play.Logger.error("No se han podido obtener el PDF. Causa: " + e.getMessage());
-//		}
+		try{
+			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
+			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
+		}
+		catch(Exception e){
+			System.out.println("Como que no tira esto");
+		};
 		
-//		try{
-//			Respuesta response = verificarDatosService.peticionRecover("desarrollo", "GobCanPR00000041") ;
-//			System.out.println("El pdf es: " + response.getAtributos().getCodigoCertificado().toString());
-//		}
-//		catch(VerificarDatosServiceException e){
-//			play.Logger.error("No se han podido resolver la petición. Causa: " + e.getMessage());
-//		}
-		
-//		try{
-//		Respuesta response = verificarDatosService.peticionSincronaIdentidad("CDISFWS01", "desarrollo", "S2833002E", "MINISTERIO DE HACIENDA Y AP", 
-//				"PRUEBAS DE INTEGRACION SCSP", "", "SG COORD ESTUDIOS E IMPULSO ADMELECLT(MINHAP)", "SVDR_20101117_000254", 
-//				"PRUEBAS PARA LA INTEGRACION Y SOLUCION DE INCIDENCIAS", "Luz Diaz Soto", "00000003A", "Si", "10000322Z", "", "", "", "", "NIF");
-//		System.out.println("El codigo es es: " + response.getAtributos().getCodigoCertificado().toString());
-//		}
-//		catch(VerificarDatosServiceException e){
-//			play.Logger.error("No se han podido resolver la petición. Causa: " + e.getMessage());
-//		}
-		
-//		try{
-//			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
-//		}
-//		catch(Exception e){
-//			System.out.println("Como que no tira esto");
-//		};
 ////		try{
 ////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);
 ////		}
@@ -294,9 +280,9 @@ public class Start extends Job {
 //			lista.add("alecabdia@gmail.com");
 //			lista.add("aletepe@gmail.com");
 //			lista.add("yurena.cabcas@gmail.com");
-//		mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
-//		mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
-//		mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
+//		//mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
+//		//mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
+//		//mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
 //		}
 //		catch (MensajeServiceException e){
 //			play.Logger.error("No se han podido mandar los correos el de fuera!!. Causa: " + e.getMessage());

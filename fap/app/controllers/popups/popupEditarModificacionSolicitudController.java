@@ -8,9 +8,9 @@ import messages.Messages;
 import models.RegistroModificacion;
 import play.mvc.Util;
 import validation.CustomValidation;
-import controllers.gen.popups.popupEditarModificacionSolicitudControllerGen;
+import controllers.gen.popups.PopupEditarModificacionSolicitudControllerGen;
 
-public class popupEditarModificacionSolicitudController extends popupEditarModificacionSolicitudControllerGen {
+public class PopupEditarModificacionSolicitudController extends PopupEditarModificacionSolicitudControllerGen {
 
 	@Util
 	public static void popupEditarModificacionSolicitudValidateCopy(String accion, RegistroModificacion dbRegistroModificacion, RegistroModificacion registroModificacion) {

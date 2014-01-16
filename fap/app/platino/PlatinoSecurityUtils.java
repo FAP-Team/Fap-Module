@@ -1,5 +1,6 @@
 package platino;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
+import play.libs.Codec;
 
 
 public class PlatinoSecurityUtils {
@@ -31,8 +32,8 @@ public class PlatinoSecurityUtils {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(passArray);
 			byte[] digest = md.digest();
-			String passMD5=play.server.hybi10.Base64.encode(digest);
-			byte[] passASCII = play.server.hybi10.Base64.decode(passMD5);
+			String passMD5= Codec.encodeBASE64(digest);
+			byte[] passASCII = Codec.decodeBASE64(passMD5);
 			String hiperpasswordUNICODE = new String(passASCII, "UTF-16LE");
 
 			return hiperpasswordUNICODE;

@@ -83,7 +83,7 @@ require:
         transitive: false
     - es.gobcan -> certificados v20140220:
         transitive: false
-    - es.gobcan -> resoluciones v20130529:
+    - es.gobcan -> resoluciones v20140107:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0

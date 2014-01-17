@@ -2,7 +2,9 @@ h2. Changelog
 
 
 h3. Versi贸n 2.4RC3
-Inclusi髇 del servicio SVD
+* Inclusi髇 del servicio SVD
+
+* Regeneraci贸n librer铆a de Resoluci贸n
 
 * Migraci贸n de los servicios de firma, registro y terceros de Platino a Platino 2.0
 

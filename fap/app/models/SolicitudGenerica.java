@@ -138,8 +138,6 @@ public class SolicitudGenerica extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFinDeAlegacion;
 
-
-
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Respuesta respuestaSvd;
 
@@ -267,7 +265,6 @@ public class SolicitudGenerica extends FapModel {
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
 
-
 		if (respuestaSvd == null)
 			respuestaSvd = new Respuesta();
 		else
@@ -280,7 +277,6 @@ public class SolicitudGenerica extends FapModel {
 
 		if (registros == null)
 			registros = new ArrayList<Registro>();
-
 
 		postInit();
 	}

@@ -332,7 +332,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
 		try {
 			Boolean verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(null, signature, INVOKING_APP, "XADES");
-			System.out.println("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
+			play.Logger.info("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
 			return verifySignatureByFormatResponse;
 		} catch (SignatureServiceException_Exception e) {
 			play.Logger.error("Error verificando el contenido de la firma", e);

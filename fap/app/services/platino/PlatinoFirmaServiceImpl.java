@@ -331,8 +331,9 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	
 	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
 		try {
-			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
-			return firmaPort.verifyContentSignature(content, signature, invokingApp);
+			Boolean verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(null, signature, INVOKING_APP, "XADES");
+			System.out.println("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
+			return verifySignatureByFormatResponse;
 		} catch (SignatureServiceException_Exception e) {
 			play.Logger.error("Error verificando el contenido de la firma", e);
 			return false;

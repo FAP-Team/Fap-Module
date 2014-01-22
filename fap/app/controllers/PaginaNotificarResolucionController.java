@@ -273,7 +273,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirmaOficiosRemision)) {
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP, dbResolucionFAP.idSolicitudFirmaOficiosRemision)) {
 					dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionFirmados.name();
 					for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 						if (!linea.registro.fasesRegistro.firmada) {
@@ -287,7 +287,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 					play.Logger.warn("Los oficios de remisión de la resolución ["+dbResolucionFAP.id+"] asociados a la solicitud de firma no han sido firmados y finalizados.");
 					Messages.warning("Los oficios de remisión de la resolución asociados a la solicitud de firma no han sido firmados y finalizados.");
 					
-					String response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP.idSolicitudFirmaOficiosRemision, FapProperties.get("portafirma.usuario"));
+					String response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP, dbResolucionFAP.idSolicitudFirmaOficiosRemision, FapProperties.get("portafirma.usuario"));
 					if (response == null) {
 						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null.");
 					}

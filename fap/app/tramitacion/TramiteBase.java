@@ -299,13 +299,13 @@ public abstract class TramiteBase {
 					play.Logger.info("Almacenada la información del registro en la base de datos");
 
 					//Guarda el justificante en el AED
-					play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el AED", solicitud.id);
+					play.Logger.info("Se procede a guardar el justificante de la solicitud %s en el Gestor Documental", solicitud.id);
 					Documento documento = registro.justificante;
 					documento.tipo = this.getJustificanteRegistro();
 					documento.descripcion = this.getDescripcionJustificante();
 					documento.save();
 					gestorDocumentalService.saveDocumentoTemporal(documento, justificante.getDocumento().contenido.getInputStream(), this.getNombreFicheroPdf());
-					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el AED", this.getTipoTramite());
+					play.Logger.info("Justificante Registro del trámite de '%s' almacenado en el Gestor Documental", this.getTipoTramite());
 					
 					registro.fasesRegistro.registro = true;
 					getRegistro().fasesRegistro.registro=true;
@@ -341,7 +341,7 @@ public abstract class TramiteBase {
 			
 			//Ahora el estado de la solicitud se cambia después de registrar.
 			
-			//Clasifica los documentos en el AED
+			//Clasifica los documentos en el Gestor Documental
 			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
 				//Clasifica los documentos sin registro
 				tx.begin();

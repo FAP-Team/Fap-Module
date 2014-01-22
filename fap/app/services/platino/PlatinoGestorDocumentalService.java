@@ -2,6 +2,8 @@ package services.platino;
 
 import java.net.URL;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.xml.datatype.DatatypeFactory;
@@ -176,5 +178,38 @@ public class PlatinoGestorDocumentalService {
             play.Logger.error(mensaje);
             throw new PlatinoGestorDocumentalServiceException(mensaje, e);
         }
+    }
+    
+    public String convertToHexNoQuery (String uriExpediente){
+        String uriHex = "";
+        //Se recorre toda la uri buscando números despues de / y se pasa a hex UNICAMENTE el primer dígito
+         Pattern pattern = Pattern.compile ("([^/])+"); //Hace grupos entre /Grupo/
+         Matcher matcher = pattern.matcher(uriExpediente); 
+         while (matcher.find()){
+           String subCadena = uriExpediente.substring(matcher.start(), matcher.end());
+           String primerCaracter = subCadena.substring(0, 1); 
+             if(isNumeric(primerCaracter)){ //Si el primer caracter es numerico lo paso a hex             
+               String aux = Integer.toHexString(primerCaracter.charAt(0));
+               String hex = "_x"+String.format("%1$4s", aux).replace(' ', '0')+"_";
+               uriHex += hex + uriExpediente.substring(matcher.start()+1, matcher.end())+"/";
+             } else {
+               uriHex += subCadena+"/";
+             }           
+         }
+        return uriHex;
+      }
+    
+
+    public String convertToHex (String uriExpediente){
+       return "Ruta: \"" + convertToHexNoQuery(uriExpediente) +"*\"" ;
+     }
+    
+    private static boolean isNumeric(String cadena){
+    	try {
+    		Integer.parseInt(cadena);
+    		return true;
+    	} catch (NumberFormatException nfe){
+    		return false;
+    	}
     }
 }

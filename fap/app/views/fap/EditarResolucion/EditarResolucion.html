@@ -230,7 +230,15 @@
 		
 			#{fap.fecha campo:'resolucionFAP.fechaTopeFirma', requerido:true, titulo:'Fecha Tope Firma' /}		
 		
-			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}		
+			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}
+			
+			#{fap.grupo borde:false, mostrarSi:(properties.FapProperties.get("fap.platino.portafirma.url") != null)}
+				
+				#{fap.texto campo:'resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP', requerido:true, titulo:'Usuario LDAP' /}		
+			
+				#{fap.texto campo:'resolucionFAP.solicitudFirmaJefeServicio.passwordLDAP', password:true, requerido:true, titulo:'Contraseña LDAP' /}		
+		
+			#{/fap.grupo}		
 		
 			#{fap.boton id:'enviarFirmaJSPortafirma', titulo:'Enviar al portafirma' /}
 		
@@ -369,7 +377,7 @@
 		
 			#{fap.areaTexto campo:'resolucionFAP.observaciones', titulo:'Observaciones' /}		
 		
-			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'Área resolución' /}		
+			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'�?rea resolución' /}		
 		
 			#{fap.combo campo:'resolucionFAP.tiposResolucion', id:'tiposResolucion', requerido:true, titulo:'Tipo resolución' /}		
 		

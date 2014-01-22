@@ -208,6 +208,8 @@ Entidad SolicitudPortafirmaFAP {
 	String comentarioPf
 	String urlCorreoRedireccionPf
 	String flujoAnteriorPf
+	String usuarioLDAP
+	String passwordLDAP
 }
 	
 	
@@ -323,6 +325,10 @@ Formulario Principal {
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
+					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "(properties.FapProperties.get(\"fap.platino.portafirma.url\") != null)" {
+						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP titulo="Usuario LDAP" requerido
+						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.passwordLDAP titulo="Contraseña LDAP" password requerido
+					}
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
 				} 
 			}

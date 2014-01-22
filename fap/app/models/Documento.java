@@ -30,6 +30,8 @@ public class Documento extends FapModel {
 
 	public String uri;
 
+	public String uriPlatino;
+
 	@ValueFromTable("tiposDocumentos")
 	public String tipo;
 

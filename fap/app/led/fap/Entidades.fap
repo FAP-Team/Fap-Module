@@ -140,6 +140,7 @@ Entidad DireccionMapa embeddable auditable{
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
 	String uri                     // uri del documento en el AED
+	String uriPlatino
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient

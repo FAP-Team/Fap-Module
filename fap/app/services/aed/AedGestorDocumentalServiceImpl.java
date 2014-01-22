@@ -1161,9 +1161,15 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         
         String[] splits = carpeta.split("/");
         String ruta = "";
+        String ruta2 = "";
+        
         for(String s : splits){
-            aedPort.crearCarpetaNoClasificada(ruta, s, null);
-            ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
+        	ruta2 = ruta2.isEmpty() ? s  : ruta2 + "/" + s;
+        	if (!existeCarpetaTemporal(ruta2)) {
+        		aedPort.crearCarpetaNoClasificada(ruta, s, null);
+        		play.Logger.info("La carpeta "+carpeta+" ha sido creada.");
+        	}
+        	ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
         }
     }
     
@@ -1190,11 +1196,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         try {
             aedPort.obtenerCarpetasNoClasificadas(carpeta);
             //Si no da una excepción, la carpeta existe
+            play.Logger.error("La carpeta "+carpeta+" ya existe.");
             result = true;
         }catch(AedExcepcion e){
             if(e.getFaultInfo().getCodigoError() != CodigoErrorEnum.CARPETA_NO_EXISTE){
                 throw e;
             }
+            play.Logger.info("La carpeta "+carpeta+" no existe.");
         }
         return result;
     }

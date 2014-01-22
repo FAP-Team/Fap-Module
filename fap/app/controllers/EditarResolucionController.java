@@ -35,6 +35,7 @@ import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
 import validation.CustomValidation;
@@ -46,6 +47,7 @@ import emails.Mails;
 import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 
 @InjectSupport
 public class EditarResolucionController extends EditarResolucionControllerGen {
@@ -269,9 +271,20 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 
 		EditarResolucionController.formSelectJefeServicioBindReferences(resolucionFAP);
+		String usuarioURI = "";
 
 		if (!Messages.hasErrors()) {
 			EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
+			
+			PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+			try {
+				usuarioURI = platinoDBOrgPort.recuperarURIPersona(resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP);
+			} catch (DBOrganizacionException_Exception e) {
+				play.Logger.error("Fallo en la llamada al servicio de portafirmas: " + e.getMessage());
+				Messages.error("El usuario especificado no se encuentra en Platino");
+			}
+			if ((usuarioURI == null) || (usuarioURI.isEmpty()))
+				Messages.error("El usuario especificado no se encuentra en Platino");
 		}
 
 		if (!Messages.hasErrors()) {
@@ -285,6 +298,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				//play.Logger.error("La versión del portafirma es: "+version);
 				//Messages.error("La versión del portafirma es: "+version);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
+				System.out.println(response.getIdSolicitud());
 				dbResolucionFAP.idSolicitudFirma = response.getIdSolicitud();
 				dbResolucionFAP.hacePeticionPortafirma = AgenteController.getAgente();
 				dbResolucionFAP.save();
@@ -327,7 +341,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		dbResolucionFAP.fechaTopeFirma = resolucionFAP.fechaTopeFirma;
 		CustomValidation.required("resolucionFAP.numero_folios", resolucionFAP.numero_folios);
 		dbResolucionFAP.numero_folios = resolucionFAP.numero_folios;
-
+		if ((properties.FapProperties.get("fap.platino.portafirma.url") != null)) {
+			CustomValidation.valid("resolucionFAP.solicitudFirmaJefeServicio", resolucionFAP.solicitudFirmaJefeServicio);
+			CustomValidation.required("resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP", resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP);
+			CustomValidation.required("resolucionFAP.solicitudFirmaJefeServicio.passwordLDAP", resolucionFAP.solicitudFirmaJefeServicio.passwordLDAP);
+			dbResolucionFAP.solicitudFirmaJefeServicio = resolucionFAP.solicitudFirmaJefeServicio;
+		}
+		
 		if (dbResolucionFAP.fechaTopeFirma != null) {
 			DateTime today = new DateTime().withTimeAtStartOfDay();
 			if (dbResolucionFAP.fechaTopeFirma.isBefore(today)) {
@@ -423,7 +443,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirma)) {
+				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP, dbResolucionFAP.idSolicitudFirma)) {
 					ResolucionBase resolBase = null;
 					try {
 						resolBase = getResolucionObject(idResolucionFAP);
@@ -433,6 +453,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					Messages.ok("La solicitud de firma asociada a la resolución se ha firmado y finalizado correctamente.");
 					resolBase.avanzarFase_PendienteFirmarDirector(dbResolucionFAP);
 					dbResolucionFAP.registro.fasesRegistro.firmada = true;
+					portafirmaService.eliminarSolicitudFirma(dbResolucionFAP);
 					dbResolucionFAP.save();
 				} else {
 					play.Logger.warn("La resolución ["+dbResolucionFAP.id+"] no ha sido firmada y finalizada ");
@@ -445,7 +466,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 					play.Logger.info("El estado de la solicitud en el portafirma es: "+estado);
 					Messages.warning("El estado de la solicitud en el portafirma es: "+estado);
 					if (estado.equalsIgnoreCase("Rechazada")) {
-						// TODO: Volver a estado anterior
+						//Volver a estado anterior
 						ResolucionBase resolBase = null;
 						try {
 							resolBase = getResolucionObject(idResolucionFAP);
@@ -453,12 +474,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 							new Exception ("No se ha podido obtener el objeto resolución", e);
 						}
 						resolBase.retrocederFase_Modificacion(dbResolucionFAP);
+						portafirmaService.eliminarSolicitudFirma(dbResolucionFAP);
+						dbResolucionFAP.save();
 					} else {
-						play.Logger.warn("La Solicitud está en el estado: "+estado);
+						play.Logger.warn("La Solicitud está en el estado: " + estado);
 						//TODO: Recuperar comentario del response (que ahora no existe)
 						//play.Logger.warn("La Solicitud está en el estado: "+estado+ ": "+response.getComentario());
-						play.Logger.warn("La Solicitud está en el estado: "+estado);
-						Messages.warning("La Solicitud está en el estado: "+estado);
+						Messages.warning("La Solicitud está en el estado: " + estado);
 					}
 				}
 			} catch (PortafirmaFapServiceException e) {

@@ -42,8 +42,14 @@ public class WSUtils {
 		PlatinoCXFSecurityHeaders.addSoapWSSHeader(
 				service,
 				PlatinoCXFSecurityHeaders.SOAP_11,
-				backoffice,certificadoalias,
-				KeystoreCallbackHandler.class.getName(), null);		
+				backoffice,
+				certificadoalias,
+				KeystoreCallbackHandler.class.getName(),
+				null);
+	}
+	
+	public static void configureSecurityHeadersWithUser(Object service, String userUri){
+		PlatinoCXFSecurityHeaders.changeUsernameToken(service, userUri);		
 	}
 	
 	public static void aedError(String error, ProcedimientosExcepcion e){

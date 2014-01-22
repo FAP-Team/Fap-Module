@@ -42,6 +42,10 @@ public class SolicitudPortafirmaFAP extends FapModel {
 
 	public String flujoAnteriorPf;
 
+	public String usuarioLDAP;
+
+	public String passwordLDAP;
+
 	public void init() {
 
 		postInit();

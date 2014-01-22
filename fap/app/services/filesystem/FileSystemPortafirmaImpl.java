@@ -45,7 +45,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-	public void eliminarSolicitudFirma() throws PortafirmaFapServiceException {
+	public void eliminarSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
 
 	}
@@ -56,7 +56,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(String idSolicitudFirma) throws PortafirmaFapServiceException {
+	public boolean comprobarSiResolucionFirmada(ResolucionFAP resolucion, String idSolicitudFirma) throws PortafirmaFapServiceException {
 		return true;
 		//return false;
 	}
@@ -96,7 +96,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-	public String obtenerEstadoFirma(String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(ResolucionFAP resolucion, String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
 //		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
 //		estadoSolicitudFirma.setEstado("Rechazada");
 //		return estadoSolicitudFirma;

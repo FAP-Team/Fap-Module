@@ -7,7 +7,6 @@ import static play.modules.pdf.PDF.renderPDF;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -375,11 +374,11 @@ public class FichaEvaluadorController extends Controller {
 				 }
 
 				totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
-				columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				columna.put("valorSolicitado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorSolicitado));
 				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
-				columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				columna.put("valorEstimado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorEstimado));
 				totalesPropuesto += cEconomico.valores.get(i).valorPropuesto;
-				columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(cEconomico.valores.get(i).valorPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+				columna.put("valorPropuesto"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorPropuesto));
 			 }
 			 
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
@@ -390,9 +389,9 @@ public class FichaEvaluadorController extends Controller {
 		 	 else{
 		 		 columna.put("permiso", "true");
 		 	 }
-		  	 columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-		  	 columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-		  	 columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+		  	 columna.put("totalSolicitado", FapFormat.formatMoneda(totalesSolicitado));
+		  	 columna.put("totalEstimado", FapFormat.formatMoneda(totalesEstimado));
+		  	 columna.put("totalPropuesto", FapFormat.formatMoneda(totalesPropuesto));
 		  	 columnasCEconomicos.add(columna);
 		}
 		
@@ -402,9 +401,9 @@ public class FichaEvaluadorController extends Controller {
 		Double totalesEstimado = 0.0;
 		Double totalesPropuesto = 0.0;
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
-			columna.put("valorSolicitado"+i, (new BigDecimal(Double.toString(totalesSolicitadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
-			columna.put("valorEstimado"+i, (new BigDecimal(Double.toString(totalesEstimadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
-			columna.put("valorPropuesto"+i, (new BigDecimal(Double.toString(totalesEstimadoAnio.get(i))).setScale(2, RoundingMode.FLOOR).toPlainString()));
+			columna.put("valorSolicitado"+i, FapFormat.formatMoneda(totalesSolicitadoAnio.get(i)));
+			columna.put("valorEstimado"+i, FapFormat.formatMoneda(totalesEstimadoAnio.get(i)));
+			columna.put("valorPropuesto"+i, FapFormat.formatMoneda(totalesEstimadoAnio.get(i)));
 			totalesSolicitado += totalesSolicitadoAnio.get(i);
 			totalesEstimado += totalesEstimadoAnio.get(i);
 			totalesPropuesto += totalesPropuestoAnio.get(i);
@@ -412,9 +411,9 @@ public class FichaEvaluadorController extends Controller {
 		columna.put("jerarquia", "TOTALES");
 	  	columna.put("nombre", "POR AÑOS");
 	  	columna.put("permiso", "false");
-	  	columna.put("totalSolicitado", (new BigDecimal(Double.toString(totalesSolicitado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-	  	columna.put("totalEstimado", (new BigDecimal(Double.toString(totalesEstimado)).setScale(2, RoundingMode.FLOOR).toPlainString()));
-	  	columna.put("totalPropuesto", (new BigDecimal(Double.toString(totalesPropuesto)).setScale(2, RoundingMode.FLOOR).toPlainString()));
+	  	columna.put("totalSolicitado", FapFormat.formatMoneda(totalesSolicitado));
+	  	columna.put("totalEstimado", FapFormat.formatMoneda(totalesEstimado));
+	  	columna.put("totalPropuesto", FapFormat.formatMoneda(totalesPropuesto));
 	  	columnasCEconomicos.add(columna);
 		renderJSON(columnasCEconomicos);
 	}

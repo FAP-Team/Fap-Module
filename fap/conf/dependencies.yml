@@ -1,6 +1,7 @@
 # Application dependencies
 
-self: play -> fap 2.4RC1
+self: play -> fap 2.4RC3
+
 
 
 require:
@@ -76,16 +77,19 @@ require:
         transitive: false   
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
-    - es.gobcan.eadmon -> procedimientos v20130607:
+    - es.gobcan.eadmon -> procedimientos v20131015:
         transitive: false
     - es.gobcan.eadmon -> gestordocumental v20130607:
         transitive: false
     - es.gobcan -> certificados 1.1:
         transitive: false
-    - es.gobcan -> resoluciones v20130529:
+    - es.gobcan -> resoluciones v20140107:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
+        transitive: false
+    
     
     - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
         transitive: false
@@ -103,6 +107,7 @@ repositories:
             - es.gobcan -> *
             - es.gobcan.aciisi -> *
             - es.gobcan.platino -> *
+            - es.gobcan.hiperreg -> *
             - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *

@@ -190,14 +190,6 @@ fap.resoluciones.publicarTablonAnuncios=true
 fap.resoluciones.notificar=false
 ...
 
-En el caso de usar la ResolucionSimpleEjecucion o ResolucionMultipleEjecucion hay que cambiar los valores:
-
-bc. ...
-fap.resoluciones.generarDocumentoResolucion=false
-fap.resoluciones.publicarTablonAnuncios=false
-fap.resoluciones.notificar=true
-...
-
 h3. Otras propiedades
 
 Existen otras propiedades que pueden ser utilizadas para configurar algunas caracteristicas adicionales, como son:

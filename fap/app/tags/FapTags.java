@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -371,7 +370,7 @@ R
 	 *    expandir
 	 */
 	public static void _columna(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-		if( (!TagContext.hasParentTag("fap.tabla")) && (!TagContext.hasParentTag("fap.tablaSiCombo")) ) {
+		if( (!TagContext.hasParentTag("fap.tabla")) && (!TagContext.hasParentTag("fap.tablaSiCombo")) && (!TagContext.hasParentTag("fap.firmaMultiple"))) {
 			String msg = "El tag fap.columna puede aparecer únicamente dentro de un tag fap.tabla o tag.tablaSiCombo";
 			throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
 		}
@@ -495,9 +494,13 @@ R
 				camposTabla = (Set<String>)TagContext.parent("fap.tabla").data.get("campos");
 				columnasTabla = (List<String>)TagContext.parent("fap.tabla").data.get("columnas");
 			}
-			else {
+			else if (TagContext.hasParentTag("fap.tablaSiCombo")){
 				camposTabla = (Set<String>)TagContext.parent("fap.tablaSiCombo").data.get("campos");
 				columnasTabla = (List<String>)TagContext.parent("fap.tablaSiCombo").data.get("columnas");
+			}
+			else if (TagContext.hasParentTag("fap.firmaMultiple")){
+				camposTabla = (Set<String>)TagContext.parent("fap.firmaMultiple").data.get("campos");
+				columnasTabla = (List<String>)TagContext.parent("fap.firmaMultiple").data.get("columnas");
 			}
 			//Set<String> camposTabla = (Set<String>)TagContext.parent("fap.tabla").data.get("campos");
 			camposTabla.addAll(campos);

@@ -98,7 +98,7 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 			TiposResult response = port.getTipos(usuario, idAreaFuncional);
 			List<Tipos> wsTipos = response.getTiposList().getTipos();
 			for (Tipos wsTipo: wsTipos) {
-				if (!wsTipo.isBaja()) {
+				if (!wsTipo.getBaja()) {
 					TipoResolucion tipo = new TipoResolucion(wsTipo.getId(), wsTipo.getCodigo(), wsTipo.getDescripcion());
 					tipos.add(tipo);
 				}
@@ -116,7 +116,7 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 			AreasResult response = port.getAreas(usuario, idAreaFuncional);
 			List<Areas> wsAreas = response.getAreasList().getAreas();
 			for (Areas wsArea: wsAreas) {
-				if (!wsArea.isBaja()) {
+				if (!wsArea.getBaja()) {
 					AreaResolucion area = new AreaResolucion(wsArea.getId(), wsArea.getCodigo(), wsArea.getDescripcion());
 					areas.add(area);
 				}
@@ -134,7 +134,7 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 			RecursosResult response = port.getRecursos(usuario);
 			List<Recursos> serviceRecursos = response.getRecursosList().getRecursos();
 			for (Recursos wsRecurso: serviceRecursos) {
-				if (!wsRecurso.isBaja()) {
+				if (!wsRecurso.getBaja()) {
 					RecursoResolucion recurso = new RecursoResolucion(wsRecurso.getId(), wsRecurso.getCodigoAntiguo() == null ? "": wsRecurso.getCodigoAntiguo(), wsRecurso.getDescripcion());
 					recursos.add(recurso);
 				}

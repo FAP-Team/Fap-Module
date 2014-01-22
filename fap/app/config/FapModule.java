@@ -15,15 +15,18 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.VerificarDatosService;
 import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
+import services.filesystem.FileSystemMensajeServiceImpl;
 import services.filesystem.FileSystemNotificacionServiceImpl;
 import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.filesystem.FileSystemTercerosServiceImpl;
+import services.filesystem.FileSystemVerificarDatosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
 import services.openofice.OpenOfficeConversor;
@@ -47,7 +50,8 @@ public class FapModule extends PlayAbstractModule {
 		registroLibroResoluciones();
 		terceros();
 		ticketing();
-//		mensaje();
+		mensaje();
+		verificarDatos();
 //		conversor();
 	}
 	
@@ -91,9 +95,13 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(TicketingService.class, FilesystemTicketingServiceImpl.class);
 	}
 	
-//	protected void mensaje() {
-//		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
-//	}
+	protected void mensaje() {
+		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
+	}
+	
+	protected void verificarDatos() {
+		bindLazySingletonOnDev(VerificarDatosService.class, FileSystemVerificarDatosServiceImpl.class);
+	}
 	
 	protected void secure() {
 		bind(Secure.class).toInstance(new SecureFap(new SecureFapGen(null)));

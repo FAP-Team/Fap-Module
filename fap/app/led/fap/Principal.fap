@@ -4,6 +4,7 @@ Formulario Principal {
 		Enlace "Administración" permiso=administrador pagina=Usuarios
 		Enlace "Baremación" accion="fap.ConsultarEvaluacionesController.index" permiso=listaEvaluaciones
 		Enlace "Verificaciones sin Finalizar" permiso=adminOrGestorOrRevisor pagina=VerificacionesSinFinalizar
+		Enlace "Verificación de datos" permiso=adminOrGestorOrRevisor pagina=VerificacionDatosSVD
 		Enlace "Resoluciones" permiso=noUsuario pagina=ResolucionesFAP
 		Enlace "Firmas Pendientes de FH" pagina=FirmasPendientesFH permiso=esFuncionarioHabilitadoYActivadaProperty
 		Enlace "Seguimiento" permiso=adminGestorRevisor pagina=Seguimiento
@@ -90,6 +91,61 @@ Formulario Principal {
             Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"
             Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir         
         }
+	}
+	
+		Pagina VerificacionDatosSVD titulo = "Verificaciones Sin Finalizar" permiso=noUsuario noForm perteneceA="Verificacion" {
+			Wiki{"Un grupo para las peticiones asincronas"}
+		Grupo PeticionesAsincronas titulo="Realizar peticiones asincronas"{	
+        Tabla listaVerificacionesSinFinalizar titulo="Verificaciones sin Finalizar" campo=SolicitudGenerica  {
+            Columna campo=SolicitudGenerica.id titulo="ID Solicitud" ancho="80"
+            Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente Solicitud" ancho="120"
+            Columna campo=SolicitudGenerica.estado titulo="Estado Solicitud" ancho="120"
+            Columna campo=SolicitudGenerica.verificacion.id titulo="ID Verificacion" ancho="80"
+            Columna campo=SolicitudGenerica.verificacion.estado titulo="Estado Verificación" ancho="100"
+            Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" ancho="100"
+            Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir         
+        }
+        Boton botonRealizarPeticionAsincrona titulo="Verificar Datos"
+        }
+        
+       	Wiki{"Un grupo para la recuperación de peticiones"}
+       	Grupo RecuperarPeticion titulo="Crear una nueva verificación de datos"  {
+			Form RecuperaPeticionCodigo {
+				Wiki {"Permite recuperar una petición a partir de su código y del ID del usuario"}
+//				Texto campo=PeticionSVD.idPeticion titulo="Código Petición"
+//				Texto campo=PeticionSVD.uidUsuario titulo="ID Usuario"
+				Boton botonRecuperarPeticion titulo="Recuperar Petición" 
+				}
+ 
+			}
+	
+       		
+       	Wiki{"Un grupo para la recuperacion de peticion en pdf"}
+       	Grupo RecuperarPeticionPDF titulo="Crear una nueva verificación de datos"  {
+			Form RecuperaPDF {
+				Wiki {"Permite recuperar una petición en formato PDF."}
+				Boton botonRecuperarPeticionPdf titulo="Recuperar PDF"  
+			}
+		}
+	}//endVerificacionDatosSVD
+	
+		//Sobreescrita
+		Pagina PeticionRecuperada titulo= "Petición Recuperada" noForm perteneceA="Verificacion" campo=Respuesta permiso=adminOrGestor{
+			Grupo Recuperacion titulo="Recuperar petición"{
+				Form Recupera{
+				Wiki {"Introduzca el código de petición y el ID de usuario. Luego pulse el botón para recuperar la petición."}
+				Texto campo=Respuesta.atributos.idPeticion
+				}
+			}
+		}
+		
+		//Sobreescrita
+		Pagina PeticionPDFRecuperada titulo= "Petición PDF Recuperada" noForm perteneceA="Verificacion" campo=Respuesta permiso=adminOrGestor{
+			Grupo Recuperacion titulo="Recuperar petición"{
+				Form RecuperaPDF{
+				Wiki {"Introduzca el código de petición, el ID de transmisión y el ID de usuario. Luego pulse el botón para recuperar la petición."}
+				}
+			}
 	}
 	
 	Pagina IrVerificacionSinFinalizar titulo="Ir a verificaciones sin finalizar" campo=SolicitudGenerica permiso=noUsuario perteneceA="Verificacion"{}

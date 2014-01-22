@@ -156,6 +156,11 @@ public class ResolucionFAP extends FapModel {
 
 	public String destinatarioOficioRemisionPortafirma;
 
+	public Boolean resolucionReintegro;
+
+	@Column(length = 1000)
+	public String textoResolucionReintegro;
+
 	public ResolucionFAP() {
 		init();
 	}
@@ -199,6 +204,9 @@ public class ResolucionFAP extends FapModel {
 			solicitudFirmaDirector = new SolicitudPortafirmaFAP();
 		else
 			solicitudFirmaDirector.init();
+
+		if (resolucionReintegro == null)
+			resolucionReintegro = false;
 
 		postInit();
 	}

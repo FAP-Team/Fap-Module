@@ -1,0 +1,242 @@
+Entidad PeticionSVD{
+	String uidUsuario
+	String codigoCertificado
+	String idTransmision
+	OneToMany SolicitudTransmision solicitudTransmision
+}
+
+Entidad SolicitudTransmision{
+	DatosGenericosPeticion datosGenericos
+}
+Entidad DatosGenericosPeticion{
+	SolicitantePeticion solicitante
+	TitularPeticion titular
+}
+
+Entidad SolicitantePeticion{
+	String identificadorSolicitante
+	String nombreSolicitante
+	String finalidad
+	String idExpediente
+	String unidadTramitadora
+	Procedimiento procedimiento
+	Funcionario funcionario
+	Lista TipoConsentimiento consentimiento
+}
+
+Entidad Procedimiento {
+	String codigoProcedimiento
+	String nombreProcedimiento
+}
+
+Entidad Funcionario{
+	String nombreCompletoFuncionario
+	String nifFuncionario
+	
+}
+Entidad TitularPeticion{
+	String documentacion
+	String nombreCompleto transient
+	String nombre
+	String apellido1
+	String apellido2
+	Lista TipoDocumentacion tipoDocumentacion
+}
+//--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
+Entidad Respuesta {	
+	AtributosRespuesta atributos
+	TransmisionesRespuesta transmisiones
+}
+
+Entidad AtributosRespuesta {	
+	String idPeticion
+	String codigoCertificado
+	String timestamp
+	Integer numElementos
+	EstadoDatosGenericosRespuesta estado
+}
+
+Entidad EstadoDatosGenericosRespuesta {
+	String codigoEstado
+	String literalError
+	String codigoEstadoSecundario
+	Integer tiempoEstimadoRespuesta
+}
+
+Entidad TransmisionesRespuesta{
+	OneToMany TransmisionDatosRespuesta transmisionDatos
+}
+
+Entidad TransmisionDatosRespuesta{
+	DatosGenericos datosGenericos
+	DatosEspecificos datosEspecificos
+}
+
+Entidad DatosGenericos{
+	EmisorRespuesta emisor
+	SolicitanteRespuesta solicitante
+	TitularRespuesta titular
+	TransmisionRespuesta transmision
+}
+
+Entidad EmisorRespuesta{
+	String nif
+	String nombreEmisor
+}
+
+Entidad SolicitanteRespuesta{
+	String idSolicitante
+	String nombreSolicitante
+	String finalidad
+	Consentimiento consentimiento
+	FuncionarioRespuesta funcionario
+	ProcedimientoRespuesta procedimiento
+}
+
+Entidad Consentimiento{
+	String valor
+	String nombre
+}
+
+Entidad FuncionarioRespuesta{
+	String nombreCompletoFuncionario
+	String nifFuncionario
+}
+
+Entidad ProcedimientoRespuesta{
+	String codigoProcedimiento
+	String nombreProcedimiento	
+}
+
+Entidad TitularRespuesta{
+	String documentacion
+	String apellido1
+	String apellido2
+	String nombreCompleto
+	TipoDocumentacion tipoDocumentacion
+}
+
+Entidad TipoDocumentacion{
+	String nombre
+	String valor
+}
+
+Entidad TransmisionRespuesta{
+	String codigoCertificado
+	String codigoSolicitud
+	String idTransmision
+	String fechaGeneracion
+}
+
+Entidad DatosEspecificos{
+	EstadoDatosEspecificosRespuesta estado
+	EstadoResultadoRespuesta estadoResultado
+	DomicilioRespuesta domicilio
+	DatosTitularRespuesta datosTitular
+}
+
+Entidad EstadoDatosEspecificosRespuesta{
+	String codigoEstado
+	String literalError
+}
+
+Entidad EstadoResultadoRespuesta{
+	String codigoEstado
+	String literalError
+}
+
+Entidad DomicilioRespuesta{
+	Provincia provincia
+	Municipio municipio
+	EntidadColectiva entColectiva
+	EntidadSingular entSingular
+	EntidadNucleo nucleo
+	DireccionRespuesta direccion
+}
+
+Entidad Provincia{
+	String codigo
+	String nombre
+}
+
+Entidad Municipio{
+	String codigo
+	String nombre
+}
+
+Entidad EntidadColectiva{
+	String codigo
+	String nombre
+}
+
+Entidad EntidadSingular{
+	String codigo
+	String nombre
+}
+
+Entidad EntidadNucleo{
+	String codigo
+	String nombre
+}
+
+Entidad DireccionRespuesta{
+	Via via
+	Numero numero
+	NumeroSuperior numeroSuperior
+	String bloque
+	String codigoPostal
+	String escalera
+	String hmt
+	String kmt
+	String planta
+	String portal
+	String puerta
+}
+
+Entidad Via{
+	String codigo
+	String nombre
+	String tipo
+}
+
+Entidad Numero{
+	String calificador
+	String valor
+}
+
+Entidad NumeroSuperior{
+	String calificador
+	String valor
+}
+
+Entidad DatosTitularRespuesta{
+	String identificador
+	String numeroSoporte
+	String nombre
+	String apellido1
+	String apellido2
+	String nacionalidad
+	String nombrePadre
+	String nombreMadre
+	String fechacaducidad
+	Sexo sexo
+	DatosNacimiento datosNacimiento
+	DatosDireccion datosDireccion
+}
+
+Entidad Sexo {
+	String nombre
+	String valor
+}
+
+Entidad DatosNacimiento{
+	String fecha
+	String localidad
+	String provincia
+}
+
+Entidad DatosDireccion {
+	String localidad
+	String provincia
+	String datosVia
+}

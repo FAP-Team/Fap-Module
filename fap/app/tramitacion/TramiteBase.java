@@ -287,6 +287,7 @@ public abstract class TramiteBase {
 		if (!Messages.hasErrors()){
 			if (!registro.fasesRegistro.registro && registro.fasesRegistro.firmada) {
 				try {
+					play.Logger.info("Iniciando el proceso de registro de la solicitud: "+this.solicitud.id);
 					tx.begin();
 					//Registra la solicitud
 					JustificanteRegistro justificante = registroService.registrarEntrada(this.solicitud.solicitante, registro.oficial, this.solicitud.expedientePlatino, null);
@@ -343,11 +344,13 @@ public abstract class TramiteBase {
 			
 			//Clasifica los documentos en el Gestor Documental
 			if (!registro.fasesRegistro.clasificarAed && registro.fasesRegistro.registro) {
+				play.Logger.info("Iniciando el proceso de clasificación de los documentos de la solicitud: "+this.solicitud.id);
 				//Clasifica los documentos sin registro
 				tx.begin();
 				List<Documento> documentos = new ArrayList<Documento>();
 				documentos.add(registro.justificante);
 				try {
+					play.Logger.info("Clasificando documentos sin registro de la solicitud: "+this.solicitud.id);
 					gestorDocumentalService.clasificarDocumentos(this.solicitud, documentos);
 				} catch (GestorDocumentalServiceException e){
 					play.Logger.fatal("No se clasificaron algunos documentos sin registro: "+e.getMessage());
@@ -357,6 +360,7 @@ public abstract class TramiteBase {
 	
 				if (!Messages.hasErrors()){
 					//Clasifica los documentos con registro de entrada
+					play.Logger.info("Clasificando documentos con registro de la solicitud: "+this.solicitud.id);
 					List<Documento> documentosRegistrados = new ArrayList<Documento>();
 					documentosRegistrados.addAll(this.getDocumentos());
 					documentosRegistrados.add(registro.oficial);
@@ -390,7 +394,7 @@ public abstract class TramiteBase {
 				
 				
 				// Creamos el nuevo tercero, si no existe
-				if ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty())) {
+				if ((FapProperties.getBoolean("fap.platino.tercero.activa")) && ((solicitud.solicitante.uriTerceros == null) || (solicitud.solicitante.uriTerceros.isEmpty()))) {
 					try {
 						String tipoNumeroIdentificacion;
 						if (solicitud.solicitante.isPersonaFisica()){

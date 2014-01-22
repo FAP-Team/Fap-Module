@@ -128,13 +128,13 @@
 		
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
 		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Línea', campo:'estado', expandir:true /}
 		
 #{/fap.tabla}
 
 				#{form play.mvc.Router.reverse('EditarResolucionController.prepararResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"prepararResolucion"}
 					
-			#{fap.boton id:'btnPrepararResolucion', titulo:'Preparar Resolución' /}
+			#{fap.boton id:'btnPrepararResolucion', titulo:'Preparar Resolución', waitPopup:true /}
 		
 				#{/form}
 			
@@ -309,6 +309,12 @@
 			
 			#{/fap.grupo}
 		
+			#{fap.grupo permiso:'verDocumentoResolucion', titulo:'Documento de Resolución'}
+				
+			#{fap.enlace estilo:'boton', target:'_blank', titulo:'Resolución', url:resolucionFAP.registro.oficial.urlDescargaFirmado /}
+		
+			#{/fap.grupo}
+		
 			#{fap.grupo mostrarSi:(properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios")==true), permiso:'publicarResolucion', titulo:'Publicar la Resolución en el tablón de Anuncios'}
 				
 				#{form play.mvc.Router.reverse('EditarResolucionController.publicacionResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"publicacionResolucion"}
@@ -337,8 +343,6 @@
 					
 			#{fap.grupo titulo:'Copia de la Resolución a los expedientes afectados'}
 				
-			#{fap.enlace estilo:'boton', target:'_blank', titulo:'Resolución', url:resolucionFAP.registro.oficial.urlDescargaFirmado /}
-		
 			#{fap.boton id:'btnCopiaExpediente', titulo:'Copiar', waitPopup:true /}
 		
 			#{/fap.grupo}
@@ -389,14 +393,14 @@
      campo:'ResolucionFAP.lineasResolucion', 
      id:'lineasResolucion', 
      idEntidad:'idLineaResolucionFAP', 
+     popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
      titulo:'Lineas Resolución', 
+     urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@EditarResolucionController.tablalineasResolucion(idResolucionFAP)
 }
 	
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Id', campo:'id', expandir:true /}
-		
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'solicitud.expedienteAed.idAed', expandir:true /}
 		
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Solicitud', campo:'solicitud.estado', expandir:true /}
@@ -405,7 +409,7 @@
 		
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'solicitud.solicitante.nombreCompleto', expandir:true /}
 		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado Línea', campo:'estado', expandir:true /}
 		
 	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Oficio de remisión', campo:'registro.oficial.enlaceDescargaFirmado', expandir:true /}
 		

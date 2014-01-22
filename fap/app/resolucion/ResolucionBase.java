@@ -69,7 +69,9 @@ public class ResolucionBase {
 	private final static String HEADER_BAREMACION_INDIVIDUAL_REPORT = "reports/header.html";
 	private final static String BODY_BAREMACION_INDIVIDUAL_REPORT = "reports/resolucion/criteriosResolucion.html";
 	private final static String FOOTER_BAREMACION_INDIVIDUAL_REPORT = "reports/footer-borrador.html";
+	private final static String FOOTER_REPORT_JUSTIFICANTE_REINTEGRO = "reports/notificacion/footerJustificanteReintegro.html";
 	private final static String BODY_REPORT_OFICIO_REMISION = "reports/notificacion/notificacionBodyOficioRemision.html";
+	private final static String BODY_REPORT_OFICIO_JUSTIFICANTE_REINTEGRO = "reports/notificacion/notificacionBodyOficioJustificanteReintegro.html";
 	private final static String TIPO_RESOLUCION_PROVISIONAL = FapProperties.get("fap.aed.tiposdocumentos.resolucion.provisional");
 	private final static String TIPO_RESOLUCION_DEFINITIVA = FapProperties.get("fap.aed.tiposdocumentos.resolucion.definitiva");
 	public ResolucionFAP resolucion;
@@ -81,6 +83,10 @@ public class ResolucionBase {
 	public static String getBodyReportOficioRemision() {
 		return ResolucionBase.BODY_REPORT_OFICIO_REMISION;
 	}
+	;
+	public static String getBodyReportOficioJustificanteReintegro() {
+		return BODY_REPORT_OFICIO_JUSTIFICANTE_REINTEGRO;
+	}
 	
 	public static String getHeaderReport() {
 		return ResolucionBase.HEADER_REPORT;
@@ -88,6 +94,10 @@ public class ResolucionBase {
 	
 	public static String getFooterReport() {
 		return ResolucionBase.FOOTER_REPORT;
+	}
+	
+	public static String getFooterReportJustificanteReintegro() {
+		return ResolucionBase.FOOTER_REPORT_JUSTIFICANTE_REINTEGRO;
 	}
 	
 	public String getBodyReport() {
@@ -499,7 +509,7 @@ public class ResolucionBase {
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
 					
-				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+				//NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			}
 		}
 		
@@ -1090,11 +1100,17 @@ public class ResolucionBase {
 		play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", this.resolucion);
 		File report = null;
 		try {
-			report = new Report(getBodyReportOficioRemision())
-								.header(getHeaderReport())
-								.footer(getFooterReport())
-								.renderTmpFile(linea.solicitud, resolucion);
-			
+			if (this.resolucion.resolucionReintegro){
+				report = new Report(getBodyReportOficioJustificanteReintegro())
+						.header(getHeaderReport())
+						.footer(getFooterReportJustificanteReintegro())
+						.renderTmpFile(linea.solicitud, resolucion);
+			} else {
+				report = new Report(getBodyReportOficioRemision())
+						.header(getHeaderReport())
+						.footer(getFooterReport())
+						.renderTmpFile(linea.solicitud, resolucion);
+			}
 			linea.registro = new Registro();
 			linea.registro.oficial.descripcion = "Oficio de remisión";
 			linea.registro.oficial.tipo = getTipoDocumentoOficioRemision();

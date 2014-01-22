@@ -35,6 +35,8 @@ Entidad Solicitud extends SolicitudGenerica {
 	OneToMany FacturasFAP facturas
 	
 	PruebaConversion pruebaConversion
+	
+	OneToMany Registro registros
 }
 
 Entidad FirmaEnServidor {

@@ -3,26 +3,33 @@ package platino;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 
 import config.InjectorConfig;
 
 import messages.Messages;
+import messages.Messages.MessageType;
 import models.Documento;
 import models.Firmante;
+import models.Firmantes;
 import models.Registro;
 import models.RepresentantePersonaJuridica;
 import models.Solicitante;
 import models.SolicitudGenerica;
 import play.modules.guice.InjectSupport;
 import play.mvc.Controller;
+import play.mvc.Router;
+import play.mvc.Util;
 import properties.FapProperties;
 import reports.Report;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.RegistroService;
+import utils.AedUtils;
 
 @InjectSupport
 public class FirmaUtils {
@@ -62,6 +69,8 @@ public class FirmaUtils {
 			Messages.ok("El documento se firmó correctamente");
 			
 			if(hanFirmadoTodos(listaFirmantes)){
+				documento.firmado = true;
+				documento.save();
 				Messages.ok("La solicitud está preparada para el registro");
 			}
 		}
@@ -160,5 +169,48 @@ public class FirmaUtils {
 		return multiple;
 	}
 	
+	// --------------------------------------------------------------------------------
+	// Métodos para firma de múltiples documentos
+	// --------------------------------------------------------------------------------
+
+	public static String obtenerUrlDocumento(Long idDocumento) {
+		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+		if (documento != null) {
+			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri);
+			String url = AedUtils.crearFullUrl(documento.uri);
+			if (properties.FapProperties.get("fap.proxy.preserve.host").equals("off")) {
+				play.Logger.info("change url from: <"+url+"> -> <"+AedUtils.crearExternalFullUrl(documento.uri)+">");
+				url = AedUtils.crearExternalFullUrl(documento.uri);
+			}
+			return url;
+		}
+		play.Logger.info("Error al obtener el documento "+idDocumento);
+		return null;
+	}
+
+	public static void firmarDocumento(Documento documento, List<Firmante> listaFirmantes, String firma, String valorDocumentofirmanteSolicitado){
+		firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
+		
+		if (documento == null) {
+			Messages.error("No existe ningún documento para firmar");
+			Messages.keep();
+			return;			
+		}
+		if (firma == null) {
+			Messages.error("La firma es null");
+			return;
+		}
+		
+		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
+		
+		if (!Messages.hasMessages()) {
+			if(hanFirmadoTodos(listaFirmantes)){
+				documento.firmado = true;
+				documento.save();
+			}
+		}
+		
+		Messages.keep();	
+	}
 	
 }

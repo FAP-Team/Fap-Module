@@ -21,7 +21,7 @@ public class TramiteDesistimiento extends TramiteBase {
 	private final static String HEADER_REPORT = "reports/header.html";
 	private final static String FOOTER_REPORT = "reports/footer-borrador.html";
 	private final static String MAIL = FapProperties.get("fap.tramitacion.desistimiento.identificadoremail");
-	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroDesistimientos");
+	private final static String JUSTIFICANTE_REGISTRO = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroDesistimiento");
 	private final static String PREFIJO_JUSTIFICANTE_PDF = FapProperties.get("fap.tramitacion.prefijojustificantepdf.solicitud");
 	
 	public TramiteDesistimiento(SolicitudGenerica solicitud) {

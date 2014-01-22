@@ -1,0 +1,726 @@
+*{
+	Firma de múltiples documentos
+	================================================================================
+	Algunos argumentos
+		- idContainer: contiene el string del parámetro id de la entidad de la página o popup. Ejemplo: "idSolicitud".
+		- nameContainer: contiene el nombre de la página o popup.
+}*
+
+%{
+
+	// ---------- ---------- ---------- ---------- TABLA ---------- ---------- ---------- ----------
+	
+	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMultiple, "urlFirmaMultiple");
+	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
+	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
+	String tipoContainer  = com.google.common.base.Preconditions.checkNotNull(_tipoContainer, "tipoContainer");
+
+	//El ancho es siempre del 100%
+	String alto  = _alto  ?: "350";
+	if (tipoContainer == "popup"){
+		alto  = _alto  ?: "250";
+	}
+	
+	String titulo = _titulo ?: play.i18n.Messages.get(campo);
+	
+	def obj = _obj ?: _caller.get(campo.split("\\.")[0]);
+	
+	def urlRedirigir = _urlRedirigir ?: "";
+	
+	// Para que lo de la validacion y el guardado de la pagina actual al abrir la pagina de la tabla no funcione, siga comportandose como antes de la versión 2.1
+	def saveBefore = properties.FapProperties.getBoolean("fap.tablas.validacion.antesRedirigirPaginas") ?: false;
+			
+	def recargarPagina = _recargarPagina;
+
+	String popupLeer = _popupLeer;
+	String urlLeer = _urlLeer;
+	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
+
+	def modelName = id + "_model";
+	Set<String> campos = new HashSet<String>();
+	campos.add("id"); //El campo id siempre tiene que estar
+	
+	List<String> columnas = new ArrayList<String>();
+	//Campos en el contexto para que las columnas los rellenen
+	play.templates.TagContext.current().data.put("campos", campos);
+	play.templates.TagContext.current().data.put("columnas", columnas);
+	
+	String mUrlBeforeOpenPageTable = _urlBeforeOpenPageTable ?: "";
+	
+	if (mUrlBeforeOpenPageTable.isEmpty())
+		saveBefore = false;
+	
+	def saveEntity = _saveEntity ?: false;
+	
+	def idCampoUri = _idCampoUri ?: "";
+	
+	def submitPage = _submitPage ?: false;
+	
+	def controllerNameAndPackage = actionDef.action.substring(0,actionDef.action.lastIndexOf('.'));
+	def primeraAccionMock = "editar";
+	
+	try {
+		String sClazz = 'controllers.'+controllerNameAndPackage;
+		java.lang.Class clazz = java.lang.Class.forName(sClazz);
+		java.lang.reflect.Method m1 = clazz.getMethod("getNamePermiso", null);
+		String namePermisoPagina = m1.invoke(object, null);
+		if (namePermisoPagina != null)
+			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
+	} catch (java.lang.Exception e) {
+		//e.printStackTrace();
+		play.Logger.error("firmaMultiple.html e-> "+e.getMessage());
+	} catch (java.lang.Throwable t) {
+		play.Logger.error("firmaMultiple.html t-> "+t.getMessage());
+	}
+
+	// ---------- ---------- ---------- ---------- FIRMA ---------- ---------- ---------- ----------
+
+	def urlObtenerUrlDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerUrlDocumento'+id);
+	def urlObtenerFirmadoDocumento = play.mvc.Router.reverse(controllerNameAndPackage+'.obtenerFirmadoDocumento'+id);
+	def urlFirmar = play.mvc.Router.reverse(controllerNameAndPackage+'.firmar'+id);
+	def id_row = id + "_row";
+	def label = "Selecciona un certificado"
+	def ayuda = _ayuda
+	def showRow   = _noRow != null? !_noRow : true
+	def requerido = false;
+	if(_requerido != null) 
+		requerido = _requerido
+	
+	String style = '';
+		def stackDisabled = tags.TagMapStack.top("editable")
+	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
+	
+	def id_cert = id.replace('-', '');
+	
+%}
+
+	#{doBody /}
+	
+	<div id="${id}_GFatal">
+		<div id="${id}_Fatal" class="alert alert-error">
+		</div>
+	</div>
+	
+	<div id="${id}_GError">
+		<div id="${id}_Error" class="alert alert-error">
+		</div>
+	</div>
+	
+	<div id="${id}_GWarning">
+		<div id="${id}_Warning" class="alert alert-warning">
+		</div>
+	</div>
+	
+	<div id="${id}_GOk">
+		<div id="${id}_Ok" class="alert alert-success">
+		</div>
+	</div>
+	
+	<div id="${id}_GInfo">
+		<div id="${id}_Info" class="alert alert-info">
+		</div>
+	</div>
+	
+	<div id="${id}" class="tabla"></div>
+	
+
+	<script>
+	
+		var mensajes = new Mensajes("#cert-msg");
+	
+		// Ocultamos primero todos los DIV de mensajes de error, y despues
+		// dependiendo de lo que nos llegue por Ajax, mostraremos los pertinentes
+		function ocultarMensajes${id}(){
+			document.getElementById("${id}_Fatal").style.display = "none";
+			document.getElementById("${id}_Error").style.display = "none";
+			document.getElementById("${id}_Warning").style.display = "none";
+			document.getElementById("${id}_Ok").style.display = "none";
+			document.getElementById("${id}_Info").style.display = "none";
+		}
+		
+		ocultarMensajes${id}();
+		
+		Ext.onReady(function() {
+		
+			if (!Ext.ModelManager.isRegistered('${modelName}')){
+				Ext.define('${modelName}',{
+        			extend: 'Ext.data.Model',
+        			idProperty: 'objeto.id',
+        			fields:[
+        				#{list campos, as:'columna_campo'}
+			    			{
+			    				%{def columna_campo_split = columna_campo.split("\\.");
+			    				  columna_campo_split[0] = columna_campo_split[0].replaceAll("\\[","").replaceAll("\\]","");
+			    				}%
+								name : 'columna_campo',
+			    			    mapping : 'objeto.${columna_campo_split[0]}'
+			    			    #{if columna_campo_split.length > 1}
+			    			    ,
+			    			    convert : function(${columna_campo_split[0]}, record){
+			    			    	try {
+			    			    		if (${columna_campo} == null)
+			    			    			return "";
+										return ${columna_campo};
+			    			    	}catch(e){
+			    			    		return "";
+			    			    	}
+			    			    }
+			    			    #{/if}
+			    			},
+			    		#{/list}
+			    		{name: 'permisoLeer', mapping: 'permisoLeer'}
+					]
+		    	});
+			}
+			
+			var store${id} = Ext.create('Ext.data.Store', {
+				autoLoad: true,
+				model: '${modelName}',
+		        data: [],
+		        proxy: {
+		        	type: 'memory',
+		        	reader: {
+		                type: 'json',
+		                totalRecords: '@total'
+		            }
+		        }
+		    });
+			
+			var error=[];
+			var warning=[];
+			var ok=[];
+			var fatal=[];
+			var info=[];
+			
+			// Funciones que crean los mensajes a partir de los contenedores G{tipoMensaje}
+			// Por si el usuario lo ha cerrado en tiempo de ejecución
+			function creaMensaje${id}(tipo, clase){
+				var id = "${id}_"+tipo;
+				var content = '<div id="'+id+'" class="'+clase+'"> </div>';
+				$('#${id}_G'+tipo).html(content);
+			}
+			function crearMensajes${id}(){
+				if (!document.getElementById("${id}_Fatal"))
+					creaMensaje${id}("Fatal", "alert alert-error");
+				if (!document.getElementById("${id}_Error"))
+					creaMensaje${id}("Error", "alert alert-error");
+				if (!document.getElementById("${id}_Warning"))
+					creaMensaje${id}("Warning", "alert alert-warning");
+				if (!document.getElementById("${id}_Ok"))
+					creaMensaje${id}("Ok", "alert alert-success");
+				if (!document.getElementById("${id}_Info"))
+					creaMensaje${id}("Info", "alert alert-info");
+			}
+			
+			function resetMessages${id}(){
+				error=[];
+				warning=[];
+				ok=[];
+				fatal=[];
+				info=[];
+			}
+			
+			function writeMessage${id}(name, data){
+				if (data.length > 0){
+					document.getElementById("${id}_"+name).style.display = "";
+			    	var content = '<a class="close" data-dismiss="alert" href="#">x</a>';
+			    	if (name == "Error" || name == "Fatal"){
+			       		content += '<ul>';
+			       		for(i=0; i < data.length; i++){
+			       			content += '<li>'+data[i]+'</li>';
+			       		}
+						content += '</ul>';
+			       	} else{
+			       		for(i=0; i < data.length; i++){
+			       			content += '<p>'+data[i]+'</p>';
+			       		}
+			       	}
+			       	$('#${id}_'+name).html(content);
+			       	return true;
+			   }
+			   return false;
+			}
+				
+			function writeAllMessages${id}(){
+				// Si hay un mensaje fatal, no se muestran el resto de mensajes
+				if (writeMessage${id}('Fatal', fatal))
+					return;
+				writeMessage${id}('Error', error);
+			   	writeMessage${id}('Warning', warning);
+			   	writeMessage${id}('Ok', ok);
+			   	writeMessage${id}('Info', info);
+			}
+
+			sm${id} = new Ext.selection.CheckboxModel({
+				checkOnly : true,
+				listeners : {
+					select: function(sm, record, index, eOpts) {
+						grid.addSelected(record);
+					},
+					deselect: function(sm, record, index, eOpts) {
+						grid.delSelected(record);
+					}
+				}
+			});
+
+			function loadMessages${id}(data){
+				resetMessages${id}();
+				// Para recuperar los mensajes, si es que hay
+				if (data.obj.mensajes.error)
+					error = data.obj.mensajes.error;
+				if (data.obj.mensajes.warning)
+					warning = data.obj.mensajes.warning;
+				if (data.obj.mensajes.fatal)
+					fatal = data.obj.mensajes.fatal;
+				if (data.obj.mensajes.ok)
+					ok = data.obj.mensajes.ok;
+				if (data.obj.mensajes.info)
+					info = data.obj.mensajes.info;
+			}
+			
+			function ajax2Data (data){
+				var filas=[];
+				var aux;
+				for (var i=0; i<data.length; i++){
+					aux = {};
+				 	#{list campos, as:'columna_campo'}
+				 	try { // Por si el objeto intermedio es null
+				 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
+				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
+				 		} else {
+				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+				 		}
+				 	} catch (e) {
+				 	}
+				 	#{/list}
+				 	aux['permisoLeer']=data[i].permisoLeer;
+				 	
+				 	filas[i] = aux;
+				}
+				return filas;				
+			}
+
+			var urlFirmaMultiple = "${actionDef.url.raw()}";
+			
+
+			function peticionJSON${id}(){
+				crearMensajes${id}();
+				ocultarMensajes${id}();
+				$.ajax(urlFirmaMultiple).done(function (data){
+					// Para los mensajes
+				 	loadMessages${id}(data);
+		        	writeAllMessages${id}(); 
+		        	// Para las filas de la tabla
+				 	store${id}.loadData(ajax2Data(data.obj.rows));
+				 	
+				 	// Quitamos la mask loading
+				 	grid.body.unmask();
+				});
+		    }
+		    
+		    // Para cuando se entra a la pagina
+		    peticionJSON${id}();
+
+			#{if urlLeer}
+			
+		    var boton_leer = new Ext.Button({
+				text: '${nombreBotonVer}',
+	    		icon: '@{'/public/images/table-leer.png'}',
+	    		disabled:true,
+	    		handler : function(){
+	    			var selected = grid.getSelectionModel().getSelection();
+	    			if (selected.length == 1) {
+			    		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+		    			#{if popupLeer}
+		    				popup_open(
+		    					"${popupLeer}_popup",
+		    					replaceId("${urlLeer}", "_${_idEntidad}_", selected_id)
+							)
+						#{/if}
+				   		#{else}
+							#{if saveBefore && saveEntity && !"leer".equals(primeraAccionMock)}
+		    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+		    					alert("${urlLeer} \n\n "+urlBeforeOpenPageTableLeer);
+	    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
+							#{/if}
+							#{else}
+								window.location.href = replaceId("${urlLeer}", "_${_idEntidad}_", selected_id);
+							#{/else}
+						#{/else}
+		    		} else {
+		    			mensajes.error('Debe seleccionar sólo un documento.');
+					}
+	    		}
+		    });
+
+		    #{/if}
+
+// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+// FIRMA
+// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+		    var boton_firmar = new Ext.Button({
+		    	text: "Firmar",
+		    	disabled:true,
+		    	handler : function(){
+		    		popupWait_open();
+					var i;
+		    		var selected = sm${id}.getSelection();
+		    		var idDocumento;
+		    		var firmadoDocumento;
+		    		var urlDocumento;
+		    		var firma;
+		    		var resultado;
+		    		mensajes.clear();
+		    		if (selected.length == 0) {
+		    			mensajes.error('No hay documentos seleccionados para firmar.');
+		    		} else {
+			    		for (i in selected) {
+			    			resultado = "false";
+							firma = null;
+			    			idDocumento = selected[i].data.id;
+			    			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
+			    			if ((idDocumento != null) && (firmadoDocumento != null)) {
+			    				//j = parseInt(i) + 1;
+				    			if (firmadoDocumento == "false") {
+				    				//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
+				    				urlDocumento = obtenerUrlDocumento(idDocumento);
+				    				if (urlDocumento != null) {
+										firma = Firma.firmarDocumento('#${id_cert}certificado', urlDocumento, "", {mensajes: mensajes});
+										if (firma != null) {
+											//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
+											resultado = firmar(idDocumento, firma);
+											if (resultado == "true") {
+												//alert("Se ha firmado el documento: "+j+" | id: "+idDocumento);
+											} else {
+												//alert("No se ha firmado el documento: "+j+" | id: "+idDocumento);
+												break;
+											}
+										} else {
+											//alert("No se ha obtenido la firma del documento "+j+" | id: "+idDocumento);
+											break;
+										}
+									} else {
+										//alert("Error al obtener urlDocumento");
+										break;
+									}
+								} else if (firmadoDocumento == "true") {
+									resultado = "true";
+									//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
+								}
+							} else {
+								//alert("Error al obtener idDocumento o firmadoDocumento");
+								break;
+							}
+			    		} // for
+						i = parseInt(i) + 1;
+			    		if ((i == selected.length) && (resultado == "true")) {
+			    			mensajes.ok('Se han firmado todos los documentos seleccionados.');
+			    		} else {
+			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
+		    			}
+		    		}
+		    		if(grid.getSelectionModel().hasSelection()) {
+		    			grid.getSelectionModel().deselectAll();
+		    		}
+		    		// Se actualiza contenido de la tabla
+		    		popupWait_close();
+					grid.body.mask("Cargando....");
+		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+		    		peticionJSON${id}();
+			   	}
+		    });
+
+// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+// ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+		    var boton_actualizar = new Ext.Button({
+		    	text: 'Actualizar',
+		    	handler : function(){
+		    		#{if recargarPagina}
+						window.location.reload();
+					#{/if}
+					#{else}
+		    			grid.body.mask("Cargando....");
+		    			grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+		    			peticionJSON${id}();
+					#{/else}
+		    	}
+		    });
+
+		   	var grid = new Ext.grid.GridPanel({
+		   		id: '${id}GridID',
+				selectedRecords: [],
+				store : store${id},
+				selModel: sm${id},
+				columns : #{verbatim}${columnas}#{/verbatim},
+				renderTo: '${id}',
+				id: '${id}-grid',
+				height: ${alto},
+				title: '${titulo}',
+				addSelected: function(newRecordsToSelect) {
+			        if (!this.rendered || Ext.isEmpty(this.el))
+			            return;
+			        
+			        if (!Ext.isEmpty(newRecordsToSelect) && !Ext.Array.contains(this.selectedRecords, newRecordsToSelect))
+			            this.selectedRecords.push(newRecordsToSelect);
+
+			        this.getView().saveScrollState();
+			        boton_firmar.setDisabled(false);
+			    },
+			    delSelected: function(recordToDelete) {
+			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
+			    },
+			    refreshSelection: function() {
+			        if (0 >= this.selectedRecords.length) {
+			            return;
+			        }
+
+				    this.getSelectionModel().select(this.selectedRecords, true);
+			    },
+				dockedItems: [
+					{
+						itemId: 'barraInferior',
+                		xtype: 'toolbar',
+        				dock: 'bottom',
+        				items: [
+  							 {
+  								itemId: 'searchbox',
+                				width: 300,
+                				fieldLabel: 'Buscar',
+                				labelWidth: 50,
+                				xtype: 'searchfield',
+                				store: store${id}
+            				},
+			            '->',
+			           	#{if urlLeer}
+				        	boton_leer,
+				        #{/if}
+                        boton_firmar,
+			            boton_actualizar
+        				]
+    				}
+				],
+				viewConfig: {
+					getRowClass: function(record, index, rowParams, ds) {
+					}
+				},
+				listeners : {
+					render : function(grid){      
+       			    	grid.body.mask('Cargando...');
+       			    	this.refreshSelection();
+       				},
+       				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
+       				itemmouseenter: function(grid) {
+       					console.log('Mouse over panel');
+       					this.refreshSelection();
+       					this.getView().focus();
+       				}
+				}
+
+			});
+		   	
+
+		   	
+		    // Creamos el tooltip de la celda
+		    grid.getView().on('render', function(gridView) {
+            	gridView.tip = Ext.create('Ext.tip.ToolTip', {
+                	// The overall target element.
+                	target: gridView.el,
+                	// Each grid row causes its own seperate show and hide.
+                	delegate: gridView.cellSelector,
+                	// Moving within the row should not hide the tip.
+                	trackMouse: true,
+                	// Render immediately so that tip.body can be referenced prior to the first show.
+                	renderTo: Ext.getBody(),
+                	listeners: {
+                    	// Change content dynamically depending on which element triggered the show.
+                    	beforeshow: function updateTipBody(tip) {
+                        	gridColums = gridView.getGridColumns();
+                        	column = gridColums[tip.triggerElement.cellIndex];
+                            record = gridView.getRecord(tip.triggerElement.parentNode);
+                            myToolTipText = "<b>"+column.text+": </b>";
+                            if (record.get(column.dataIndex) != null)
+                            	myToolTipText = myToolTipText + record.get(column.dataIndex);;
+                            tip.update(myToolTipText);
+                    	}
+                	}
+            	})
+            });
+		    
+		   	// Si queremos crear el tooltip por fila (no por celda)
+		    /* 		   	grid.getView().on('render', function(view) {
+		    		   	    view.tip = Ext.create('Ext.tip.ToolTip', {
+		    		   	        // The overall target element.
+		    		   	        target: view.el,
+		    		   	        // Each grid row causes its own seperate show and hide.
+		    		   	        delegate: view.itemSelector,
+		    		   	        // Moving within the row should not hide the tip.
+		    		   	        trackMouse: true,
+		    		   	        // Render immediately so that tip.body can be referenced prior to the first show.
+		    		   	        renderTo: Ext.getBody(),
+		    		   	        listeners: {
+		    		   	            // Change content dynamically depending on which element triggered the show.
+		    		   	            beforeshow: function updateTipBody(tip) {
+		    		   	                tip.update('Over company "' + view.getRecord(tip.triggerElement).get('estadoUsuario') + '"');
+		    		   	            }
+		    		   	        }
+		    		   	    });
+		    		   	}); */
+	
+		    store${id}.addListener("datachanged", function(){
+		    	store${id}.sync();
+		    });
+		    
+		    store${id}.addListener("load", function(){
+				grid.getComponent('barraInferior').getComponent('searchbox').onTrigger2Click();
+		    });
+		    
+		    grid.addListener("selectionchange", function(){
+		    	if (grid.getSelectionModel().hasSelection()){
+		    		var registro = store${id}.getAt(store${id}.find("id", grid.getSelectionModel().getSelection()[0].data.id));
+		    		#{if urlLeer}
+		    		if (grid.getSelectionModel().getSelection().length == 1) {
+		    			boton_leer.setDisabled(!registro.get("permisoLeer"));
+		    		} else {
+		    			boton_leer.setDisabled(true);
+		    		}
+			    	#{/if}
+			    	boton_firmar.setDisabled(false);
+		    	}
+		    	else{
+		    		#{if urlLeer}
+		    		boton_leer.setDisabled(true);
+			    	#{/if}
+			    	boton_firmar.setDisabled(true);
+		    	}
+		    });
+
+			function reload(){
+				peticionJSON${id}();
+				#{if recargarPagina}
+					window.location.reload();
+				#{/if}
+			};
+			
+		   	$('#${id}').data('grid', grid);
+
+		});
+		
+		Ext.onReady(function() {
+			var tableName = ${id};
+			var ancho = document.body.clientWidth;
+			if (ancho < 850) {
+				// Ocultamos el campo de búsqueda
+				var campoBusqueda = tableName.getElementsByClassName('x-field x-form-item x-field-default-toolbar x-box-item x-toolbar-item')[0].id;
+				$("#"+campoBusqueda).hide();
+				
+				// Hay dos clases de botones. Obtenemos los botones agrupados por
+				// clases y los rodamos todos a la izquierda.
+				
+				var botonesTipoA = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item');
+				var i = 0;
+				var idBtn = "";
+				while (i < botonesTipoA.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-noicon x-btn-noicon x-btn-default-toolbar-small-noicon x-box-item x-toolbar-item')[i].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					i++;
+				}
+				var botonesTipoB = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item');
+				var j = 0;
+				idBtn = "";
+				while (j < botonesTipoB.length) {
+					idBtn = tableName.getElementsByClassName('x-btn x-btn-default-toolbar-small x-icon-text-left x-btn-icon-text-left x-btn-default-toolbar-small-icon-text-left x-item-disabled x-disabled x-btn-disabled x-btn-default-toolbar-small-disabled x-box-item x-toolbar-item')[j].id;
+					document.getElementById(idBtn).style.marginLeft = "-300px";
+					j++;
+				}
+			}
+		});
+
+	function obtenerUrlDocumento(id) {
+		var url;
+		$.ajax({
+			type: "POST",
+			url: "${urlObtenerUrlDocumento}",
+				data: {
+					idDocumento: id
+				},
+				async: false,
+				success: function(data) {
+					url = data;
+				}
+		});
+		return url;
+	}
+
+	function obtenerFirmadoDocumento(id) {
+		var firmado;
+		$.ajax({
+			type: "POST",
+			url: "${urlObtenerFirmadoDocumento}",
+				data: {
+					idDocumento: id
+				},
+				async: false,
+				success: function(data) {
+					firmado = data;
+				}
+		});
+		return firmado;
+	}
+
+	function firmar(id, firma) {
+		var resultado;
+		$.ajax({
+			type: "POST",
+			url: "${urlFirmar}",
+				data: {
+					idDocumento: id,
+					firma: firma
+				},
+				async: false,
+				success: function(data) {
+					resultado = data;
+				}
+		});
+		return resultado;
+	}
+
+</script>
+
+#{set 'moreScripts'}
+	#{fap.platinojs /}
+#{/set}
+
+#{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
+<select id="${id_cert}certificado" name="certificado" class="certificado">
+	<option disabled="disabled">--Certificados--</option>
+</select>
+#{/fap.formrow}
+
+<div id="cert-msg"></div>
+
+<script>
+	$(function(){
+		var form = $('#${id}').parents('form');
+		Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
+	});
+
+</script>
+	
+
+%{
+	// Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 
+	// Si no, mostramos un mensaje de aviso.
+	def servicesConfigured = controllers.RellenarMensajesController.servicesIsConfigured();
+	if(!servicesConfigured.isEmpty()) {
+}%
+   
+	<script type="text/javascript">
+		$('#infoServicios').append('<div class="span16"><span class="label label-important">¡Importante! No están disponibles los servicios: ${servicesConfigured}</span></div>');
+	</script>
+	
+%{ 
+	} 
+  
+}% 

@@ -48,6 +48,10 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
+import es.gobcan.platino.servicios.svd.Respuesta;
+import es.gobcan.platino.servicios.svd.RespuestaPdf;
 
 import messages.Messages;
 import models.*;
@@ -76,6 +80,7 @@ import properties.Properties;
 import services.BaremacionService;
 import services.FirmaService;
 import services.GestorDocumentalService;
+import services.MensajeServiceException;
 import services.NotificacionService;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
@@ -84,6 +89,8 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.VerificarDatosService;
+import services.VerificarDatosServiceException;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -211,6 +218,7 @@ public class Start extends Job {
 		
 		// Para mostrar información acerca de la inyección de los servicios
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		System.out.println("Tipo: "+gestorDocumentalService.getClass());
 		gestorDocumentalService.mostrarInfoInyeccion();
 		
 		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
@@ -246,6 +254,52 @@ public class Start extends Job {
 //		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 //		mensajeService.mostrarInfoInyeccion();
 		
+		//SERVICIO SVD comentado, se inyecta en VerificacionDatosSVDController. El resto de los comentarios son pruebas con el servicio de mensajería y SVD.
+		//Se eliminarán cuando estén resueltas las incidencias pendientes en la OTP
+		
+//		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
+//		verificarDatosService.mostrarInfoInyeccion();
+			
+
+		String uriRemesa = "";
+		try{
+			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
+		}
+		catch(Exception e){
+			System.out.println("Como que no tira esto");
+		};
+		
+		try{
+			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
+			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
+		}
+		catch(Exception e){
+			System.out.println("Como que no tira esto");
+		};
+		
+////		try{
+////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);
+////		}
+////		catch(Exception e){
+////			play.Logger.error("Algo está fallando", e.getMessage());
+////		};
+////		
+//		try{
+//			List<String> lista = new ArrayList<String>();
+//			lista.add("eleazar87@gmail.com");
+//			lista.add("alecabdia@gmail.com");
+//			lista.add("aletepe@gmail.com");
+//			lista.add("yurena.cabcas@gmail.com");
+//		//mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
+//		//mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
+//		//mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
+//		}
+//		catch (MensajeServiceException e){
+//			play.Logger.error("No se han podido mandar los correos el de fuera!!. Causa: " + e.getMessage());
+//		};
+//		
+//		
+
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){
         	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");

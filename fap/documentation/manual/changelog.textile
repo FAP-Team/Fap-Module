@@ -1,22 +1,72 @@
 h2. Changelog
 
-h3 Versión 2.3.2RC8
+
+h3. Versión 2.4RC3
+* Inclusi�n del servicio SVD
+
+* Regeneración librería de Resolución
+
+* Migración de los servicios de firma, registro y terceros de Platino a Platino 2.0
+
+
+* Añadida la Resolución de Justificacion de Reintegro.
+* Modificado el permiso de las Verificaciones, ya no dependen de la convocatoria.
+* Mejorado el volcado de información en el log.
+
+
+* Actualizada la documentación de firma múltiple.
+* Añadida la opción de ver detalles de documento firmado (firmaMultiple) 
+
+
+* Añadida la firma de múltiples documentos.
+* Añadidos diversos waitPopup en la parte de Resolución.
+* Corregido formato de valores monetarios de los conceptos económicos.
+
+
+* Añadida la Resolucion de justificación.
+* Modificado el permiso de las Verificaciones, ya no dependen del estado.
+* Añadido un mayor volcado de información en el log en el Registro.
+
+
+* Actualizada documentación.
+* Cambiado los permisos de resolución para admitir al rol revisor.
+* Se han modificado algunos permisos (firmarRegistrarAceptarRenunciar, firmarAceptarRenunciar, registrarAceptarRenunciar, firmarRegistrarAlegacion, firmarAlegacion y registrarAlegacion) que otorgan acceso teniendo en cuenta estos nuevos campos (para tener permiso la fecha actual debe ser menor a la fecha del campo)
+* Fixed minor bug en property que da la descripción de la notificación de los oficios de remisión
+* Fixed minor bug en filtro de tabla de notificaciones para no mostrar en estado "creada"
+* Modificaciones en envio de documentos de consulta al portaFirmas
+* Añadidas properties para indicar quien es la personaJuridica interesada en dicho envio.
+* Reestructurada la clasificacion de docs de consulta del portafirma. (Copia en expediente convocatoria).
+* Permitiendo actualizar informacion de notificaciones desde Administración.
+* FixeBug: Se permite mantener varias resoluciones a la vez, en varias pestañas del navegador sin que se solapen sus atributos.
+* Fixed minor bug: Eliminación de logs innecesarios
+* Añadiendo más informacion a los logs en la ejecución de los logs de notificación.
+* Modificada la condicion de entrada al job de documentos (se ejecuta a la 10 nuevamente)
+* Corregidos mensajes de error en los procesos de firma y registro de Alegación y Aceptación/Renuncia
+* Añadida alternativa de firma de oficios de remisión usando portafirma
+* Fixed tiny bug: corregido nombre de property en TramiteDesistimiento
+* Añadido waitPopup en algunos botones de resolución
+* Se han añadido los campos FechaFinDeAceptacion y FechaFinDeAlegacion a la SolicitudGenerica
+* Se ha creado la página DatosTramites, la cual permite modificar dichos campos
+
+h3. Versión 2.3.2RC8
+
 * Fixedbug en lectura de trámite de aportación AceptacionRenuncia.
 * Añadida recuperacion de errores en registro de AceptacionRenuncia.
 * Fixed bug varios.
 * Adicion de permiso a popup de documentacion de AceptacionRenuncia.
 * Fixed bug en redireccion de AceptacionRenuncia.
-* Añadidos multiples volcados de datos a los logs a la hroa de registrar de salida.
-* 
+* Añadidos multiples volcados de datos a los logs a la hora de registrar de salida.
 
-h3 Versión 2.3.2RC7
+h3. Versión 2.3.2RC7
+
 * Añadido plazo acceso y plazo respuesta al notificar.
 * Fixed bug "temblor" en los checkbox.
 * Aladido estado "oficioRemisionGenerado".
 * Fixed bug permisos en Alegacion y Aceptacion/Renuncia.
 * Se clasifican los documentos de consulta enviados al portafirmas en el expediente de la convocatoria.
 
-h3 Versión 2.3.2RC6
+h3. Versión 2.3.2RC6
+
 * Cálculo de los totales del popup de CEconomicos de instrucción
 * Modificada página de firma de la página de firma de oficio de remisión (quitar tabla interesados en firma).
 * Añadida propertie para mostrar o no el check de baremación en resolucion.
@@ -26,8 +76,8 @@ h3 Versión 2.3.2RC6
 * Añadidas properties para elegir trámite de documentacion en aportacion de documentacion de resolucion, alegació y aceptación/renuncia.
 * Añadido control de errores en notificacion de resolución.
 
+h3. Version 2.3.2RC5
 
-h3 Version 2.3.2RC5
 * Copia de resolución al expediente fuera de publicar resolucion.
 * PopupVer en firma de Oficios de remisión.
 * Cambios varios (titulos, wiki,..)
@@ -39,26 +89,31 @@ h3 Version 2.3.2RC5
 * Actualizada documentacion de resolucion.
 * Se permite subir documentos por uri (con comprobacion de existencia)
 
-h3 Versión 2.3.2RC3
+h3. Versión 2.3.2RC3
+
 * Fixed bug en tabla ceconomicos de fichaEvaluador
 * Añadido y mejorado método de personalizacion de comprobaciones al finalizar evaluación.
 * Mejora de logs: Muestran usuario y solicitud en la que se realizó la acción siempre que esté disponible.
 * Permitiendo varias resolucionSimpleEjecucion simultáneas.
 
-h3 Versión 2.3.2RC2
+h3. Versión 2.3.2RC2
+
 * Fixed minor bug en tabla ceconomicos de fichaEvaluador
 * Añadida tabla resumen en fichaEvaluador
 
-h3 Versión 2.3.2RC1
+h3. Versión 2.3.2RC1
+
 * Añadida la resolución en fase de ejecución.
 
-h3 Versión 2.3RC12
+h3. Versión 2.3RC12
+
 * Fixed bug en FichaEvaluadorController (Salen solo los ceconomicos manuales propios y los automáticos en otro color)
 * Fixed bug en almacenamiendo de documento de noAcceso.
 * Separado el job de notificaciones en dos (uno actualiza fechas y estado y otro los documentos).
 * Fixed bug en los códigos de exclusión.
 
 h3. Versión 2.3RC9
+
 * Fixed bug en modificaciones (copia de documentos a expediente AED)
 * Añadida tabla de recibos de modificación en página de verificacion (en caso de que existan)
 * Fixed minor bug en ActualizarServiciosWeb.

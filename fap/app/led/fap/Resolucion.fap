@@ -195,6 +195,10 @@ Entidad ResolucionFAP {
 	DateTime fechaTopeFirmaOficiosRemision
 	Agente hacePeticionPortafirmaOficiosRemision noConstruct
 	String destinatarioOficioRemisionPortafirma 
+	
+	Boolean resolucionReintegro default="false"
+	String textoResolucionReintegro length=1000
+	
 }
 
 Entidad SolicitudPortafirmaFAP {
@@ -235,7 +239,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -243,6 +247,7 @@ Formulario Principal {
 		}
 	}
 
+	// HTML modificado
 	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
 		Grupo titulo="Seleccionar expediente" permiso=seleccionarUnExpediente {
@@ -290,7 +295,7 @@ Formulario Principal {
 				Columna campo=LineaResolucionFAP.estado titulo="Estado Línea" expandir
 			}
 			Form prepararResolucion {
-				Boton  btnPrepararResolucion titulo="Preparar Resolución"
+				Boton  btnPrepararResolucion titulo="Preparar Resolución" waitPopup
 			}
 		}
 		
@@ -325,11 +330,15 @@ Formulario Principal {
 					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
+
 					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "(properties.FapProperties.get(\"fap.platino.portafirma.url\") != null)" {
 						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP titulo="Usuario LDAP" requerido
 						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.passwordLDAP titulo="Contraseña LDAP" password requerido
 					}
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
+
+					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
+
 				} 
 			}
 			
@@ -342,7 +351,7 @@ Formulario Principal {
 			
 			Grupo gEnviarFirmaDirectorPortafirma permiso=firmaDirector titulo="Firma del Director" {
 				Form firmaDirectorPortafirma {
-					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director"
+					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director" waitPopup
 				}
 			}
 			
@@ -362,7 +371,7 @@ Formulario Principal {
 			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
-      			Boton btnRegistrarResolucion titulo="Registrar Resolución"
+      			Boton btnRegistrarResolucion titulo="Registrar Resolución" waitPopup
     		}
 		}
 		
@@ -405,7 +414,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
 			
@@ -564,8 +573,15 @@ Formulario Principal {
 							Columna campo=LineaResolucionFAP.visibleGeneradoOficio titulo="Generado Oficio de Remisión" expandir
 						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
-						Boton botonGenerarOficioRemision titulo="Generar"
+						Grupo grupoJustificanteReintegro titulo="Resolución de Justificación de Reintegro"{
+							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolucion de justificacion con reintegro" alineadoAIzquierdas
+//							//Grupo textoJustificacion mostrarSiCheck justificacionReintegro=true{
+							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolucion de justificación de reintegro"
+//							//}
+						}
+						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
 					}
+					
 				}
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
 					Grupo grupoOficiosRemisionFirmaManual borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
@@ -599,7 +615,7 @@ Formulario Principal {
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
 								Combo selectJefeServicio campo=ResolucionFAP.destinatarioOficioRemisionPortafirma titulo="Destinatario Portafirma" requerido
 								Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirmaOficiosRemision titulo="Fecha tope firma" requerido
-								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar"
+								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}
 						Form formComprobarFirmasOficiosRemisionPortaFirma permiso=permisoComprobarFirmasOficiosRemisionPortaFirma {
@@ -608,7 +624,7 @@ Formulario Principal {
 					}
 					Grupo grupoRegistroOficiosRemision titulo="Registro" permiso=permisoOficiosRemisionFirmados {
 						Form formRegistrarOficiosRemision permiso=permisoOficiosRemisionFirmados {
-      						Boton botonRegistrarOficiosRemision titulo="Registrar Oficios de Remisión y justificantes"
+      						Boton botonRegistrarOficiosRemision titulo="Registrar de salida Oficios de Remisión" waitPopup
     					}
 					}
 				}
@@ -649,14 +665,14 @@ Formulario Principal {
 			Grupo titulo="Oficio de Remisión" mostrarSiCampo LineaResolucionFAP.generadoOficio="true" {
 				Texto campo=LineaResolucionFAP.registro.id titulo="Id"
 				Texto campo=LineaResolucionFAP.registro.oficial.descripcionVisible titulo="Descripción"
-				Enlace campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Obtener oficio de remisión no firmado" destino="_blank"
+				Enlace campo=LineaResolucionFAP.registro.oficial.urlDescarga titulo="Obtener oficio de remisión no firmado" destino="_blank"
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.firmadaVisible titulo="Firmado"
 				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.firmada = "true" {
-					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener oficio de remisión firmado" destino="_blank"
+					Enlace campo=LineaResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener oficio de remisión firmado" destino="_blank"
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.registroVisible titulo="Registrado"
 				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.registro = "true" {
-					Enlace campo=ResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
+					Enlace campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.clasificarAedVisible titulo="Clasificado"
 			}
@@ -805,18 +821,15 @@ Permiso permisoCopiaExpedientes {
 		ResolucionFAP resolucion
 	when
 		(
-			resolucion.estadoPublicacion != null and
-			resolucion.estadoPublicacion = "publicada" and
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
-		)
-		or(
-			agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
-			resolucion.estadoNotificacion != null and
-			resolucion.estadoNotificacion = "notificada"
-		)
-		or (
-			resolucion.estado != null and
-			resolucion.estado = "publicadaYNotificada" and
+			resolucion.copiadoExpedientes = null or
+			resolucion.copiadoExpedientes = false
+		) and (
+			resolucion.estado != null
+		) and (
+			resolucion.estado = "publicada" or
+			resolucion.estado = "notificada" or
+			resolucion.estado = "publicadaYNotificada"
+		) and (
 			agente.rolActivo  in ("administrador", "gestor", "jefeServicio", "revisor")
 		)
 	return

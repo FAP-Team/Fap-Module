@@ -288,7 +288,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
     /**
-     * Obtiene la lista de documentos que se corresponden a un determinado tipo y donde el interesado es el agente logueado.
+     * Obtiene la lista de documentos que se corresponden a un determinado tipo y 
+     * donde el interesado es el agente logueado.
      * @throws AedExcepcion 
      * 
      */
@@ -709,7 +710,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException {
-        log.debug("Clasificando documentos");
+    	play.Logger.info("Clasificando documentos");
         String idAed = solicitud.expedienteAed.idAed;
         
         if(idAed == null)
@@ -731,6 +732,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     				List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
     				ubicaciones.add(ubicacion);
     				try {
+    					play.Logger.info("Clasificando documentos de la solicitud: "+solicitud.id+" copiando documento desde otra ubicación");
     					aedPort.copiarDocumento(documento.uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
     				} catch (AedExcepcion e) {
     					todosClasificados = false;
@@ -742,9 +744,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			} else {
 	                try {
 	                    if(informacionRegistro == null){
+	                    	play.Logger.info("Clasificando documentos sin registro para la solicitud: "+solicitud.id);
 	                        clasificarDocumentoSinRegistro(idAed, documento, interesados, false);
 	                    }else{
 	                        //TODO: Pasar parámetro notificable
+	                    	play.Logger.info("Clasificando documentos con registro para la solicitud: "+solicitud.id);
 	                        clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false); 
 	                    }
 	                }catch(AedExcepcion e){
@@ -777,6 +781,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
     
     protected void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados, boolean notificable) throws AedExcepcion {
+    	play.Logger.info("Método clasificarDocumentosSinRegistro");
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
         // Marca como notificable
@@ -844,6 +849,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     }
 
     protected void clasificarDocumentoConRegistro(String idAed, models.Documento documento, Interesados interesados, InformacionRegistro informacionRegistro, boolean notificable) throws AedExcepcion {
+    	play.Logger.info("Método clasificarDocumentosConRegistro");
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
 
@@ -858,12 +864,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         // Marca como notificable
         if (notificable)
             propAdmin.setNotificable(true);
-
+        play.Logger.info("Llamada a clasificarDocumento");
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
     
     protected void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, Interesados interesados) throws AedExcepcion {
-        // Registro de entrada
+    	play.Logger.info("Método del AED de clasificarDocumento, obtención de datos");
+    	// Registro de entrada
         PropiedadesAdministrativas propsAdmin = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
 
         // Documentos pasan a ser del interesado no del user
@@ -881,6 +888,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         ubicaciones.add(ubicacionExpediente);
 
         // Clasificar documento al expediente
+        play.Logger.info("Clasificando el documento "+documento.uri+" en el AED");
         aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
         documento.clasificado = true;
         documento.save();
@@ -1154,9 +1162,15 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         
         String[] splits = carpeta.split("/");
         String ruta = "";
+        String ruta2 = "";
+        
         for(String s : splits){
-            aedPort.crearCarpetaNoClasificada(ruta, s, null);
-            ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
+        	ruta2 = ruta2.isEmpty() ? s  : ruta2 + "/" + s;
+        	if (!existeCarpetaTemporal(ruta2)) {
+        		aedPort.crearCarpetaNoClasificada(ruta, s, null);
+        		play.Logger.info("La carpeta "+carpeta+" ha sido creada.");
+        	}
+        	ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
         }
     }
     
@@ -1183,11 +1197,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         try {
             aedPort.obtenerCarpetasNoClasificadas(carpeta);
             //Si no da una excepción, la carpeta existe
+            play.Logger.info("La carpeta "+carpeta+" ya existe.");
             result = true;
         }catch(AedExcepcion e){
             if(e.getFaultInfo().getCodigoError() != CodigoErrorEnum.CARPETA_NO_EXISTE){
                 throw e;
             }
+            play.Logger.info("La carpeta "+carpeta+" no existe.");
         }
         return result;
     }
@@ -1473,10 +1489,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		ubicaciones.add(ubicacion);
 		try {
 			aedPort.copiarDocumento(uri, ubicaciones);  // en doc.uri está la uri del documento original (el que queremos copiar)
-			System.out.println("Copiado: "+uri);
+			play.Logger.info("Copiado: "+uri);
 		} catch (Exception e) {
-			play.Logger.error("Error al copiar el documento de resolución en los expedientes"+e);
-			new GestorDocumentalServiceException("Error al copiar el documento de resolución en los expedientes", e);
+			play.Logger.error("Error al copiar el documento en los expedientes"+e);
+			new GestorDocumentalServiceException("Error al copiar el documento en los expedientes", e);
 		}
 	}
 	

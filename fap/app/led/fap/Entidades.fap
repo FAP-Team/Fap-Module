@@ -57,6 +57,12 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
 	String fechaARestaurarStr transient
+	DateTime fechaFinDeAceptacion
+	DateTime fechaFinDeAlegacion
+	Respuesta respuestaSvd
+	PeticionSVD peticion
+	OneToMany Registro registros
+
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -144,7 +150,7 @@ Entidad Documento {
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient
-	Boolean clasificado
+	Boolean clasificado default="false"
 	String hash
 	DateTime fechaSubida
 	DateTime fechaRegistro
@@ -152,12 +158,17 @@ Entidad Documento {
 	String enlaceDescarga transient
 	String urlDescargaFirmado transient
 	String enlaceDescargaFirmado transient
+	String enlaceDescargaFirmadoLocal transient
 	Boolean verificado	// Indica si el documento ya ha sido verificado
 	// Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente.
 	// Los dos campos siguientes se utilizan para referenciar de manera temporal (hasta su clasificación)
 	// dónde se encuentra el documento seleccionado en la subida (ya presente en el aed).
 	Boolean refAed                     // si el campo expedienteReferenciado/solicitudReferenciada es válido
 	Lista estadoNotificacion estadoDocumento
+	Boolean firmado default="false"
+	String firmadoVisible transient
+	String firmadoVisibleLocal transient
+	Firmantes firmantes
 }
 
 // La entidad Documentación agrupa aportaciones de documentos
@@ -853,6 +864,7 @@ Entidad AutorizacionCesion noConstruct{
 	Boolean inssA008
 	OneToMany Trabajador trabajadores
 	Boolean idi
+	Boolean platino
 }
 
 Entidad Trabajador {

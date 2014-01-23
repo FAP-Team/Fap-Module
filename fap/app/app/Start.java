@@ -233,7 +233,7 @@ public class Start extends Job {
 //		
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
-//		
+		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
 //

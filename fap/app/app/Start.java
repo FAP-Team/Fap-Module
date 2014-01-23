@@ -233,15 +233,6 @@ public class Start extends Job {
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
 		
-		//Testear servicio de portafirma
-		try {
-			System.out.println(portafirmaService.obtenerVersion());
-			ResolucionFAP res = new ResolucionFAP();
-			portafirmaService.crearSolicitudFirma(res);
-		} catch (PortafirmaFapServiceException e) {
-			
-		}
-		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
 		
@@ -251,31 +242,31 @@ public class Start extends Job {
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
 		
-//		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
-//		mensajeService.mostrarInfoInyeccion();
+		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
+		mensajeService.mostrarInfoInyeccion();
 		
 		//SERVICIO SVD comentado, se inyecta en VerificacionDatosSVDController. El resto de los comentarios son pruebas con el servicio de mensajería y SVD.
 		//Se eliminarán cuando estén resueltas las incidencias pendientes en la OTP
 		
-//		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
-//		verificarDatosService.mostrarInfoInyeccion();
+		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
+		verificarDatosService.mostrarInfoInyeccion();
 			
 
-		String uriRemesa = "";
-		try{
-			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
-		}
-		catch(Exception e){
-			System.out.println("Como que no tira esto");
-		};
-		
-		try{
-			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
-			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
-		}
-		catch(Exception e){
-			System.out.println("Como que no tira esto");
-		};
+//		String uriRemesa = "";
+//		try{
+//			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
+//		}
+//		catch(Exception e){
+//			System.out.println("Como que no tira esto");
+//		};
+//		
+//		try{
+//			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
+//			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
+//		}
+//		catch(Exception e){
+//			System.out.println("Como que no tira esto");
+//		};
 		
 ////		try{
 ////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);

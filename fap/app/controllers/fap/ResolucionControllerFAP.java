@@ -103,7 +103,7 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * Propiedades posibles para el envío de solicitudes de firma al portafirma
 	 * @return Prioridades permitidas en la aplicación
 	 * 
-	 * Por defecto: BAJA, MEDIA, ALTA
+	 * Por defecto: BAJA, NORMAL, ALTA
 	 */
 	public static List<ComboItem> getPrioridadesFirma () {
 		return ComboItem.listFromTableOfTable("prioridadesFirmaEnPortafirma");

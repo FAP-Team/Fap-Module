@@ -60,7 +60,7 @@ Lista estadoLineaResolucion crearEnumerado {
 
 Lista prioridadesFirmaEnPortafirma crearEnumerado {
 	baja: "Baja"
-	media: "Media"
+	media: "Normal" // En el portafirma es normal
 	alta: "Alta"
 }
 

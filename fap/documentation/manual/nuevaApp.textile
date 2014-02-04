@@ -59,7 +59,13 @@ bc. play fap:generate
 
 bc. play run
 
-11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo, en producción la contraseña es *123456*. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
+11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. Para hacer login podemos entrar en Administración con el usuario por defecto, que es *admin* (la contraseña no se comprueba cuando se está en modo desarrollo, en producción la contraseña es *123456*), o utilizando uno de los certificados de prueba existentes en la parte superior. 
+
+!images/nuevaApp-login!
+
+Para crear una nueva solicitud hay que pinchar en el botón Nuevo, en la base de la tabla, e irás a la página que acabas de crear con tu mensaje de "Hola Mundo".
+
+!images/nuevaApp-botonNuevo!
 
 Si quiere crear el proyecto de forma automática, pinche "aquí":creacion-automatica-proyecto
 
@@ -81,6 +87,111 @@ Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo des
 h3. Arrancar aplicación desde Eclipse
 
 También puedes lanzar la aplicación desde Eclipse, sin necesidad de hacer un _play run_ en una consola (Esta opción sólo es para modo desarrollo _play run_, si quieres ejecutar la aplicación en modo producción te aconsejamos que lo hagas en una consola con _play run --%prod_). Para ello basta con ir a la carpeta Eclipse de tu aplicación, desde el Package Explorer de tu Eclipse, y dentro de esta clickar con el botón derecho sobre el archivo *_${NombreApp}_.launch* y en el menú desplegable que aparecerá, ir a _Run as_ y pulsar sobre el *_${NombreApp}_* que te saldrá con un icono Java.
+
+h2. Extendiendo el ejemplo
+
+Para mostrar un poco mejor el funcionamiento de FAP y de los _dsl_ vamos a hacer una pequeña Solicitud donde haya que rellenar los datos de un conductor y de su coche, así veremos algunos elementos que provee FAP y como asociarlos con entidades. El resultado final que queremos es el siguiente:
+
+!images/nuevaApp-ejemploExtendido!
+
+Tendremos un menú lateral que nos guiará por el proceso y tres páginas de formularios a rellenar con los datos de un conductor, su coche y el motivo de la solicitud. Empezaremos por las Entidades. Lo primero es abrir el fichero @app/led/Entidades.fap@ y definir las entidades tal y como las necesitemos. 
+
+El conductor lo definiremos como una persona física, con una nacionalidad, un campo que indique si trabaja o no y el coche que conduce.
+
+bc. Entidad Conductor {
+    PersonaFisica conductor
+    String nacionalidad
+    Boolean trabaja
+    Coche coche 
+}
+
+El coche se define con su marca, modelo, matrícula y fecha de matriculación
+
+bc. Entidad Coche {
+    String marca
+    String modelo
+    String matricula
+    DateTime matriculacion
+}
+
+Por último, la solicitud en sí, tendrá los datos del conductor (con su coche asociado) y el motivo de la solicitud
+
+bc. Entidad Solicitud extends SolicitudGenerica {
+    Conductor conductor
+    String motivo    
+}
+
+Una vez que tenemos definidas las entidades es hora de crear los formularios de la solicitud, para que el usuario pueda rellenarlos. Para darle algo más de juego al ejemplo separaremos los formularios en tres páginas: Conductor, Coche y Motivo, así que como una cuarta página de ayuda. Los formularios los definiremos en el fichero @app/led/Solicitud.fap@
+
+Para la página de ayuda podemos aprovechar la que ya teníamos con nuestro "Hola Mundo", solo cambiamos su título y le indicamos que trabajaremos con la entidad Solicitud a través del atributo @campo@. Al indicar el atributo @campo@, automáticamente el controlador de FAP nos creará un botón para guardar la página, pero como aquí no tenemos formularios podemos utilizar el atributo @noForm@ para evitar que este botón se cree.
+
+bc.     Pagina Ayuda campo=Solicitud noForm {
+        Wiki {"Hola Mundo! Esto sería una página de ayuda"}     
+    }
+
+La siguiente página será la de Conductor. Simplemente hay que asociar los elementos de la Entidad con el formulario adecuado, por ejemplo, para la PersonaFisica usaremos el formulario de PersonaFisica, y para la nacionalidad un simple campo de Texto. Cada elemento hay que asociarlo a su correspondiente campo en la Entidad utilizando el atributo @campo@. Por ejemplo, con @campo=Solicitud.conductor.nacionalidad@ indicamos que los datos del formulario se mapearán en el campo "nacionalidad" de la entidad que se corresponda a "conductor" de la entidad "Solicitud". Algunos campos son imprescindibles que sean rellenados, y por eso utilizamos el parámetro @requerido@. Asignamos también títulos para que se muestre correctamente el mensaje y mejore la usabilidad del usuario. Por ponerlo más bonito, también hemos rodeado todos los elementos utilizando un @Grupo@.
+
+bc. Pagina Conductor campo=Solicitud inicial {
+        Grupo titulo="Datos del conductor"{
+            PersonaFisica  conductor campo=Solicitud.conductor.conductor requerido  
+            Texto nacionalidad titulo="Nacionalidad" campo=Solicitud.conductor.nacionalidad
+            Check trabaja titulo="¿Trabaja?" campo=Solicitud.conductor.trabaja
+        }   
+    }
+
+Que al utilizar al final del tutorial el comando @play fap:generate@ generará una página como la siguiente
+!images/nuevaApp-conductor!
+
+Siguiendo con la misma idea realizamos ahora el formulario de Coche. Aquí vemos un elemento nuevo, el de Fecha, que nos permitirá escoger de una manera sencilla una fecha en lugar de escribirla a mano.
+
+
+bc. Pagina Coche campo=Solicitud {
+         Grupo titulo="Datos del coche" {
+            Texto marca titulo="Marca" campo=Solicitud.conductor.coche.marca requerido
+            Texto modelo titulo="Modelo" campo=Solicitud.conductor.coche.modelo
+            Texto matricula titulo="Matricula" campo=Solicitud.conductor.coche.matricula requerido
+            Fecha matriculacion titulo="Fecha de matriculación" campo=Solicitud.conductor.coche.matriculacion requerido
+         }
+    }
+
+Debería quedar algo así: 
+!images/nuevaApp-coche!
+
+La última página será la de Motivo, y simplemente tendrá un área de texto más grande donde poder explicar por qué se ha hecho la solicitud.
+
+bc.     Pagina Motivo campo=Solicitud{
+        Grupo titulo="Motivo de la solicitud" {
+            AreaTexto motivo titulo="Motivo de la solicitud" campo=Solicitud.motivo requerido
+        }
+    }
+
+Que resulta en:
+!images/nuevaApp-motivo!
+
+Ya tenemos todas las páginas creadas, pero ahora necesitamos una manera de navegar entre ellas. Para ello utilizaremos los elementos _Menú_ y _Enlace_. El código es bastante sencillo, simplemente hay que crear un enlace por página y relacionarlas con el atributo @pagina@. Además de páginas también podemos enlazar a acciones, como _logout_, popups, urls, etc.
+
+bc.     Menu {
+        Grupo "Menú de Ayuda" {
+            Enlace "Ayuda" pagina=Ayuda
+        }
+        
+        Grupo "Formularios" {
+            Enlace "Conductor" pagina=Conductor
+            Enlace "Coche" pagina=Coche
+            Enlace "Motivo" pagina=Motivo
+        }
+        
+        Grupo "Salir" {
+            Enlace "Salir de la aplicación" accion=logout
+        }
+    }   
+
+Y ya tenemos menú:
+!images/nuevaApp-menu!
+
+Ahora simplemente utiliza el comando para generar la aplicación, @play fap:generate@ y entra en la aplicación para ver los resultados.
+
+Con este ejemplo hemos hecho un pequeño repaso inicial, para que te sea más sencillo iniciarte en el uso de FAP. Aún queda mucho que aprender, como el uso de módulos, y mucho que configurar y personalizar. Tienes toda la documentación a tu disposición.
 
 h2. Trabajar con el Código Fuente del Módulo FAP
 

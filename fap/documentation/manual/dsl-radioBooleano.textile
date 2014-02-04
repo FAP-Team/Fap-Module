@@ -12,8 +12,8 @@ h2. Parámetros
 * **campo = _[campo]_** : Atributo donde se almacenará el valor del radio.
 * **ayuda = _[string]_** (opcional) : Ayuda asociada al radio booleano.
 * **alineadoAIzquierdas** (opcional) : Si se especifica, se alineará el radio Booleano a la izquierda del todo.
-* **botonIzquierdo= _[string]** (opcional): Indica el nombre que va a poseer el botón de la izquierda del radio booleano.
-* **botonDerecho= _[string]** (opcional): Indica el nombre que va a poseer el botón de la derecha del radio booleano.
+* **botonIzquierdo= _[string]_** (opcional): Indica el nombre que va a poseer el botón de la izquierda del radio booleano.
+* **botonDerecho= _[string]_** (opcional): Indica el nombre que va a poseer el botón de la derecha del radio booleano.
 
 h2. Definición
 

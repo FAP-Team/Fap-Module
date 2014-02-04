@@ -19,7 +19,7 @@ h2. Parámetros
 * **representantePersonaFisica** (opcional) : Indica que en el caso de que haya representantes, éstos sólo pueden ser de tipo PersonaFisica.
 * **conDireccion** (opcional): Permite incluir todos los campos necesarios para representar un elemento Dirección.
 * **noEmail** (opcional) : Si se indica no aparece el atributo email.
-* **noTelefono** (opcional) : Si se indica no aparece el atributo telefono.
+* **noTelefono** (opcional) : Si se indica no aparece el atributo teléfono.
 * **sexo** (opcional) : Si se indica aparece el atributo sexo.
 * **nacimiento** (opcional) : Si se indica aparece el atributo fechaNacimiento.
 * **noSexo** (opcional) : Si se indica no aparece el atributo sexo (opción por defecto).

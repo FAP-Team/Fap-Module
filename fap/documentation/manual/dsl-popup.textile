@@ -11,6 +11,7 @@ h2. Parámetros
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al Popup.
 * **campo = _[campo]_** : Define la entidad que se puede usar en los campos que se sitúen dentro del popup.
 * **maximizar** (opcional) : Permite que el tamaño del popup abarque la pantalla entera.
+* **copia** (opcional): Permite modificar una solicitud ya se presentada cuando se habilita para copia. Más información "aquí":app-modificacionSolicitudes
 
 
 h2. Definición
@@ -21,6 +22,7 @@ bc. Popup:
 		('titulo' '=' titulo=STRING)?
 		& ("campo" "=" campo=Campo)?
 		& ("permiso" "=" permiso=[Permiso])?
+		& (copia?="copia")?
 		& (maximizar?="maximizar")?
 	)
 	'{'

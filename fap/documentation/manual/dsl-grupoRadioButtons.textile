@@ -8,7 +8,7 @@ h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
 * **campo = _[campo]_** : Atributo donde se almacenará la clave. Los tipos de atributos permitidos son listas, tipos simples, referencias ManyToOne y referencias ManyToMany. Ver "Tipos de atributos permitidos":#atributosPermitidos para más información.
-* **valor = _[ID]_** : Identificador del elemento RadioButton que queremos que sea el valor por defecto.
+* **valor = _[ID]_** : Identificador del elemento RadioButton que queremos que sea el valor por defecto. Si asignamos este parámetro, todos los RadioButtons contenidos en este grupo deberán tener un identificador.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como nombre del grupo.
 * **grupoTexto = _[atributo]_** (opcional) : Indica el atributo que se va a utilizar como nombre de cada elemento mostrado en el grupo. Se utiliza solo cuando el campo es de tipo referencia.
 * **requerido** (opcional) : Si se especifica, indica que se deberá seleccionar obligatoriamente uno de los radios del grupo.
@@ -59,6 +59,19 @@ GrupoRadioButtons titulo="Grupo 1" campo=ElementosBasicos.texto {
 h4. Resultado:
 
 !images/dsl-grupoRadiosSimple!
+
+h3. Uso del parámetro @valor@
+
+bc.. 			
+GrupoRadioButtons titulo="Parentesco del familiar" valor=hijos campo=Solicitud.familia.parentesco {
+	RadioButton padres valor="Padre/Madre"
+	RadioButton hermanos valor="Hermano/Hermana"
+	RadioButton hijos valor="Hijo/Hija"
+}
+
+h4. Resultado:
+
+!images/dsl-grupoRadiosParamValor!
 
 h3. Campo de tipo Lista
 

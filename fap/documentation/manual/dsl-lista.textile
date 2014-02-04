@@ -46,6 +46,8 @@ p. Se permite declarar listas dependientes, de manera que el valor de una lista,
 
 h2. Ejemplos de uso
 
+p. Para que la lista se pueda utilizar, por ejemplo en un combo, hay que actualizar la _Tabla de tablas_ en el panel de _Administración_, menú _Administración_, submenú _Tabla de tablas_ y botón "Actualizar Valores desde fichero (Sin Cargar Municipios)"  
+
 h3. Lista solo con claves
 
 bc. Lista ListaClaves {

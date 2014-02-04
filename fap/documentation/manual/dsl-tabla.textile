@@ -10,8 +10,8 @@ h2. Parámetros
 * **campo = _[campo]_** : Atributo donde se encuentra la lista de elementos a mostrar en la tabla.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
 * **columnasAutomaticas** (opcional) : Simplifica la creación de columnas generando automáticamente una columna para cada uno de los atributos de la entidad especificada en el campo.
-* **exclude = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la exclusión de aquellos atributos de las columnas de la tabla que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
-* **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
+** **exclude = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la exclusión de aquellos atributos de las columnas de la tabla que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
+** **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
 * **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamará al método del controlador.
 * **metodoFilas = _[string]_** (opcional): Al emplear este parámetro se ejecutará el controlador indicado que devolverá la lista de elementos que se mostrarán en la tabla.

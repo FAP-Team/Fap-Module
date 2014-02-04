@@ -16,6 +16,7 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Define un título para la página.
 * **mensajeFinal** (opcional) : En el caso que se quiera configurar un mensaje personalizado para la página y se especifique esta opción, se indicará que se quiere poner el mensaje al final de la página. Por defecto, se colocará al principio de la página.
 * **perteneceA = _[string]_** (opcional): En el caso de que se quiera agrupar las páginas por módulos, permite indicar a qué módulo pertenece la página. Si se emplea, se dependerá de una property que debe definirse en el @application.conf@ de la aplicacion de la siguiente manera: _fap.modulo.nombreModulo_. Esta property regula el acceso a las páginas del módulo correspondiente, si está igualada a true, las páginas son accesibles, si está igualada a false o no existe, no se podrá acceder.
+* **copia** (opcional): Permite modificar una solicitud ya se presentada cuando se habilita para copia. Más información "aquí":app-modificacionSolicitudes
 
 h2. Definición
 
@@ -27,8 +28,9 @@ bc.. Pagina:
 		& ("permiso" "=" permiso=[Permiso])?
 		& (noForm?='noForm')?
 		& (noAutenticar?='noAutenticar')?
-		& (guardarParaPreparar?="guardarParaPreparar")?
+		& ((guardarParaPreparar?="guardarParaPreparar") | (guardarParaPrepararCopia?="guardarParaPrepararCopia"))?
 		& (inicial?="inicial")?
+		& (copia?="copia")?
 		& (mensajeFinal?="mensajeFinal")?
 		& ("perteneceA" "=" perteneceA=STRING)?
 	)

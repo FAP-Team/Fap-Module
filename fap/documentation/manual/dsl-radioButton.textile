@@ -10,6 +10,15 @@ h2. Parámetros
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como nombre del selector.
 * **valor = _[string]_** : Valor que será asignado al campo del elemento GrupoRadioButtons al que pertenece este radio
 
+h2. Definición
+
+bc. RadioButton:
+	elemento='RadioButton' (name=ID)? (
+		('titulo' '=' titulo=STRING)?
+		('valor' '=' valor=STRING)
+	)
+;
+
 h2. Ejemplo de uso
 
 bc. RadioButton radio campo=Solicitud.elementos.texto titulo="Opcion 1" valor="A"

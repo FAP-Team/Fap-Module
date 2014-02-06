@@ -222,6 +222,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			GregorianCalendar gcal = new GregorianCalendar();
 			gcal.setTime(dbResolucionFAP.fechaTopeFirmaOficiosRemision.toDate());
 			gcal.setTimeInMillis(dbResolucionFAP.fechaTopeFirmaOficiosRemision.getMillis());
+			gcal.set(dbResolucionFAP.fechaTopeFirmaOficiosRemision.getYear(), dbResolucionFAP.fechaTopeFirmaOficiosRemision.getMonthOfYear(), dbResolucionFAP.fechaTopeFirmaOficiosRemision.getDayOfMonth(), 23, 59, 59);
 			XMLGregorianCalendar fechaTopeFirma = null;
 			try {
 				fechaTopeFirma = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
@@ -274,6 +275,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		}
 
 		if (dbResolucionFAP.fechaTopeFirmaOficiosRemision != null) {
+			
 			DateTime today = new DateTime().withTimeAtStartOfDay();
 			if (dbResolucionFAP.fechaTopeFirmaOficiosRemision.isBefore(today)) {
 				play.Logger.error("La fecha tope de firma no puede ser anterior a hoy.");
@@ -285,7 +287,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				//dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
 				dias = 1;
 				DateTime diaLimite = new DateTime();
-				diaLimite = diaLimite.minusDays(dias);
+				diaLimite = diaLimite.plusDays(dias);
 				if (diaLimite.isBefore(dbResolucionFAP.fechaTopeFirmaOficiosRemision)) {
 					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
 					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);					

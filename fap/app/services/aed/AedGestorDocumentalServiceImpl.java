@@ -1389,7 +1389,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
-		log.debug("Clasificando documento resolución");
+		log.debug("Clasificando documento de consulta");
 		
 	    Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
 	    String idAed = convocatoria.expedienteAed.idAed;
@@ -1560,7 +1560,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		String tipo = "";
 		try {
 			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
-			tipo = propiedades.getDescripcion();
+			tipo = propiedades.getUriTipoDocumento();
 		} catch (AedExcepcion e) {
 			play.Logger.error("Error al intentar obtener el tipo del documento", e);
 			e.printStackTrace();

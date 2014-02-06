@@ -30,7 +30,7 @@
      popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas de resolución', 
+     titulo:'Líneas de resolución', 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionGenerados(idResolucionFAP)
 }
@@ -58,9 +58,9 @@
 				
 		#{fap.grupo titulo:'Resolución de Justificación de Reintegro'}
 				
-			#{fap.check alineadoAIzquierdas:true, campo:'resolucionFAP.resolucionReintegro', id:'justificacionReintegro', titulo:'Resolucion de justificacion con reintegro' /}		
+			#{fap.check alineadoAIzquierdas:true, campo:'resolucionFAP.resolucionReintegro', id:'justificacionReintegro', titulo:'Resolución de justificación con reintegro' /}		
 		
-			#{fap.areaTexto campo:'resolucionFAP.textoResolucionReintegro', id:'textoJustificacionReintegro', titulo:'Texto de la Resolucion de justificación de reintegro' /}		
+			#{fap.areaTexto campo:'resolucionFAP.textoResolucionReintegro', id:'textoJustificacionReintegro', titulo:'Texto de la Resolución de justificación de reintegro' /}		
 		
 		#{/fap.grupo}
 		
@@ -88,7 +88,7 @@
      popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas de resolución', 
+     titulo:'Líneas de resolución', 
      urlBeforeOpenPageTable:play.mvc.Router.reverse("PaginaNotificarResolucionController.beforeOpenPageTable" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id, 'irDespuesDeValidar':'']), 
      urlEditar:play.mvc.Router.reverse("PaginaFirmarOficioRemisionController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
@@ -124,7 +124,7 @@
      popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas de resolución', 
+     titulo:'Líneas de resolución', 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionSinFirmarPortaFirma(idResolucionFAP)
 }
@@ -219,7 +219,7 @@
      popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas de resolución', 
+     titulo:'Líneas de resolución', 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@PaginaNotificarResolucionController.tablatablaOficiosRemisionFirmados(idResolucionFAP)
 }

@@ -112,7 +112,7 @@
      popupLeer:'VerExpediente', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas Resolución', 
+     titulo:'Líneas Resolución', 
      urlEditar:play.mvc.Router.reverse("popups.ModificarEstadoExpedienteController.index" , ['accion':'editar', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlLeer:play.mvc.Router.reverse("popups.VerExpedienteController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@EditarResolucionController.tablalineasResolucionAntesPreparar(idResolucionFAP)
@@ -168,7 +168,7 @@
 		
 #{/fap.tabla}
 
-			#{fap.firma firma:'firma', id:'firFirmarResolucion', titulo:'Firmar Resolucion', uri:"${resolucionFAP.registro.oficial.uri}" /}
+			#{fap.firma firma:'firma', id:'firFirmarResolucion', titulo:'Firmar Resolución', uri:"${resolucionFAP.registro.oficial.uri}" /}
 		
 				#{/form}
 			
@@ -255,7 +255,7 @@
 			#{/fap.grupo}
 		
 			<div class="wiki ">
-<p><em>El jefe de servicio aún no ha firmado en el portafirma</em></p>
+<p><em>El jefe de servicio aún no ha firmado en el portafirma.</em></p>
 
 			</div>
 		
@@ -274,7 +274,7 @@
 			#{fap.grupo permiso:'esperaFirmaDirector', titulo:'Firma Director'}
 				
 			<div class="wiki ">
-<p><em>El Director aún no ha firmado en el portafirma. Si quiere comprobar si ya se firmó darle al siguiente botón.</em></p>
+<p><em>El Director aún no ha firmado en el portafirma. Si quiere comprobar si ya se firmó, pulse el siguiente botón.</em></p>
 
 			</div>
 		
@@ -303,7 +303,7 @@
 		
 				#{form play.mvc.Router.reverse('EditarResolucionController.enviarRegistrarResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"enviarRegistrarResolucion"}
 					
-			#{fap.boton id:'btnRegistrarResolucion', titulo:'Registrar Resolución' /}
+			#{fap.boton id:'btnRegistrarResolucion', titulo:'Registrar resolución' /}
 		
 				#{/form}
 			
@@ -381,11 +381,15 @@
 		
 			#{fap.areaTexto campo:'resolucionFAP.observaciones', titulo:'Observaciones' /}		
 		
-			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'�?rea resolución' /}		
+			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'Área resolución' /}		
 		
 			#{fap.combo campo:'resolucionFAP.tiposResolucion', id:'tiposResolucion', requerido:true, titulo:'Tipo resolución' /}		
 		
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.resolucion.baremacion.permitida") == true}
+				
 			#{fap.check campo:'resolucionFAP.conBaremacion', titulo:'¿Tiene Baremación?' /}		
+		
+			#{/fap.grupo}
 		
 			#{fap.grupo borde:false, permiso:'mostrarDatosResolucion'}
 				
@@ -396,7 +400,7 @@
      popupLeer:'popupOficioNotificacion', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Lineas Resolución', 
+     titulo:'Líneas Resolución', 
      urlLeer:play.mvc.Router.reverse("popups.popupOficioNotificacionController.index" , ['accion':'leer', 'idResolucionFAP':resolucionFAP?.id? resolucionFAP?.id:'_idResolucionFAP_', 'idLineaResolucionFAP':lineaResolucionFAP?.id? lineaResolucionFAP?.id:'_idLineaResolucionFAP_']), 
      urlTabla:@EditarResolucionController.tablalineasResolucion(idResolucionFAP)
 }
@@ -423,7 +427,7 @@
 		
 			#{fap.texto campo:'resolucionFAP.folio_final', titulo:'Folio Final' /}		
 		
-			#{fap.texto campo:'resolucionFAP.codigoResolucion', titulo:'Numero' /}		
+			#{fap.texto campo:'resolucionFAP.codigoResolucion', titulo:'Número' /}		
 		
 			#{fap.fecha campo:'resolucionFAP.fechaRegistroResolucion', titulo:'Fecha Resolución' /}		
 		

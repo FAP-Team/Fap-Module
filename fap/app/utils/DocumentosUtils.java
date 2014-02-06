@@ -168,7 +168,7 @@ import verificacion.ObligatoriedadDocumentosFap;
 		return false;
 	}
 	
-	public static String getDescripcionVisible(String uriDocumento){
+	public static String getDescripcion(String uriDocumento){
 		String descripcion = "";
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		try {

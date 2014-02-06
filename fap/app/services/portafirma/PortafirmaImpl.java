@@ -118,7 +118,8 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		solFirma.setDocumentosAed(listaDocumentos);
 		
 		try {
-			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
+			//solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
+			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar(resolucion.fechaTopeFirma)); // TODO Comprobar fecha en el portafirmas
 		} catch (DatatypeConfigurationException e) {
 			play.Logger.error("Error al setear la fecha tope de firma."+ e);
 		}
@@ -174,6 +175,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		GregorianCalendar gcal = new GregorianCalendar();
 		gcal.setTime(fecha.toDate());
 		gcal.setTimeInMillis(fecha.getMillis());
+		gcal.set(fecha.getYear(), fecha.getMonthOfYear(), fecha.getDayOfMonth(), 23, 59, 59);
 		return DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 	}
 	

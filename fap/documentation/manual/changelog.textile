@@ -1,8 +1,14 @@
 h2. Changelog
 
+h3. Versi贸n 2.4RC4
+
+* Arreglado fallos en resoluci贸n: validaci贸n de fecha tope de firma, prioridad firma, visibilidad 驴tiene Baremacion?, documento de consulta con URI y tildes
+
+* Habilitado proxy
+
 
 h3. Versi贸n 2.4RC3
-* Inclusi髇 del servicio SVD
+* Inclusi贸n del servicio SVD
 
 * Regeneraci贸n librer铆a de Resoluci贸n
 

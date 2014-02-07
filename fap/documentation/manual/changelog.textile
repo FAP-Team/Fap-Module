@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.4RC4
 
+* Arreglado fallo que no permitía verificar.
+
 * Arreglado fallos en resolución: validación de fecha tope de firma, prioridad firma, visibilidad ¿tiene Baremacion?, documento de consulta con URI y tildes
 
 * Habilitado proxy

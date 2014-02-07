@@ -1,0 +1,64 @@
+%{
+	// Obtenemos al ultima solicitud, sobre la que trabajamos
+	//models.Solicitud s = models.Solicitud.all().fetch().get((int)models.Solicitud.count()-1);
+	
+	play.mvc.Controller.session.put("username", "admin");
+	play.mvc.Controller.session.put("role","administrador");
+	controllers.fap.AgenteController.findAgente();
+}%
+
+*{
+	Para que funcione correctamete el test, tenemos que configurar en el application.conf:
+	
+	fap.resoluciones.generarDocumentoResolucion=true
+	fap.resoluciones.publicarTablonAnuncios=true
+	fap.resoluciones.notificar=false
+	
+}*
+    
+#{selenium}
+	
+   	open(resolucionesfapcontroller/index)
+	waitForPageToLoad()
+	pause(1000)   // Necesaria para la carga de solicitudes
+	clickAndWait(//span[text()="Nuevo"])
+	select(id=tipoDefinidoResolucion, label=Simple Total)
+   	select(id=resolucionFAP_tipo, label=Provisional)
+    type(id=resolucionFAP_tituloInterno,Titulo resolucion)
+    type(id=resolucionFAP_sintesis, Sintesis resolucion)   
+    type(id=resolucionFAP_descripcion,Descripcion resolucion)
+    type(id=resolucionFAP_observaciones,Observaciones resolucion)
+    select(id=areasResolucion, label=AG-Asuntos Generales)
+    select(id=tiposResolucion, label=ABC-Abono de Cursos)
+    clickAndWait(//form[@id='NuevaResolucioncrearForm']/div[2]/div/input)
+    // Escogemos uno de los expedientes disponibles
+   pause(1000)
+    runScript('smtablaExpedientesUnico.doSelect(0)')
+    pause(1000)    
+    // Carga la pagina para prerar la resulcion
+    clickAndWait(//span[text()="Crear Resolucion"])
+ 	// Nos movemos a la pagina para prepara la resolucion
+    clickAndWait(//form[@id='prepararResolucion']/input[2]) 
+    
+   
+    select(id=selectJefeServicio, label=11111111H - Pepe pepe)
+    select(id=selectPrioridadFirma, label=Baja)
+    type(id=resolucionFAP_fechaTopeFirma, ${ new Date(new Date().getTime() + (24*60*60*1000)).format('dd/MM/yyyy') })
+    click(id=resolucionFAP_numero_folios)
+    type(id=resolucionFAP_numero_folios, 1)
+    clickAndWait(//input[@value="Enviar al portafirma"])
+    clickAndWait(//input[@value="Comprobar"])
+    
+    clickAndWait('css=input[type=submit]')
+
+    clickAndWait(id=publicarResolucionPasos)
+    type(id=resolucionFAP_fechaFinAceptacion, ${ new Date(new Date().getTime() + (24*60*60*1000)).format('dd/MM/yyyy') })
+	clickAndWait('css=input[type=submit]')    
+    
+   
+    clickAndWait(id=btnVolverIDenlace)
+     clickAndWait(id=enlaceFinalizarResolucion)
+    clickAndWait('css=input[type=submit]')
+    
+    
+#{/selenium}

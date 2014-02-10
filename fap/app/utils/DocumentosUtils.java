@@ -155,15 +155,10 @@ import verificacion.ObligatoriedadDocumentosFap;
  		return null;
  	}
 	
-	public static Boolean docExisteEnAed (String uriDocumento){
+	public static Boolean existeDocumentoClasificado (String uriDocumento) {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		try {
-			if (gestorDocumentalService.existeDocumento(uriDocumento)){
-				return true;
-			}
-		} catch (GestorDocumentalServiceException e) {
-			play.Logger.error("Error, el documento no existe", e);
-			e.printStackTrace();
+		if (gestorDocumentalService.existeDocumentoClasificado(uriDocumento)) {
+			return true;
 		}
 		return false;
 	}
@@ -174,7 +169,7 @@ import verificacion.ObligatoriedadDocumentosFap;
 		try {
 			descripcion = gestorDocumentalService.getDescripcionDocumento(uriDocumento);
 		} catch (GestorDocumentalServiceException e) {
-			play.Logger.error("Error, obteniendo la descripción del documento", e);
+			play.Logger.error("Error obteniendo la descripción del documento", e);
 			e.printStackTrace();
 		}
 		return descripcion;
@@ -186,7 +181,7 @@ import verificacion.ObligatoriedadDocumentosFap;
 		try {
 			tipo = gestorDocumentalService.getTipoDocumento(uriDocumento);
 		} catch (GestorDocumentalServiceException e) {
-			play.Logger.error("Error, obteniendo el tipo del documento", e);
+			play.Logger.error("Error obteniendo el tipo del documento", e);
 			e.printStackTrace();
 		}
 		return tipo;

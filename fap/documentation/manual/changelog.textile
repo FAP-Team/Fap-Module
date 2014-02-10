@@ -10,6 +10,7 @@ h3. Versión 2.4RC4
 
 
 h3. Versión 2.4RC3
+
 * Inclusión del servicio SVD
 
 * Regeneración librería de Resolución

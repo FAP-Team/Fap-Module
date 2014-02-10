@@ -17,7 +17,7 @@ public class DocConsultaPortafirmaCrearController extends DocConsultaPortafirmaC
 		if ((documento.uri != null) && (!documento.uri.isEmpty())){ //Poniendo documento por uri
 			CustomValidation.valid("documento", documento);
 			CustomValidation.validValueFromTable("documento.tipo", documento.tipo);
-			if (DocumentosUtils.docExisteEnAed(documento.uri)){
+			if (DocumentosUtils.existeDocumentoClasificado(documento.uri)){
 				dbDocumento.tipo = DocumentosUtils.getTipoDocumento(documento.uri);
 				dbDocumento.descripcion = DocumentosUtils.getDescripcion(documento.uri);
 				dbDocumento.uri = documento.uri;

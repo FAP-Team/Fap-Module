@@ -28,7 +28,8 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			dbSolicitud.verificacion = new Verificacion();
 			dbSolicitud.verificacion.expediente = dbSolicitud.expedienteAed.idAed;
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
-			dbSolicitud.estado = EstadosSolicitudEnum.enVerificacion.name();
+			dbSolicitud.estadoAntesVerificacion = dbSolicitud.estado;
+			dbSolicitud.estado = EstadosSolicitudEnum.enVerificacion.name(); // TODO: Debería ir en el método iniciarVerificacion pero por permisos se pone aquí
 			dbSolicitud.verificacion.fechaCreacion = new DateTime();
 			dbSolicitud.save();
 			long idVerificacion=dbSolicitud.verificacion.id;

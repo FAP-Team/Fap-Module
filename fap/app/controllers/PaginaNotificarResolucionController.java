@@ -237,7 +237,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 	
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(titulo, descripcion, tipoSolicitud.name(), prioridad.name(), fechaTopeFirma, idSolicitante, idDestinatario, emailNotificacion, resolucionFAP);
+				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(titulo, descripcion, tipoSolicitud.value(), prioridad.value(), fechaTopeFirma, idSolicitante, idDestinatario, emailNotificacion, dbResolucionFAP);
 				dbResolucionFAP.idSolicitudFirmaOficiosRemision = response.getIdSolicitud();
 				dbResolucionFAP.hacePeticionPortafirmaOficiosRemision = AgenteController.getAgente();
 				dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionPendientesPortafirma.name();
@@ -298,6 +298,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);
 			}
 		}
+		
+		dbResolucionFAP.save();
 		
 	}
 	

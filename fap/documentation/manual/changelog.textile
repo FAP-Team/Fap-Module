@@ -6,8 +6,7 @@ h3. Versión 2.4RC4
 
 * Arreglado fallos en resolución: validación de fecha tope de firma, prioridad firma, visibilidad ¿tiene Baremacion?, documento de consulta con URI y tildes
 
-* Habilitado proxy
-
+* Arreglado creación de solicitud de firma en portafirma
 
 h3. Versión 2.4RC3
 

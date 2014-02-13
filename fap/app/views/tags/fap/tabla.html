@@ -44,16 +44,19 @@
 	String popupEditar = _popupEditar;
 	String popupBorrar = _popupBorrar;
 	String popupLeer = _popupLeer;
+	String popupDuplicar = _popupDuplicar;
 	
 	String urlCrear = _urlCrear;
 	String urlEditar = _urlEditar;
 	String urlBorrar = _urlBorrar;
 	String urlLeer = _urlLeer;
+	String urlDuplicar = _urlDuplicar;
 	String urlSubir = _urlSubir;
 	String nombreBotonEditar = _nombreBotonEditar ?: 'Editar';
 	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
 	String nombreBotonCrear = _nombreBotonCrear ?: 'Nuevo';
 	String nombreBotonBorrar = _nombreBotonBorrar ?: 'Borrar';
+	String nombreBotonDuplicar = _nombreBotonDuplicar ?: 'Duplicar';
 
 	def combo = _combo;         // Cuando mostramos la tabla en función de lo elegido en un combo
 	
@@ -575,6 +578,67 @@
 	    		}
 		    });
 		    #{/if}
+		    
+		    
+		    
+		    #{if urlDuplicar} *{inicio boton duplicar}*
+			
+		    var boton_duplicar = new Ext.Button({
+		    	text: '${nombreBotonDuplicar}',
+		    	icon: '@{'/public/images/table-editar.png'}',
+		    	disabled:true,
+		    	handler : function(){
+			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+			   		#{if popupDuplicar}
+			   		    alert("Va a duplicar un registro");
+			   			popup_open(
+			   				"${popupDuplicar}_popup",
+			   				replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id).replace("editar", "duplicar"),
+			   				reload
+			   			); 
+			   		#{/if}
+			   		#{else}
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id);
+						#{/else} 
+					#{/else}
+		    	}
+		    });
+			
+			var duplicarRow = new Ext.create('Ext.grid.plugin.Editing', {
+		    	clicksToEdit: 2,
+	    	   	startEdit: function(record, columnHeader) {
+					var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+					var registro = store${id}.getAt(store${id}.find("id", selected_id));
+		    		if (registro.get("permisoEditar")){
+					#{if popupDuplicar}
+						
+		   				popup_open(
+		   					"${popupDuplicar}_popup",
+			   				replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id).replace("editar", "duplicar"),
+			   				
+		   					reload
+		   				);
+
+		   			#{/if}
+					#{else}
+						#{if saveBefore && saveEntity}
+	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+    						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+						#{/if}
+						#{else}
+							window.location.href = replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id);
+						#{/else}
+					#{/else}
+        			}
+        		}
+    		});
+		
+		    #{/if} *{fin botón duplicar}*
 
 	        #{if urlSubir}
             var boton_subir = new Ext.Button({
@@ -719,6 +783,9 @@
 				        #{if urlSubir}
                             boton_subir,
                         #{/if}
+                        #{if urlDuplicar}
+                            boton_duplicar,
+                        #{/if}
 			            boton_actualizar
         				]
     				}
@@ -816,6 +883,9 @@
 			    	#{if urlSubir}
                     boton_subir.setDisabled(false);
                     #{/if}
+                    #{if urlDuplicar}
+                    boton_duplicar.setDisabled(false);
+                    #{/if}
 		    	}
 		    	else{
 		    		#{if urlLeer}
@@ -829,6 +899,9 @@
 			    	#{/if}
 			    	#{if urlSubir}
                     boton_subir.setDisabled(true);
+                    #{/if}
+                    #{if urlDuplicar}
+                    boton_duplicar.setDisabled(true);
                     #{/if}
 		    	}
 		    });

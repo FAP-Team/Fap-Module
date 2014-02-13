@@ -127,6 +127,10 @@ public class GTabla extends GElement{
 			params.putStr 'nombreBotonCrear', tabla.nombreBotonCrear;
 		}
 		
+		if(tabla.nombreBotonDuplicar != null){
+			params.putStr 'nombreBotonDuplicar', tabla.nombreBotonDuplicar;
+		}
+
 		if (tabla.popup || tabla.popupCrear){
 			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
@@ -215,6 +219,8 @@ public class GTabla extends GElement{
 			params.putStr 'popupEditar', tabla.popup.name;
 			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popup.name;
+			params.put 'urlDuplicar', popupUtil.getRouteIndex("editar", true, true);
+			params.putStr 'popupDuplicar', tabla.popup.name;
 			if (tabla.popup.permiso)
 				params.putStr 'permisoCrear', tabla.popup.permiso.name;
 		}
@@ -237,6 +243,10 @@ public class GTabla extends GElement{
 		if (tabla.popupBorrar != null) {
 			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.popupBorrar, null)).getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popupBorrar.name;
+		}
+		if (tabla.popupDuplicar != null) {
+			params.put 'urlDuplicar', Controller.create(GElement.getInstance(tabla.popupDuplicar, null)).getRouteIndex("editar", true, true);
+			params.putStr('popupDuplicar', tabla.popupDuplicar.name);
 		}
 	}
 	
@@ -506,7 +516,7 @@ public class GTabla extends GElement{
 					paramsPermiso+="false, ";
 					paramsNombrePermiso+="\"\", ";
 				}
-			} else if(tabla.popupEditar != null){
+			} else if((tabla.popupEditar != null) || (tabla.popupDuplicar != null)){
 				Popup popUp = (Popup)tabla.popupEditar;
 				if (popUp.permiso != null){
 					paramsPermiso+="true, ";

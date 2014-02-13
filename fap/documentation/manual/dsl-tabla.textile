@@ -18,6 +18,7 @@ h2. Parámetros
 * **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupLeer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupEditar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Editar para abrirlo. "Ver documentación Popup":dsl-popup.
+* **popupDuplicar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Duplicar para abrirlo. "Ver documentación Popup":dsl-popup. Al duplicar solo se copiaran los campos que se muestren en el formulario definido en el popup, dejando el resto de campos sin asignar.
 * **popupCrear = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Crear para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **permisoFilas = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
@@ -32,6 +33,7 @@ h2. Parámetros
 * **nombreBotonVer = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón ver de la tabla (sustituyendo al valor por defecto _Ver_)
 * **nombreBotonBorrar = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón borrar de la tabla (sustituyendo al valor por defecto _Borrar_)
 * **nombreBotonCrear = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón crear de la tabla (sustituyendo al valor por defecto _Crear_)
+* **nombreBotonDuplicar = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón duplicar de la tabla (sustituyendo al valor por defecto _Duplicar_)
 
 h2. Definición
 
@@ -40,27 +42,29 @@ bc. Tabla:
 	(
 		('campo' '=' campo=Campo)
 		& ('titulo' '=' titulo=STRING)?
-		& ('alto' '=' alto=STRING)?
-		& (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
-		& ("permisoFilas" "=" permiso=[Permiso])?
+        & ('alto' '=' alto=STRING)? 
+        & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
+        & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('seleccionable' "=" seleccionable=STRING)?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
-		& ('popup' '=' popup=[Popup|QN])?
-		& ('popupCrear' '=' popupCrear=[Popup|QN])?
-	   	& ('popupBorrar' '=' popupBorrar=[Popup|QN])?
-	   	& ('popupEditar' '=' popupEditar=[Popup|QN])?
-	   	& ('popupLeer' '=' popupLeer=[Popup|QN])?
-	   	& ('pagina' '=' pagina=[Pagina|QN])?
-	   	& ('paginaCrear' '=' paginaCrear=[Pagina|QN])?
-	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|QN])?
-	   	& ('paginaEditar' '=' paginaEditar=[Pagina|QN])?
-	   	& ('paginaLeer' '=' paginaLeer=[Pagina|QN])?
-		& (color=Color)?
-		& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?
+	    & ('popup' '=' popup=[Popup|IDS])?
+	    & ('popupCrear' '=' popupCrear=[Popup|IDS])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|IDS])?
+	   	& ('popupEditar' '=' popupEditar=[Popup|IDS])?
+	   	& ('popupLeer' '=' popupLeer=[Popup|IDS])?
+	   	& ('pagina' '=' pagina=[Pagina|IDS])?
+	    & ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
+	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
+	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
+	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
+	   	& (color=Color)?
+	   	& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?
 	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
 	   	& ('nombreBotonBorrar' '=' nombreBotonBorrar=STRING)?
 	   	& ('nombreBotonCrear' '=' nombreBotonCrear=STRING)?
+	   	& ('popupDuplicar' '=' popupDuplicar=[Popup|IDS])?
+	   	& ('nombreBotonDuplicar' '=' nombreBotonDuplicar=STRING)?
 	)
 	'{'
 		columnas += Columna*

@@ -26,12 +26,12 @@ h2. Desde la vista
 
 Si queremos que el valor del nuevo atributo _concatenarTexto_ se añada al final del contenido del atributo *value* se debe realizar lo siguiente:
 
-En el método _view()_ del template _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ añadir el nuevo atributo a params (TagParameters) como se muestra a continuación:
+En el método _view()_ del template _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ añadir el nuevo atributo a @params@ (TagParameters), como se muestra a continuación, para poder usar el parámetro en la plantilla:
 
 bc. if(texto.concatenarTexto != null)
  params.putStr "concatenarTexto", texto.concatenarTexto
 
-En el template _/fap/app/views/tags/fap/texto.html_ se modifica la vista del tag texto. En el código groovy se actualiza el contenido del atributo “value” concatenando éste con nuestro nuevo atributo “concatenarTexto”.
+En el template _/fap/app/views/tags/fap/texto.html_ se modifica la vista del tag para los campos de texto. En el código groovy se actualiza el contenido actual del campo de texto, almacenado en @value@, concatenándolo con nuestro nuevo atributo “concatenarTexto”. La plantilla recibirá los atributos precedidos de guión bajo (@_concatenarTexto@), así que recuerda usarlos así o definirte una nueva variable a tu gusto.
 
 bc. def concatenarTexto = _concatenarTexto
 if (concatenarTexto)
@@ -81,16 +81,15 @@ bc. public static void SolicitantePruebaValidateCopy(String accion, Solicitud db
 		dbSolicitud.contacto.fax = solicitud.contacto.fax;
 		CustomValidation.required("solicitud.contacto.email", solicitud.contacto.email);
 		dbSolicitud.contacto.email = solicitud.contacto.email;
-
 	}
 
-Si nos fijamos es en el campo _solicitud.sol.nombre_ donde queremos que se le añada el valor prueba, para comprobar que es esto lo que queremos hacer y sin que sirva de precedente, sobreescribimos el controlador generador tal que así:
+Si nos fijamos, es en el campo _solicitud.sol.nombre_ donde queremos que se le añada el valor prueba. Para comprobar que es esto lo que queremos hacer, y sin que sirva de precedente, sobreescribimos el controlador generado tal que así:
 
 bc. 		...
 CustomValidation.valid("solicitud", solicitud);
 dbSolicitud.sol.nombre = solicitud.sol.nombre + "prueba";
 dbSolicitud.sol.apellido1 = solicitud.sol.apellido1;
-		...
+...
 
 Con lo cual si nosotros escribimos algo en el campo Nombre:
 
@@ -100,7 +99,7 @@ Al pulsar el botón guardar el resultado es este:
 
 !images/dsl-grammar2!
 
-Este es el comportamiento esperado, pero lógicamente no podemos sobreescribir el controlador generado debido a que la próxima vez que se genere la aplicación, este será sobreescrito. Por lo que deberemos acudir al template del elemento en cuestión, en este caso _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ y buscamos si tiene un método llamado Validatecopy.
+Este es el comportamiento esperado, pero lógicamente no podemos sobreescribir el controlador generado debido a que, la próxima vez que se genere la aplicación, éste será sobreescrito, por lo que deberemos acudir al template del elemento en cuestión, en este caso _/es.fap.simpleled.generator/src/templates/GTexto.groovy_ y buscamos si tiene un método llamado Validatecopy.
 En este caso no disponía del mismo por lo que tendremos que fijarnos de donde extiende la clase _GTexto_ y acceder a ella.
 
 bc. public class GTexto extends GSaveCampoElement{...}
@@ -131,12 +130,12 @@ bc. public String copy(){
 Ahora si generamos veremos como el método ValidateCopy de _/pruebita/app/controllers/gen/SolicitantePruebaControllerGen.java_ se ha generado con la cadena “prueba” concatenada a todos nuestros campos, pero eso no es lo que queríamos. Debemos indicar en que campo queremos concaternarla, para ello:
 
 bc. public String copy(){
-if(texto.valor != null)
+if(texto.concatenarTexto != null)
 		return "db${campo.str} = ${campo.firstLower()}" + "+ \"" + texto.concatenarTexto + "\";\n";
 	else
 	return "db${campo.str} = ${campo.firstLower()};\n";
 }
 
-Con este código sólo se concatenará la cadena a los Textos que contengan el parámetro valor
+Con este código sólo se concatenará la cadena a los Textos que contengan el parámetro @concatenarTexto@
 
 Una vez hecho esto deberíamos generar nuestra aplicación, realizar la ejecución tal y como se indicó en los pasos anteriores y debería ocurrir que al guardar se muestra la cadena “prueba” concatenada al valor del parámetro “nombre”.

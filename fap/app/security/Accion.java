@@ -20,6 +20,12 @@ public enum Accion {
 		}
 	},
 	
+	Duplicar(){
+		public String toString(){
+			return "duplicar";
+		}
+	},
+	
 	Borrar(){
 		public String toString(){
 			return "borrar";
@@ -40,6 +46,7 @@ public enum Accion {
 		if ("crear".equals(accion)) return Crear;
 		if ("borrar".equals(accion)) return Borrar;
 		if ("borrado".equals(accion)) return Borrado;
+		if ("duplicar".equals(accion)) return Duplicar;
 		return null;
 	}
 	

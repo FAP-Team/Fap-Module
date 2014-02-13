@@ -43,6 +43,8 @@ public class GPopup extends GGroupElement{
 		params.put("urlEditar", c.getRouteAccion("editar"));
 		params.put("urlCrear", c.getRouteAccion("crear"));
 		params.put("urlBorrar", c.getRouteAccion("borrar"));
+		params.put("urlDuplicar", c.getRouteAccion("duplicar"));
+		
 		params.putStr("titulo", popup.titulo ?: popup.name);
 		params.put("maximizar", popup.maximizar);
 

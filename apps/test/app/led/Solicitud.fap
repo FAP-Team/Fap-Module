@@ -56,6 +56,7 @@ Formulario Solicitud permiso=solicitudes{
 
 			Grupo "Ejemplo: Tablas y PopUps" {
 				Enlace "Tablas Simples" pagina=TablasSimples
+				Enlace "Tablas Duplicar" pagina=TablasDuplicar
 				Enlace "Tablas con Decimales" pagina=TablasConDecimales
 				Enlace "Tablas con páginas" pagina=PaginasTablas
 				Enlace "BigPopUp" popup=PruebaBigPopUp
@@ -307,6 +308,20 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		{
 		}
 	}
+	
+	Pagina TablasDuplicar campo=Solicitud{
+		Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
+		popupCrear=popupNombre
+		popupLeer=popupNombre
+		popupEditar=popupNombre
+		popupBorrar=popupNombre
+		popupDuplicar=popupNombre
+		nombreBotonDuplicar="Copiar Fila"
+		columnasAutomaticas exclude=id
+		{
+		}
+	}
+
 
 	Popup popupNombre campo=Solicitud.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"

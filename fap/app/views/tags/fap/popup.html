@@ -3,12 +3,15 @@
 	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
+	play.mvc.Router.ActionDefinition urlDuplicar = com.google.common.base.Preconditions.checkNotNull(_urlDuplicar, "urlDuplicar");
 	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
 	boolean maximizar = _maximizar? true : false;
 	
 	play.mvc.Router.ActionDefinition url;
 	if (accion == "editar")
 		url = urlEditar;
+	else if (accion == "duplicar")
+		url = urlDuplicar;	
 	else if (accion == "crear")
 		url = urlCrear;
 	else if (accion == "borrar")

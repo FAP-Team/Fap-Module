@@ -58,6 +58,7 @@ public class Controller implements Comparator<Entidad>{
 	public boolean index;
 	public boolean crear;
 	public boolean editar;
+	public boolean duplicar;
 	public boolean postIndex;
 	public boolean borrar;
 	public CampoUtils campo;
@@ -86,11 +87,13 @@ public class Controller implements Comparator<Entidad>{
 	private Entidad entidad;
 	private boolean hayAnterior;
 	private String nameEditar;
+	private String nameDuplicar;
 	private String sufijoPermiso;
 	private String sufijoBoton;
 	private CampoUtils lastSubcampo;
 	private Accion accionCrear;
 	private Accion accionEditar;
+	private Accion accionDuplicar;
 	private Accion accionBorrar;
 	private String strProcesandoMethods = "";
 	
@@ -113,6 +116,7 @@ public class Controller implements Comparator<Entidad>{
 		hayAnterior = hayAnterior(element);
 		
 		nameEditar = "editar";
+		nameDuplicar = "duplicar";
 		sufijoPermiso = "";
 		sufijoBoton = "";
 		if (isForm()){
@@ -192,6 +196,8 @@ ${metodoIndex()}
 ${metodoEditar()}
 
 ${metodoCrear()}
+
+${metodoDuplicar()}
 
 ${metodoCrearLogica()}
 
@@ -393,14 +399,23 @@ public class ${controllerName} extends ${controllerGenName} {
 		return devolver;
 	}
 	
-	private String metodoEditar(){
-		if (!editar && !crear && !isForm())
+	/**
+	 * Genera los métodos editar o duplicar según el parámetro esDuplicar
+	 * 
+	 * @param esDuplicar true si queremos método duplicar
+	 * @return string con el código del método correspondiente
+	 */
+	private String metodoEditarDuplicar(boolean esDuplicar){
+		boolean esEditar = !esDuplicar;
+		String nombreNuevaId;
+		
+		if (!editar && !crear && !duplicar && !isForm())
 			return "";
 		
 		List<GBoton> botones = gElement.getInstancesOf(GBoton.class);
 		List<GFirmaSimple> botonesFirma = gElement.getInstancesOf(GFirmaSimple.class);
 			
-		String metodoEditar = "";
+		String metodoEditarDuplicar = "";
 		String editarRenderCall = "${controllerName}.${nameEditar}Render(${StringUtils.params(allEntities.collect{it.id})});";
 		String botonCode = "";
 		for (GBoton boton: botones) {
@@ -425,9 +440,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 		if (isForm() && botones.size() == 1 && botonesFirma.size() == 0)
 			botonCode = "";
-		metodoEditar = """
+		metodoEditarDuplicar = """
 			@Util // Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-			public static void ${nameEditar}(${StringUtils.params(
+			public static void ${ esDuplicar? nameDuplicar : nameEditar}(${StringUtils.params(
 				allEntities.collect{it.typeId},
 				saveEntities.collect{it.typeVariable},
 				extraParams,
@@ -438,35 +453,67 @@ public class ${controllerName} extends ${controllerGenName} {
 				if(!permiso${sufijoPermiso}("editar")){
 					Messages.error("${permiso?.mensaje? permiso.mensaje : "No tiene permisos suficientes para realizar la acción"}");
 				}
-				${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
-				${saveEntities.size() > 0? bindReferencesCall() : ""}
-				${botonCode}
-	   """;
+		"""
+		if(esDuplicar) {
+			nombreNuevaId = entidad.id + "Nueva";
+			metodoEditarDuplicar += """
+						Long ${nombreNuevaId};
+						${nombreNuevaId} = ${entidad.isSingleton()? "": "${entidad.id} = "}${controllerName}.crearLogica(${StringUtils.params(
+							allEntities.collect{if (it != entidad) it.id},
+							saveEntities.collect{it.variable},
+							extraParams.collect{
+							it.split(" ")[1]}
+						)});
+						${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it).replace("${it.id}","${nombreNuevaId}")};"}.join("\n")}
+					"""
+		}else{
+			metodoEditarDuplicar += """	
+						${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
+						${saveEntities.size() > 0? bindReferencesCall() : ""}
+						${botonCode}
+			   """;
+		}
+		
 	    if (editar){
-			metodoEditar += """	
+			metodoEditarDuplicar += """	
 				if(!Messages.hasErrors()){
 					${validateCopyCall("\"editar\"")}
 				}
 			""";
 		}
-		metodoEditar += """
-			if(!Messages.hasErrors()){
-				${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
-					saveEntities.collect{it.variableDb},
-					saveEntities.collect{it.variable},
-					extraParams.collect{it.split(" ")[1]}
-				)});
-			}
-			if(!Messages.hasErrors()){
-				${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
-				log.info("Acción Editar de página: "+${renderView}+" , intentada con éxito");
-			}
-			else log.info("Acción Editar de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
-			${editarRenderCall}
-		}
-		""";
-		return metodoEditar;
+		
+		metodoEditarDuplicar += """
+					if(!Messages.hasErrors()){
+						${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
+							saveEntities.collect{it.variableDb},
+							saveEntities.collect{it.variable},
+							extraParams.collect{it.split(" ")[1]}
+						)});
+					}
+		
+					if(!Messages.hasErrors()){
+						${saveEntities.collect{"${it.variableDb}.save();"}.join("\n")}
+						log.info("Acción ${esDuplicar? "Duplicar":"Editar"} de página: "+${renderView}+" , intentada con éxito");
+					}
+					else log.info("Acción ${esDuplicar? "Duplicar":"Editar"} de página: "+${renderView}+" , intentada sin éxito (Problemas de Validación)");
+					${editarRenderCall}
+				}
+				""";
+				
+		return metodoEditarDuplicar;
+	
 	}
+
+private String metodoEditar(){
+	return metodoEditarDuplicar(false);
+}
+
+private String metodoDuplicar() {
+	if(!duplicar && !isForm())
+		return ""
+		
+	return metodoEditarDuplicar(true);
+}
 	
 	private String metodoCrearLogica(){
 		if (!crear)
@@ -1283,6 +1330,8 @@ public class ${controllerName} extends ${controllerGenName} {
 		controller.crear = controller.crear || controller.accionCrear.crearSiempre;
 		controller.editar = controller.editar || controller.accionEditar.crearSiempre;
 		controller.borrar = controller.borrar || controller.accionBorrar.crearSiempre;
+		controller.duplicar = controller.duplicar|| controller.accionDuplicar.crearSiempre;
+
 		controller.campo = gpop.campo;
 		controller.copia = gpop.popup.copia;
 		controller.renderView = "\"gen/popups/${gpop.viewName()}\"";
@@ -1363,6 +1412,17 @@ public class ${controllerName} extends ${controllerGenName} {
 			else
 				accionBorrar.mensajeOk = "Página borrada correctamente";
 		}
+if (accionDuplicar == null)
+	accionDuplicar = LedFactory.eINSTANCE.createAccion();
+if (accionDuplicar.boton == null)
+	accionDuplicar.boton = "Duplicar";
+if (accionDuplicar.mensajeOk == null){
+if (o instanceof Popup)
+	accionDuplicar.mensajeOk = "Registro duplicado correctamente";
+else
+	accionDuplicar.mensajeOk = "Página editada correctamente";
+}
+
 	}
 	
 	private void findOpcionesAccion(Object o){
@@ -1378,6 +1438,8 @@ public class ${controllerName} extends ${controllerGenName} {
 				accionEditar = accion;
 			if ("borrar".equals(accion.name))
 				accionBorrar = accion;
+			if ("duplicar".equals(accion.name))
+			accionDuplicar = accion;
 		}
 	}
 
@@ -1406,6 +1468,7 @@ public class ${controllerName} extends ${controllerGenName} {
 			if ("editar".equals(accion)) editar = true;
 			if ("crear".equals(accion)) crear = true;
 			if ("borrar".equals(accion)) borrar = true;
+			if ("duplicar".equals(accion)) duplicar = true;
 		}
 	}
 		
@@ -1494,11 +1557,14 @@ public class ${controllerName} extends ${controllerGenName} {
 				editar = true;
 			if (tabla.popupBorrar != null && tabla.popupBorrar.name.equals(popup.name))
 				borrar = true;
+			if (tabla.popupDuplicar != null && tabla.popupDuplicar.name.equals(popup.name))
+				duplicar = true;
 		}
 	}
 	
 	public Accion getAccion(String accion){
 		if ("editar".equals(accion)) return accionEditar;
+		if ("duplicar".equals(accion)) return accionDuplicar;
 		if ("crear".equals(accion)) return accionCrear;
 		if ("borrar".equals(accion)) return accionBorrar;
 		return null;

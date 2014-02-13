@@ -460,6 +460,8 @@ Tabla:
 	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
 	   	& ('nombreBotonBorrar' '=' nombreBotonBorrar=STRING)?
 	   	& ('nombreBotonCrear' '=' nombreBotonCrear=STRING)?
+	   	& ('popupDuplicar' '=' popupDuplicar=[Popup|IDS])?
+	   	& ('nombreBotonDuplicar' '=' nombreBotonDuplicar=STRING)?
 	)
 	'{'
 		columnas += Columna*

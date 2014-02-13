@@ -71,6 +71,7 @@ fap.tags.popup.boton.crear=Guardar
 fap.tags.popup.boton.editar=Guardar
 fap.tags.popup.boton.borrar=Borrar
 fap.tags.popup.boton.cerrar=Cerrar
+fap.tags.popup.boton.duplicar=Duplicar
 
 
 # Recaptcha

@@ -72,6 +72,7 @@ public class GPagina extends GGroupElement{
 		params.put("urlEditar", c.getRouteAccion("editar"));
 		params.put("urlCrear", c.getRouteAccion("crear"));
 		params.put("urlBorrar", c.getRouteAccion("borrar"));
+		params.put("urlDuplicar", c.getRouteAccion("duplicar"));
 		params.putStr("titulo", pagina.titulo != null ? pagina.titulo : pagina.name);
 		params.putStr("formulario", formulario.name);
 		params.putStr("pagina", name);
@@ -79,6 +80,7 @@ public class GPagina extends GGroupElement{
 		params.putStr("botonEditar", c.accionEditar.boton);
 		params.putStr("botonCrear", c.accionCrear.boton);
 		params.putStr("botonBorrar", c.accionBorrar.boton);
+		params.putStr("botonDuplicar", c.accionDuplicar.boton);
 		
 		String view = """
 #{fap.pagina ${params.lista(true)}

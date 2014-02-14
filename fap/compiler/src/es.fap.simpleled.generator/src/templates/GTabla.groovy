@@ -139,6 +139,10 @@ public class GTabla extends GElement{
 			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
 		}
 		
+		if (tabla.paginaDuplicar)
+			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("duplicar");
+		
+		
 		StringBuffer columnasView = new StringBuffer();
 		
 		if (tabla.columnasAutomaticas){
@@ -219,7 +223,7 @@ public class GTabla extends GElement{
 			params.putStr 'popupEditar', tabla.popup.name;
 			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
 			params.putStr 'popupBorrar', tabla.popup.name;
-			params.put 'urlDuplicar', popupUtil.getRouteIndex("editar", true, true);
+			params.put 'urlDuplicar', popupUtil.getRouteIndex("duplicar", true, true);
 			params.putStr 'popupDuplicar', tabla.popup.name;
 			if (tabla.popup.permiso)
 				params.putStr 'permisoCrear', tabla.popup.permiso.name;
@@ -257,6 +261,7 @@ public class GTabla extends GElement{
 			params.put 'urlCrear', pagUtil.getRouteIndex("crear", true, true);
 			params.put 'urlEditar', pagUtil.getRouteIndex("editar", true, true);
 			params.put 'urlBorrar', pagUtil.getRouteIndex("borrar", true, true);
+			params.put 'urlDuplicar', pagUtil.getRouteIndex("duplicar", true, true);
 			if (tabla.pagina.permiso)
 				params.putStr 'permisoCrear', tabla.pagina.permiso.name;
 		}
@@ -269,6 +274,8 @@ public class GTabla extends GElement{
 		}
 		if (tabla.paginaEditar != null)
 			params.put 'urlEditar', Controller.create(GElement.getInstance(tabla.paginaEditar, null)).getRouteIndex("editar", true, true);
+		if (tabla.paginaDuplicar != null)
+			params.put 'urlDuplicar', Controller.create(GElement.getInstance(tabla.paginaDuplicar, null)).getRouteIndex("duplicar", true, true);
 		if (tabla.paginaBorrar != null)
 			params.put 'urlBorrar', Controller.create(GElement.getInstance(tabla.paginaBorrar, null)).getRouteIndex("borrar", true, true);
 	}

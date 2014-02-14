@@ -315,13 +315,20 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 		popupLeer=popupNombre
 		popupEditar=popupNombre
 		popupBorrar=popupNombre
-		popupDuplicar=popupNombre
+		paginaDuplicar=paginaNombre
 		nombreBotonDuplicar="Copiar Fila"
 		columnasAutomaticas exclude=id
 		{
 		}
 	}
 
+	Pagina paginaNombre campo=Solicitud.tablaDeNombres {
+		Accion editar redirigir=anterior
+		
+		Texto campo=TablaDeNombres.nombre titulo="Nombre"
+		Texto campo=TablaDeNombres.apellido titulo="Apellido"
+		Fecha campo=TablaDeNombres.fecha.fecha titulo="fecha"
+	}
 
 	Popup popupNombre campo=Solicitud.tablaDeNombres {
 		Texto campo=TablaDeNombres.nombre titulo="Nombre"

@@ -454,6 +454,7 @@ Tabla:
 	    & ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
+	   	& ('paginaDuplicar' '=' paginaDuplicar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	   	& (color=Color)?
 	   	& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?

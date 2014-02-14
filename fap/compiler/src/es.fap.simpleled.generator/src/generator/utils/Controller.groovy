@@ -469,8 +469,7 @@ public class ${controllerName} extends ${controllerGenName} {
 		}else{
 			metodoEditarDuplicar += """	
 						${saveDbEntities.collect{"$it.clase $it.variableDb = ${complexGetterCall(it)};"}.join("\n")}
-						${saveEntities.size() > 0? bindReferencesCall() : ""}
-						${botonCode}
+						
 			   """;
 		}
 		
@@ -483,6 +482,9 @@ public class ${controllerName} extends ${controllerGenName} {
 		}
 		
 		metodoEditarDuplicar += """
+					${saveEntities.size() > 0? bindReferencesCall() : ""}
+					${botonCode}
+
 					if(!Messages.hasErrors()){
 						${controllerName}.${nameEditar}ValidateRules(${StringUtils.params(
 							saveEntities.collect{it.variableDb},
@@ -516,7 +518,7 @@ private String metodoDuplicar() {
 }
 	
 	private String metodoCrearLogica(){
-		if (!crear)
+		if (!crear && !duplicar)
 			return "";
 		entidad.singletonsId = true;
 		String metodoCrearLogica = "";
@@ -729,7 +731,7 @@ private String metodoDuplicar() {
 	}
 	
 	private String metodoEditarRender(){
-		if (!editar && !crear && !isForm())
+		if (!editar && !crear && !duplicar && !isForm())
 			return "";
 		String redirectMethod = "\"${controllerFullName}.index\"";
 		String redirectMethodOk = redirectMethod;
@@ -887,7 +889,7 @@ private String metodoDuplicar() {
 	}
 	
 	private String metodoEditarValidateRules(){
-		if (!editar && !crear && !isForm())
+		if (!editar && !crear && !duplicar && !isForm())
 			return "";
 		return """
 			@Util
@@ -902,7 +904,7 @@ private String metodoDuplicar() {
 	}
 	
 	private String metodoCrearValidateRules(){
-		if (!crear)
+		if (!crear && !duplicar)
 			return "";
 		return """
 			@Util
@@ -1030,7 +1032,7 @@ private String metodoDuplicar() {
 	}
 	
 	public String metodoValidateCopy(){
-		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		if (saveEntities.size() == 0 || (!editar && !crear && !duplicar)) return "";
 		String backupCopia = "";
 		String copiaTexto = "";
 		String codigoCopia="";
@@ -1180,7 +1182,7 @@ private String metodoDuplicar() {
 	}
 	
 	public String metodoBindReferences(){
-		if ((!editar && !crear) || saveEntities.size() == 0)
+		if ((!editar && !crear && !duplicar) || saveEntities.size() == 0)
 			return "";
 		return """
 			@Util
@@ -1497,6 +1499,8 @@ else
 				checkReferencia(c.accionCrear.redirigir);
 			if (c.accionEditar.redirigir?.pagina?.name.equals(pagina.name))
 				checkReferencia(c.accionEditar.redirigir);
+			if (c.accionDuplicar.redirigir?.pagina?.name.equals(pagina.name))
+				checkReferencia(c.accionDuplicar.redirigir);
 			if (c.accionBorrar.redirigir?.pagina?.name.equals(pagina.name))
 				checkReferencia(c.accionBorrar.redirigir);
 		}
@@ -1509,6 +1513,8 @@ else
 				editar = true;
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
+			if (tabla.paginaDuplicar != null && tabla.paginaDuplicar.name.equals(pagina.name))
+				duplicar = true;
 		}
 		for (Form form: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getForm())){
 			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))

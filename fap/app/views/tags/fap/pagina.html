@@ -3,6 +3,7 @@
 	play.mvc.Router.ActionDefinition urlEditar = com.google.common.base.Preconditions.checkNotNull(_urlEditar, "urlEditar");
 	play.mvc.Router.ActionDefinition urlCrear = com.google.common.base.Preconditions.checkNotNull(_urlCrear, "urlCrear");
 	play.mvc.Router.ActionDefinition urlBorrar = com.google.common.base.Preconditions.checkNotNull(_urlBorrar, "urlBorrar");
+	play.mvc.Router.ActionDefinition urlDuplicar = com.google.common.base.Preconditions.checkNotNull(_urlDuplicar, "urlDuplicar");
 	String formulario = com.google.common.base.Preconditions.checkNotNull(_formulario, "formulario");
 	String pagina = com.google.common.base.Preconditions.checkNotNull(_pagina, "pagina");
 	String titulo = com.google.common.base.Preconditions.checkNotNull(_titulo, "titulo");
@@ -13,6 +14,7 @@
 	String botonEditar = com.google.common.base.Preconditions.checkNotNull(_botonEditar, "botonEditar");
 	String botonCrear = com.google.common.base.Preconditions.checkNotNull(_botonCrear, "botonCrear");
 	String botonBorrar = com.google.common.base.Preconditions.checkNotNull(_botonBorrar, "botonBorrar");
+	String botonDuplicar = com.google.common.base.Preconditions.checkNotNull(_botonDuplicar, "botonDuplicar");
 	
 	def tituloPagina = _titulo ?: _pagina;
 	
@@ -32,6 +34,10 @@
 	else if (accion == "borrar"){
 		url = urlBorrar;
 		boton = botonBorrar;
+	}
+	else if (accion == "duplicar"){
+		url = urlDuplicar;
+		boton = botonDuplicar;
 	}
 
 }%

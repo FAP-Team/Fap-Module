@@ -589,8 +589,8 @@
 		    	disabled:true,
 		    	handler : function(){
 			   		var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+		   		    alert("Va a duplicar un registro");
 			   		#{if popupDuplicar}
-			   		    alert("Va a duplicar un registro");
 			   			popup_open(
 			   				"${popupDuplicar}_popup",
 			   				replaceId("${urlDuplicar}", "_${_idEntidad}_", selected_id).replace("editar", "duplicar"),

@@ -27,6 +27,7 @@ h2. Parámetros
 * **paginaLeer = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaEditar = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Editar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **paginaCrear = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Crear para abrirla. "Ver documentación Pagina":dsl-pagina.
+* **paginaDuplicar = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Duplicar para abrirla. "Ver documentación Pagina":dsl-pagina.  Al duplicar solo se copiaran los campos que se muestren en el formulario definido en la página, dejando el resto de campos sin asignar.
 * **paginaBorrar = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Borrar para abrirla. "Ver documentación Pagina":dsl-pagina.
 * **Color: _[string | porDefecto | siFilaBorrar | siFilaLeer | siFilaEditar]_ = _[string]_** (opcional): Atributo que permite asignar una clase css para colorear las filas de una tabla de acuerdo a un código especificado, a sus permisos (siFilaLeer, siFilaBorrar, siFilaEditar) o por la opción por defecto (editable y no editable).
 * **nombreBotonEditar = _[string]_** (opcional): Atributo que permite especificar un nombre para el botón editar de la tabla (sustituyendo al valor por defecto _Editar_)
@@ -57,6 +58,7 @@ bc. Tabla:
 	    & ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
 	   	& ('paginaBorrar' '=' paginaBorrar=[Pagina|IDS])?
 	   	& ('paginaEditar' '=' paginaEditar=[Pagina|IDS])?
+	   	& ('paginaDuplicar' '=' paginaDuplicar=[Pagina|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	   	& (color=Color)?
 	   	& ('nombreBotonEditar' '=' nombreBotonEditar=STRING)?

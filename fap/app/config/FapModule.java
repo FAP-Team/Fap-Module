@@ -105,7 +105,8 @@ public class FapModule extends PlayAbstractModule {
 
 	protected void comunicacionesInternas(){
 		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);
-
+	}
+	
 	protected void verificarDatos() {
 		bindLazySingletonOnDev(VerificarDatosService.class, FileSystemVerificarDatosServiceImpl.class);
 	}

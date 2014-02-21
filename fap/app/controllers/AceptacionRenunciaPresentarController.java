@@ -106,17 +106,6 @@ public class AceptacionRenunciaPresentarController extends AceptacionRenunciaPre
 	}
 	
 	@Util
-	public static void formFirmaCifRender(Long idSolicitud) {
-		if (!Messages.hasMessages()) {
-			Messages.ok("Página editada correctamente");
-			Messages.keep();
-			redirect("PaginaAceptacionRenunciaController.index", "editar", idSolicitud);
-		}
-		Messages.keep();
-		redirect("AceptacionRenunciaPresentarController.index", "editar", idSolicitud);
-	}
-	
-	@Util
 	public static void formFirmaRepresentante(Long idSolicitud, String firma, String firmarRepresentante) {
 		checkAuthenticity();
 		if (!permisoFormFirmaRepresentante("editar")) {

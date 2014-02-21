@@ -90,7 +90,7 @@ require:
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
      
-    - es.gobcan.notificaciones -> notificaciones v20140220:
+    - es.gobcan.aciisi -> notificaciones v20140221:
         transitive: false
     
     - es.mityc -> facturae 2.0:

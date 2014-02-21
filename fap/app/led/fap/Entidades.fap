@@ -148,7 +148,7 @@ Entidad DireccionMapa embeddable auditable{
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
 	String uri                     // uri del documento en el AED
-	String uriPlatino
+	String uriPlatino default="null"  //se hacía en el modelo, ahora comentado en la parte manual
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient
@@ -995,6 +995,10 @@ Entidad AsientoCIFap {
 	String tipoTransporte  //No ob
 	OneToMany ListaUris uris  //Array de uris  //No ob
 }
+
+Entidad AsientoAmpliadoCIFap extends AsientoCIFap {
+	ReturnUnidadOrganicaFap unidadOrganicaOrigen
+}
 	
 Entidad ReturnComunicacionInternaFap {
 	String usuario
@@ -1010,17 +1014,25 @@ Entidad ReturnComunicacionInternaFap {
 	Long numeroRegistro
 	String asunto
 	String unidadOrganica
-	ReturnInteresadoFap interesado
+	ReturnInteresadoCIFap interesado
 	String tipoTransporte
 	OneToMany ListaUris uris
-	Lista listaReturnErrorFap error	
+	//Lista listaReturnErrorFap error	//Lo tenía Yure, no se por qué habrá que preguntar
+	ReturnErrorFap error
 }	
-	
-Entidad ReturnInteresadoFap {
+
+Entidad ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
+	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna.
+	String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora.
+}
+
+Entidad ReturnInteresadoCIFap {
 	String nombre
-//	Lista tipoDocumentoCI tipoDocumento //Tira de la lista
-//	String numeroDocumento
-//	String letra
+}	
+Entidad ReturnInteresadoFap extends ReturnInteresadoCIFap {
+	Lista tipoDocumentoCI tipoDocumento //Tira de la lista
+	String numeroDocumento
+	String letra
 }
 
 Entidad ReturnUnidadOrganicaFap{
@@ -1030,8 +1042,13 @@ Entidad ReturnUnidadOrganicaFap{
 	String esBaja
 	String esReceptora
 	Long codigoReceptora
-	String error
+	ReturnErrorFap error
 }	
+
+Entidad ReturnErrorFap {
+	Integer codigo
+	String descripcion
+}
 	
 	
 	

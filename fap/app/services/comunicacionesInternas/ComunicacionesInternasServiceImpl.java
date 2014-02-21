@@ -19,20 +19,26 @@ import platino.PlatinoSecurityUtils;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
+import models.ReturnComunicacionInternaAmpliadaFap;
 import models.ReturnComunicacionInternaFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
+import services.ComunicacionesInternasServiceException;
+import services.VerificarDatosServiceException;
 import services.platino.PlatinoFirmaServiceImpl;
 import swhiperreg.ciservices.ArrayOfString;
 import swhiperreg.ciservices.CIServices;
 import swhiperreg.ciservices.CIServicesSoap;
 import swhiperreg.ciservices.NuevoAsiento;
 import swhiperreg.ciservices.ReturnComunicacionInterna;
+import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
 import swhiperreg.entradaservices.EntradaServices;
 import swhiperreg.entradaservices.ReturnEntrada;
 import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
+import utils.GestorDocumentalUtils;
 
 @InjectSupport
 public class ComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
@@ -97,11 +103,11 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) {
 		ArrayOfString listaUris = new ArrayOfString();
-		System.out.println("Rsumen: " + asientoFap.resumen);
-		System.out.println("Rsumen: " + asientoFap.interesado);
-		System.out.println("Rsumen: " + asientoFap.unidadOrganicaDestino);
-		System.out.println("Rsumen: " + asientoFap.password);
-		System.out.println("Rsumen: " + asientoFap.userId);
+//		System.out.println("Rsumen: " + asientoFap.resumen);
+//		System.out.println("Rsumen: " + asientoFap.interesado);
+//		System.out.println("Rsumen: " + asientoFap.unidadOrganicaDestino);
+//		System.out.println("Rsumen: " + asientoFap.password);
+//		System.out.println("Rsumen: " + asientoFap.userId);
 		
 		for (int i = 0; i < asientoFap.uris.size(); i++){
 			listaUris.getString().add(asientoFap.uris.get(i).uri);
@@ -120,6 +126,40 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		System.out.println(respuesta.getUsuario().toString());
 		
 		return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+	}
+	
+	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
+
+		ArrayOfString listaUris = new ArrayOfString();
+
+		for (int i = 0; i < asientoAmpliadoFap.uris.size(); i++){
+			
+			listaUris.getString().add(GestorDocumentalUtils.obtenerURIPlatino(asientoAmpliadoFap.uris.get(i).uri, "dgonmor", comunicacionesServices));
+		}
+		
+		try{
+			ReturnComunicacionInternaAmpliada respuesta = comunicacionesServices.nuevoAsientoAmpliado(
+					asientoAmpliadoFap.observaciones, 
+					asientoAmpliadoFap.resumen,
+					asientoAmpliadoFap.numeroDocumentos,
+					asientoAmpliadoFap.interesado,
+					asientoAmpliadoFap.unidadOrganicaDestino.codigo,
+					asientoAmpliadoFap.asuntoCodificado,
+					asientoAmpliadoFap.userId,
+					asientoAmpliadoFap.password,
+					asientoAmpliadoFap.tipoTransporte,
+					listaUris,
+					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
+			if (respuesta.getError() == null){
+				System.out.println(respuesta.getUsuario().toString());
+			}
+			
+			return ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
+		}
+		catch(Exception e){
+			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("No se ha podido obtener respuesta");
+		}
 	}
 
 	@Override

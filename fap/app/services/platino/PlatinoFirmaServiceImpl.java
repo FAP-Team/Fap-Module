@@ -157,29 +157,32 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         List<String> jsclient = new ArrayList<String>();
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
+        	host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	jsclient.add(host + "CAValidas.js");
             // Cambio a host de @firma //host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
-        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/";
-        	
-            //Nuevas librerias para @Firma
-            //System.out.println("Insertando nuevas librerías de @firma <<------");
-            jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "common-js/instalador.js");
-            jsclient.add(host + "constantes.js");
-        	
-        	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
+//        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/";
+//        	
+//            //Nuevas librerias para @Firma
+//            //System.out.println("Insertando nuevas librerías de @firma <<------");
+//            jsclient.add(host + "common-js/deployJava.js");
+//            jsclient.add(host + "common-js/instalador.js");
+//            jsclient.add(host + "constantes.js");
+//        	
+//        	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
         }else{
+        	host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
         	// Cambio a host de @firma //host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
-        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/";
+//        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/";
         	
             //Nuevas librerias para @Firma
             //System.out.println("Insertando nuevas librerías de @firma <<------");
-            jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "common-js/instalador.js");
-            jsclient.add(host + "constantes.js");
+//            jsclient.add(host + "common-js/deployJava.js");
+//            jsclient.add(host + "common-js/instalador.js");
+//            jsclient.add(host + "constantes.js");
             jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
         }
         
-        //jsclient.add(host + "WS_Full.js"); //Se quita para @firma
+        jsclient.add(host + "WS_Full.js"); //Se quita para @firma
         jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");
         

@@ -79,6 +79,7 @@ import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
 import services.ComunicacionesInternasService;
+import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -92,6 +93,7 @@ import services.MensajeService;
 import services.comunicacionesInternas.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
+import swhiperreg.ciservices.ArrayOfString;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -219,24 +221,23 @@ public class Start extends Job {
 		
 		// Para mostrar información acerca de la inyección de los servicios
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		System.out.println("Tipo: "+gestorDocumentalService.getClass());
 		gestorDocumentalService.mostrarInfoInyeccion();
-//		
+		
 		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		firmaService.mostrarInfoInyeccion();
-//		
+		
 		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 		registroService.mostrarInfoInyeccion();
-//		
+		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
-//		
+		
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
 		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
-//
+		
 		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
 		registroLibroResolucionesService.mostrarInfoInyeccion();
 
@@ -245,16 +246,52 @@ public class Start extends Job {
 		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
+
+		ComunicacionesInternasService comunicacionInternaService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
+		comunicacionInternaService.mostrarInfoInyeccion();
 		
-//		AsientoCIFap asientoEntrada = new AsientoCIFap();
-//		asientoEntrada.resumen = "TEST";
-//		asientoEntrada.interesado = "TES";
-//		asientoEntrada.unidadOrganicaDestino = new Long(1607);
-//		asientoEntrada.userId = "PLATIN";
-//		asientoEntrada.numeroDocumentos = new Integer(0);
-//		asientoEntrada.password=comunicacionesService.encriptarPassword("PLATIN");
+		//Probando crear un asiento A MANO -> Todo esto tiene una página en el módulo -> TODO
+		
+		AsientoAmpliadoCIFap asientoEntrada = new AsientoAmpliadoCIFap();
+		asientoEntrada.resumen = "TEST";
+		asientoEntrada.interesado = "TES";
+		asientoEntrada.unidadOrganicaDestino = new ReturnUnidadOrganicaFap();
+		asientoEntrada.unidadOrganicaDestino.codigo = new Long(23193);
+		asientoEntrada.unidadOrganicaOrigen= new ReturnUnidadOrganicaFap();
+		asientoEntrada.unidadOrganicaOrigen.codigo =new Long(23193);
+		System.out.println("codigo" + asientoEntrada.unidadOrganicaDestino.codigo.toString());
+		asientoEntrada.userId = "PLATIN";
+		asientoEntrada.uris = new ArrayList<ListaUris>();
+		ListaUris listaUris = new ListaUris(); // ListaUris es un STRING
+		ListaUris listaUris2 = new ListaUris(); // ListaUris es un STRING
+		listaUris.uri = "abc";
+		asientoEntrada.uris.add(listaUris);
+		listaUris2.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000013840/v01";
+		asientoEntrada.uris.add(listaUris2);
+		asientoEntrada.numeroDocumentos = new Integer(0);
+		asientoEntrada.password=comunicacionInternaService.encriptarPassword("PLATIN");
+		System.out.println("Rsumen: " + asientoEntrada.resumen);
+		System.out.println("Rsumen: " + asientoEntrada.interesado);
+		System.out.println("Rsumen: " + asientoEntrada.unidadOrganicaDestino);
+		System.out.println("Rsumen: " + asientoEntrada.password);
+		
+		ReturnComunicacionInternaAmpliadaFap comInterna;
+		try {
+			comInterna = comunicacionInternaService.crearNuevoAsientoAmpliado(asientoEntrada);
+			System.out.println("tIPO cOMUNICACION: " + comInterna.tipoComunicacion);
+			System.out.println("tIPO cOMUNICACION: " + comInterna.unidadOrganicaOrigen);
+			System.out.println("tIPO cOMUNICACION: " + comInterna.interesado.nombre);
+			System.out.println("tIPO cOMUNICACION: " + comInterna.error.descripcion);
+		} catch (ComunicacionesInternasServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 //		System.out.println("SALE: "+comunicacionesService.crearNuevoAsiento(asientoEntrada).fecha);
 		
+	//	List<ReturnUnidadOrganicaFap> resultado = comunicacionesService.obtenerUnidadesOrganicas("PLATIN", "PLATIN");
+
 //		ServiciosGenericosServiceImpl genericosService = InjectorConfig.getInjector().getInstance(ServiciosGenericosServiceImpl.class);
 //		genericosService.mostrarInfoInyeccion();
 		

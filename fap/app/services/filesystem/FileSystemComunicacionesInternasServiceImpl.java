@@ -11,6 +11,7 @@ import models.AsientoCIFap;
 import models.ListaUris;
 import models.ReturnComunicacionInternaFap;
 import models.ReturnInteresadoFap;
+import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import tags.ComboItem;
 
@@ -49,10 +50,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 	}
 	
 	@Override
-	public List<String> obtenerUnidadesOrganicas(String userId, String password){
-		List<String> resultado = new ArrayList<String>();
-		resultado.add("unidad 1");
-		resultado.add("unidad 2");
+	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(String userId, String password){
+		List<ReturnUnidadOrganicaFap> resultado = new ArrayList<ReturnUnidadOrganicaFap>();
+		resultado.add(new ReturnUnidadOrganicaFap());
+		resultado.add(new ReturnUnidadOrganicaFap());
 		return resultado;
 	}
 

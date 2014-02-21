@@ -19,15 +19,12 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ReturnInteresadoFap extends ReturnInteresadoCIFap {
+public class ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
 	// Código de los atributos
 
-	@ValueFromTable("tipoDocumentoCI")
-	public String tipoDocumento;
+	public String unidadOrganicaOrigen;
 
-	public String numeroDocumento;
-
-	public String letra;
+	public String unidadOrganicaPropuesta;
 
 	public void init() {
 		super.init();

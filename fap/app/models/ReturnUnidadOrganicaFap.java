@@ -19,18 +19,34 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ReturnInteresadoFap extends ReturnInteresadoCIFap {
+public class ReturnUnidadOrganicaFap extends FapModel {
 	// Código de los atributos
 
-	@ValueFromTable("tipoDocumentoCI")
-	public String tipoDocumento;
+	public Long codigo;
 
-	public String numeroDocumento;
+	public String codigoCompleto;
 
-	public String letra;
+	public String descripcion;
+
+	public String esBaja;
+
+	public String esReceptora;
+
+	public Long codigoReceptora;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ReturnErrorFap error;
+
+	public ReturnUnidadOrganicaFap() {
+		init();
+	}
 
 	public void init() {
-		super.init();
+
+		if (error == null)
+			error = new ReturnErrorFap();
+		else
+			error.init();
 
 		postInit();
 	}

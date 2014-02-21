@@ -15,6 +15,7 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import messages.Messages;
+import models.ReturnUnidadOrganicaFap;
 
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
@@ -23,6 +24,7 @@ import properties.PropertyPlaceholder;
 
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
+import swhiperreg.service.ReturnUnidadOrganica;
 import swhiperreg.service.Service;
 import swhiperreg.service.ServiceSoap;
 import utils.ComunicacionesInternasUtils;
@@ -73,7 +75,7 @@ public class ServiciosGenericosServiceImpl {
 		try {
 			String usuario = FapProperties.get("fap.platino.registro.username");
 			String password = FapProperties.get("fap.platino.registro.password");
-			System.out.println("+++++++++++++++++++ PASSWORD Genericos: "+password);
+			//System.out.println("+++++++++++++++++++ PASSWORD Genericos: "+password);
 			hasConnection = validarUsuario(usuario, password);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
@@ -82,9 +84,17 @@ public class ServiciosGenericosServiceImpl {
 		return hasConnection; 
 	}
 
-	public List<String> consultaUnidadesOrganicas(String userId, String password){
+	public List<ReturnUnidadOrganicaFap> consultaUnidadesOrganicas(String userId, String password){
 		ArrayOfReturnUnidadOrganica resultado = genericosServices.obtenerUnidadesOrganicas(0, userId, password);
-		return ComunicacionesInternasUtils.ArrayOfReturnUnidadOrganica2List(resultado);
+		 ReturnUnidadOrganica unidadorganica = resultado.getReturnUnidadOrganica().get(0);
+		 System.out.println("codigo: " + unidadorganica.getCodigo());
+		 System.out.println("codigo completo: " + unidadorganica.getCodigoCompleto());
+		 System.out.println("descripcion: " + unidadorganica.getDescripcion());
+		 System.out.println("es baja: " + unidadorganica.getEsBaja());
+		 System.out.println("es receptora: " + unidadorganica.getEsReceptora());
+		 System.out.println("codigo receptora: " + unidadorganica.getCodigoUOReceptora());
+		 System.out.println("error: " + unidadorganica.getError().toString());
+		 return ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(resultado);
 	}
 
 	public boolean validarUsuario (String userId, String password){
@@ -103,7 +113,7 @@ public class ServiciosGenericosServiceImpl {
 			Messages.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
 			return false;
 		} else {
-			play.Logger.error("Validación correcta del usuario "+userId+" en Comunicaciones Internas");
+			play.Logger.info("Validación correcta del usuario "+userId+" en Comunicaciones Internas");
 			return true;
 		}
 		

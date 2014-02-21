@@ -127,7 +127,7 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	
 	//---------TOOLS----------------------------
 	
-	private static XMLGregorianCalendar DateTime2XMLGregorianCalendar(DateTime fecha) throws DatatypeConfigurationException {
+	public static XMLGregorianCalendar DateTime2XMLGregorianCalendar(DateTime fecha) throws DatatypeConfigurationException {
 		if (fecha == null)
 			return null;
 		GregorianCalendar gcal = new GregorianCalendar();

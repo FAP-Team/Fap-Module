@@ -47,7 +47,7 @@ public class ReturnComunicacionInternaFap extends FapModel {
 	public String unidadOrganica;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ReturnInteresadoFap interesado;
+	public ReturnInteresadoCIFap interesado;
 
 	public String tipoTransporte;
 
@@ -55,8 +55,8 @@ public class ReturnComunicacionInternaFap extends FapModel {
 	@JoinTable(name = "returncomunicacioninternafap_uris")
 	public List<ListaUris> uris;
 
-	@ValueFromTable("listaReturnErrorFap")
-	public String error;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ReturnErrorFap error;
 
 	public ReturnComunicacionInternaFap() {
 		init();
@@ -65,12 +65,17 @@ public class ReturnComunicacionInternaFap extends FapModel {
 	public void init() {
 
 		if (interesado == null)
-			interesado = new ReturnInteresadoFap();
+			interesado = new ReturnInteresadoCIFap();
 		else
 			interesado.init();
 
 		if (uris == null)
 			uris = new ArrayList<ListaUris>();
+
+		if (error == null)
+			error = new ReturnErrorFap();
+		else
+			error.init();
 
 		postInit();
 	}

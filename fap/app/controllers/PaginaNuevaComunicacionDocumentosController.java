@@ -79,10 +79,10 @@ public class PaginaNuevaComunicacionDocumentosController extends PaginaNuevaComu
 	public static void seleccionar(Long id, List<Long> idsSeleccionados) {
 		//Este método solo "almacena los documentos" creando el asiento
 		//El asiento se asigna a la comunicacion interna en guardar
-		AsientoCIFap asiento = new AsientoCIFap();
+		//AsientoCIFap asiento = new AsientoCIFap();
 		Long idComunicacionInterna = id;
 		ComunicacionInterna comunicacionInterna = ComunicacionInterna.findById(idComunicacionInterna);
-		if (!idsSeleccionados.isEmpty() && idsSeleccionados != null){
+		if (idsSeleccionados != null && !idsSeleccionados.isEmpty()){
 			for (Long idFila : idsSeleccionados) {
 				// El documento puede no estar subido a Platino -> ¿uri en platino?
 				Documento doc = Documento.findById(idFila);
@@ -95,7 +95,11 @@ public class PaginaNuevaComunicacionDocumentosController extends PaginaNuevaComu
 				//TODO Queda adjuntar los documentos, por ahora se prueba sin envio de docs 
 			}
 		}
+		else{
+			System.out.println("No hay documentos asociados");
+		}
 		comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
+		comunicacionInterna.save(); //esto es para que se guarden las uris del asiento
 		SolicitudGenerica solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.comunicacionesInternas comunicacionesInternas where comunicacionesInternas.id = ?", idComunicacionInterna).first();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		ids.put("idSolicitud", solicitud.id);

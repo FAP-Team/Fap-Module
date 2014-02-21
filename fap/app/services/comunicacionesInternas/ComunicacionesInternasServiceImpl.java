@@ -16,10 +16,12 @@ import es.gobcan.platino.servicios.sfst.FirmaService;
 
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
+import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import models.AsientoCIFap;
 import models.ReturnComunicacionInternaFap;
+import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import services.platino.PlatinoFirmaServiceImpl;
 import swhiperreg.ciservices.ArrayOfString;
@@ -32,6 +34,7 @@ import swhiperreg.entradaservices.ReturnEntrada;
 import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 
+@InjectSupport
 public class ComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
 
 	private CIServicesSoap comunicacionesServices;
@@ -94,34 +97,40 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) {
 		ArrayOfString listaUris = new ArrayOfString();
+		System.out.println("Rsumen: " + asientoFap.resumen);
+		System.out.println("Rsumen: " + asientoFap.interesado);
+		System.out.println("Rsumen: " + asientoFap.unidadOrganicaDestino);
+		System.out.println("Rsumen: " + asientoFap.password);
+		System.out.println("Rsumen: " + asientoFap.userId);
 		
 		for (int i = 0; i < asientoFap.uris.size(); i++){
 			listaUris.getString().add(asientoFap.uris.get(i).uri);
 		}
 		
-		return ComunicacionesInternasUtils.comunicacionInterna2ComunicacionInternaFap(
-				comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
-											asientoFap.resumen,
-											asientoFap.numeroDocumentos,
-											asientoFap.interesado,
-											asientoFap.unidadOrganicaDestino,
-											asientoFap.asuntoCodificado,
-											asientoFap.userId,
-											asientoFap.password,
-											asientoFap.tipoTransporte,
-											listaUris));
+		ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
+				asientoFap.resumen,
+				asientoFap.numeroDocumentos,
+				asientoFap.interesado,
+				asientoFap.unidadOrganicaDestino.codigo,
+				asientoFap.asuntoCodificado,
+				asientoFap.userId,
+				asientoFap.password,
+				asientoFap.tipoTransporte,
+				listaUris);
+		System.out.println(respuesta.getUsuario().toString());
 		
+		return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
 	}
 
 	@Override
-	public List<String> obtenerUnidadesOrganicas(String userId, String password){
+	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(String userId, String password){
 		return this.genericosService.consultaUnidadesOrganicas(userId, encriptarPassword(password));
 	}
 	
 	//TODO poner privado y quitar del service
 	public String encriptarPassword(String password){
         try {
-            return PlatinoSecurityUtils.encriptarPassword(password);
+            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
         } catch (Exception e) {
             throw new RuntimeException("Error encriptando la contraseña");
         }	    

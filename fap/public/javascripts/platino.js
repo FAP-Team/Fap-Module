@@ -1,8 +1,8 @@
 Firma._getCertificados = function(){
 		try {			
-			//initPlatinoWebSigner();
+			initPlatinoWebSigner();
 			//@Firma
-			initFirma();;
+			//initFirma();;
 			
 			arrCAs = new Array(
 					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
@@ -58,9 +58,9 @@ var Platino = {
 		}
 
 		try {			
-			//initPlatinoWebSigner();
+			initPlatinoWebSigner();
 			//@Firma
-			initFirma();
+			//initFirma();
 			
 			arrCAs = new Array(
 					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
@@ -157,9 +157,9 @@ function actualizarCertificadosValidos(elementId, options) {
 		if (selectElement == null)
 			return;
 		
-		//initPlatinoWebSigner();
+		initPlatinoWebSigner();
 		//@Firma
-		initFirma();
+		//initFirma();
 		arrCAs = new Array(
 				'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 				'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',

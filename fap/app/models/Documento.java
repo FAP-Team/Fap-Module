@@ -91,6 +91,9 @@ public class Documento extends FapModel {
 
 	public void init() {
 
+		if (uriPlatino == null)
+			uriPlatino = "null";
+
 		if (clasificado == null)
 			clasificado = false;
 
@@ -106,10 +109,10 @@ public class Documento extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	public Documento() {
-		clasificado = false;
-		uriPlatino = null;
-	}
+	//	public Documento() {
+	//		clasificado = false;
+	//		uriPlatino = null;
+	//	}
 
 	public boolean isMultiple() {
 		return (tipo != null && DocumentosUtils.esTipoMultiple(tipo));
@@ -215,6 +218,11 @@ public class Documento extends FapModel {
 
 	public static Documento findByUri(String uri) {
 		Documento documento = models.Documento.find("byUri", uri).first();
+		return documento;
+	}
+
+	public static Documento findByUriPlatino(String uriPlatino) {
+		Documento documento = models.Documento.find("byUriPlatino", uriPlatino).first();
 		return documento;
 	}
 

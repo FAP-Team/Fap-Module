@@ -1767,10 +1767,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	}
 	
 	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" noForm{
-		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas popupLeer=PopupDatosComunicacionInterna{
+		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
+		popupBorrar=PopupDatosComunicacionInterna popupLeer=PopupDatosComunicacionInterna {
 			Columna campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
 			Columna campo=ComunicacionInterna.asiento.numeroDocumentos titulo="Cantidad documentos aportados"
-			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino titulo="Unidad orgánica destino"
+			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
 			Columna campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones"
 		}
 		Form formBoton {
@@ -1783,7 +1784,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	
 	Popup PopupDatosComunicacionInterna campo=SolicitudGenerica.comunicacionesInternas {
 		Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino titulo="Unidad orgánica destino"
+		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
 		Texto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
 		
 		//Tabla sobreescrita -> Obtener doc a partir de su uri
@@ -1815,7 +1816,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 			Texto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
 			//Número de documentos = Autocalculado
 			Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
-			Combo uoDestino titulo="Unidad Orgánica destino" campo=ComunicacionInterna.asiento.unidadOrganicaDestino
+			Combo uoDestino titulo="Unidad Orgánica destino" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo
 		}
 		
 	} 

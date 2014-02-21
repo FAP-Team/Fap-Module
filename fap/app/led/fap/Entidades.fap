@@ -988,7 +988,7 @@ Entidad AsientoCIFap {
 	String resumen
 	Integer numeroDocumentos  //No ob
 	String interesado //No ob
-	Long unidadOrganicaDestino  //No ob si asunto codificado existe
+	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
 	String asuntoCodificado  //No ob
 	String userId
 	String password //String utf-16 unicode
@@ -1021,6 +1021,16 @@ Entidad ReturnInteresadoFap {
 //	Lista tipoDocumentoCI tipoDocumento //Tira de la lista
 //	String numeroDocumento
 //	String letra
+}
+
+Entidad ReturnUnidadOrganicaFap{
+	Long codigo
+	String codigoCompleto
+	String descripcion
+	String esBaja
+	String esReceptora
+	Long codigoReceptora
+	String error
 }	
 	
 	

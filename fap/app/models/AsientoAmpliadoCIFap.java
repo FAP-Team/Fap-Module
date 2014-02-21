@@ -19,40 +19,23 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class AsientoCIFap extends FapModel {
+public class AsientoAmpliadoCIFap extends AsientoCIFap {
 	// Código de los atributos
 
-	public String observaciones;
-
-	public String resumen;
-
-	public Integer numeroDocumentos;
-
-	public String interesado;
-
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ReturnUnidadOrganicaFap unidadOrganicaDestino;
+	public ReturnUnidadOrganicaFap unidadOrganicaOrigen;
 
-	public String asuntoCodificado;
-
-	public String userId;
-
-	public String password;
-
-	public String tipoTransporte;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "asientocifap_uris")
-	public List<ListaUris> uris;
-
-	public AsientoCIFap() {
+	public AsientoAmpliadoCIFap() {
 		init();
 	}
 
 	public void init() {
+		super.init();
 
-		if (uris == null)
-			uris = new ArrayList<ListaUris>();
+		if (unidadOrganicaOrigen == null)
+			unidadOrganicaOrigen = new ReturnUnidadOrganicaFap();
+		else
+			unidadOrganicaOrigen.init();
 
 		postInit();
 	}

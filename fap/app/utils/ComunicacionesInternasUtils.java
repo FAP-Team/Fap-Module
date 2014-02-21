@@ -15,13 +15,16 @@ import swhiperreg.ciservices.ReturnInteresadoCI;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
 import tags.ComboItem;
+import models.ComunicacionInterna;
 import models.ListaUris;
 import models.ReturnComunicacionInternaFap;
 import models.ReturnInteresadoFap;
+import models.ReturnUnidadOrganicaFap;
+import models.SolicitudGenerica;
 
 public class ComunicacionesInternasUtils {
 
-	public static ReturnComunicacionInternaFap comunicacionInterna2ComunicacionInternaFap (ReturnComunicacionInterna respuesta){
+	public static ReturnComunicacionInternaFap respuestaComunicacionInterna2respuestaComunicacionInternaFap (ReturnComunicacionInterna respuesta){
 		ReturnComunicacionInternaFap respuestaFap = new ReturnComunicacionInternaFap();
 		respuestaFap.usuario = respuesta.getUsuario();
 		respuestaFap.resumen = respuesta.getResumen();
@@ -67,23 +70,48 @@ public class ComunicacionesInternasUtils {
 		return interesadoFap;
 	}
 	
-	public static List<String> ArrayOfReturnUnidadOrganica2List (ArrayOfReturnUnidadOrganica uo){
+	
+	public static List<ReturnUnidadOrganicaFap> returnUnidadOrganica2returnUnidadOrganicaFap (ArrayOfReturnUnidadOrganica uo){
 		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
-		List<String> resultado = new ArrayList<String>();
-		for (ReturnUnidadOrganica unidad : unidades) {
-			if (unidad.getEsReceptora().equals("S")){
-				resultado.add(unidad.getDescripcion());
+		List<ReturnUnidadOrganicaFap> unidadesFap = new ArrayList<ReturnUnidadOrganicaFap>();
+		for (ReturnUnidadOrganica unidad:unidades){
+			ReturnUnidadOrganicaFap unidadOrganica = new ReturnUnidadOrganicaFap();
+			unidadOrganica.codigo = unidad.getCodigo();
+			unidadOrganica.codigoCompleto = unidad.getCodigoCompleto();
+			unidadOrganica.descripcion = unidad.getDescripcion();
+			unidadOrganica.esBaja = unidad.getEsBaja();
+			unidadOrganica.esReceptora = unidad.getEsReceptora();
+			unidadOrganica.codigoReceptora = unidad.getCodigoUOReceptora();
+			unidadOrganica.error = unidad.getError().toString();
+			//esta comprobación estaba hecha en la implementación anterior, habrá que preguntar por qué
+			if (unidadOrganica.esReceptora.equals("S")){
+				unidadesFap.add(unidadOrganica);
 			}
 		}
-		return resultado;
+		return unidadesFap;
 	}
+	
+//	public static List<String> ArrayOfReturnUnidadOrganica2List (ArrayOfReturnUnidadOrganica uo){
+//		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
+//		List<String> resultado = new ArrayList<String>();
+//		for (ReturnUnidadOrganica unidad : unidades) {
+//			if (unidad.getEsReceptora().equals("S")){
+//				resultado.add(unidad.getDescripcion());
+//			}
+//		}
+//		return resultado;
+//	}
 
 	public static List<ComboItem> unidadesOrganicas2Combo (String userId, String password){
 		List<ComboItem> resultado = new ArrayList<ComboItem>();
 		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
-		List<String> unidades = comunicacionesService.obtenerUnidadesOrganicas(userId, password);
-		for (String unidad : unidades) {
-			resultado.add(new ComboItem(unidad));
+		List<ReturnUnidadOrganicaFap> unidades = comunicacionesService.obtenerUnidadesOrganicas(userId, password);
+		for (ReturnUnidadOrganicaFap unidad : unidades) {
+			ReturnUnidadOrganicaFap unidadOrganica = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", unidad.codigo).first();
+			if (unidadOrganica  == null && unidad != null)
+				unidad.save();
+			resultado.add(new ComboItem(unidad.codigo, unidad.codigo + " "  + unidad.descripcion));
+			System.out.println("key 0: " + resultado.get(resultado.size()-1).getKey().toString());
 		}
 		return resultado;
 	}

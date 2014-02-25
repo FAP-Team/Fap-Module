@@ -12,6 +12,9 @@ import org.apache.cxf.tools.corba.common.WSDLUtils;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
+import config.InjectorConfig;
+import controllers.fap.AgenteController;
+
 import es.gobcan.platino.servicios.sfst.FirmaService;
 
 import platino.PlatinoProxy;
@@ -19,6 +22,7 @@ import platino.PlatinoSecurityUtils;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import models.Agente;
 import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
 import models.ReturnComunicacionInternaAmpliadaFap;
@@ -28,6 +32,7 @@ import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
 import services.VerificarDatosServiceException;
 import services.platino.PlatinoFirmaServiceImpl;
+import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ArrayOfString;
 import swhiperreg.ciservices.CIServices;
 import swhiperreg.ciservices.CIServicesSoap;
@@ -46,6 +51,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private CIServicesSoap comunicacionesServices;
 	private ServiciosGenericosServiceImpl genericosService;
 	private PropertyPlaceholder propertyPlaceholder;
+	private PlatinoGestorDocumentalService platinoGestorDocumental;
 	
 	@Inject
 	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
@@ -63,6 +69,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		httpConduit.setClient(httpClientPolicy);
 		
+		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
 		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
 		genericosService.mostrarInfoInyeccion();
 	}
@@ -103,11 +110,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) {
 		ArrayOfString listaUris = new ArrayOfString();
-//		System.out.println("Rsumen: " + asientoFap.resumen);
-//		System.out.println("Rsumen: " + asientoFap.interesado);
-//		System.out.println("Rsumen: " + asientoFap.unidadOrganicaDestino);
-//		System.out.println("Rsumen: " + asientoFap.password);
-//		System.out.println("Rsumen: " + asientoFap.userId);
 		
 		for (int i = 0; i < asientoFap.uris.size(); i++){
 			listaUris.getString().add(asientoFap.uris.get(i).uri);
@@ -131,10 +133,13 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
 
 		ArrayOfString listaUris = new ArrayOfString();
-
+		
 		for (int i = 0; i < asientoAmpliadoFap.uris.size(); i++){
-			
-			listaUris.getString().add(GestorDocumentalUtils.obtenerURIPlatino(asientoAmpliadoFap.uris.get(i).uri, "dgonmor", comunicacionesServices));
+			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(asientoAmpliadoFap.uris.get(i).uri, comunicacionesServices);
+			if ((uriPlatino != null) && (!uriPlatino.isEmpty()))
+				listaUris.getString().add(uriPlatino);
+			else
+				play.Logger.error("Error al obtener la uri de platino del documento con uri "+asientoAmpliadoFap.uris.get(i).uri);
 		}
 		
 		try{
@@ -150,9 +155,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 					asientoAmpliadoFap.tipoTransporte,
 					listaUris,
 					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
-			if (respuesta.getError() == null){
-				System.out.println(respuesta.getUsuario().toString());
-			}
 			
 			return ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
 		}

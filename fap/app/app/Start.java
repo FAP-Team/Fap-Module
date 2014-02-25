@@ -252,40 +252,40 @@ public class Start extends Job {
 		
 		//Probando crear un asiento A MANO -> Todo esto tiene una página en el módulo -> TODO
 		
-		AsientoAmpliadoCIFap asientoEntrada = new AsientoAmpliadoCIFap();
-		asientoEntrada.resumen = "TEST";
-		asientoEntrada.interesado = "TES";
-		asientoEntrada.unidadOrganicaDestino = new ReturnUnidadOrganicaFap();
-		asientoEntrada.unidadOrganicaDestino.codigo = new Long(23193);
-		asientoEntrada.unidadOrganicaOrigen= new ReturnUnidadOrganicaFap();
-		asientoEntrada.unidadOrganicaOrigen.codigo =new Long(23193);
-		System.out.println("codigo" + asientoEntrada.unidadOrganicaDestino.codigo.toString());
-		asientoEntrada.userId = "PLATIN";
-		asientoEntrada.uris = new ArrayList<ListaUris>();
-		ListaUris listaUris = new ListaUris(); // ListaUris es un STRING
-		ListaUris listaUris2 = new ListaUris(); // ListaUris es un STRING
-		listaUris.uri = "abc";
-		asientoEntrada.uris.add(listaUris);
-		listaUris2.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000013840/v01";
-		asientoEntrada.uris.add(listaUris2);
-		asientoEntrada.numeroDocumentos = new Integer(0);
-		asientoEntrada.password=comunicacionInternaService.encriptarPassword("PLATIN");
-		System.out.println("Rsumen: " + asientoEntrada.resumen);
-		System.out.println("Rsumen: " + asientoEntrada.interesado);
-		System.out.println("Rsumen: " + asientoEntrada.unidadOrganicaDestino);
-		System.out.println("Rsumen: " + asientoEntrada.password);
-		
-		ReturnComunicacionInternaAmpliadaFap comInterna;
-		try {
-			comInterna = comunicacionInternaService.crearNuevoAsientoAmpliado(asientoEntrada);
-			System.out.println("tIPO cOMUNICACION: " + comInterna.tipoComunicacion);
-			System.out.println("tIPO cOMUNICACION: " + comInterna.unidadOrganicaOrigen);
-			System.out.println("tIPO cOMUNICACION: " + comInterna.interesado.nombre);
-			System.out.println("tIPO cOMUNICACION: " + comInterna.error.descripcion);
-		} catch (ComunicacionesInternasServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		AsientoAmpliadoCIFap asientoEntrada = new AsientoAmpliadoCIFap();
+//		asientoEntrada.resumen = "TEST";
+//		asientoEntrada.interesado = "TES";
+//		asientoEntrada.unidadOrganicaDestino = new ReturnUnidadOrganicaFap();
+//		asientoEntrada.unidadOrganicaDestino.codigo = new Long(23193);
+//		asientoEntrada.unidadOrganicaOrigen= new ReturnUnidadOrganicaFap();
+//		asientoEntrada.unidadOrganicaOrigen.codigo =new Long(23193);
+//		System.out.println("codigo" + asientoEntrada.unidadOrganicaDestino.codigo.toString());
+//		asientoEntrada.userId = "PLATIN";
+//		asientoEntrada.uris = new ArrayList<ListaUris>();
+//		ListaUris listaUris = new ListaUris(); // ListaUris es un STRING
+//		ListaUris listaUris2 = new ListaUris(); // ListaUris es un STRING
+//		listaUris.uri = "abc";
+//		asientoEntrada.uris.add(listaUris);
+//		listaUris2.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000013840/v01";
+//		asientoEntrada.uris.add(listaUris2);
+//		asientoEntrada.numeroDocumentos = new Integer(0);
+//		asientoEntrada.password=comunicacionInternaService.encriptarPassword("PLATIN");
+//		System.out.println("Rsumen: " + asientoEntrada.resumen);
+//		System.out.println("Rsumen: " + asientoEntrada.interesado);
+//		System.out.println("Rsumen: " + asientoEntrada.unidadOrganicaDestino);
+//		System.out.println("Rsumen: " + asientoEntrada.password);
+//		
+//		ReturnComunicacionInternaAmpliadaFap comInterna;
+//		try {
+//			comInterna = comunicacionInternaService.crearNuevoAsientoAmpliado(asientoEntrada);
+//			System.out.println("tIPO cOMUNICACION: " + comInterna.tipoComunicacion);
+//			System.out.println("tIPO cOMUNICACION: " + comInterna.unidadOrganicaOrigen);
+//			System.out.println("tIPO cOMUNICACION: " + comInterna.interesado.nombre);
+//			System.out.println("tIPO cOMUNICACION: " + comInterna.error.descripcion);
+//		} catch (ComunicacionesInternasServiceException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		
 //		System.out.println("SALE: "+comunicacionesService.crearNuevoAsiento(asientoEntrada).fecha);

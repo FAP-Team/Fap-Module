@@ -91,9 +91,6 @@ public class Documento extends FapModel {
 
 	public void init() {
 
-		if (uriPlatino == null)
-			uriPlatino = "null";
-
 		if (clasificado == null)
 			clasificado = false;
 
@@ -109,10 +106,6 @@ public class Documento extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	//	public Documento() {
-	//		clasificado = false;
-	//		uriPlatino = null;
-	//	}
 
 	public boolean isMultiple() {
 		return (tipo != null && DocumentosUtils.esTipoMultiple(tipo));

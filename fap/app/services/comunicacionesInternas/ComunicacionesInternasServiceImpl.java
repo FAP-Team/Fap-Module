@@ -108,13 +108,18 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 
 
 	@Override
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) {
+	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
 		ArrayOfString listaUris = new ArrayOfString();
 		
 		for (int i = 0; i < asientoFap.uris.size(); i++){
-			listaUris.getString().add(asientoFap.uris.get(i).uri);
+			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(asientoFap.uris.get(i).uri, comunicacionesServices);
+			if ((uriPlatino != null) && (!uriPlatino.isEmpty()))
+				listaUris.getString().add(uriPlatino);
+			else
+				play.Logger.error("Error al obtener la uri de platino del documento con uri "+asientoFap.uris.get(i).uri);
 		}
 		
+		try{
 		ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
 				asientoFap.resumen,
 				asientoFap.numeroDocumentos,
@@ -128,6 +133,11 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		System.out.println(respuesta.getUsuario().toString());
 		
 		return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+		}
+		catch(Exception e){
+			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("No se ha podido obtener respuesta");
+		}
 	}
 	
 	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{

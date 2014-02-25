@@ -22,7 +22,7 @@ import tags.ComboItem;
 public class FileSystemComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
 
 	@Override
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) {
+	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
 		ReturnComunicacionInternaFap respuesta = new ReturnComunicacionInternaFap();
 		respuesta.usuario = asientoFap.userId;
 		respuesta.resumen = asientoFap.resumen;

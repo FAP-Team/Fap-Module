@@ -40,6 +40,7 @@ import models.Convocatoria;
 import models.Documento;
 import models.ExpedientePlatino;
 import models.ResolucionFAP;
+import models.SolicitudFirmaPortafirma;
 import models.SolicitudPortafirmaFAP;
 
 import services.GestorDocumentalService;
@@ -51,6 +52,7 @@ import services.platino.*;
 import tags.ComboItem;
 import utils.BinaryResponse;
 import utils.WSUtils;
+import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoAedType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
@@ -135,24 +137,14 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 		gcal.setTimeInMillis(fecha.getMillis());
 		return DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 	}
-	
-	private PrioridadEnumType getPrioridadEnumTypeFromValue (String strPrioridad) {
-		if (strPrioridad.equalsIgnoreCase("ALTA"))
-			return PrioridadEnumType.ALTA;
-		if ((strPrioridad.equalsIgnoreCase("NORMAL")) || (strPrioridad.equalsIgnoreCase("MEDIA"))) // En el portafirma es normal
-			return PrioridadEnumType.NORMAL;
-		return PrioridadEnumType.BAJA;
-	}
-	
+
 	private void setupSecurityHeadersWithUser(String uid) {
 		try {
-			
 			String userUri = platinoDBOrgPort.recuperarURIPersona(uid);
 			WSUtils.configureSecurityHeadersWithUser(portafirmaPort, userUri);
-			
 		} catch (DBOrganizacionException_Exception e) {
-			play.Logger.info("Error al configuar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage());
-			//throw new PortafirmaFapServiceException("Error al configuar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage(), e);
+			play.Logger.info("Error al configurar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage());
+			//throw new PortafirmaFapServiceException("Error al configurar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage(), e);
 		}
 	}
 	
@@ -204,72 +196,23 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 			setupSecurityHeadersWithUser(uriUsuario);
 		}
 	}
-	
-	//Método que crea un objeto SolicitudFirmaPropiedadesType a partir de una Resolución FAP
-	private SolicitudFirmaPropiedadesType getCrearSolicitudWSTypeFromResolucionFAP (ResolucionFAP resolucion, String uidSolicitante, String uidDestinatario) {
-		SolicitudFirmaPropiedadesType solFirma = new SolicitudFirmaPropiedadesType();
-		
-		try {
-			String uriSolicitante = platinoDBOrgPort.recuperarURIPersona(uidSolicitante);
-			String uriDestinatario= platinoDBOrgPort.recuperarURIPersona(uidDestinatario);
-			solFirma.setUriFuncionarioSolicitante(uriSolicitante);
-			solFirma.setUriFuncionarioDestinatario(uriDestinatario);
-			
-			String tema = "TEMA";
-			//solFirma.setTema(resolucion.descripcion);
-			solFirma.setTema(tema);
-			
-			String materia = "PRUEBA DESDE FAP";
-			//solFirma.setMateria(resolucion.sintesis);
-			solFirma.setMateria(materia);
-			
-			//solFirma.setProcedimiento(properties.FapProperties.get("fap.platino.gestordocumental.procedimiento"));
-			//solFirma.setExpediente(properties.FapProperties.get("fap.platino.gestordocumental.expediente.descripcion"));
-			
-			//Las solicitudes de firma son de tipo SOLICITUD
-			String tipoDoc = platinoProcedimientosPort.getTipoDocumento("SOL").getTipo();
-			solFirma.setTipoDocumento(tipoDoc);
-			
-			//La firma se solicita en serie para todos los firmantes
-			solFirma.setMecanismoFirma(MecanismoFirmaEnumType.SERIE);
-			solFirma.setPlazoMaximo(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
-			
-		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
-		} catch (DBOrganizacionException_Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		return solFirma;
-	}
-	
-	private void asociarDocumentoSolicitudFirma (ResolucionFAP resolucion) throws SolicitudFirmaExcepcion {
-		
-		//Copiamos el documento oficial a Platino si no esta
-		subirDocumentoAEDaPlatino(resolucion.registro.oficial, resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-		
-		//Añadimos el documento a firmar a la solicitud
-		DocumentoSolicitudFirmaType docPlatino = new DocumentoSolicitudFirmaType();
-		docPlatino.setUriDocumento(resolucion.registro.oficial.uriPlatino);
-		System.out.println("Adjuntamos documento a firmar a la solicitud de firma");
-		portafirmaPort.crearDocumento(resolucion.idSolicitudFirma, docPlatino, TipoDocumentacionEnumType.PRINCIPAL);
-	}
-	
-	private void asociarAnexosSolicitudFirma(ResolucionFAP resolucion) throws SolicitudFirmaExcepcion {
-		// Añadimos todos los documentos que se utilizan para consulta
-		for (Documento doc: resolucion.docConsultaPortafirmasResolucion) {
-			//Copiamos el documento oficial a Platino si no esta
-			subirDocumentoAEDaPlatino(doc, resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-			
-			//Añadimos el documento a firmar a la solicitud
-			DocumentoSolicitudFirmaType docPlatino = new DocumentoSolicitudFirmaType();
-			docPlatino.setUriDocumento(doc.uriPlatino);
-			System.out.println("Adjuntamos documento a firmar a la solicitud de firma");
-			portafirmaPort.crearDocumento(resolucion.idSolicitudFirma, docPlatino, TipoDocumentacionEnumType.ANEXA);
+
+	private void asociarDocumento(String uriSolicitud, String idSolicitante, List<Documento> documentos, TipoDocumentacionEnumType tipoDocumentacionEnumType) throws SolicitudFirmaExcepcion {
+		if (documentos != null) {
+			for (Documento documento: documentos) {
+				// Copiamos el documento a Platino si no está
+				subirDocumentoAEDaPlatino(documento, idSolicitante);
+				// Añadimos el documento a la solicitud de firma
+				DocumentoSolicitudFirmaType documentoSolicitudFirmaType = new DocumentoSolicitudFirmaType();
+				documentoSolicitudFirmaType.setUriDocumento(documento.uriPlatino);
+				documentoSolicitudFirmaType.setComentario(documento.descripcionVisible); // TODO: Revisar si setComentario es lo que sale en la descripción del  interfaz de portafirma.
+				play.Logger.info("Se adjunta documento " + documento.uriPlatino + " a la solicitud de firma " + uriSolicitud);
+				// TODO: Comprobar si devuelve una uri o sólo un error cuando falla.
+				portafirmaPort.crearDocumento(uriSolicitud, documentoSolicitudFirmaType, tipoDocumentacionEnumType);
+			}
 		}
 	}
-	
+
 	//END------TOOLS----------------------------
 	//------------------------------------------
 	
@@ -286,38 +229,54 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	@Override
 	public String obtenerVersion() throws PortafirmaFapServiceException {
 		try {
-			
 			return portafirmaPort.getVersion();
-			
 		} catch (SolicitudFirmaExcepcion e) {
 			e.printStackTrace();
 		}
 		return null;
-	} 
+	}
 
+	// TODO 
 	@Override
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		
+		// Se rellena SolicitudFirmaPortafirma a partir de ResolucionFAP
+		resolucion.solicitudFirmaPortafirma.tema = resolucion.tituloInterno;
+		if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
+			resolucion.solicitudFirmaPortafirma.materia = resolucion.sintesis;
+		else
+			resolucion.solicitudFirmaPortafirma.materia = resolucion.descripcion;
+		resolucion.solicitudFirmaPortafirma.documentosFirma.add(resolucion.registro.oficial);
+		for (Documento documento: resolucion.docConsultaPortafirmasResolucion) {
+			resolucion.solicitudFirmaPortafirma.documentosConsulta.add(documento);
+		}
+		// TODO: ¿Por qué se cogen de gestor documental?
+		resolucion.solicitudFirmaPortafirma.procedimiento = properties.FapProperties.get("fap.platino.gestordocumental.procedimiento");
+		resolucion.solicitudFirmaPortafirma.expediente = properties.FapProperties.get("fap.platino.gestordocumental.expediente.descripcion");
+		resolucion.solicitudFirmaPortafirma.tipoDocumento = "SOL";
+		resolucion.solicitudFirmaPortafirma.mecanismoFirma = "SERIE";
+		resolucion.solicitudFirmaPortafirma.solicitudFechaInicio = new DateTime();
+		resolucion.solicitudFirmaPortafirma.save();
+		
 		//Configuramos el usuario del agente actual, recuperando su URI de BDOrg de platino
-		setupSecurityHeadersWithUser(resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
+		setupSecurityHeadersWithUser(resolucion.solicitudFirmaPortafirma.idSolicitante);
 		
 		try {
-			
-			//Crear solicitud de firma a partir de resolucion
-			SolicitudFirmaPropiedadesType sfpt = getCrearSolicitudWSTypeFromResolucionFAP(resolucion, resolucion.solicitudFirmaJefeServicio.usuarioLDAP, resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-			
-			//Creamos la solicitud de firma (guardar la uri en el id)
-			resolucion.idSolicitudFirma = portafirmaPort.crearSolicitudFirma(sfpt);
+			// Crear solicitud de firma
+			SolicitudFirmaPropiedadesType solicitudFirmaPropiedadesType = crearSolicitudFirmaPlatino(resolucion.solicitudFirmaPortafirma);
+			resolucion.solicitudFirmaPortafirma.uriSolicitud = portafirmaPort.crearSolicitudFirma(solicitudFirmaPropiedadesType);
 			resolucion.save();
 			
 			//Adjuntamos el documento a firmar y los documentos anexos
-			asociarDocumentoSolicitudFirma(resolucion);
-			asociarAnexosSolicitudFirma(resolucion);
+			asociarDocumento(resolucion.solicitudFirmaPortafirma.uriSolicitud, resolucion.solicitudFirmaPortafirma.idSolicitante, resolucion.solicitudFirmaPortafirma.documentosFirma, TipoDocumentacionEnumType.PRINCIPAL);
+			asociarDocumento(resolucion.solicitudFirmaPortafirma.uriSolicitud, resolucion.solicitudFirmaPortafirma.idSolicitante, resolucion.solicitudFirmaPortafirma.documentosConsulta, TipoDocumentacionEnumType.ANEXA); 
 			
-			PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
-			response.setIdSolicitud(resolucion.idSolicitudFirma);
-			response.setComentarios(sfpt.getSolicitudEstadoComentario());
-			return response;
+			PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = new PortafirmaCrearSolicitudResponse();
+			portafirmaCrearSolicitudResponse.setIdSolicitud(resolucion.solicitudFirmaPortafirma.uriSolicitud);
+			resolucion.solicitudFirmaPortafirma.solicitudEstadoComentario = "La solicitud de firma de portafirma ha sido enviada.";
+			resolucion.save();
+			portafirmaCrearSolicitudResponse.setComentarios(resolucion.solicitudFirmaPortafirma.solicitudEstadoComentario);
+			return portafirmaCrearSolicitudResponse;
 			
 		} catch (SolicitudFirmaExcepcion e) {
 			play.Logger.info("Error al crear la solicitud de firma: " + e.getMessage());
@@ -329,123 +288,128 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 		}
 	}
 
-	@Override
-	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(String titulo, String descripcion, String tipoSolicitud, String prioridad, XMLGregorianCalendar fechaTopeFirma,
-																String idSolicitante, String idDestinatario, String emailNotificacion, ResolucionFAP resolucion)
-																throws PortafirmaFapServiceException {
-		
-		//Configuramos el usuario del agente actual, recuperando su URI de BDOrg de platino
-		setupSecurityHeadersWithUser(resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-		
+	private SolicitudFirmaPropiedadesType crearSolicitudFirmaPlatino (SolicitudFirmaPortafirma solicitudFirmaPortafirma) {
+		SolicitudFirmaPropiedadesType solicitudFirmaPropiedadesType = new SolicitudFirmaPropiedadesType();
+		solicitudFirmaPropiedadesType.setArchivada(solicitudFirmaPortafirma.archivada);
+		if (solicitudFirmaPortafirma.expediente == null)
+			solicitudFirmaPropiedadesType.setExpediente(properties.FapProperties.get("fap.platino.gestordocumental.expediente.descripcion"));
+		else
+			solicitudFirmaPropiedadesType.setExpediente(solicitudFirmaPortafirma.expediente);
+		solicitudFirmaPropiedadesType.setFirmaDelegada(solicitudFirmaPortafirma.firmaDelegada);
 		try {
-			
-			//Crear solicitud de firma a partir de resolucion
-			SolicitudFirmaPropiedadesType sfpt = getCrearSolicitudWSTypeFromResolucionFAP(resolucion, idSolicitante, idDestinatario);
-			sfpt.setPlazoMaximo(fechaTopeFirma);
-			sfpt.setTema(titulo);
-			sfpt.setMateria(descripcion);
-			
-			//Creamos la solicitud de firma (guardar la uri en el id)
-			resolucion.idSolicitudFirma = portafirmaPort.crearSolicitudFirma(sfpt);
-			resolucion.save();
-			
-			//Adjuntamos el documento a firmar y los documentos anexos
-			asociarDocumentoSolicitudFirma(resolucion);
-			asociarAnexosSolicitudFirma(resolucion);
-			
-			PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
-			response.setIdSolicitud(resolucion.idSolicitudFirma);
-			response.setComentarios(sfpt.getSolicitudEstadoComentario());
-			return response;
-			
-		} catch (SolicitudFirmaExcepcion e) {
-			play.Logger.info("Error al crear la solicitud de firma: " + e.getMessage());
-			throw new PortafirmaFapServiceException("Error al crear la solicitud de firma: " + e.getMessage(), e);
-			
-		} finally {
-			//Restauramos el backoffice en las cabeceras de seguridad
-			restoreSecurityHeadersBackoffice();
-		}
-	}
-
-	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		
-		setupSecurityHeadersWithUser(resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-		
-		try {
-			
-			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(resolucion.idSolicitudFirma, true);
-			
-			return solFirma.getPropiedades().getSolicitudEstado().value();
-
-		} catch (SolicitudFirmaExcepcion e) {
-			play.Logger.info("Error al obtener el estado de la solicitud de firma");
-			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
-			
-		} finally {
-			//Restauramos el backoffice en las cabeceras de seguridad
-			restoreSecurityHeadersBackoffice();
-		}
-	}
-
-	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion, String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
-		
-		setupSecurityHeadersWithUser(resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-		
-		try {
-			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(idSolicitudFirma, true);
-			return solFirma.getPropiedades().getSolicitudEstado().value();
-			
-		} catch (SolicitudFirmaExcepcion e) {
-			play.Logger.info("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
-			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
-			
-		} finally {
-			//Restauramos el backoffice en las cabeceras de seguridad
-			restoreSecurityHeadersBackoffice();
-		}
-	}
-
-	@Override
-	public boolean comprobarSiResolucionFirmada(ResolucionFAP resolucion, String idSolicitudFirma) throws PortafirmaFapServiceException {
-		
-		setupSecurityHeadersWithUser(resolucion.solicitudFirmaJefeServicio.usuarioLDAP);
-		
-		try {
-			SolicitudFirmaType solFirma = portafirmaPort.obtenerSolicitudFirma(idSolicitudFirma, true);
-			return ((EstadoSolicitudEnumType.FIRMADA.equals(solFirma.getPropiedades().getSolicitudEstado()))
-				|| (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.equals(solFirma.getPropiedades().getSolicitudEstado())));
-			
-		} catch (SolicitudFirmaExcepcion e) {
-			play.Logger.info("Error al comprobar si la solicitud de firma se ha firmado: " + e.getMessage(), e);
-			throw new PortafirmaFapServiceException("Error al comprobar si la solicitud de firma se ha firmado: " + e.getMessage(), e);
-			
-		} finally {
-			//Restauramos el backoffice en las cabeceras de seguridad
-			restoreSecurityHeadersBackoffice();
-		}
-	}
-
-	@Override
-	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
-		
-		List<ComboItem> ret = new ArrayList<ComboItem>();
-		try {
-			ret.add(new ComboItem(platinoDBOrgPort.recuperarURIPersona("dgonmor"), "dgonmor"));
-			
-		} catch (DBOrganizacionException_Exception e) {
+			solicitudFirmaPropiedadesType.setFirmaFecha(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.firmaFecha));
+			solicitudFirmaPropiedadesType.setPlazoMaximo(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.plazoMaximo));
+			solicitudFirmaPropiedadesType.setSolicitudEstadoFecha(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.solicitudEstadoFecha));
+			solicitudFirmaPropiedadesType.setSolicitudFechaFin(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.solicitudFechaFin));
+			solicitudFirmaPropiedadesType.setSolicitudFechaInicio(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.solicitudFechaInicio));
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		solicitudFirmaPropiedadesType.setFirmaUriFuncionario(solicitudFirmaPortafirma.firmaUriFuncionario);
+		solicitudFirmaPropiedadesType.setMateria(solicitudFirmaPortafirma.materia);
+		//La firma se solicita en serie para todos los firmantes
+		if (solicitudFirmaPortafirma.mecanismoFirma == null)
+			solicitudFirmaPropiedadesType.setMecanismoFirma(MecanismoFirmaEnumType.SERIE);
+		else
+			solicitudFirmaPropiedadesType.setMecanismoFirma(MecanismoFirmaEnumType.fromValue(solicitudFirmaPortafirma.mecanismoFirma));
+		solicitudFirmaPropiedadesType.setOrigen(solicitudFirmaPortafirma.origen);
+		if (solicitudFirmaPortafirma.procedimiento == null)
+			solicitudFirmaPropiedadesType.setProcedimiento(properties.FapProperties.get("fap.platino.gestordocumental.procedimiento"));
+		else
+			solicitudFirmaPropiedadesType.setProcedimiento(solicitudFirmaPortafirma.procedimiento);
+		solicitudFirmaPropiedadesType.setSolicitudEstadoComentario(solicitudFirmaPortafirma.solicitudEstadoComentario);
+		solicitudFirmaPropiedadesType.setTema(solicitudFirmaPortafirma.tema);
+		// Las solicitudes de firma son de tipo SOLICITUD por lo que solicitudFirmaPortafirma.tipoDocumento debe ser "SOL"
+		solicitudFirmaPropiedadesType.setTipoDocumento(platinoProcedimientosPort.getTipoDocumento(solicitudFirmaPortafirma.tipoDocumento).getTipo()); 
+		try {
+			solicitudFirmaPortafirma.uriFuncionarioDestinatario = platinoDBOrgPort.recuperarURIPersona(solicitudFirmaPortafirma.idDestinatario);
+			solicitudFirmaPropiedadesType.setUriFuncionarioDestinatario(solicitudFirmaPortafirma.uriFuncionarioDestinatario);
+			solicitudFirmaPortafirma.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(solicitudFirmaPortafirma.idSolicitante);
+			solicitudFirmaPropiedadesType.setUriFuncionarioSolicitante(solicitudFirmaPortafirma.uriFuncionarioSolicitante);
+		} catch (DBOrganizacionException_Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		solicitudFirmaPortafirma.save();
+		return solicitudFirmaPropiedadesType;
+	}
+	
+	@Override
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		
-		return ret;
+		//Configuramos el usuario del agente actual, recuperando su URI de BDOrg de platino
+		setupSecurityHeadersWithUser(solicitudFirmaPortafirma.idSolicitante);
+		
+		try {
+			// Crear solicitud de firma
+			SolicitudFirmaPropiedadesType solicitudFirmaPropiedadesType = crearSolicitudFirmaPlatino(solicitudFirmaPortafirma);
+			solicitudFirmaPortafirma.uriSolicitud = portafirmaPort.crearSolicitudFirma(solicitudFirmaPropiedadesType);
+			
+			// Adjuntamos el documento a firmar y los documentos anexos
+			asociarDocumento(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.idSolicitante, solicitudFirmaPortafirma.documentosFirma, TipoDocumentacionEnumType.PRINCIPAL);
+			asociarDocumento(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.idSolicitante, solicitudFirmaPortafirma.documentosConsulta, TipoDocumentacionEnumType.ANEXA); 
+			
+			PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = new PortafirmaCrearSolicitudResponse();
+			portafirmaCrearSolicitudResponse.setIdSolicitud(solicitudFirmaPortafirma.uriSolicitud);
+			solicitudFirmaPortafirma.solicitudEstadoComentario = "La solicitud de firma de portafirma ha sido enviada.";
+			solicitudFirmaPortafirma.save();
+			portafirmaCrearSolicitudResponse.setComentarios(solicitudFirmaPortafirma.solicitudEstadoComentario);
+			return portafirmaCrearSolicitudResponse;
+			
+		} catch (SolicitudFirmaExcepcion e) {
+			play.Logger.info("Error al crear la solicitud de firma: " + e.getMessage());
+			throw new PortafirmaFapServiceException("Error al crear la solicitud de firma: " + e.getMessage(), e);
+			
+		} finally {
+			//Restauramos el backoffice en las cabeceras de seguridad
+			restoreSecurityHeadersBackoffice();
+		}
 	}
 
 	@Override
-	public void eliminarSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		resolucion.solicitudFirmaJefeServicio.passwordLDAP = null;
-		resolucion.solicitudFirmaJefeServicio.usuarioLDAP = null;
-		resolucion.solicitudFirmaJefeServicio.save();
+	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		setupSecurityHeadersWithUser(solicitudFirmaPortafirma.idSolicitante);
+		try {
+			SolicitudFirmaType solicitudFirmaType = portafirmaPort.obtenerSolicitudFirma(solicitudFirmaPortafirma.uriSolicitud, true);
+			solicitudFirmaPortafirma.solicitudEstado = solicitudFirmaType.getPropiedades().getSolicitudEstado().value();
+			solicitudFirmaPortafirma.solicitudEstadoComentario = solicitudFirmaType.getPropiedades().getSolicitudEstadoComentario();
+			solicitudFirmaPortafirma.save();
+			return solicitudFirmaPortafirma.solicitudEstado;
+		} catch (SolicitudFirmaExcepcion e) {
+			play.Logger.error("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
+		} finally {
+			//Restauramos el backoffice en las cabeceras de seguridad
+			restoreSecurityHeadersBackoffice();
+		}
+	}
+
+	@Override
+	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		String estadoSolicitudFirma = obtenerEstadoFirma(solicitudFirmaPortafirma);
+		if ((EstadoSolicitudEnumType.FIRMADA.equals(estadoSolicitudFirma)) || (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.equals(estadoSolicitudFirma)))
+			return true;
+		else
+			return false;
+	}
+
+	// TODO: Falta saber cómo obtener los usuarios que admiten envío de solicitud de firma.
+	@Override
+	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
+		List<ComboItem> listaUsuarioAdmiteEnvio = new ArrayList<ComboItem>();
+		listaUsuarioAdmiteEnvio.add(new ComboItem("dgonmor", "Daniel González Morales"));
+		return listaUsuarioAdmiteEnvio;
+	}
+
+	@Override
+	public void eliminarSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+//		try {
+//			portafirmaPort.eliminarSolicitudFirma(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.comentarioSolicitante);
+//			obtenerEstadoFirma(solicitudFirmaPortafirma);
+//		} catch (SolicitudFirmaExcepcion e) {
+//			play.Logger.error("No se ha podido eliminar la solicitud "+solicitudFirmaPortafirma.uriSolicitud+": "+e);
+//			throw new PortafirmaFapServiceException("No se ha podido eliminar la solicitud "+solicitudFirmaPortafirma.uriSolicitud, e);
+//		}
 	}
 }

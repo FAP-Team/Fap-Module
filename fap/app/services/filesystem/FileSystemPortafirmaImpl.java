@@ -14,6 +14,7 @@ import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 
 import models.Agente;
 import models.ResolucionFAP;
+import models.SolicitudFirmaPortafirma;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.responses.PortafirmaCrearSolicitudResponse;
@@ -33,11 +34,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(String titulo,
-			String descripcion, String tipoSolicitud, String prioridad,
-			XMLGregorianCalendar fechaTopeFirma, String idSolicitante,
-			String idDestinatario, String emailNotificacion,
-			ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
 		response.setIdSolicitud("fakeSolicitud");
 		response.setComentarios("fakeComentarios");
@@ -45,7 +42,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-	public void eliminarSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public void eliminarSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
 
 	}
@@ -56,7 +53,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(ResolucionFAP resolucion, String idSolicitudFirma) throws PortafirmaFapServiceException {
+	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		return true;
 		//return false;
 	}
@@ -75,8 +72,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public List<ComboItem> obtenerUsuariosAdmitenEnvio()
-			throws PortafirmaFapServiceException {
+	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
 		List<ComboItem> listaCombo = new ArrayList<ComboItem>();
 		List<Agente> listaJefes = Agente.find("select agente from Agente agente").fetch();
 		for (Agente agente: listaJefes) {
@@ -87,16 +83,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		// TODO Auto-generated method stub
-//		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
-//		estadoSolicitudFirma.setEstado("Rechazada");
-//		return estadoSolicitudFirma;
-		return null;
-	}
-	
-	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion, String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 //		ObtenerEstadoSolicitudResponseType estadoSolicitudFirma = new ObtenerEstadoSolicitudResponseType();
 //		estadoSolicitudFirma.setEstado("Rechazada");
 //		return estadoSolicitudFirma;

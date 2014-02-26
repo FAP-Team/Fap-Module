@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import properties.FapProperties;
+
 import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
@@ -64,6 +66,32 @@ public class ResolucionUtils {
 	
 	public static void ordenarLineasResolucion (ResolucionFAP resolucion){
 		Collections.sort(resolucion.lineasResolucion, new LineasResolucionSortComparator());
+	}
+	
+	/**
+	 * Se comprueba si la resolución tiene solicitudes de firma del portafirma
+	 * de la ACIISI que no son del tipo nuevo SolicitudFirmaPortafirma. En caso
+	 * afirmartivo, se actualiza la solicitud de firma de portafirma
+	 * correspondiente.
+	 * @param resolucionFAP
+	 */
+	public static void actualizarSolicitudesFirmaPortafirmaAntiguasResolucion (ResolucionFAP resolucionFAP) {
+		if (((resolucionFAP.idSolicitudFirma != null) && (!resolucionFAP.idSolicitudFirma.isEmpty()))
+				&& ((resolucionFAP.solicitudFirmaPortafirma != null) && ((resolucionFAP.solicitudFirmaPortafirma.uriSolicitud == null) || (resolucionFAP.solicitudFirmaPortafirma.uriSolicitud.isEmpty())))) {
+			resolucionFAP.solicitudFirmaPortafirma.uriSolicitud = resolucionFAP.idSolicitudFirma;
+			resolucionFAP.solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");
+			resolucionFAP.solicitudFirmaPortafirma.idDestinatario = resolucionFAP.jefeDeServicio;
+			resolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = resolucionFAP.hacePeticionPortafirma;
+			resolucionFAP.save();
+		}
+		if (((resolucionFAP.idSolicitudFirmaOficiosRemision != null) && (!resolucionFAP.idSolicitudFirmaOficiosRemision.isEmpty()))
+				&& ((resolucionFAP.solicitudFirmaPortafirmaOficioRemision != null) && ((resolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud == null) || (resolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud.isEmpty())))) {
+			resolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud = resolucionFAP.idSolicitudFirmaOficiosRemision;
+			resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = FapProperties.get("portafirma.usuario");
+			resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.destinatarioOficioRemisionPortafirma;
+			resolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = resolucionFAP.hacePeticionPortafirmaOficiosRemision;
+			resolucionFAP.save();
+		}
 	}
 
 }

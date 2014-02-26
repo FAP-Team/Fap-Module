@@ -112,32 +112,27 @@ Entidad LineaResolucionFAP {
 
 // Entidades de la resolución
 Entidad ResolucionFAP {
-	/// Tipo de los posibles entre los definidos de la resolución
-	Lista resolucionesDefinidas tipoDefinidoResolucion
-	
-	Lista modalidadResolucion modalidad		// Simple, Multiple
-	Lista tipoResolucion tipo				// Provisional, Definitiva
-	Lista estadoTipoMultiple tipoMultiple	// Parcial, Total
 
-	Boolean firmarJefeServicio				// Debe ser firmada por el Jefe de Servicio
-	String jefeDeServicio					// Jefe de Servicio Solicitado
-	Boolean firmarDirector					// Debe ser firmada por el Director
+	Lista resolucionesDefinidas tipoDefinidoResolucion		// Tipo de los posibles entre los definidos de la resolución
+
+	Lista modalidadResolucion modalidad						// Simple, Multiple
+	Lista tipoResolucion tipo								// Provisional, Definitiva
+	Lista estadoTipoMultiple tipoMultiple					// Parcial, Total
+
+	Boolean firmarJefeServicio								// Debe ser firmada por el Jefe de Servicio
+	Boolean firmarDirector									// Debe ser firmada por el Director
 	Boolean permitirPortafirma
 	Boolean permitirRegistrar
 	Boolean permitirPublicar
-	
-	String prioridadFirma
-	DateTime fechaTopeFirma
-	
-	Lista estadoResolucion estado			// borrador, creada, .... finalizada
+
+	Lista estadoResolucion estado							// borrador, creada, .... finalizada
 	Lista estadoResolucionNotificacion estadoNotificacion
 	Lista estadoResolucionPublicacion estadoPublicacion
 	Lista estadosDocBaremacion estadoDocBaremacionResolucion
 	Lista estadosDocBaremacion estadoInformeBaremacionConComentarios
 	Lista estadosDocBaremacion estadoInformeBaremacionSinComentarios
-	
-	// Descripción de la Resolución
-	String descripcion length=2500
+
+	String descripcion length=2500							// Descripción de la Resolución
 	
 	// modalidad=Simple   --> Una sola línea de resolución
 	// modalidad=Múltiple --> Varias líneas de resolución
@@ -146,77 +141,58 @@ Entidad ResolucionFAP {
 	Boolean conBaremacion default = 'false'
 	Boolean oficialEvaluacionCompleto default = 'false'
 
-	String tituloInterno					// Obligatorio.
+	String tituloInterno									// Obligatorio.
 	String sintesis length=1000
 	String observaciones length=1000
-	Integer folio_inicio					// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	Integer folio_final						// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer folio_inicio									// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer folio_final										// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
 	Integer numero_folios
-	Integer numero							// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
-	DateTime fechaRegistroResolucion		// Fecha de la resolución
+	Integer numero											// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	DateTime fechaRegistroResolucion						// Fecha de la resolución
 	Lista areasResolucion areasResolucion
 	Lista tiposResolucion tiposResolucion
 
-	String idSolicitudFirma
 	String codigoResolucion
 
-	DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
-	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
-	//DateTime fechaBOC								// Fecha de Publicación en el BOC
-	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
-	//DateTime fechaFinPreparacion					// Fecha en la que se finaliza la resolución
-	//Documento docResolucion							// Documento de Resolución
-	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
-	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
+	DateTime fechaFinAceptacion								// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
+	//DateTime fechaPublicacion								// Fecha de Publicación en el tablón de anuncios de la sede
+	//DateTime fechaBOC										// Fecha de Publicación en el BOC
+	DateTime fechaIncioPreparacion							// Fecha en la que se empieza a preparar la resolución y se crean las líneas
+	//DateTime fechaFinPreparacion							// Fecha en la que se finaliza la resolución
+	//OneToMany Documento docAnexoResolucion				// Anexos individuales de resolucion
 
 	Registro registro
-	Boolean copiadoExpedientes default="false" //Indica si el doc de resolucion ha sido copiado en los expedientes
+	Boolean copiadoExpedientes default="false"				//Indica si el doc de resolucion ha sido copiado en los expedientes
 	OneToMany Interesado destinatarios transient
 	ExpedienteAed expedienteAed
-	
-		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
-		//String estadoPortafirmas			//??Pendiente de revisar
-	SolicitudPortafirmaFAP solicitudFirmaJefeServicio
-	SolicitudPortafirmaFAP solicitudFirmaDirector
 
-	//Lista estadoResolucionConcesion estado		//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
-		//OneToMany LineaResolucion lineasResolucion
-		// OneToMany ExpedientesAlegados expedientesAlegados
-		// OneToMany ExpedientesNoAceptados expedientesNoAceptados
-	//Agente destinatarioPortafirma transient
+	//Lista estadoResolucionConcesion estado				//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
+	//OneToMany ExpedientesAlegados expedientesAlegados
+	//OneToMany ExpedientesNoAceptados expedientesNoAceptados
 
-	Agente hacePeticionPortafirma noConstruct
 	//Para firmar por jefe de servicio
 	//Firmantes firmantesJefeDeServicio
-		////Para poder firmar y crear el el metodo calcular firmantes
-		//Solicitante solicitanteJefeServicio transient
+	//Para poder firmar y crear el el metodo calcular firmantes
+	//Solicitante solicitanteJefeServicio transient
 
-	String idSolicitudFirmaOficiosRemision
-	DateTime fechaTopeFirmaOficiosRemision
-	Agente hacePeticionPortafirmaOficiosRemision noConstruct
-	String destinatarioOficioRemisionPortafirma 
+	SolicitudFirmaPortafirma solicitudFirmaPortafirma
+	String idSolicitudFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.uriSolicitud
+	DateTime fechaTopeFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.plazoMaximo
+	String prioridadFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.prioridad
+	OneToMany Documento docConsultaPortafirmasResolucion	// SE UTILIZA PERO SE DEBER�?A CAMBIAR EN UN FUTURO A solicitudFirmaPortafirma.documentosConsulta
+	Agente hacePeticionPortafirma noConstruct				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.agenteHaceSolicitud
+	String jefeDeServicio									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.idDestinatario
+	
+	SolicitudFirmaPortafirma solicitudFirmaPortafirmaOficioRemision
+	String idSolicitudFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.uriSolicitud
+	DateTime fechaTopeFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.plazoMaximo
+	Agente hacePeticionPortafirmaOficiosRemision noConstruct// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud
+	String destinatarioOficioRemisionPortafirma				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.idDestinatario
 	
 	Boolean resolucionReintegro default="false"
 	String textoResolucionReintegro length=1000
-	
-}
 
-Entidad SolicitudPortafirmaFAP {
-	String codSolicitudPf
-	String estadoPf
-	String tituloPf
-	String descripcionPf
-	String solicitantePf
-	String destinatarioPf
-	String emailNotificacionPf
-	String comentarioPf
-	String urlCorreoRedireccionPf
-	String flujoAnteriorPf
-	String usuarioLDAP
-	String passwordLDAP
 }
-	
-	
 
 Formulario Principal {
 	Pagina ResolucionesFAP titulo="Lista de Resoluciones" permiso=adminOrGestor{
@@ -326,13 +302,14 @@ Formulario Principal {
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
 				Form formSelectJefeServicio {
-					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Destinatario Portafirma" requerido
-					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
-					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
+					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Destinatario Portafirma" requerido
+					Combo selectPrioridadFirma campo=ResolucionFAP.solicitudFirmaPortafirma.prioridad titulo="Prioridad Firma" requerido
+					Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirma.plazoMaximo titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
-					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "(properties.FapProperties.get(\"fap.platino.portafirma.url\") != null)" {
-						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP titulo="Usuario LDAP" requerido
-						Texto campo=ResolucionFAP.solicitudFirmaJefeServicio.passwordLDAP titulo="Contraseña LDAP" password requerido
+
+					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
+						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.idSolicitante titulo="Usuario LDAP" requerido
+						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante titulo="Contraseña LDAP" password requerido
 					}
 
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
@@ -342,7 +319,7 @@ Formulario Principal {
 			
 			Grupo gEsperaFirmaJSPortafirma permiso=esperaFirmaJefeServicio titulo="Firma del Jefe de Servicio"{
 				Grupo permiso=noEditable borde=false {
-					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio Seleccionado"
+					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Jefe de Servicio Seleccionado"
 				}
 				Wiki { "_El jefe de servicio aún no ha firmado en el portafirma_" } 
 			}
@@ -612,8 +589,12 @@ Formulario Principal {
 						Grupo grupoEnviarOficiosRemisionPortafirma borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
 							Wiki {"Puede enviar los Oficios de Remisión sin firmar aún al Portafirma."}
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
-								Combo selectJefeServicio campo=ResolucionFAP.destinatarioOficioRemisionPortafirma titulo="Destinatario Portafirma" requerido
-								Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirmaOficiosRemision titulo="Fecha tope firma" requerido
+								Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario titulo="Destinatario Portafirma" requerido
+								Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha tope firma" requerido
+								Grupo loginPortafirmasPlatinoOficiosRemision borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
+									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante titulo="Usuario LDAP" requerido
+									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante titulo="Contraseña LDAP" password requerido
+								}
 								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}

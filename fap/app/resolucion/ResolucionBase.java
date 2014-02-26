@@ -1143,8 +1143,6 @@ public class ResolucionBase {
 		}
 
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
-		
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 

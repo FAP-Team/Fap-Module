@@ -33,6 +33,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.h2.constant.SysProperties;
 import org.hibernate.ejb.EntityManagerImpl;
+import org.joda.time.DateTime;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -48,6 +49,8 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
+import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
@@ -95,6 +98,7 @@ import services.comunicacionesInternas.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
 import swhiperreg.ciservices.ArrayOfString;
+import services.responses.PortafirmaCrearSolicitudResponse;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -235,6 +239,36 @@ public class Start extends Job {
 		
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
+		
+//		System.out.println("INICIO PRUEBA PORTAFIRMA");
+//		SolicitudFirmaPortafirma solicitudFirmaPortafirma = new SolicitudFirmaPortafirma();
+////		solicitudFirmaPortafirma.tema = "Esto es el tema/título";
+////		solicitudFirmaPortafirma.materia = "Esto es la materia/descripción";
+////		solicitudFirmaPortafirma.tipoSolicitud = TipoSolicitudEnumType.OTROS.value();
+////		solicitudFirmaPortafirma.prioridad = PrioridadEnumType.NORMAL.value();
+////		solicitudFirmaPortafirma.plazoMaximo = new DateTime(); // Eliminar import al terminar la prueba
+////		solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");
+////		solicitudFirmaPortafirma.idDestinatario = "78712212W";
+////		solicitudFirmaPortafirma.emailNotificacion = "eleazar87@gmail.com";
+////		Documento documento = new Documento();
+////		documento.descripcion = "Documento de prueba portafirma";
+////		documento.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000025281/v01";
+////		solicitudFirmaPortafirma.documentosFirma.add(documento);
+////
+//		try {
+//			//PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(solicitudFirmaPortafirma);
+//			//String comentarios = response.getComentarios();
+//			//String idSolicitud = response.getIdSolicitud();
+//
+//			solicitudFirmaPortafirma.uriSolicitud = "133";
+//			solicitudFirmaPortafirma.idSolicitante = "PRESTAMOS";
+//			portafirmaService.eliminarSolicitudFirma(solicitudFirmaPortafirma);
+//			
+//		} catch (PortafirmaFapServiceException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println("FINALIZADA PRUEBA PORTAFIRMA");
 		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();

@@ -1067,4 +1067,43 @@ Entidad ReturnErrorFap {
 
 Entidad ListaUris {
 	String uri
+
+Entidad SolicitudFirmaPortafirma {
+	// -------------------- Común --------------------
+	String idSolicitante					// Platino: Es el uid del usuario (LDAP)
+	String idDestinatario
+	String tema								// ACIISI: tituloSolicitud - Platino: Indica de forma precisa y concreta el  motivo por el que se solicita la firma del documento. Requerido.
+	String materia							// ACIISI: descripcion - Platino: Clasifica de manera general el motivo por el que se solicita la firma del documento. Requerido.
+	DateTime plazoMaximo					// ACIISI: fechaTopeFirma - Platino: Fecha límite para realizar la firma. Este campo no impide que se pueda realizar la firma de documento en un momento posterior a la fecha indicada. XMLGregorianCalendar.
+	String solicitudEstadoComentario		// ACISII: comentario - Platino: Comentario realizado en el cambio de estado.
+	OneToMany Documento documentosFirma		// ACIISI: ListaDocumentosAedType
+	OneToMany Documento documentosConsulta	// ACIISI: ListaDocumentosAedType
+	Agente agenteHaceSolicitud
+	// -------------------- Portafirma ACIISI --------------------
+	String tipoSolicitud					// TipoSolicitudEnumType
+	String prioridad						// PrioridadEnumType
+	String emailNotificacion
+	String urlRedireccion
+	String urlNotificacion
+	String flujoSolicitud
+	Documento documento						// El tipo es ListaDocumentosType pero en realidad es sólo un DocumentoType
+	// -------------------- Portafirma Platino --------------------
+	String passwordSolicitante				// Contraseña del usuario (LDAP)
+	String uriFuncionarioSolicitante		// URI del funcionario que actúa como solicitante de la solicitud de firma. Requerido.
+	String uriFuncionarioDestinatario		// URI del funcionario que actúa como destinatario de la solicitud de firma. Requerido.
+	String uriSolicitud						// URI de la solicitud de firma.
+	String procedimiento					// Procedimiento administrativo sobre el que trata la solicitud de firma.
+	String expediente						// Expediente en el que está contenido el documento que se quiere firmar.
+	String tipoDocumento					// Tipo de documento que se quiere firmar. Los valores de esta campo se obtienen de la tabla de valores de “Tipos de Documentos�? que gestiona el servicio BBDD de Procedimiento. Requerido.
+	String mecanismoFirma					// Mecanismo de firma a usar. MecanismoFirmaEnumType. Requerido.
+	String origen							// Aplicación que genera la solicitud de firma. Este campo es rellenado por el servicio.
+	String solicitudEstado					// Estado en el que se encuentra la solicitud de firma. EstadoSolicitudEnumType.
+	DateTime solicitudEstadoFecha			// Fecha en la que se hizo el cambio de estado de la solicitud. XMLGregorianCalendar.
+	DateTime solicitudFechaInicio			// Fecha en la que se inició la solicitud. XMLGregorianCalendar.
+	DateTime solicitudFechaFin				// Fecha en la que se finalizó la solicitud. XMLGregorianCalendar.
+	String firmaUriFuncionario				// URI del funcionario que ha realizado la firma.
+	DateTime firmaFecha						// Fecha en la que el destinatario ha realizado la firma.  XMLGregorianCalendar.
+	Boolean firmaDelegada					// Indica si el destinatario de la solicitud es un destinatario por delegación de firma.
+	Boolean archivada						// Indica si la solicitud fue archivada por el solicitante.
+	String comentarioSolicitante			// Comentario que puede hacer el solicitante en varias operaciones (eliminar, validar...)
 }

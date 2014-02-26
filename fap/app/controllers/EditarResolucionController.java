@@ -276,15 +276,17 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (!Messages.hasErrors()) {
 			EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
 			
-			PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-			try {
-				usuarioURI = platinoDBOrgPort.recuperarURIPersona(resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP);
-			} catch (DBOrganizacionException_Exception e) {
-				play.Logger.error("Fallo en la llamada al servicio de portafirmas: " + e.getMessage());
-				Messages.error("El usuario especificado no se encuentra en Platino");
+			if ((properties.FapProperties.get("fap.platino.portafirma.url") != null)) {
+				PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+				try {
+					usuarioURI = platinoDBOrgPort.recuperarURIPersona(resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP);
+				} catch (DBOrganizacionException_Exception e) {
+					play.Logger.error("Fallo en la llamada al servicio de portafirmas: " + e.getMessage());
+					Messages.error("El usuario especificado no se encuentra en Platino");
+				}
+				if ((usuarioURI == null) || (usuarioURI.isEmpty()))
+					Messages.error("El usuario especificado no se encuentra en Platino");
 			}
-			if ((usuarioURI == null) || (usuarioURI.isEmpty()))
-				Messages.error("El usuario especificado no se encuentra en Platino");
 		}
 
 		if (!Messages.hasErrors()) {
@@ -560,7 +562,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			}
 		}
 		
-		// 3. Clasificar el documento de resolución
+		// 3. Clasificar el documento de resolución y de consultas
 		if (!Messages.hasErrors()) {
 			if ((dbResolucionFAP.registro.fasesRegistro.expedienteAed) && (!dbResolucionFAP.registro.fasesRegistro.clasificarAed)) {
 				tx.begin();

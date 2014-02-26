@@ -824,7 +824,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	        
 	        if(!documento.clasificado){
 	        	try {
-					if (!existeDocumento(documento.uri)){ //Si no existe lo clasifico -> Doc. nuevo
+					if (!existeDocumentoClasificado(documento.uri)){ //Si no existe lo clasifico -> Doc. nuevo
 						clasificarDocumento(idAed, documento, propiedades, interesados);
 					}
 					else{
@@ -1389,7 +1389,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	}
 	
 	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
-		log.debug("Clasificando documento resolución");
+		log.debug("Clasificando documento de consulta");
 		
 	    Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
 	    String idAed = convocatoria.expedienteAed.idAed;
@@ -1526,9 +1526,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 	}
 
+	/**
+	 * Obtiene la descripción de un documento clasificado
+	 * @param uriDocumento
+	 * @throws GestorDocumentalServiceException
+	 */
 	@Override
 	public String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException {
-	String descripcion = null;
+	String descripcion = "";
 		try {
 			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
 			descripcion = propiedades.getDescripcion();
@@ -1539,28 +1544,36 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 		return descripcion;
 	}
-
+	
+	/**
+	 * Comprueba si el documento está clasificado en el gestor documental
+	 * @param uriDocumento
+	 */
 	@Override
-	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+	public Boolean existeDocumentoClasificado(String uriDocumento) {
 		try {
-			if (aedPort.obtenerDocumento(uriDocumento) != null){
+			if (aedPort.obtenerDocumento(uriDocumento) != null) {
 				return true;
 			}
 			return false;
 		} catch (AedExcepcion e) {
-			play.Logger.error("Error el documento no existe entre los documentos clasificados"+e);
+			play.Logger.error("Error el documento no existe entre los documentos clasificados "+e);
 			e.printStackTrace();
-			//new GestorDocumentalServiceException("Error el documento no existe entre los documentos clasificados", e);
 			return false;
 		}
-	}
+	}	
 
+	/**
+	 * Obtiene el tipo de documento de un documento clasificado
+	 * @param uriDocumento
+	 * @throws GestorDocumentalServiceException
+	 */
 	@Override
 	public String getTipoDocumento(String uriDocumento) throws GestorDocumentalServiceException {
 		String tipo = "";
 		try {
 			PropiedadesDocumento propiedades = aedPort.obtenerDocumentoPropiedades(uriDocumento);
-			tipo = propiedades.getDescripcion();
+			tipo = propiedades.getUriTipoDocumento();
 		} catch (AedExcepcion e) {
 			play.Logger.error("Error al intentar obtener el tipo del documento", e);
 			e.printStackTrace();

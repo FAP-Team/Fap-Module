@@ -258,6 +258,7 @@ public class Documento extends FapModel {
 	 */
 	public void duplicar(Documento doc) {
 		uri = doc.uri;
+		uriPlatino = doc.uriPlatino;
 		tipo = doc.tipo;
 		descripcion = doc.descripcion;
 		clasificado = doc.clasificado;

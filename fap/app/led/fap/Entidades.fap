@@ -26,6 +26,7 @@ Entidad Singleton superClass {
 // tendrá todos éstos campos por defecto.
 Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String estado
+	String estadoAntesVerificacion //Estado al que se vuelve al finalizar una verificación si el trámite es distinto de "solicitud"
 	Lista estadosSolicitud estadoValue transient
 	Lista estadosSolicitud estadoUsuario transient
 	Solicitante solicitante
@@ -148,7 +149,7 @@ Entidad DireccionMapa embeddable auditable{
 // Entidad que representa un Documento y todo lo necesario para representarlo
 Entidad Documento {
 	String uri                     // uri del documento en el AED
-	String uriPlatino 
+	String uriPlatino
 	Lista tiposDocumentos tipo
 	String descripcion
 	String descripcionVisible transient

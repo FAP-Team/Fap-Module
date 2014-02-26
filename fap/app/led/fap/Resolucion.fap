@@ -60,7 +60,7 @@ Lista estadoLineaResolucion crearEnumerado {
 
 Lista prioridadesFirmaEnPortafirma crearEnumerado {
 	baja: "Baja"
-	media: "Media"
+	media: "Normal"
 	alta: "Alta"
 }
 
@@ -287,7 +287,7 @@ Formulario Principal {
 		
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
-			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
+			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -414,10 +414,11 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
 			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
-			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
-			
+			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
+				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			}
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución"  popupLeer=popupOficioNotificacion  {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución"  popupLeer=popupOficioNotificacion  {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -502,7 +503,7 @@ Formulario Principal {
 				}
 				
 				Form generarInformeConComentarios permiso=permisoGenerarInformeConComentarios{
-					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administracion"{
+					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administración"{
 						Boton btnGenerarInformeConComentarios titulo="Generar"
 					}
 				}
@@ -513,7 +514,7 @@ Formulario Principal {
 					}
 				}
 				Form generarInformeSinComentarios permiso=permisoGenerarInformeSinComentarios{
-					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administracion"{
+					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administración"{
 						Boton btnGenerarInformeSinComentarios titulo="Generar"	
 					}
 				}
@@ -549,7 +550,7 @@ Formulario Principal {
 		Grupo grupoCambiarDocumentoResolucion titulo="Cambiar documento de resolución" {
 			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Ver documento de resolución actual" destino="_blank" estilo="btn"
 			Form formCambiarDocumentoResolucion redirigir=EditarResolucion {
-				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolución"
 			}
 		}
 		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
@@ -561,7 +562,7 @@ Formulario Principal {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
 				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
-						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -572,9 +573,9 @@ Formulario Principal {
 						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
 						Grupo grupoJustificanteReintegro titulo="Resolución de Justificación de Reintegro"{
-							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolucion de justificacion con reintegro" alineadoAIzquierdas
+							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolución de justificación con reintegro" alineadoAIzquierdas
 //							//Grupo textoJustificacion mostrarSiCheck justificacionReintegro=true{
-							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolucion de justificación de reintegro"
+							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolución de justificación de reintegro"
 //							//}
 						}
 						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
@@ -584,7 +585,7 @@ Formulario Principal {
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
 					Grupo grupoOficiosRemisionFirmaManual borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
 						Wiki {"Debe firmar los siguientes oficios de remisión: "}
-						Tabla tablaOficiosRemisionSinFirmarManual campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar" {
+						Tabla tablaOficiosRemisionSinFirmarManual campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar" {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -596,7 +597,7 @@ Formulario Principal {
 						}
 					}
 					Grupo grupoOficiosRemisionPortaFirma borde=false permiso=permisoOficiosRemisionPortaFirma {
-						Tabla tablaOficiosRemisionSinFirmarPortaFirma campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+						Tabla tablaOficiosRemisionSinFirmarPortaFirma campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -631,7 +632,7 @@ Formulario Principal {
 				Grupo borde=false {
 					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 				}
-				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -651,7 +652,7 @@ Formulario Principal {
 		}
 	}
 	
-	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Lineas de Resolución" maximizar {
+	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Líneas de Resolución" maximizar {
 		Grupo titulo="Datos de la Línea de Resolución" {
 			Texto campo=LineaResolucionFAP.id titulo="Id"
 			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
@@ -696,7 +697,7 @@ Formulario Principal {
 				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 			}
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución" {
 					Columna campo=LineaResolucionFAP.id titulo="Id" expandir
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"  expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir

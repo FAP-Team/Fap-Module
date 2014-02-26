@@ -14,22 +14,21 @@ public class DocConsultaPortafirmaCrearController extends DocConsultaPortafirmaC
 	public static void DocConsultaPortafirmaCrearValidateCopy(String accion, Documento dbDocumento, Documento documento, java.io.File file) {
 		CustomValidation.clearValidadas();
 
-		 if ((documento.uri != null) && (!documento.uri.isEmpty())){ //Poniendo documento por uri
-				CustomValidation.clearValidadas();
-				CustomValidation.valid("documento", documento);
-				CustomValidation.validValueFromTable("documento.tipo", documento.tipo);
-				if (DocumentosUtils.docExisteEnAed(documento.uri)){
-					dbDocumento.tipo = DocumentosUtils.getTipoDocumento(documento.uri);
-					dbDocumento.descripcion = DocumentosUtils.getDescripcionVisible(documento.uri);
-					dbDocumento.descripcionVisible = DocumentosUtils.getDescripcionVisible(documento.uri);
-					dbDocumento.uri = documento.uri;	
-				} 
-				else{
-					play.Logger.error("El documento con uri "+documento.uri+" no existe");
-					Messages.error("Error no existe el documento con uri "+documento.uri);
-				}
+		if ((documento.uri != null) && (!documento.uri.isEmpty())){ //Poniendo documento por uri
+			CustomValidation.valid("documento", documento);
+			CustomValidation.validValueFromTable("documento.tipo", documento.tipo);
+			if (DocumentosUtils.existeDocumentoClasificado(documento.uri)){
+				dbDocumento.tipo = DocumentosUtils.getTipoDocumento(documento.uri);
+				dbDocumento.descripcion = DocumentosUtils.getDescripcion(documento.uri);
+				dbDocumento.uri = documento.uri;
+				dbDocumento.clasificado = true; // Es ya un documento clasificado en un expediente
 			}
-		 else if ((documento.uri == null) || (documento.uri.isEmpty())){
+			else{
+				play.Logger.error("El documento con uri "+documento.uri+" no existe");
+				Messages.error("Error no existe el documento con uri "+documento.uri);
+			}
+		}
+		else if ((documento.uri == null) || (documento.uri.isEmpty())){
 			CustomValidation.required("documento", documento);
 			dbDocumento.tipo = documento.tipo;
 			dbDocumento.descripcion = documento.descripcion;
@@ -72,6 +71,6 @@ public class DocConsultaPortafirmaCrearController extends DocConsultaPortafirmaC
 				}
 			}
 		}
-	}	
+	}
 	
 }

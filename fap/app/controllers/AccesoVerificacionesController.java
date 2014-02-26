@@ -1,18 +1,11 @@
 package controllers;
 
-import java.util.List;
-import java.util.Map;
-
 import org.h2.constant.SysProperties;
 import org.joda.time.DateTime;
 
-import properties.FapProperties;
-
 import messages.Messages;
 import models.SolicitudGenerica;
-import models.TramitesVerificables;
 import models.Verificacion;
-import models.VerificacionTramites;
 import controllers.gen.AccesoVerificacionesControllerGen;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
@@ -35,6 +28,8 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			dbSolicitud.verificacion = new Verificacion();
 			dbSolicitud.verificacion.expediente = dbSolicitud.expedienteAed.idAed;
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
+			dbSolicitud.estadoAntesVerificacion = dbSolicitud.estado;
+			dbSolicitud.estado = EstadosSolicitudEnum.enVerificacion.name(); // TODO: Debería ir en el método iniciarVerificacion pero por permisos se pone aquí
 			dbSolicitud.verificacion.fechaCreacion = new DateTime();
 			dbSolicitud.save();
 			long idVerificacion=dbSolicitud.verificacion.id;

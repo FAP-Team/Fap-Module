@@ -1,6 +1,6 @@
 # Application dependencies
 
-self: play -> fap 2.4RC3
+self: play -> fap 2.4RC4
 
 
 
@@ -91,6 +91,8 @@ require:
     - platinosecurityheader -> platinosecurityheader 1.201302.0
      
     - es.gobcan.aciisi -> notificaciones v20140221:
+        transitive: false
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
         transitive: false
     
     - es.mityc -> facturae 2.0:

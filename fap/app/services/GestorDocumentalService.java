@@ -105,7 +105,7 @@ public interface GestorDocumentalService {
 	
 	void copiarListaDocumentoEnExpediente(List<String> uri, List<ExpedienteAed> expedientesAed) throws GestorDocumentalServiceException;
 	
-	Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException;
+	Boolean existeDocumentoClasificado(String uriDocumento);
 	
 	String getDescripcionDocumento(String uriDocumento) throws GestorDocumentalServiceException;
 	

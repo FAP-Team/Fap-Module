@@ -34,6 +34,8 @@ public class SolicitudGenerica extends FapModel {
 
 	public String estado;
 
+	public String estadoAntesVerificacion;
+
 	@ValueFromTable("estadosSolicitud")
 	@Transient
 	public String estadoValue;

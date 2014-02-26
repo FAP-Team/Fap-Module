@@ -129,7 +129,7 @@ Permiso instruccion{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.estado = "iniciada"
+		solicitud?.estado not in ("borrador")
 	return editable		
 }
 	

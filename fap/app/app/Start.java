@@ -85,6 +85,7 @@ import services.GestorDocumentalService;
 import services.MensajeServiceException;
 import services.NotificacionService;
 import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
@@ -296,11 +297,20 @@ public class Start extends Job {
 //		genericosService.mostrarInfoInyeccion();
 		
 //		try{
-//			mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
+//			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
 //		}
 //		catch(Exception e){
 //			System.out.println("Como que no tira esto");
 //		};
+//		
+//		try{
+//			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
+//			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
+//		}
+//		catch(Exception e){
+//			System.out.println("Como que no tira esto");
+//		};
+		
 ////		try{
 ////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);
 ////		}

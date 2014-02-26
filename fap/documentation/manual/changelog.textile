@@ -1,8 +1,16 @@
 h2. Changelog
 
+h3. Versión 2.4RC4
+
+* Arreglado fallo que no permitía verificar.
+
+* Arreglado fallos en resolución: validación de fecha tope de firma, prioridad firma, visibilidad ¿tiene Baremacion?, documento de consulta con URI y tildes
+
+* Arreglado creación de solicitud de firma en portafirma
 
 h3. Versión 2.4RC3
-* Inclusi�n del servicio SVD
+
+* Inclusión del servicio SVD
 
 * Regeneración librería de Resolución
 

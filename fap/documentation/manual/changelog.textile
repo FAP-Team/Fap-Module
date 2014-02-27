@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.4RC5
+
+* Incoporación de una parte del Servicio de Comunicaciones Internas. (NuevoAsiento, NuevoAsientoAmpliado, ObtenerUnidadesOrganicas, MostarInfoInyección)
+* Reestructuración de las implementaciones del servicio de Portafirma (Portafirma Gobcan, Portafirma ACIISI) (Pendiente de corregir detalles).
+* Incorporación de la librería de certificados
+* Actualización de la librería de notificaciones (se ha cambiado el nombre del paquete de esta librería)
+
 h3. Versión 2.4RC4
 
 * Arreglado fallo que no permitía verificar.

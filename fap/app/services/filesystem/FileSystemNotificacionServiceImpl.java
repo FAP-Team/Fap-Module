@@ -33,25 +33,25 @@ import utils.NotificacionUtils;
 import com.google.inject.Inject;
 
 import enumerado.fap.gen.EstadoNotificacionEnum;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfArrayResultadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfInteresadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionEnvioType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.InteresadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionCreateType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionCriteriaType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionEnvioType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ResultadoType;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionPortType;
-import es.gobcan.platino.servicios.enotificacion.notificacion.ResultadoBusquedaNotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfArrayResultadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfInteresadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionEnvioType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.InteresadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionCreateType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionCriteriaType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionEnvioType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ResultadoType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionPortType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.ResultadoBusquedaNotificacionType;
 
 
 @InjectSupport
 public class FileSystemNotificacionServiceImpl implements NotificacionService {
 	
-	protected static es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService notificacionService;	
+	protected static es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionService notificacionService;	
 	protected static Logger log = Logger.getLogger(NotificacionServiceImpl.class);
 	private final static String TIPO_DOC_PUESTAADISPOSICION = FapProperties.get("fap.aed.notificacion.tipodocumento.puestaadisposicion");
 

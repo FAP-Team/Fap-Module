@@ -1067,6 +1067,7 @@ Entidad ReturnErrorFap {
 
 Entidad ListaUris {
 	String uri
+}
 
 Entidad SolicitudFirmaPortafirma {
 	// -------------------- Común --------------------
@@ -1094,7 +1095,7 @@ Entidad SolicitudFirmaPortafirma {
 	String uriSolicitud						// URI de la solicitud de firma.
 	String procedimiento					// Procedimiento administrativo sobre el que trata la solicitud de firma.
 	String expediente						// Expediente en el que está contenido el documento que se quiere firmar.
-	String tipoDocumento					// Tipo de documento que se quiere firmar. Los valores de esta campo se obtienen de la tabla de valores de “Tipos de Documentos�? que gestiona el servicio BBDD de Procedimiento. Requerido.
+	String tipoDocumento					// Tipo de documento que se quiere firmar. Los valores de esta campo se obtienen de la tabla de valores de “Tipos de Documentos�? que gestiona el servicio BBDD de Procedimiento. Requerido.
 	String mecanismoFirma					// Mecanismo de firma a usar. MecanismoFirmaEnumType. Requerido.
 	String origen							// Aplicación que genera la solicitud de firma. Este campo es rellenado por el servicio.
 	String solicitudEstado					// Estado en el que se encuentra la solicitud de firma. EstadoSolicitudEnumType.

@@ -31,30 +31,35 @@ public class ComunicacionesInternasUtils {
 
 	public static ReturnComunicacionInternaFap respuestaComunicacionInterna2respuestaComunicacionInternaFap (ReturnComunicacionInterna respuesta){
 		ReturnComunicacionInternaFap respuestaFap = new ReturnComunicacionInternaFap();
-		respuestaFap.usuario = respuesta.getUsuario();
-		respuestaFap.resumen = respuesta.getResumen();
-		respuestaFap.observaciones = respuesta.getObservaciones();
-		//respuestaFap.referencia  //Solo existe en la doc no en el WS
-		respuestaFap.fecha = respuesta.getFecha();
-		respuestaFap.hora = respuesta.getHora();
-		respuestaFap.tipoComunicacion = respuesta.getTipoComunicacion();
-		respuestaFap.ejercicio = Integer.toString(respuesta.getEjercicio());
-		respuestaFap.numeroGeneral = respuesta.getNumeroGeneral();
-		respuestaFap.contadorUO = respuesta.getContadorUO();
-		respuestaFap.numeroRegistro = respuesta.getNumeroRegistro();
-		respuestaFap.asunto = respuesta.getAsunto();
-		respuestaFap.unidadOrganica = respuesta.getUnidadOrganica();
-		//TODO REVISAR bien que devuelve esta parte -> ¿Solo un nombre?
-		//respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
-		respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
-		respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
+		if (respuesta.getError().getDescripcion() == null){
+			respuestaFap.usuario = respuesta.getUsuario();
+			respuestaFap.resumen = respuesta.getResumen();
+			respuestaFap.observaciones = respuesta.getObservaciones();
+			//respuestaFap.referencia  //Solo existe en la doc no en el WS
+			respuestaFap.fecha = respuesta.getFecha();
+			respuestaFap.hora = respuesta.getHora();
+			respuestaFap.tipoComunicacion = respuesta.getTipoComunicacion();
+			respuestaFap.ejercicio = Integer.toString(respuesta.getEjercicio());
+			respuestaFap.numeroGeneral = respuesta.getNumeroGeneral();
+			respuestaFap.contadorUO = respuesta.getContadorUO();
+			respuestaFap.numeroRegistro = respuesta.getNumeroRegistro();
+			respuestaFap.asunto = respuesta.getAsunto();
+			respuestaFap.unidadOrganica = respuesta.getUnidadOrganica();
+			//TODO REVISAR bien que devuelve esta parte -> ¿Solo un nombre?
+			//respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
+			respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
+			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
+		}
+		else{
+			respuestaFap.error = errorCI2errorFap(respuesta.getError());
+		}
 		
 		return respuestaFap;
 	}
 	
 	public static ReturnComunicacionInternaAmpliadaFap respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap (ReturnComunicacionInternaAmpliada respuesta){
 		ReturnComunicacionInternaAmpliadaFap respuestaFap = new ReturnComunicacionInternaAmpliadaFap();
-		if (respuesta.getError() == null){
+		if (respuesta.getError().getDescripcion() == null){
 			respuestaFap.usuario = respuesta.getUsuario();
 			respuestaFap.resumen = respuesta.getResumen();
 			respuestaFap.observaciones = respuesta.getObservaciones();

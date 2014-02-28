@@ -264,10 +264,15 @@ public class PortafirmaImpl implements PortafirmaFapService {
 			ObtenerEstadoSolicitudType obtenerEstadoSolicitudType = new ObtenerEstadoSolicitudType();
 			obtenerEstadoSolicitudType.setIdSolicitud(solicitudFirmaPortafirma.uriSolicitud);
 			obtenerEstadoSolicitudType.setIdUsuario(solicitudFirmaPortafirma.idSolicitante);
-			solicitudFirmaPortafirma.solicitudEstado = portafirmaService.obtenerEstadoSolicitud(obtenerEstadoSolicitudType).getEstado();
+			ObtenerEstadoSolicitudResponseType obtenerEstadoSolicitudResponseType = portafirmaService.obtenerEstadoSolicitud(obtenerEstadoSolicitudType);
+			solicitudFirmaPortafirma.solicitudEstado = obtenerEstadoSolicitudResponseType.getEstado();
+			solicitudFirmaPortafirma.solicitudEstadoComentario = obtenerEstadoSolicitudResponseType.getComentario();
+			solicitudFirmaPortafirma.save();
+			play.Logger.info("El estado de la solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" es "+solicitudFirmaPortafirma.solicitudEstado);
 			return solicitudFirmaPortafirma.solicitudEstado;
 		} catch (Exception e) {
-			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
+			play.Logger.error("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
 		}
 	}
 	
@@ -302,10 +307,18 @@ public class PortafirmaImpl implements PortafirmaFapService {
 
 	@Override
 	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		Boolean firmada = false;
 		try {
-			return portafirmaService.comprobarSolicitudFinalizada(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.idSolicitante);
+			firmada = portafirmaService.comprobarSolicitudFinalizada(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.idSolicitante);
+			if (firmada) {
+				obtenerEstadoFirma(solicitudFirmaPortafirma);
+				play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada y finalizada.");
+			}
+			else
+				play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" no ha sido firmada y finalizada.");
+			return firmada;
 		} catch (PortafirmaException e) {
-			play.Logger.error("Error al comprobar si la solicitud de firma ha sido firmada: " + e.getMessage(), e);
+			play.Logger.error("Error al comprobar si la solicitud de firma de portafirma ha sido firmada y finalizada: " + e.getMessage(), e);
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
 	}
@@ -316,7 +329,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		List<UsuarioType> listaUsuarios = null;
 		List<ComboItem> listaResultados = new ArrayList<ComboItem>();
 		try {
-			// TODO: El parámetro debería ser solicitudFirmaPortafirma.idSolicitante en lugar de FapProperties.get("portafirma.usuario")
+			// El parámetro debería ser solicitudFirmaPortafirma.idSolicitante en lugar de FapProperties.get("portafirma.usuario")
 			listaUsuarios = portafirmaService.obtenerUsuariosAdmitenEnvio(FapProperties.get("portafirma.usuario"));
 			for (UsuarioType usuarioType: listaUsuarios) {
 				listaResultados.add(new ComboItem(usuarioType.getIdUsuario(), usuarioType.getIdUsuario()+ " - "+usuarioType.getNombreCompleto()));

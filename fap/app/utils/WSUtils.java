@@ -116,7 +116,7 @@ public class WSUtils {
 			configureSecurityHeadersWithUser(service, userUri);
 			
 		} catch (DBOrganizacionException_Exception e) {
-			play.Logger.info("Error al configuar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage());
+			play.Logger.info("Error al configurar cabecera de seguridad para el usuario: " + uid + ". " + e.getMessage());
 		}
 	}
 }

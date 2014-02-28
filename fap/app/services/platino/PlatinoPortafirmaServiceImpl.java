@@ -35,6 +35,7 @@ import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import messages.Messages;
 import models.Agente;
 import models.Convocatoria;
 import models.Documento;
@@ -375,35 +376,53 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 			solicitudFirmaPortafirma.solicitudEstado = solicitudFirmaType.getPropiedades().getSolicitudEstado().value();
 			solicitudFirmaPortafirma.solicitudEstadoComentario = solicitudFirmaType.getPropiedades().getSolicitudEstadoComentario();
 			solicitudFirmaPortafirma.save();
+			play.Logger.info("El estado de la solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" es "+solicitudFirmaPortafirma.solicitudEstado);
 			return solicitudFirmaPortafirma.solicitudEstado;
 		} catch (SolicitudFirmaExcepcion e) {
-			play.Logger.error("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
-			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma: " + e.getMessage(), e);
+			play.Logger.error("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
 		} finally {
 			//Restauramos el backoffice en las cabeceras de seguridad
 			restoreSecurityHeadersBackoffice();
 		}
 	}
 
+	// TODO: ¿Quitar estado FIRMADA_Y_REENVIADA?
 	@Override
 	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		String estadoSolicitudFirma = obtenerEstadoFirma(solicitudFirmaPortafirma);
-		if ((EstadoSolicitudEnumType.FIRMADA.equals(estadoSolicitudFirma)) || (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.equals(estadoSolicitudFirma)))
+		if ((EstadoSolicitudEnumType.FIRMADA.value().equalsIgnoreCase(estadoSolicitudFirma)) || (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.value().equalsIgnoreCase(estadoSolicitudFirma))) {
+			play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada.");
+			//play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada y finalizada.");
 			return true;
-		else
+		}
+		else {
+			play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" no ha sido firmada y finalizada.");
 			return false;
+		}
 	}
 
-	// TODO: Falta saber cómo obtener los usuarios que admiten envío de solicitud de firma.
 	@Override
 	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
-		List<ComboItem> listaUsuarioAdmiteEnvio = new ArrayList<ComboItem>();
-		listaUsuarioAdmiteEnvio.add(new ComboItem("dgonmor", "Daniel González Morales"));
-		return listaUsuarioAdmiteEnvio;
+		String[] listaDestinatarios = properties.FapProperties.get("fap.platino.portafirma.destinatarios").split(",");
+		if ((listaDestinatarios != null) && (listaDestinatarios.length % 2) == 0) {
+			List<ComboItem> listaUsuarioAdmiteEnvio = new ArrayList<ComboItem>();
+			for (int i = 0; i < listaDestinatarios.length; i++) {
+				listaUsuarioAdmiteEnvio.add(new ComboItem(listaDestinatarios[i], listaDestinatarios[++i]));
+			}
+			play.Logger.info("La lista de usuarios que admiten envío de solicitudes de firma de portafirma ha sido creada con éxito.");
+			return listaUsuarioAdmiteEnvio;
+		}
+		else {
+			play.Logger.error("La lista de usuarios que admiten envío de solicitudes de firma de portafirma no se ha podido crear (compruebe que está bien especificada en el fichero application.conf).");
+			Messages.error("La lista de usuarios que admiten envío de solicitudes de firma de portafirma no se ha podido crear.");
+			throw new PortafirmaFapServiceException("La lista de usuarios que admiten envío de solicitudes de firma de portafirma no se ha podido crear (compruebe que está bien especificada en el fichero application.conf).");
+		}
 	}
 
 	@Override
 	public void eliminarSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		play.Logger.warn("Actualmente este método no hace nada pues la llamada a eliminarSolicitudFirma del servicio de Platino falla pasándole los parámetros correctos.");
 //		try {
 //			portafirmaPort.eliminarSolicitudFirma(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.comentarioSolicitante);
 //			obtenerEstadoFirma(solicitudFirmaPortafirma);

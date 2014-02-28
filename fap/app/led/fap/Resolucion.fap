@@ -179,7 +179,7 @@ Entidad ResolucionFAP {
 	String idSolicitudFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.uriSolicitud
 	DateTime fechaTopeFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.plazoMaximo
 	String prioridadFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.prioridad
-	OneToMany Documento docConsultaPortafirmasResolucion	// SE UTILIZA PERO SE DEBER�?A CAMBIAR EN UN FUTURO A solicitudFirmaPortafirma.documentosConsulta
+	OneToMany Documento docConsultaPortafirmasResolucion	// SE UTILIZA PERO SE DEBER�?A CAMBIAR EN UN FUTURO A solicitudFirmaPortafirma.documentosConsulta
 	Agente hacePeticionPortafirma noConstruct				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.agenteHaceSolicitud
 	String jefeDeServicio									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.idDestinatario
 	
@@ -215,7 +215,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -389,7 +389,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"

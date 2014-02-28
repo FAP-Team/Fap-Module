@@ -19,7 +19,6 @@ import controllers.fap.ResolucionControllerFAP;
 import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
-import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 

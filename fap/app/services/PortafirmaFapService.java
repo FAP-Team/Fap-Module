@@ -6,7 +6,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
-import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 

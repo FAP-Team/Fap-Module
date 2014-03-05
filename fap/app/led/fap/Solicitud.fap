@@ -664,6 +664,19 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Enlace volverVerificaciones titulo="Volver" pagina=AccesoVerificaciones estilo="btn"
 	}
 	
+	
+	Pagina ListaDocumentosExpedienteFAP titulo="Lista de documentos del expediente"	permiso=adminOrGestor campo=SolicitudGenerica  noForm {
+		
+		Tabla documentosExpediente titulo="Documentos del Expediente" campo=SolicitudGenerica.documentacion.documentos {
+			Columna titulo="Tipo" campo=Documento.tipo ancho="100"
+			Columna titulo="Uri" campo=Documento.uri  expandir
+			Columna titulo="Descripción" campo=Documento.descripcion expandir
+			Columna titulo="Subido" campo=Documento.fechaSubida ancho="80" align=right
+			Columna titulo="Descargar" campo=Documento.enlaceDescarga ancho="80"
+		}
+
+	}
+	
 	Popup PopUpDocTipos titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos {
 		EditarArchivo documentoProceso campo=Documento requerido
 	}

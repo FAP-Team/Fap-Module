@@ -23,6 +23,21 @@ public class PlatinoCXFSecurityHeaders {
 	public static final String SOAP_11 = "SOAP11";
 	public static final String SOAP_12 = "SOAP12";
 	private static Log log = LogFactory.getLog(PlatinoCXFSecurityHeaders.class);
+	
+	public static void changeUsernameToken(Object service, String newUser) {
+		Client client = ClientProxy.getClient(service);
+		Endpoint cxfEndpoint = client.getEndpoint();
+		List outInterceptors = cxfEndpoint.getOutInterceptors();
+		
+		for (int i = 0; i < outInterceptors.size(); i++) {
+			if (outInterceptors.get(i).getClass().equals(WSSPlatinoOutInterceptor.class)) {
+				WSSPlatinoOutInterceptor element = (WSSPlatinoOutInterceptor) outInterceptors.get(i);
+				if (("es.gobcan.platino.wss.UsernameToken").equals(element.getId())) {
+					element.getProperties().put("user", newUser);
+				}
+			}
+		}
+	}
 
 	public static void addSoapWSSHeader(Object service, String soapVersion,
 			String username, String alias, String keystoreCallbackHandler,
@@ -81,9 +96,9 @@ public class PlatinoCXFSecurityHeaders {
 		log.debug("Interceptor UsernameToken añadido.");
 		outInterceptors.add(wssSignatureInterceptor);
 		log.debug("Interceptor Signature añadido.");
-		if (log.isDebugEnabled()) {
+		//if (log.isDebugEnabled()) { //ESTO SE COMENTÓ PARA QUE OBTENER MÁS INFO 
 			cxfEndpoint.getOutInterceptors().add(new LoggingOutInterceptor());
 			log.debug("Interceptor Logging añadido");
-		}
+		//}
 	}
 }

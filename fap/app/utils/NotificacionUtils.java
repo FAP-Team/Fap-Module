@@ -26,11 +26,11 @@ import models.Interesado;
 import models.Notificacion;
 import models.SolicitudGenerica;
 import enumerado.fap.gen.EstadoNotificacionEnum;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.InteresadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.EstadoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.EstadoNotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.InteresadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
 
 @InjectSupport
 public class NotificacionUtils {

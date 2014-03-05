@@ -1,0 +1,164 @@
+%{
+	def urlRecuperar = play.mvc.Router.reverse('PeticionRecuperadaController.recuperarPeticion');
+	def urlRecuperada = play.mvc.Router.reverse('PeticionRecuperadaController.index');
+	def idWiki = "wiki";
+%}
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Principal', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PeticionRecuperada', 
+     titulo:'Petición Recuperada', 
+     urlBorrar:play.mvc.Router.reverse('PeticionRecuperadaController.borrar' , ['idRespuesta':respuesta?.id]), 
+     urlCrear:play.mvc.Router.reverse('PeticionRecuperadaController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('PeticionRecuperadaController.editar' , ['idRespuesta':respuesta?.id])
+}
+	
+		
+			<div class="wiki ">
+<p>A continuación se muestran los resultados de la verificación:</p>
+		
+			<div class="wiki ">
+#{fap.grupo titulo:'Respuesta'}
+<p><table style="width:99%;text-align:center;align:center;"></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i><u>Atributos</u>:</i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:right;"><b><i>ID Petición:</i></b></td><td style=" text-align:right;">${respuesta.atributos.idPeticion}</td></p>
+<p><td style=" text-align:right;"><b><i>Código:</i></b></td><td style=" text-align:right;">${respuesta.atributos.codigoCertificado}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:right;"><b><i>Nº Elementos:</i></b></td><td style=" text-align:right;">${respuesta.atributos.numElementos}</td></p>
+<p><td style=" text-align:right;"><b><i>TimeStamp:</i></b></td><td style=" text-align:right;">${respuesta.atributos.timestamp}</td></p>
+<p></tr></p>
+<p></table></div></p>
+#{/fap.grupo}
+
+
+#{fap.grupo titulo:'Transmisiones'}
+#{list items:respuesta.transmisiones.transmisionDatos, as: 'transmision'}
+%{def transmision_b = "Transmisión " + transmision.id %} 
+#{fap.grupo titulo:transmision_b}
+<p><table style="width:99%;text-align:center;align:center;"></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i><u>Emisor:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>NIF:</i></b></td><td style=" text-align:left;">  ${transmision.datosGenericos.emisor.nif}</td></p>
+<p><td style=" text-align:left;"><b><i>Nombre:</i></b></td><td style=" text-align:left;">  ${transmision.datosGenericos.emisor.nombreEmisor}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Solicitante:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>ID:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.idSolicitante}</td></p>
+<p><td style=" text-align:left;"><b><i>Nombre:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.nombreSolicitante}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Finalidad:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.finalidad}</td></p>
+<p><td style=" text-align:left;"><b><i>Consentimiento:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.consentimiento.valor}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>NIF Funcionario:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.funcionario.nifFuncionario}</td></p>
+<p><td style=" text-align:left;"><b><i>Nombre Funcionario:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Código Proc.:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.procedimiento.codigoProcedimiento}</td></p>
+<p><td style=" text-align:left;"><b><i>Nombre Proc.:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.solicitante.procedimiento.nombreProcedimiento}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Titular:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Tipo Doc.:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.titular.tipoDocumentacion.valor}</td></p>
+<p><td style=" text-align:left;"><b><i>DNI:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.titular.documentacion}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Nombre:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.titular.nombreCompleto}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Transmisión:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Código Certificado:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.transmision.codigoCertificado}</td></p>
+<p><td style=" text-align:left;"><b><i>ID Solicitud:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.transmision.idTransmision}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>ID Tramitación:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.transmision.idTransmision}</td></p>
+<p><td style=" text-align:left;"><b><i>Fecha Generación:</i></b></td><td style=" text-align:left;">${transmision.datosGenericos.transmision.fechaGeneracion}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Estado:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Código Estado :</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.estado.codigoEstado}</td></p>
+<p><td style=" text-align:left;"><b><i>Literal Error:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.estado.literalError}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Datos Titular:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>NIF:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.identificador}</td></p>
+<p><td style=" text-align:left;"><b><i>Fecha Caducidad:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.fechacaducidad}</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Nombre :</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.nombre}</td></p>
+<p><td style=" text-align:left;"><b><i>1º Apellido:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.apellido1}</td></p>
+<p></tr></p>
+<p><td style=" text-align:left;"><b><i>2º Apellido:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.apellido2}</td></p>
+<p><td style=" text-align:left;"><b><i>Nacionalidad :</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.nacionalidad}</td></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Sexo :</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.sexo.valor}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Datos Nacimiento:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Fecha:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosNacimiento.fecha}</td></p>
+<p><td style=" text-align:left;"><b><i>Localidad:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosNacimiento.localidad}</td></p>
+<p><tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Provincia:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosNacimiento.provincia}</td></p>
+<p></tr></p>
+<p></tr></p>
+<p><tr><td colspan="6"><br/></td></tr></p>
+<p><td style=" text-align:left;"><b><i><u>Datos Dirección:</u></i></b></td></p>
+<p></tr></p>
+<p><tr><td colspan="2"><br/></td></tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Provincia:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosDireccion.provincia}</td></p>
+<p><td style=" text-align:left;"><b><i>Localidad:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosDireccion.localidad}</td></p>
+<p><tr></p>
+<p><tr></p>
+<p><td style=" text-align:left;"><b><i>Vía:</i></b></td><td style=" text-align:left;">${transmision.datosEspecificos.datosTitular.datosDireccion.datosVia}</td></p>
+<p></tr></p>
+<p></table></div></p>
+#{/fap.grupo}
+#{/list}
+
+#{/fap.grupo}
+
+#{fap.enlace action:play.mvc.Router.reverse("VerificacionDatosSVDController.index") , estilo:'btn', id:'volverVerificacionDatos', titulo:'Volver' /}
+</div>
+#{/fap.pagina}
+		

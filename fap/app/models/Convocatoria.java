@@ -15,9 +15,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import org.hibernate.annotations.DiscriminatorOptions;
 
+@DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
-
 @Entity
 public class Convocatoria extends Singleton {
 	// Código de los atributos

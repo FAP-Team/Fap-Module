@@ -37,8 +37,6 @@ public class ResolucionFAP extends FapModel {
 
 	public Boolean firmarJefeServicio;
 
-	public String jefeDeServicio;
-
 	public Boolean firmarDirector;
 
 	public Boolean permitirPortafirma;
@@ -46,12 +44,6 @@ public class ResolucionFAP extends FapModel {
 	public Boolean permitirRegistrar;
 
 	public Boolean permitirPublicar;
-
-	public String prioridadFirma;
-
-	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaTopeFirma"), @Column(name = "fechaTopeFirmaTZ") })
-	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
-	public DateTime fechaTopeFirma;
 
 	@ValueFromTable("estadoResolucion")
 	public String estado;
@@ -108,8 +100,6 @@ public class ResolucionFAP extends FapModel {
 	@ValueFromTable("tiposResolucion")
 	public String tiposResolucion;
 
-	public String idSolicitudFirma;
-
 	public String codigoResolucion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinAceptacion"), @Column(name = "fechaFinAceptacionTZ") })
@@ -119,10 +109,6 @@ public class ResolucionFAP extends FapModel {
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaIncioPreparacion"), @Column(name = "fechaIncioPreparacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaIncioPreparacion;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "resolucionfap_docconsultaportafirmasresolucion")
-	public List<Documento> docConsultaPortafirmasResolucion;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Registro registro;
@@ -137,13 +123,27 @@ public class ResolucionFAP extends FapModel {
 	public ExpedienteAed expedienteAed;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitudPortafirmaFAP solicitudFirmaJefeServicio;
+	public SolicitudFirmaPortafirma solicitudFirmaPortafirma;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitudPortafirmaFAP solicitudFirmaDirector;
+	public String idSolicitudFirma;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaTopeFirma"), @Column(name = "fechaTopeFirmaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaTopeFirma;
+
+	public String prioridadFirma;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "resolucionfap_docconsultaportafirmasresolucion")
+	public List<Documento> docConsultaPortafirmasResolucion;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Agente hacePeticionPortafirma;
+
+	public String jefeDeServicio;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public SolicitudFirmaPortafirma solicitudFirmaPortafirmaOficioRemision;
 
 	public String idSolicitudFirmaOficiosRemision;
 
@@ -176,9 +176,6 @@ public class ResolucionFAP extends FapModel {
 		if (oficialEvaluacionCompleto == null)
 			oficialEvaluacionCompleto = false;
 
-		if (docConsultaPortafirmasResolucion == null)
-			docConsultaPortafirmasResolucion = new ArrayList<Documento>();
-
 		if (registro == null)
 			registro = new Registro();
 		else
@@ -195,15 +192,18 @@ public class ResolucionFAP extends FapModel {
 		else
 			expedienteAed.init();
 
-		if (solicitudFirmaJefeServicio == null)
-			solicitudFirmaJefeServicio = new SolicitudPortafirmaFAP();
+		if (solicitudFirmaPortafirma == null)
+			solicitudFirmaPortafirma = new SolicitudFirmaPortafirma();
 		else
-			solicitudFirmaJefeServicio.init();
+			solicitudFirmaPortafirma.init();
 
-		if (solicitudFirmaDirector == null)
-			solicitudFirmaDirector = new SolicitudPortafirmaFAP();
+		if (docConsultaPortafirmasResolucion == null)
+			docConsultaPortafirmasResolucion = new ArrayList<Documento>();
+
+		if (solicitudFirmaPortafirmaOficioRemision == null)
+			solicitudFirmaPortafirmaOficioRemision = new SolicitudFirmaPortafirma();
 		else
-			solicitudFirmaDirector.init();
+			solicitudFirmaPortafirmaOficioRemision.init();
 
 		if (resolucionReintegro == null)
 			resolucionReintegro = false;

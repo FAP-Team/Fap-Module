@@ -10,10 +10,10 @@ import models.RegistroModificacion;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import validation.CustomValidation;
-import controllers.gen.popups.popupCrearModificacionSolicitudControllerGen;
+import controllers.gen.popups.PopupCrearModificacionSolicitudControllerGen;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 
-public class popupCrearModificacionSolicitudController extends popupCrearModificacionSolicitudControllerGen {
+public class PopupCrearModificacionSolicitudController extends PopupCrearModificacionSolicitudControllerGen {
 	
 	@Util
 	public static Long crearLogica(Long idSolicitud, RegistroModificacion registroModificacion) {
@@ -21,19 +21,19 @@ public class popupCrearModificacionSolicitudController extends popupCrearModific
 		if (!permiso("crear")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		RegistroModificacion dbRegistroModificacion = popupCrearModificacionSolicitudController.getRegistroModificacion();
-		SolicitudGenerica dbSolicitud = popupCrearModificacionSolicitudController.getSolicitudGenerica(idSolicitud);
+		RegistroModificacion dbRegistroModificacion = PopupCrearModificacionSolicitudController.getRegistroModificacion();
+		SolicitudGenerica dbSolicitud = PopupCrearModificacionSolicitudController.getSolicitudGenerica(idSolicitud);
 
-		popupCrearModificacionSolicitudController.popupCrearModificacionSolicitudBindReferences(registroModificacion);
+		PopupCrearModificacionSolicitudController.PopupCrearModificacionSolicitudBindReferences(registroModificacion);
 
 		if (!Messages.hasErrors()) {
 
-			popupCrearModificacionSolicitudController.popupCrearModificacionSolicitudValidateCopy("crear", dbRegistroModificacion, registroModificacion);
+			PopupCrearModificacionSolicitudController.popupCrearModificacionSolicitudValidateCopy("crear", dbRegistroModificacion, registroModificacion);
 
 		}
 
 		if (!Messages.hasErrors()) {
-			popupCrearModificacionSolicitudController.crearValidateRules(dbRegistroModificacion, registroModificacion);
+			PopupCrearModificacionSolicitudController.crearValidateRules(dbRegistroModificacion, registroModificacion);
 		}
 		Long idRegistroModificacion = null;
 		if (!Messages.hasErrors()) {

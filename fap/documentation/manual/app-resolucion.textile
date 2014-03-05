@@ -123,7 +123,7 @@ Esta función debe devolver una lista con todos los agentes que tienen el rol de
 
 bc. public static List<ComboItem> getPrioridadesFirma()
 
-Esta función debe devolver las prioridades permitidas en la aplicación. Por defecto, son baja, media y alta.
+Esta función debe devolver las prioridades permitidas en la aplicación. Por defecto, son baja, normal y alta.
 
 * Método para obtener el número de días máximo para obtener la firma.
 

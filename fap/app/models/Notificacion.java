@@ -16,8 +16,8 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import enumerado.fap.gen.EstadoNotificacionEnum;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionService;
 import properties.FapProperties;
 import utils.NotificacionUtils;
 

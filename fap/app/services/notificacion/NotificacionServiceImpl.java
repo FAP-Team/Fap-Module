@@ -23,25 +23,25 @@ import controllers.fap.AgenteController;
 import enumerado.fap.gen.EstadoNotificacionEnum;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionPortType;
-import es.gobcan.platino.servicios.enotificacion.notificacion.ResultadoBusquedaNotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfArrayResultadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfInteresadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionEnvioType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoCreateType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.EstadoNotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.InteresadoType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.MimeTypeEnumType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionCreateType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionCriteriaType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionEnvioType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionType;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.ResultadoType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionPortType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.ResultadoBusquedaNotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfArrayResultadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfInteresadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionEnvioType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ArrayOfNotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoCreateType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.EstadoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.EstadoNotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.InteresadoType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.MimeTypeEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionCreateType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionCriteriaType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionEnvioType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ResultadoType;
 
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
@@ -64,7 +64,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	protected final PropertyPlaceholder propertyPlaceholder;
 	
-	protected static es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService notificacionService;
+	protected static es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionService notificacionService;
 	protected final NotificacionPortType notificacionPort;
 	
 	protected final static String URL_AED = FapProperties.get("fap.aed.url");
@@ -100,7 +100,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         }
         
         try {
-	        notificacionService = new es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
+	        notificacionService = new es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
         } catch (Exception e) {
         	play.Logger.error("No se ha podido injectar el servicio de notificaciones: " + e.getMessage());
         	notificacionPort = null;
@@ -330,7 +330,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			notificacion.save();
 		}
-		catch (es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException ex1) {
+		catch (es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException ex1) {
 			play.Logger.error(String.format(EXCEPTION_CON_WS, idGestor, "puesta a disposición", uriNotificacion), ex1);
 			throw new NotificacionException(MSG_CON_WS + ex1.getMessage(), ex1);
 		} catch (Exception ex4) {

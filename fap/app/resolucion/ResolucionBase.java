@@ -336,6 +336,7 @@ public class ResolucionBase {
 				play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("resolucion", resolucion);
 				oficial = new Report(this.getBodyReport()).header(this.getHeaderReport()).normalSize().renderTmpFile(resolucion);
 				resolucion.registro.oficial = new Documento();
+				resolucion.registro.oficial.descripcion = resolucion.tituloInterno;
 				resolucion.registro.oficial.tipo = getTipoRegistroResolucion(resolucion.tipo);
 				resolucion.registro.save();
 			} catch (Exception ex2) {
@@ -509,7 +510,7 @@ public class ResolucionBase {
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
 					
-				NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
+				//NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			}
 		}
 		
@@ -1142,8 +1143,6 @@ public class ResolucionBase {
 		}
 
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
-		
-		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 

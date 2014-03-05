@@ -42,7 +42,7 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		
         this.propertyPlaceholder = propertyPlaceholder;
 
-        URL wsdlURL = PlatinoGestorDocumentalService.class.getClassLoader().getResource("wsdl/mensaje.wsdl");
+        URL wsdlURL = PlatinoMensajeServiceImpl.class.getClassLoader().getResource("wsdl/mensaje.wsdl");
         mensajePort = new MensajeService(wsdlURL).getMensajeService();
 
         WSUtils.configureEndPoint(mensajePort, getEndPoint());
@@ -118,6 +118,20 @@ public class PlatinoMensajeServiceImpl implements services.MensajeService {
 		
 		try{
 			return mensajePort.enviarMensajeOficio(mensajeDeOficio);
+		}
+		catch(Exception e){
+			System.out.println("No se ha podido mandar el e-mail. Causa: " + e);
+			throw new MensajeServiceException("No se pudo enviar el correo al email solicitado");
+		}
+	}
+	
+	@Override
+	public  ArrayOfMensajeType obtenerMensajes (String uriRemesa) throws MensajeServiceException {
+		
+		
+		
+		try{
+			return mensajePort.obtenerMensajes(uriRemesa); 
 		}
 		catch(Exception e){
 			System.out.println("No se ha podido mandar el e-mail. Causa: " + e);

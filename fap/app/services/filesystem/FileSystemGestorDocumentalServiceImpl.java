@@ -909,7 +909,8 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		BinaryResponse br = getDocumentoByUri(uriDocumento);
 		if (br == null)
 			return null;
-		return br.toString();
+		//return br.toString();
+		return null;
 	}
 
 	@Override
@@ -935,11 +936,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 	}
 
 	@Override
-	public Boolean existeDocumento(String uriDocumento) throws GestorDocumentalServiceException {
+	public Boolean existeDocumentoClasificado(String uriDocumento) {
 		Documento documento = Documento.findByUri(uriDocumento);
-		if (documento != null){
+		if ((documento != null) && (documento.clasificado)) {
 			return true;
 		} else {
+			play.Logger.error("Error el documento no existe entre los documentos clasificados");
 			return false;
 		}
 	}

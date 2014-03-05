@@ -19,6 +19,7 @@ import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
+import models.SolicitudFirmaPortafirma;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import properties.FapProperties;
@@ -27,8 +28,10 @@ import services.GestorDocumentalService;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.RegistroService;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
+import utils.ResolucionUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
@@ -44,6 +47,7 @@ import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoDocumentoEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 
 public class PaginaNotificarResolucionController extends PaginaNotificarResolucionControllerGen {
 	
@@ -205,6 +209,18 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 
 			PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirmaValidateCopy("editar", dbResolucionFAP, resolucionFAP);
 
+			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
+				PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+				try {
+					dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
+				} catch (DBOrganizacionException_Exception e) {
+					play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
+					Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+				}
+				if ((dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante.isEmpty()))
+					Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
+			}
+			
 		}
 
 		if (!Messages.hasErrors()) {
@@ -214,49 +230,28 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		if (!Messages.hasErrors()) {
 			
 			Agente agenteActual = AgenteController.getAgente();
-			
-			String titulo = "Oficios de remisión"; // TODO ¿Añadir property?
-			String descripcion = "Se firmarán los oficios de remisión de la resolución "+idResolucionFAP; // TODO ¿Añadir property?
-			TipoSolicitudEnumType tipoSolicitud = TipoSolicitudEnumType.OTROS;
-			PrioridadEnumType prioridad = PrioridadEnumType.NORMAL;
-			GregorianCalendar gcal = new GregorianCalendar();
-			gcal.setTime(dbResolucionFAP.fechaTopeFirmaOficiosRemision.toDate());
-			gcal.setTimeInMillis(dbResolucionFAP.fechaTopeFirmaOficiosRemision.getMillis());
-			XMLGregorianCalendar fechaTopeFirma = null;
-			try {
-				fechaTopeFirma = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
-			} catch (DatatypeConfigurationException e) {
-				Messages.error("Error al setear la fecha tope de firma.");
-				e.printStackTrace();
-				play.Logger.error("Error al setear la fecha tope de firma."+ e);
-			}
-			String idSolicitante = FapProperties.get("portafirma.usuario");
-			String idDestinatario = dbResolucionFAP.destinatarioOficioRemisionPortafirma;
-			String comentario = null; // No hace falta
-			String emailNotificacion = agenteActual.email;
-			String urlRedireccion = null; // No hace falta
-			String urlNotificacion = null; // No hace falta
-			String flujoSolicitud = null; // No hace falta
-			ListaDocumentosAedType documentosAed = new ListaDocumentosAedType();
-			Integer numOrden = new Integer(1);
+
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tema = "Oficios de remisión";
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.materia = "Se firmarán los oficios de remisión de la resolución "+idResolucionFAP;
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tipoSolicitud = TipoSolicitudEnumType.OTROS.value();
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.prioridad = PrioridadEnumType.NORMAL.value();
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tipoDocumento = "SOL";
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.emailNotificacion = agenteActual.email;
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = agenteActual;
 			for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 				if (!linea.registro.fasesRegistro.firmada) {
-					DocumentoAedType docAedType = new DocumentoAedType();
-					docAedType.setUriAed(linea.registro.oficial.uri);
-					docAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
-					docAedType.setNumeroOrden(numOrden.toString());
-					docAedType.setDescripcion(linea.registro.oficial.descripcionVisible);
-					documentosAed.getListaDocumento().add(docAedType);
-					numOrden++;
+					Documento documento = new Documento();
+					documento.uri = linea.registro.oficial.uri;
+					documento.descripcion = linea.registro.oficial.descripcionVisible;
+					dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.documentosFirma.add(documento);
 				}
 			}
-			ListaDocumentosType documentos = null; // No hace falta
-	
+			dbResolucionFAP.save();
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(titulo, descripcion, tipoSolicitud, prioridad, fechaTopeFirma, idSolicitante, idDestinatario, comentario, emailNotificacion, urlRedireccion, urlNotificacion, flujoSolicitud, documentosAed, documentos);
-				dbResolucionFAP.idSolicitudFirmaOficiosRemision = response.getIdSolicitud();
-				dbResolucionFAP.hacePeticionPortafirmaOficiosRemision = AgenteController.getAgente();
+				PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = portafirmaService.crearSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision);
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud = portafirmaCrearSolicitudResponse.getIdSolicitud();
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.solicitudEstadoComentario = portafirmaCrearSolicitudResponse.getComentarios();
 				dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionPendientesPortafirma.name();
 				dbResolucionFAP.save();
 				Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma");
@@ -282,38 +277,45 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		CustomValidation.clearValidadas();
 
 		if (secure.checkGrafico("permisoEnviarOficiosRemisionPortafirma", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
+			CustomValidation.valid("resolucionFAP.solicitudFirmaPortafirmaOficioRemision", resolucionFAP.solicitudFirmaPortafirmaOficioRemision);
 			CustomValidation.valid("resolucionFAP", resolucionFAP);
-			CustomValidation.required("resolucionFAP.destinatarioOficioRemisionPortafirma", resolucionFAP.destinatarioOficioRemisionPortafirma);
-			CustomValidation.validValueFromTable("resolucionFAP.destinatarioOficioRemisionPortafirma", resolucionFAP.destinatarioOficioRemisionPortafirma);
-			dbResolucionFAP.destinatarioOficioRemisionPortafirma = resolucionFAP.destinatarioOficioRemisionPortafirma;
-			CustomValidation.required("resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);
-			dbResolucionFAP.fechaTopeFirmaOficiosRemision = resolucionFAP.fechaTopeFirmaOficiosRemision;
-
+			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
+			CustomValidation.validValueFromTable("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario;
+			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo;
+			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
+				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante;
+				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante);
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante;
+			}
+			else {
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = FapProperties.get("portafirma.usuario");
+			}
 		}
 
-		if (dbResolucionFAP.fechaTopeFirmaOficiosRemision != null) {
+		if (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo != null) {
 			DateTime today = new DateTime().withTimeAtStartOfDay();
-			if (dbResolucionFAP.fechaTopeFirmaOficiosRemision.isBefore(today)) {
+			if (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo.isBefore(today)) {
 				play.Logger.error("La fecha tope de firma no puede ser anterior a hoy.");
-				CustomValidation.error("La fecha tope de firma no puede ser anterior a hoy.","resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);
+				CustomValidation.error("La fecha tope de firma no puede ser anterior a hoy.","resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
 			}
-			int dias = 0;
-			// Comprobar la fecha de tope de firma con el ResolucionBase
 			try {
-				//dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
-				dias = 1;
 				DateTime diaLimite = new DateTime();
-				diaLimite = diaLimite.minusDays(dias);
-				if (diaLimite.isBefore(dbResolucionFAP.fechaTopeFirmaOficiosRemision)) {
+				diaLimite = diaLimite.plusDays(1);	// Por defecto, sólo se permite un día de plazo máximo
+				if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo)) {
 					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
-					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);					
+					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);					
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();
 				play.Logger.error("No se ha podido calcular el límite de fecha para la firma."+e);
-				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.fechaTopeFirmaOficiosRemision", resolucionFAP.fechaTopeFirmaOficiosRemision);
+				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
 			}
 		}
+		
+		dbResolucionFAP.save();
 		
 	}
 	
@@ -327,10 +329,10 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 
 		if (!Messages.hasErrors()) {
 			ResolucionFAP dbResolucionFAP = PaginaNotificarResolucionController.getResolucionFAP(idResolucionFAP);
-			
+			ResolucionUtils.actualizarSolicitudesFirmaPortafirmaAntiguasResolucion(dbResolucionFAP);
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
-				if (portafirmaService.comprobarSiResolucionFirmada(dbResolucionFAP.idSolicitudFirmaOficiosRemision)) {
+				if (portafirmaService.comprobarSiSolicitudFirmada(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision)) {
 					dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionFirmados.name();
 					for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 						if (!linea.registro.fasesRegistro.firmada) {
@@ -343,14 +345,15 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				} else {
 					play.Logger.warn("Los oficios de remisión de la resolución ["+dbResolucionFAP.id+"] asociados a la solicitud de firma no han sido firmados y finalizados.");
 					Messages.warning("Los oficios de remisión de la resolución asociados a la solicitud de firma no han sido firmados y finalizados.");
-					
-					ObtenerEstadoSolicitudResponseType response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP.idSolicitudFirmaOficiosRemision, FapProperties.get("portafirma.usuario"));
+					String response = portafirmaService.obtenerEstadoFirma(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision);
 					if (response == null) {
 						throw new PortafirmaFapServiceException("No se pudo obtener el estado de la firma: Response null.");
 					}
-					play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response.getEstado()+ ": "+response.getComentario());
-					Messages.warning("El estado de la solicitud de firma en el portafirma es: "+response.getEstado());
-					if (response.getEstado().equalsIgnoreCase("Rechazada")) {
+					//TODO: Recuperar comentario del response (que ahora no existe)
+					//play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response+ ": "+response.getComentario());
+					play.Logger.info("El estado de la solicitud de firma en el portafirma es: "+response);
+					Messages.warning("El estado de la solicitud de firma en el portafirma es: "+response);
+					if (response.equalsIgnoreCase("Rechazada")) {
 						dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.noNotificada.name();
 						dbResolucionFAP.save();
 					}

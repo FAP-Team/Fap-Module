@@ -1,0 +1,206 @@
+%{
+	def urlRecuperar = play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticion');
+	def urlRecuperada = play.mvc.Router.reverse('PeticionRecuperadaController.index');
+	def urlRecuperarPDF = play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticionPDF');
+	def urlRecuperadaPDF = play.mvc.Router.reverse('PeticionPDFRecuperadaController.index');
+	
+%}
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Principal', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'VerificacionDatosSVD', 
+     permiso:'noUsuario', 
+     titulo:'Verificaciones Sin Finalizar', 
+     urlBorrar:play.mvc.Router.reverse('VerificacionDatosSVDController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('VerificacionDatosSVDController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('VerificacionDatosSVDController.editar' )
+}
+	
+		
+<!--			#{fap.grupo titulo:'Realizar peticiones asincronas'}
+				
+#{fap.tabla 
+     campo:'Solicitud', 
+     id:'listaVerificacionesSinFinalizar', 
+     idEntidad:'idSolicitud', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Verificaciones sin Finalizar', 
+     urlTabla:@VerificacionDatosSVDController.tablalistaVerificacionesSinFinalizar()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'ID Solicitud', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Expediente Solicitud', campo:'expedienteAed.idAed' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Estado Solicitud', campo:'estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'ID Verificacion', campo:'verificacion.id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Estado Verificación', campo:'verificacion.estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'ID Solicitante', campo:'solicitante.numeroId' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Nombre Solicitante', campo:'solicitante.nombreCompleto', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{fap.boton id:'botonRealizarPeticionAsincrona', titulo:'Verificar Datos' /}
+		
+			#{/fap.grupo} -->
+		
+		 #{fap.grupo titulo:'Crear una nueva verificación de datos'} 
+				
+				#{form play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPeticionCodigo' ) , class:"form-horizontal", id:"recuperaPeticionCodigo"}
+
+
+			<div class="wiki">
+				<p>Introduzca el código de petición y el ID de usuario. Luego pulse el botón para recuperar la petición.</p>
+			</div>
+			
+			<div class="control-group " id="cg1">
+				<label class="control-label" for="codigoPeticion" style="" id="codigoPeticionLabel">Código de Petición: </label>
+				<div class="controls" id="ext-gen1117">
+					<input class="input-manual" id="codigoPeticion" type="text" name="codigoPeticion" >
+				</div> 
+			</div>
+			
+			<div class="control-group " id="cg2">
+				<label class="control-label" for="uidUsuario" style="" id="uidUsuarioLabel">ID usuario: </label>
+				<div class="controls" id="ext-gen1117">
+					<input class="input-manual" id="uidUsuario" type="text" name="uidUsuario" >
+				</div> 
+			</div>
+			
+				#{/form}
+				
+			<script>	
+				$(document).ready(function() {
+					ocultarTodo();
+					console.log( "Listo!" );
+				});
+				
+				function recuperar() {
+						$('#cg2').parent().attr('style', 'display:block');
+						$('#cg5').parent().attr('style', 'display:none');
+						$('#botonRecuperarPeticion').attr('style', 'display:none');
+						$('#botonRecuperarPeticionB').attr('style', 'display:inline');
+						$('#botonRecuperarPeticionPdf').attr('style', 'display:inline');
+						$('#botonRecuperarPeticionPdfB').attr('style', 'display:none');
+						
+				}
+				
+				function notificar() {
+						$('#cg2').parent().attr('style', 'display:none');
+						$('#cg5').parent().attr('style', 'display:block');
+						$('#botonRecuperarPeticion').attr('style', 'display:inline');
+						$('#botonRecuperarPeticionB').attr('style', 'display:none');
+						$('#botonRecuperarPeticionPdf').attr('style', 'display:none');
+						$('#botonRecuperarPeticionPdfB').attr('style', 'display:inline');
+				}
+				
+				function recuperaPeticion(){
+					popupWait_open();
+					$.ajax({
+						type: "POST",
+						url: "${urlRecuperar}",
+						data: {
+							codigoPeticion: $('#codigoPeticion').val(),
+							uidUsuario: $('#uidUsuario').val(),
+							}
+						}).done(function(msg) {
+						popupWait_close();
+						if (msg.match(/\\?idRespuesta\=(\d+)\&accion\=editar/)) {
+							location.href = "${urlRecuperada}" + msg;
+ 						}
+ 						else {
+							alert("No se pudo realizar la recuperación. Los campos son erróneos.");
+						}
+					});
+
+				}
+				
+				function recuperaPeticionPDF(){
+				popupWait_open();
+					$.ajax({
+						type: "POST",
+						url: "${urlRecuperarPDF}",
+						data: {
+							codigoPeticion: $('#codigoPeticionB').val(),
+							idTransmision: $('#idTransmision').val(),
+							uidUsuario: $('#uidUsuarioB').val()
+						}
+						}).done(function(msg) {
+						popupWait_close();
+							if (msg.match(/\\?idRespuesta\=(\d+)\&accion\=editar/)) {
+								location.href = "${urlRecuperadaPDF}"+ msg;
+	 						}
+	 						else {
+							alert("No se pudo realizar la recuperación. Los campos son erróneos.");
+							}
+						});
+				}
+				
+				function ocultarTodo() {
+					cg2.selectedIndex = 0;
+					cg2.selectedIndex = 0;
+					$('#cg2').parent().attr('style', 'display:none');
+					$('#cg5').parent().attr('style', 'display:none');
+					$('#botonRecuperarPeticionB').attr('style', 'display:none');
+					$('#botonRecuperarPeticionPdfB').attr('style', 'display:none');
+				}
+				
+			</script>
+			<a id="botonRecuperarPeticion" class="btn " onclick="recuperar()">Recuperar petición</a>
+			<a id="botonRecuperarPeticionB" class="btn " onclick="recuperaPeticion()" style='width:70px'>Recuperar petición</a>
+		
+			#{/fap.grupo}
+		
+			<div class="wiki ">
+<p>Un grupo para la recuperacion de peticion en pdf</p>
+
+			</div>
+		
+			#{fap.grupo titulo:'Crear una nueva verificación de datos'}
+				
+				#{form play.mvc.Router.reverse('VerificacionDatosSVDController.recuperaPDF' ) , class:"form-horizontal", id:"recuperaPDF"}
+					
+			<div class="wiki ">
+<p>Introduzca el código de petición, el ID de transmisión y el ID de usuario. Luego pulse el botón para recuperar la petición.</p>
+
+			</div>
+			<div class="control-group " id="cg3">
+				<label class="control-label" for="codigoPeticionB" style="" id="codigoPeticionBLabel">Código de Petición: </label>
+				<div class="controls" id="ext-gen1117">
+					<input class="input-manual" id="codigoPeticionB" type="text" name="codigoPeticionB" >
+				</div> 
+			</div>
+			<div class="control-group " id="cg4">
+				<label class="control-label" for="idTransmision" style="" id="idTransmisionLabel">ID Transmision: </label>
+				<div class="controls" id="ext-gen1117">
+					<input class="input-manual" id="idTransmision" type="text" name="idTransmision" >
+				</div> 
+			</div>
+			<div class="control-group " id="cg5">
+				<label class="control-label" for="uidUsuarioB" style="" id="uidUsuarioBLabel">ID usuario: </label>
+				<div class="controls" id="ext-gen1117">
+					<input class="input-manual" id="uidUsuarioB" type="text" name="uidUsuarioB" >
+				</div> 
+			</div>
+			
+				#{/form}
+				
+			<a id="botonRecuperarPeticionPdf" class="btn " onclick="notificar()">Recuperar PDF</a>
+			<a id="botonRecuperarPeticionPdfB" class="btn " onclick="recuperaPeticionPDF()">Recuperar PDF</a>
+			
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

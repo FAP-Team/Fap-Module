@@ -1,10 +1,11 @@
 # Application dependencies
 
-self: play -> fap 2.4RC1
+self: play -> fap 2.4RC5
+
 
 
 require:
-    - play 1.2.4 :
+    - play 1.2.5 :
          exclude: 
           - junit
     - play -> pdf 0.6
@@ -72,22 +73,26 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre v20131119:
+    - es.gobcan.platino -> platino.pre v20131226:
         transitive: false   
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
+       transitive: false
     - es.gobcan.eadmon.verificacion -> verificacion 1.0:
         transitive: false
     - es.gobcan.eadmon -> procedimientos v20131015:
         transitive: false
     - es.gobcan.eadmon -> gestordocumental v20130607:
         transitive: false
-    - es.gobcan -> certificados 1.1:
+    - es.gobcan -> certificados v20140220:
         transitive: false
-    - es.gobcan -> resoluciones v20130529:
+    - es.gobcan -> resoluciones v20140107:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0
-    
-    - es.gobcan.platino.servicios.enotificacion ->  notificaciones v20130711:
+     
+    - es.gobcan.aciisi -> notificaciones v20140221:
+        transitive: false
+    - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
         transitive: false
     
     - es.mityc -> facturae 2.0:
@@ -103,6 +108,7 @@ repositories:
             - es.gobcan -> *
             - es.gobcan.aciisi -> *
             - es.gobcan.platino -> *
+            - es.gobcan.hiperreg -> *
             - es.gobcan.platino.servicios -> *    
             - es.gobcan.eadmon.verificacion -> *
             - es.gobcan.eadmon.tiposdocumentos -> *
@@ -111,7 +117,7 @@ repositories:
             - platinowssinterceptor -> *
             - platinosecurityheader -> *
             - es.mityc -> * 
-            - es.gobcan.platino.servicios.enotificacion -> * 
+            - es.gobcan.aciisi -> * 
             - de.devsurf.components.converter.integrations -> *
 
     - fap-devel modules repository:

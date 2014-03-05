@@ -138,10 +138,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			dbVerificacion.estado = EstadosVerificacionEnum.verificandoTipos.name();
 			dbVerificacion.fechaUltimaActualizacion = new DateTime();
 			dbVerificacion.verificacionTiposDocumentos = VerificacionUtils.existDocumentosNuevos(dbVerificacion, idSolicitud);
-			SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
-			dbSolicitud.estado=EstadosSolicitudEnum.enVerificacion.name();
+			//SolicitudGenerica dbSolicitud = getSolicitudGenerica(idSolicitud);
+			//dbSolicitud.estado = EstadosSolicitudEnum.enVerificacion.name();
 			dbVerificacion.save();
-			dbSolicitud.save();
+			//dbSolicitud.save();
 			log.info("Acción sobre iniciar verificacion de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
 		} else
 			log.info("Acción sobre iniciar verificacion de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
@@ -372,14 +372,19 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					
 					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
 					dbSolicitud.verificaciones.add(dbSolicitud.verificacion);
-					// Según el estado anterior de la Solicitud cambiamos a nuevo estado
-					if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLPROV.name()))
-						dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLPROV.name();
-					else if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLDEF.name()))
-						dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLDEF.name();
-					else
-						dbSolicitud.estado = EstadosSolicitudEnum.verificado.name();
-					dbSolicitud.save();
+					// Si el trámite es distinto de "Solicitud" se vuelve al estado anterior de la verificación
+					if (!dbSolicitud.verificacion.tramiteNombre.nombre.equalsIgnoreCase("Solicitud")) {
+						dbSolicitud.estado = dbSolicitud.estadoAntesVerificacion;
+					}
+					else {
+						// Según el estado anterior de la Solicitud cambiamos a nuevo estado
+						if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLPROV.name()))
+							dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLPROV.name();
+						else if (dbSolicitud.estado.equals(EstadosSolicitudEnum.enVerifAceptadoRSLDEF.name()))
+							dbSolicitud.estado = EstadosSolicitudEnum.concedidoRSLDEF.name();
+						else
+							dbSolicitud.estado = EstadosSolicitudEnum.verificado.name();
+					}
 				}
 
 				dbSolicitud.save();

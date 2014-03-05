@@ -2,8 +2,11 @@ package services.platino;
 
 import java.net.URL;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.soap.MTOMFeature;
@@ -15,6 +18,9 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+
+import config.InjectorConfig;
 
 import platino.DatosDocumento;
 import platino.DatosFirmante;
@@ -22,8 +28,11 @@ import platino.DatosRegistro;
 import platino.PlatinoProxy;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+import utils.BinaryResponse;
 import utils.WSUtils;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 import es.gobcan.platino.servicios.registro.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
@@ -43,7 +52,7 @@ public class PlatinoGestorDocumentalService {
     private static Logger log = Logger.getLogger(PlatinoGestorDocumentalService.class);
 
     private final PropertyPlaceholder propertyPlaceholder;
-    private volatile SGRDEServicePortType gestorDocumentalPort;
+    private volatile static SGRDEServicePortType gestorDocumentalPort;
 
     public PlatinoGestorDocumentalService(PropertyPlaceholder propertyPlaceholder) {
         this.propertyPlaceholder = propertyPlaceholder;
@@ -120,7 +129,7 @@ public class PlatinoGestorDocumentalService {
      * Crea un documento en el Gestor Documental de Platino
      * @throws GestorDocumentalServiceException 
      */
-    public String guardarDocumento(String expedientePlatinoRuta, DatosDocumento documentoRegistrar)
+    public static String guardarDocumento(String expedientePlatinoRuta, DatosDocumento documentoRegistrar)
             throws PlatinoGestorDocumentalServiceException {
         
         try {
@@ -176,4 +185,102 @@ public class PlatinoGestorDocumentalService {
             throw new PlatinoGestorDocumentalServiceException(mensaje, e);
         }
     }
+    
+    public static String convertToHexNoQuery (String uriExpediente){
+        String uriHex = "";
+        //Se recorre toda la uri buscando números despues de / y se pasa a hex UNICAMENTE el primer dígito
+         Pattern pattern = Pattern.compile ("([^/])+"); //Hace grupos entre /Grupo/
+         Matcher matcher = pattern.matcher(uriExpediente); 
+         while (matcher.find()){
+           String subCadena = uriExpediente.substring(matcher.start(), matcher.end());
+           String primerCaracter = subCadena.substring(0, 1); 
+             if(isNumeric(primerCaracter)){ //Si el primer caracter es numerico lo paso a hex             
+               String aux = Integer.toHexString(primerCaracter.charAt(0));
+               String hex = "_x"+String.format("%1$4s", aux).replace(' ', '0')+"_";
+               uriHex += hex + uriExpediente.substring(matcher.start()+1, matcher.end())+"/";
+             } else {
+               uriHex += subCadena+"/";
+             }           
+         }
+        return uriHex;
+      }
+    
+
+    public String convertToHex (String uriExpediente){
+       return "Ruta: \"" + convertToHexNoQuery(uriExpediente) +"*\"" ;
+     }
+    
+    private static boolean isNumeric(String cadena){
+    	try {
+    		Integer.parseInt(cadena);
+    		return true;
+    	} catch (NumberFormatException nfe){
+    		return false;
+    	}
+    }
+    
+	
+	/**
+	 * 
+	 * @param uriDocumento URI del documento que se sube al gestor documental de Platino si no está en éste.
+	 * @param uidUsuario Identificador único del funcionario en el ldap del gobierno. El identificador sepuede pasar en minúsculas o mayúsculas.
+	 * @param service Servicio desde el cual se llama este método
+	 */
+	//TODO Este método debe ir en la implementación del GestorDocumental de Platino
+	public static String obtenerURIPlatino(String uriDocumento, Object service) {
+		GestorDocumentalService gestorDocumentalPort = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		
+		//Caso en el que el documento se encuentra en el AED de la ACIISI
+		models.Documento documento = models.Documento.findByUri(uriDocumento); // Documento subido al gestor documental de la ACIISI
+		
+		try {
+			//Subir documento a firmar a gestor documental de platino (si no está subido)
+			if ((documento != null) && (documento.uriPlatino == null)) { // El documento está en el Gestor Documental de la ACIISI y no está en Platino
+				
+				//Obtenemos la ruta del expediente (convertida a platino)
+				ExpedientePlatino expedientePlatino = ExpedientePlatino.all().first();
+				String uriPlatinoExpediente = convertToHexNoQuery(expedientePlatino.getRuta());
+				
+				//Obtenemos el documento original del gestor documental
+				BinaryResponse doc = gestorDocumentalPort.getDocumentoByUri(documento.uri);
+				
+				//Configuramos los datos de subida del documento
+				DatosDocumento datos = new DatosDocumento();
+				datos.setContenido(doc.contenido.getDataSource());
+				datos.setTipoMime(doc.contenido.getContentType());
+				datos.setFecha(PlatinoPortafirmaServiceImpl.DateTime2XMLGregorianCalendar(DateTime.now())); // TODO: Cambiar el modo de conversion
+				datos.setDescripcion(documento.descripcionVisible);
+				datos.setAdmiteVersionado(true);
+				
+				//Subimos el documento al gestor documental de platino
+				documento.uriPlatino = guardarDocumento(uriPlatinoExpediente, datos);
+				documento.save();
+				
+				return documento.uriPlatino;
+			}
+			else if ((documento != null) && (documento.uriPlatino != null)) {  // El documento está en el Gestor Documental de la ACIISI y está en Platino
+				return documento.uriPlatino;
+			}
+			else { //  El documento no está en el Gestor Documental de la ACIISI
+				models.Documento documentoPlatino = models.Documento.findByUriPlatino(uriDocumento);
+				if (documentoPlatino != null)
+					return documentoPlatino.uriPlatino;
+				else {
+					play.Logger.error("El documento con la uri "+uriDocumento+" no existe.");
+					return null;
+				}
+			}
+		} catch (PlatinoGestorDocumentalServiceException e) {
+			e.printStackTrace();
+			play.Logger.error("Error al acceder al gestor documental de platino: " + e.getMessage());
+			//throw new SolicitudFirmaExcepcion("Error al acceder al gestor documental de platino: " + e.getMessage(), e);
+		} catch (GestorDocumentalServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;	
+	}
 }

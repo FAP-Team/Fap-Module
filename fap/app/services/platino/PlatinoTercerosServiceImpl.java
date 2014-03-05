@@ -149,8 +149,12 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 
 	public List<TerceroListItem> buscarTercerosDetalladosByItem(TerceroMinimalItem tmi) throws TercerosServiceException{
 		try {
-			return tercerosPort.buscarTercerosDetalladosByItem(tmi);
+			List<TerceroListItem> resultado = tercerosPort.buscarTercerosDetalladosByItem(tmi);
+			play.Logger.info("Consultado el tercero "+tmi.getNumeroDocumento()+" en el Servicio de Terceros de Platino");
+			return resultado;
 		} catch (Exception e) {
+			e.printStackTrace();
+			
 			throw newTercerosServiceException("Fallo al buscar el Terceros Detallados por tmi: "+tmi.getUri()+" - "+e.getMessage(), e);
 		}
 	}
@@ -159,7 +163,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 		TerceroMinimalItem tercero = new TerceroMinimalItem();
 		tercero.setNumeroDocumento(numeroIdentificacion);
 		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
-		
+	
 		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
 		
 		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){
@@ -221,7 +225,9 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 	
 	private String crearTerceroMinimal(TerceroMinimalItem tercero) throws TercerosServiceException{
 		try {
-			return tercerosPort.crearTerceroMinimal(tercero);
+			String resultado = tercerosPort.crearTerceroMinimal(tercero);
+			play.Logger.info("Creado el tercero en el Servicio de Terceros de Platino para "+tercero.getNumeroDocumento());
+			return resultado;
 		} catch (Exception e) {
 			throw newTercerosServiceException("Fallo al intentar crear un Tercero en Platino: "+tercero.getNumeroDocumento()+" - "+e.getMessage(), e);
 		}
@@ -353,8 +359,9 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 								s.domicilio.otros+=", ";
 							s.domicilio.otros+="Puerta: "+d.getPuerta();
 						} if (d.getOtros()!= null){
-							if (!s.domicilio.otros.isEmpty())
+							if ((!s.domicilio.otros.isEmpty()) && (s.domicilio.otros != null))
 								s.domicilio.otros+=", ";
+							if (d.getBloque()!=null)
 							s.domicilio.otros+=d.getBloque();
 						}
 						PaisItem pais = recuperarPais(d.getIdPais());

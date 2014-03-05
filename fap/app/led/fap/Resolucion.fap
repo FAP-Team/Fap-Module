@@ -60,7 +60,7 @@ Lista estadoLineaResolucion crearEnumerado {
 
 Lista prioridadesFirmaEnPortafirma crearEnumerado {
 	baja: "Baja"
-	media: "Media"
+	media: "Normal"
 	alta: "Alta"
 }
 
@@ -112,32 +112,27 @@ Entidad LineaResolucionFAP {
 
 // Entidades de la resolución
 Entidad ResolucionFAP {
-	/// Tipo de los posibles entre los definidos de la resolución
-	Lista resolucionesDefinidas tipoDefinidoResolucion
-	
-	Lista modalidadResolucion modalidad		// Simple, Multiple
-	Lista tipoResolucion tipo				// Provisional, Definitiva
-	Lista estadoTipoMultiple tipoMultiple	// Parcial, Total
 
-	Boolean firmarJefeServicio				// Debe ser firmada por el Jefe de Servicio
-	String jefeDeServicio					// Jefe de Servicio Solicitado
-	Boolean firmarDirector					// Debe ser firmada por el Director
+	Lista resolucionesDefinidas tipoDefinidoResolucion		// Tipo de los posibles entre los definidos de la resolución
+
+	Lista modalidadResolucion modalidad						// Simple, Multiple
+	Lista tipoResolucion tipo								// Provisional, Definitiva
+	Lista estadoTipoMultiple tipoMultiple					// Parcial, Total
+
+	Boolean firmarJefeServicio								// Debe ser firmada por el Jefe de Servicio
+	Boolean firmarDirector									// Debe ser firmada por el Director
 	Boolean permitirPortafirma
 	Boolean permitirRegistrar
 	Boolean permitirPublicar
-	
-	String prioridadFirma
-	DateTime fechaTopeFirma
-	
-	Lista estadoResolucion estado			// borrador, creada, .... finalizada
+
+	Lista estadoResolucion estado							// borrador, creada, .... finalizada
 	Lista estadoResolucionNotificacion estadoNotificacion
 	Lista estadoResolucionPublicacion estadoPublicacion
 	Lista estadosDocBaremacion estadoDocBaremacionResolucion
 	Lista estadosDocBaremacion estadoInformeBaremacionConComentarios
 	Lista estadosDocBaremacion estadoInformeBaremacionSinComentarios
-	
-	// Descripción de la Resolución
-	String descripcion length=2500
+
+	String descripcion length=2500							// Descripción de la Resolución
 	
 	// modalidad=Simple   --> Una sola línea de resolución
 	// modalidad=Múltiple --> Varias líneas de resolución
@@ -146,75 +141,58 @@ Entidad ResolucionFAP {
 	Boolean conBaremacion default = 'false'
 	Boolean oficialEvaluacionCompleto default = 'false'
 
-	String tituloInterno					// Obligatorio.
+	String tituloInterno									// Obligatorio.
 	String sintesis length=1000
 	String observaciones length=1000
-	Integer folio_inicio					// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
-	Integer folio_final						// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer folio_inicio									// Folio de inicio en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
+	Integer folio_final										// Folio final en el libro de resoluciones. Valor devuelto por SW de Registro de Resoluciones
 	Integer numero_folios
-	Integer numero							// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
-	DateTime fechaRegistroResolucion		// Fecha de la resolución
+	Integer numero											// Número de resolución. Valor devuelto por SW de Registro de Resoluciones
+	DateTime fechaRegistroResolucion						// Fecha de la resolución
 	Lista areasResolucion areasResolucion
 	Lista tiposResolucion tiposResolucion
 
-	String idSolicitudFirma
 	String codigoResolucion
 
-	DateTime fechaFinAceptacion						// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
-	//DateTime fechaPublicacion						// Fecha de Publicación en el tablón de anuncios de la sede
-	//DateTime fechaBOC								// Fecha de Publicación en el BOC
-	DateTime fechaIncioPreparacion		// Fecha en la que se empieza a preparar la resolución y se crean las líneas
-	//DateTime fechaFinPreparacion					// Fecha en la que se finaliza la resolución
-	//Documento docResolucion							// Documento de Resolución
-	//OneToMany Documento docAnexoResolucion //Anexos individuales de resolucion
-	OneToMany Documento docConsultaPortafirmasResolucion //Documentos de Consulta Portafirmas.
+	DateTime fechaFinAceptacion								// Debería coincidir con la fecha fin reformulacion y fin alegacion si existe
+	//DateTime fechaPublicacion								// Fecha de Publicación en el tablón de anuncios de la sede
+	//DateTime fechaBOC										// Fecha de Publicación en el BOC
+	DateTime fechaIncioPreparacion							// Fecha en la que se empieza a preparar la resolución y se crean las líneas
+	//DateTime fechaFinPreparacion							// Fecha en la que se finaliza la resolución
+	//OneToMany Documento docAnexoResolucion				// Anexos individuales de resolucion
 
 	Registro registro
-	Boolean copiadoExpedientes default="false" //Indica si el doc de resolucion ha sido copiado en los expedientes
+	Boolean copiadoExpedientes default="false"				//Indica si el doc de resolucion ha sido copiado en los expedientes
 	OneToMany Interesado destinatarios transient
 	ExpedienteAed expedienteAed
-	
-		//Long IDPortafirma					//ID devuelto por el Servicio WEb del Portafirmas
-		//String estadoPortafirmas			//??Pendiente de revisar
-	SolicitudPortafirmaFAP solicitudFirmaJefeServicio
-	SolicitudPortafirmaFAP solicitudFirmaDirector
 
-	//Lista estadoResolucionConcesion estado		//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
-		//OneToMany LineaResolucion lineasResolucion
-		// OneToMany ExpedientesAlegados expedientesAlegados
-		// OneToMany ExpedientesNoAceptados expedientesNoAceptados
-	//Agente destinatarioPortafirma transient
+	//Lista estadoResolucionConcesion estado				//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
+	//OneToMany ExpedientesAlegados expedientesAlegados
+	//OneToMany ExpedientesNoAceptados expedientesNoAceptados
 
-	Agente hacePeticionPortafirma noConstruct
 	//Para firmar por jefe de servicio
 	//Firmantes firmantesJefeDeServicio
-		////Para poder firmar y crear el el metodo calcular firmantes
-		//Solicitante solicitanteJefeServicio transient
+	//Para poder firmar y crear el el metodo calcular firmantes
+	//Solicitante solicitanteJefeServicio transient
 
-	String idSolicitudFirmaOficiosRemision
-	DateTime fechaTopeFirmaOficiosRemision
-	Agente hacePeticionPortafirmaOficiosRemision noConstruct
-	String destinatarioOficioRemisionPortafirma 
+	SolicitudFirmaPortafirma solicitudFirmaPortafirma
+	String idSolicitudFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.uriSolicitud
+	DateTime fechaTopeFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.plazoMaximo
+	String prioridadFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.prioridad
+	OneToMany Documento docConsultaPortafirmasResolucion	// SE UTILIZA PERO SE DEBER�?A CAMBIAR EN UN FUTURO A solicitudFirmaPortafirma.documentosConsulta
+	Agente hacePeticionPortafirma noConstruct				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.agenteHaceSolicitud
+	String jefeDeServicio									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.idDestinatario
+	
+	SolicitudFirmaPortafirma solicitudFirmaPortafirmaOficioRemision
+	String idSolicitudFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.uriSolicitud
+	DateTime fechaTopeFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.plazoMaximo
+	Agente hacePeticionPortafirmaOficiosRemision noConstruct// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud
+	String destinatarioOficioRemisionPortafirma				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.idDestinatario
 	
 	Boolean resolucionReintegro default="false"
 	String textoResolucionReintegro length=1000
-	
-}
 
-Entidad SolicitudPortafirmaFAP {
-	String codSolicitudPf
-	String estadoPf
-	String tituloPf
-	String descripcionPf
-	String solicitantePf
-	String destinatarioPf
-	String emailNotificacionPf
-	String comentarioPf
-	String urlCorreoRedireccionPf
-	String flujoAnteriorPf
 }
-	
-	
 
 Formulario Principal {
 	Pagina ResolucionesFAP titulo="Lista de Resoluciones" permiso=adminOrGestor{
@@ -237,7 +215,7 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
 			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
 				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
@@ -285,7 +263,7 @@ Formulario Principal {
 		
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
 			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
-			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
+			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 				Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -324,24 +302,31 @@ Formulario Principal {
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
 				Form formSelectJefeServicio {
-					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Destinatario Portafirma" requerido
-					Combo selectPrioridadFirma campo=ResolucionFAP.prioridadFirma titulo="Prioridad Firma" requerido
-					Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirma titulo="Fecha Tope Firma" requerido
+					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Destinatario Portafirma" requerido
+					Combo selectPrioridadFirma campo=ResolucionFAP.solicitudFirmaPortafirma.prioridad titulo="Prioridad Firma" requerido
+					Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirma.plazoMaximo titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
-					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma"
+
+					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
+						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.idSolicitante titulo="Usuario LDAP" requerido
+						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante titulo="Contraseña LDAP" password requerido
+					}
+
+					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
+
 				} 
 			}
 			
 			Grupo gEsperaFirmaJSPortafirma permiso=esperaFirmaJefeServicio titulo="Firma del Jefe de Servicio"{
 				Grupo permiso=noEditable borde=false {
-					Combo selectJefeServicio campo=ResolucionFAP.jefeDeServicio titulo="Jefe de Servicio Seleccionado"
+					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Jefe de Servicio Seleccionado"
 				}
 				Wiki { "_El jefe de servicio aún no ha firmado en el portafirma_" } 
 			}
 			
 			Grupo gEnviarFirmaDirectorPortafirma permiso=firmaDirector titulo="Firma del Director" {
 				Form firmaDirectorPortafirma {
-					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director"
+					Boton enviarFirmaDirectorPortafirma titulo="Solicitar firma al Director" waitPopup
 				}
 			}
 			
@@ -361,7 +346,7 @@ Formulario Principal {
 			Wiki { "Para proceder a registrar la resolución pulse el siguiente botón: \"Registrar resolución\"" }
 			
 			Form enviarRegistrarResolucion {
-      			Boton btnRegistrarResolucion titulo="Registrar Resolución"
+      			Boton btnRegistrarResolucion titulo="Registrar Resolución" waitPopup
     		}
 		}
 		
@@ -404,12 +389,13 @@ Formulario Principal {
 			AreaTexto campo=ResolucionFAP.sintesis titulo="Síntesis" requerido
 			AreaTexto campo=ResolucionFAP.descripcion titulo="Descripción"
 			AreaTexto campo=ResolucionFAP.observaciones titulo="Observaciones"
-			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="Área resolución" requerido
+			Combo areasResolucion campo=ResolucionFAP.areasResolucion titulo="�?rea resolución" requerido
 			Combo tiposResolucion campo=ResolucionFAP.tiposResolucion titulo="Tipo resolución" requerido
-			Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
-			
+			Grupo mostrarBaremacion borde=false mostrarSiExpresion"properties.FapProperties.getBoolean(\"fap.resolucion.baremacion.permitida\") == true"{
+				Check campo=ResolucionFAP.conBaremacion titulo="¿Tiene Baremación?"
+			}
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución"  popupLeer=popupOficioNotificacion  {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución"  popupLeer=popupOficioNotificacion  {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -494,7 +480,7 @@ Formulario Principal {
 				}
 				
 				Form generarInformeConComentarios permiso=permisoGenerarInformeConComentarios{
-					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administracion"{
+					Grupo grupoGenerarInformeConComentarios titulo="Generar Informe con Comentarios de la Administración"{
 						Boton btnGenerarInformeConComentarios titulo="Generar"
 					}
 				}
@@ -505,7 +491,7 @@ Formulario Principal {
 					}
 				}
 				Form generarInformeSinComentarios permiso=permisoGenerarInformeSinComentarios{
-					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administracion"{
+					Grupo grupoGenerarInformeSinComentarios titulo="Generar Informe sin Comentarios de la Administración"{
 						Boton btnGenerarInformeSinComentarios titulo="Generar"	
 					}
 				}
@@ -541,7 +527,7 @@ Formulario Principal {
 		Grupo grupoCambiarDocumentoResolucion titulo="Cambiar documento de resolución" {
 			Enlace enlaceDocumentoResolucionActual campo=ResolucionFAP.registro.oficial.urlDescarga titulo="Ver documento de resolución actual" destino="_blank" estilo="btn"
 			Form formCambiarDocumentoResolucion redirigir=EditarResolucion {
-				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolucion"
+				Boton botonSubirNuevoDocumentoResolucion titulo="Subir nuevo documento de resolución"
 			}
 		}
 		Boton botonVolver titulo="Volver" pagina=EditarResolucion 
@@ -553,7 +539,7 @@ Formulario Principal {
 			Grupo grupoOficioRemision permiso=permisoOficioRemision borde=false{
 				Grupo grupoGenerarOficioRemision titulo="Generar Oficios de emisión" permiso=permisoGenerarOficioRemision {
 					Form formGenerarOficioRemision {
-						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+						Tabla tablaOficiosRemisionGenerados campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -564,9 +550,9 @@ Formulario Principal {
 						}
 						Wiki{"Este botón permanecerá activo mientras no se hayan generado los documentos para todas las líneas"}
 						Grupo grupoJustificanteReintegro titulo="Resolución de Justificación de Reintegro"{
-							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolucion de justificacion con reintegro" alineadoAIzquierdas
+							Check justificacionReintegro campo=ResolucionFAP.resolucionReintegro titulo="Resolución de justificación con reintegro" alineadoAIzquierdas
 //							//Grupo textoJustificacion mostrarSiCheck justificacionReintegro=true{
-							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolucion de justificación de reintegro"
+							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolución de justificación de reintegro"
 //							//}
 						}
 						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
@@ -576,7 +562,7 @@ Formulario Principal {
 				Grupo tablaLineasResolucion titulo="Firmar y Registrar de Salida los Oficios de Remisión" permiso=permisoFirmarOficioRemision {
 					Grupo grupoOficiosRemisionFirmaManual borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
 						Wiki {"Debe firmar los siguientes oficios de remisión: "}
-						Tabla tablaOficiosRemisionSinFirmarManual campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar" {
+						Tabla tablaOficiosRemisionSinFirmarManual campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" paginaEditar=PaginaFirmarOficioRemision popupLeer=popupOficioNotificacion nombreBotonEditar="Firmar" {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -588,7 +574,7 @@ Formulario Principal {
 						}
 					}
 					Grupo grupoOficiosRemisionPortaFirma borde=false permiso=permisoOficiosRemisionPortaFirma {
-						Tabla tablaOficiosRemisionSinFirmarPortaFirma campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+						Tabla tablaOficiosRemisionSinFirmarPortaFirma campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 							Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 							Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 							Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -603,8 +589,12 @@ Formulario Principal {
 						Grupo grupoEnviarOficiosRemisionPortafirma borde=false permiso=permisoEnviarOficiosRemisionPortafirma {
 							Wiki {"Puede enviar los Oficios de Remisión sin firmar aún al Portafirma."}
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
-								Combo selectJefeServicio campo=ResolucionFAP.destinatarioOficioRemisionPortafirma titulo="Destinatario Portafirma" requerido
-								Fecha fechaTopeFirma campo=ResolucionFAP.fechaTopeFirmaOficiosRemision titulo="Fecha tope firma" requerido
+								Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario titulo="Destinatario Portafirma" requerido
+								Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha tope firma" requerido
+								Grupo loginPortafirmasPlatinoOficiosRemision borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
+									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante titulo="Usuario LDAP" requerido
+									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante titulo="Contraseña LDAP" password requerido
+								}
 								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}
@@ -623,7 +613,7 @@ Formulario Principal {
 				Grupo borde=false {
 					Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 				}
-				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Lineas de resolución" popupLeer=popupOficioNotificacion {
+				Tabla tablaOficiosRemisionFirmados campo=ResolucionFAP.lineasResolucion titulo="Líneas de resolución" popupLeer=popupOficioNotificacion {
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
 					Columna campo=LineaResolucionFAP.solicitud.solicitante.numeroId titulo="Nif/Cif Solicitante" expandir
@@ -643,7 +633,7 @@ Formulario Principal {
 		}
 	}
 	
-	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Lineas de Resolución" maximizar {
+	Popup popupOficioNotificacion campo=ResolucionFAP.lineasResolucion titulo="Líneas de Resolución" maximizar {
 		Grupo titulo="Datos de la Línea de Resolución" {
 			Texto campo=LineaResolucionFAP.id titulo="Id"
 			Texto campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"
@@ -688,7 +678,7 @@ Formulario Principal {
 				Enlace campo=ResolucionFAP.registro.oficial.urlDescargaFirmado titulo="Obtener Documento Resolución" destino="_blank" estilo="btn"
 			}
 			Grupo tablaDeDatos permiso=mostrarDatosResolucion borde=false {
-				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Lineas Resolución" {
+				Tabla lineasResolucion campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución" {
 					Columna campo=LineaResolucionFAP.id titulo="Id" expandir
 					Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente"  expandir
 					Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
@@ -811,9 +801,9 @@ Permiso permisoCopiaExpedientes {
 		ResolucionFAP resolucion
 	when
 		(
-			resolucion.copiadoExpedientes != true
-		) and
-		(
+			resolucion.copiadoExpedientes = null or
+			resolucion.copiadoExpedientes = false
+		) and (
 			resolucion.estado != null
 		) and (
 			resolucion.estado = "publicada" or

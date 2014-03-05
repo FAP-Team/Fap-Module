@@ -83,6 +83,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Páginas Especiales" {
 				Enlace "Firma" pagina=PaginaFirma
 				Enlace "Firma en Servidor" pagina=CrearDocYFirma
+				Enlace "Firma de múltiples documentos" pagina=paginaFirmaMultiplesDocumentos
 			}
 			
 			Grupo "Anotación Inject"{
@@ -990,6 +991,81 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 			Texto textoPPO campo=Solicitud.direccionTest.direccion.otros titulo="Puerta/Piso/Otros" requerido
 		}
 	}
+
+	Popup PopupDetallesDocumento campo=Documento titulo="Detalles documento" maximizar {
+		Fecha campo=Documento.fechaSubida titulo="Fecha subida"
+		Texto campo=Documento.descripcionVisible titulo="Descripción"
+		Texto campo=Documento.uri titulo="URI"
+		Combo campo=Documento.tipo titulo="Tipo"
+		Enlace campo=Documento.enlaceDescarga titulo="Descargar documento" destino="_blank"
+		Texto campo=Documento.firmadoVisibleLocal titulo="Firmado"
+		Grupo borde=false mostrarSiExpresion "documento.firmado != null && documento.firmado == true" {
+			Enlace campo=Documento.enlaceDescargaFirmadoLocal titulo="Descargar documento firmado" destino="_blank"
+		}
+		Grupo borde=false mostrarSiExpresion "documento.firmantes != null && documento.firmantes.todos != null && documento.firmantes.todos.size() > 0" {
+			Tabla tablaInteresados titulo="Interesados" campo=Documento.firmantes.todos {
+				Columna titulo="Nombre" campo=Firmante.nombre expandir
+				Columna titulo="Tipo" campo=Firmante.tipo expandir
+				Columna titulo="Cardinalidad" campo=Firmante.cardinalidad expandir
+				Columna titulo="Firmado" campo=Firmante.fechaFirma expandir
+			}
+		}
+    }
+
+	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
+
+		Grupo grupoFirmaMultiple titulo="Firma de múltiples documentos" {
+			Tabla tablaDocumentos titulo="Documentos" campo=Solicitud.documentacion.documentos paginaCrear=paginaSubirDocumento {
+				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
+			}
 	
+			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos popupLeer=PopupDetallesDocumento {
+				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
+				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+	            Columna campo=Documento.tipo titulo="Tipo Documento"expandir
+				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
+				Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
+				Columna campo=Documento.enlaceDescargaFirmadoLocal titulo="Descargar Firmado 2" expandir
+				Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+				Columna campo=Documento.firmadoVisibleLocal titulo="Firmado 2" expandir
+			}
+		}
+		
+		Grupo grupoFirmaSimple titulo="Firma de un único documento" {
+			Boton botonSubirDocumento pagina=paginaSubirDocumentoDos titulo="Subir documento"
+			
+			Enlace campo=Solicitud.registro.oficial.urlDescarga titulo="Descargar documento no firmado" destino="_blank" estilo="boton"
+			
+			Form formFirmaSimplePrueba { 
+				FirmaSimple firmaSimplePrueba titulo="Firmar"
+					documento=Solicitud.registro.oficial
+					listaFirmantes=Solicitud.registro.firmantes.todos
+					calcularFirmantes=Solicitud.solicitante
+			}
+			
+			Enlace campo=Solicitud.registro.oficial.urlDescargaFirmado titulo="Descargar documento firmado" destino="_blank" estilo="boton"
+			
+		}
+	}
+
+	Pagina paginaSubirDocumento titulo="Nuevo Documento" campo=Solicitud.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
+		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+		}
+	}
+
+	Pagina paginaSubirDocumentoDos titulo="Nuevo Documento" campo=Solicitud.registro permiso=editarSolicitud perteneceA ="Documentacion"{
+		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
+			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+		}
+	}
+
 }
 

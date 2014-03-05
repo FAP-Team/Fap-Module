@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import org.eclipse.emf.ecore.EObject
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.emf.ecore.EObject;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import generator.utils.*;
@@ -118,13 +118,13 @@ public class GTabla extends GElement{
 			params.putStr 'nombreBotonEditar', tabla.nombreBotonEditar;
 		}
 		if(tabla.nombreBotonVer != null){
-			params.putStr 'nombreBotonotonVer', tabla.nombreBotonotonVer;
+			params.putStr 'nombreBotonVer', tabla.nombreBotonVer;
 		}
 		if(tabla.nombreBotonBorrar != null){
-			params.putStr 'nombreBotonotonBorrar', tabla.nombreBotonotonBorrar;
+			params.putStr 'nombreBotonBorrar', tabla.nombreBotonBorrar;
 		}
 		if(tabla.nombreBotonCrear != null){
-			params.putStr 'nombreBotonotonCrear', tabla.nombreBotonotonCrear;
+			params.putStr 'nombreBotonCrear', tabla.nombreBotonCrear;
 		}
 		
 		if (tabla.popup || tabla.popupCrear){

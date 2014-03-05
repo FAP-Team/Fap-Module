@@ -1366,9 +1366,11 @@ public class SecureFap extends Secure {
 
 		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
 
-		if ((!resolucion.copiadoExpedientes.toString().equals("true".toString()))
+		boolean publicar = properties.FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios");
+		
+		if ((resolucion.copiadoExpedientes == null || resolucion.copiadoExpedientes.toString().equals("false".toString()))
 				&& (resolucion.estado != null)
-				&& (resolucion.estado.toString().equals("publicada".toString()) || (resolucion.estado.toString().equals("notificada".toString()) && FapProperties.getBoolean("fap.resoluciones.publicarTablonAnuncios") == false) || resolucion.estado.toString().equals("publicadaYNotificada".toString()))
+				&& (resolucion.estado.toString().equals("publicada".toString()) || (resolucion.estado.toString().equals("notificada".toString()) && (!publicar)) || resolucion.estado.toString().equals("publicadaYNotificada".toString()))
 				&& (utils.StringUtils.in(agente.rolActivo.toString(), "administrador", "gestor", "jefeServicio", "revisor"))) {
 			if ("editar".equals(accion))
 				return new ResultadoPermiso(Accion.Editar);

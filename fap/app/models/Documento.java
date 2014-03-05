@@ -30,6 +30,8 @@ public class Documento extends FapModel {
 
 	public String uri;
 
+	public String uriPlatino;
+
 	@ValueFromTable("tiposDocumentos")
 	public String tipo;
 
@@ -62,6 +64,9 @@ public class Documento extends FapModel {
 	@Transient
 	public String enlaceDescargaFirmado;
 
+	@Transient
+	public String enlaceDescargaFirmadoLocal;
+
 	public Boolean verificado;
 
 	public Boolean refAed;
@@ -69,15 +74,38 @@ public class Documento extends FapModel {
 	@ValueFromTable("estadoNotificacion")
 	public String estadoDocumento;
 
+	public Boolean firmado;
+
+	@Transient
+	public String firmadoVisible;
+
+	@Transient
+	public String firmadoVisibleLocal;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Firmantes firmantes;
+
+	public Documento() {
+		init();
+	}
+
 	public void init() {
+
+		if (clasificado == null)
+			clasificado = false;
+
+		if (firmado == null)
+			firmado = false;
+
+		if (firmantes == null)
+			firmantes = new Firmantes();
+		else
+			firmantes.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-	public Documento() {
-		clasificado = false;
-	}
 
 	public boolean isMultiple() {
 		return (tipo != null && DocumentosUtils.esTipoMultiple(tipo));
@@ -115,6 +143,16 @@ public class Documento extends FapModel {
 			} catch (Exception e) {
 				play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
 			}
+		}
+		return "";
+	}
+
+	public String getEnlaceDescargaFirmadoLocal() {
+		if (uri != null && firmado != null && firmado == true) {
+			String ret = "<a href=\"";
+			ret += AedUtils.crearUrlConInformeDeFirma(uri);
+			ret += "\" target=\"_blank\">Descargar Firmado</a>";
+			return ret;
 		}
 		return "";
 	}
@@ -176,6 +214,11 @@ public class Documento extends FapModel {
 		return documento;
 	}
 
+	public static Documento findByUriPlatino(String uriPlatino) {
+		Documento documento = models.Documento.find("byUriPlatino", uriPlatino).first();
+		return documento;
+	}
+
 	public String getDescripcionVisible() {
 		String descripcionDevolver = "";
 		if ((this.descripcion != null) && !(this.descripcion.trim().equals("")))
@@ -188,21 +231,45 @@ public class Documento extends FapModel {
 		return descripcionDevolver;
 	}
 
+	public String getFirmadoVisible() {
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			String firma = gestorDocumentalService.getDocumentoFirmaByUri(uri);
+			if (firma != null && !firma.isEmpty()) {
+				play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
+				return "Sí";
+			}
+		} catch (Exception e) {
+			play.Logger.error("Error al obtener el documento " + descripcionVisible + " firmado");
+		}
+		return "No";
+	}
+
+	public String getFirmadoVisibleLocal() {
+		if (firmado == null || firmado == false) {
+			return "No";
+		}
+		return "Sí";
+	}
+
 	/*
 	 * Duplicamos todos los campos de un documento (no hacemos doc1 = doc2 porque también duplica el id)
 	 * 
 	 */
 	public void duplicar(Documento doc) {
 		uri = doc.uri;
+		uriPlatino = doc.uriPlatino;
 		tipo = doc.tipo;
 		descripcion = doc.descripcion;
 		clasificado = doc.clasificado;
 		hash = doc.hash;
 		fechaSubida = doc.fechaSubida;
 		fechaRegistro = doc.fechaRegistro;
-		urlDescarga = doc.urlDescarga;
 		verificado = doc.verificado;
 		refAed = doc.refAed;
+		estadoDocumento = doc.estadoDocumento;
+		firmado = doc.firmado;
+		firmantes = doc.firmantes;
 	}
 
 	// === MANUAL REGION END ===

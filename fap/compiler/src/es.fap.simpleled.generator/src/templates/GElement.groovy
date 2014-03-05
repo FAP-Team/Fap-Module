@@ -244,6 +244,9 @@ public class GElement {
 			
 			else if(element instanceof GrupoRadioButtons)
 				cache.put(element, new GGrupoRadioButtons(element, container));
+				
+			else if(element instanceof FirmaMultiple)
+				cache.put(element, new GFirmaMultiple(element, container));
 		}
 		
 		return cache.get(element);

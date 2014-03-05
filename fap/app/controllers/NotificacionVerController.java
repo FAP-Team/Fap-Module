@@ -19,7 +19,7 @@ import utils.AedUtils;
 import utils.NotificacionUtils;
 import controllers.fap.AgenteController;
 import controllers.gen.NotificacionVerControllerGen;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
 
 public class NotificacionVerController extends NotificacionVerControllerGen {
 	

@@ -34,6 +34,8 @@ public class SolicitudGenerica extends FapModel {
 
 	public String estado;
 
+	public String estadoAntesVerificacion;
+
 	@ValueFromTable("estadosSolicitud")
 	@Transient
 	public String estadoValue;
@@ -118,6 +120,10 @@ public class SolicitudGenerica extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Cesion cesion;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_comunicacionesinternas")
+	public List<ComunicacionInterna> comunicacionesInternas;
+
 	@Transient
 	public Boolean activoModificacion;
 
@@ -137,6 +143,16 @@ public class SolicitudGenerica extends FapModel {
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaFinDeAlegacion"), @Column(name = "fechaFinDeAlegacionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFinDeAlegacion;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Respuesta respuestaSvd;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public PeticionSVD peticion;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "solicitudgenerica_registros")
+	public List<Registro> registros;
 
 	public SolicitudGenerica() {
 		init();
@@ -252,8 +268,24 @@ public class SolicitudGenerica extends FapModel {
 		else
 			cesion.init();
 
+		if (comunicacionesInternas == null)
+			comunicacionesInternas = new ArrayList<ComunicacionInterna>();
+
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
+
+		if (respuestaSvd == null)
+			respuestaSvd = new Respuesta();
+		else
+			respuestaSvd.init();
+
+		if (peticion == null)
+			peticion = new PeticionSVD();
+		else
+			peticion.init();
+
+		if (registros == null)
+			registros = new ArrayList<Registro>();
 
 		postInit();
 	}

@@ -90,13 +90,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
         PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
         
-        Client client = ClientProxy.getClient(firmaPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
         //Properties
         INVOKING_APP = propertyPlaceholder.get("fap.platino.firma.invokingApp");
         ALIAS = propertyPlaceholder.get("fap.platino.firma.alias");
@@ -174,8 +167,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         	// Cambio a host de @firma //host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
 //        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/";
         	
-            //Nuevas librerias para @Firma
-            //System.out.println("Insertando nuevas librerías de @firma <<------");
+            //Nuevas librerias para @Firmadef uri = _uri ?: "No hay URI"<!--	def uri = _uri ?: "No hay URI"
+        	//System.out.println("Insertando nuevas librerías de @firma <<------");
 //            jsclient.add(host + "common-js/deployJava.js");
 //            jsclient.add(host + "common-js/instalador.js");
 //            jsclient.add(host + "constantes.js");

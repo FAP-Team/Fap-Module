@@ -107,14 +107,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         this.aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
         WSUtils.configureEndPoint(aedPort, getEndPoint());
         PlatinoProxy.setProxy(aedPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(aedPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
+              
         tiposDocumentos = new TiposDocumentosService(propertyPlaceholder);
         procedimientosService = new ProcedimientosService(propertyPlaceholder, tiposDocumentos);
 	}

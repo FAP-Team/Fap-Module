@@ -67,13 +67,6 @@ public class ProcedimientosService {
         procedimientosPort = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
         WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
         PlatinoProxy.setProxy(procedimientosPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(procedimientosPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
 	}
 	
 	private String getEndPoint(){

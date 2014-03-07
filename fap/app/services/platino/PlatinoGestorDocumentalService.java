@@ -62,14 +62,7 @@ public class PlatinoGestorDocumentalService {
 
         WSUtils.configureEndPoint(gestorDocumentalPort, getEndPoint());
         WSUtils.configureSecurityHeaders(gestorDocumentalPort, propertyPlaceholder);
-        PlatinoProxy.setProxy(gestorDocumentalPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(gestorDocumentalPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
+        PlatinoProxy.setProxy(gestorDocumentalPort, propertyPlaceholder);  
     }
 
     public boolean hasConnection() {

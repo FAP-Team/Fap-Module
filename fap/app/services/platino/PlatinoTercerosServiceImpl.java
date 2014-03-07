@@ -81,13 +81,6 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
         WSUtils.configureEndPoint(tercerosPort, getEndPoint());
         WSUtils.configureSecurityHeaders(tercerosPort, propertyPlaceholder);
         PlatinoProxy.setProxy(tercerosPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(tercerosPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
 		
 		this.localizacionesPort = new PlatinoLocalizacionesService(propertyPlaceholder);
 	}

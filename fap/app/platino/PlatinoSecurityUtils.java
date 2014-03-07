@@ -17,7 +17,7 @@ import play.libs.Codec;
 public class PlatinoSecurityUtils {
 
 	public static String encriptarPassword(String password) throws Exception {
-		byte[] passArray = password.getBytes("UTF-16BE");
+		byte[] passArray = password.getBytes("UTF-16LE");
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(passArray);
 		byte[] digest = md.digest();

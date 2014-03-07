@@ -90,13 +90,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
         PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
         
-        Client client = ClientProxy.getClient(firmaPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
         //Properties
         INVOKING_APP = propertyPlaceholder.get("fap.platino.firma.invokingApp");
         ALIAS = propertyPlaceholder.get("fap.platino.firma.alias");

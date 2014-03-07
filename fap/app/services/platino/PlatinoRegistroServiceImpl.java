@@ -117,13 +117,6 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
         PlatinoProxy.setProxy(registroPort); 
         
-        Client client = ClientProxy.getClient(registroPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
         USERNAME = FapProperties.get("fap.platino.registro.username");
         PASSWORD = FapProperties.get("fap.platino.registro.password");
         ALIAS = FapProperties.get("fap.platino.registro.aliasServidor");
@@ -370,7 +363,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             log.info("[registroDeEntrada] Registro de Entrada realizado correctamente en Platino");
             return justificante;
         }catch(Exception e){
-            throw new RegistroServiceException("Error en la llamada de registro de entrada"+ e);
+            throw new RegistroServiceException("Error en la llamada de registro de entrada: "+ e);
         }
     }
     

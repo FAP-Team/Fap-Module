@@ -75,13 +75,6 @@ public class TiposDocumentosService {
         tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
         WSUtils.configureEndPoint(tiposPort, getEndPoint());
         PlatinoProxy.setProxy(tiposPort, propertyPlaceholder);  
-        
-        Client client = ClientProxy.getClient(tiposPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
 	}
 		
 	public String getEndPoint(){

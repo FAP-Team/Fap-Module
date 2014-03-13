@@ -150,7 +150,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         List<String> jsclient = new ArrayList<String>();
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
-        	host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	host = "https://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
         	jsclient.add(host + "CAValidas.js");
             // Cambio a host de @firma //host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
 //        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/";
@@ -163,7 +163,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 //        	
 //        	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
         }else{
-        	host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
         	// Cambio a host de @firma //host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
 //        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/";
         	
@@ -172,7 +172,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 //            jsclient.add(host + "common-js/deployJava.js");
 //            jsclient.add(host + "common-js/instalador.js");
 //            jsclient.add(host + "constantes.js");
-            jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
+            jsclient.add("https://www.gobiernodecanarias.org/platino/js/CAValidas.js");
         }
         
         jsclient.add(host + "WS_Full.js"); //Se quita para @firma
@@ -244,7 +244,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			byte[] certificadoEncoded = certificate.getEncoded();
 			certificado = Codec.encodeBASE64(certificadoEncoded);
 		} catch (Exception e) {
-			play.Logger.error("Error al extraer la información del certificado");
+			play.Logger.error("Error al extraer la información del certificado", e);
 		}
 		boolean certificadoValido = isValidCertificado(certificado);
         if(!certificadoValido)
@@ -302,7 +302,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				Messages.error("Error validando la firma");
 			}
 		} catch (Exception e) {
-			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri, e);
 			Messages.error("Error validando la firma");
 		}
 		return firmante;
@@ -323,7 +323,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				Messages.error("Error validando la firma");
 			}
 		} catch (Exception e) {
-			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri, e);
 			Messages.error("Error validando la firma");
 		}
 		return firmante;
@@ -367,7 +367,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			}
 			return null;
 		} catch (FirmaServiceException e){
-			play.Logger.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido: " + e.getMessage());
 		}catch (Exception e) {
 			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
@@ -414,7 +414,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				return firmante;
 			}
 		} catch (FirmaServiceException e){
-			play.Logger.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido: " +e.getMessage());
 		}catch (Exception e) {
 			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
@@ -466,7 +466,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 					
 					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
 				}catch(GestorDocumentalServiceException e){
-					play.Logger.error("Error guardando la firma en el aed");
+					play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
 					Messages.error("Error al guardar la firma");
 				}				
 			}

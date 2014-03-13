@@ -10,6 +10,9 @@ import properties.FapProperties;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.NotificacionService;
+import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
+import services.RegistroService;
 import services.TercerosService;
 import tags.ComboItem;
 import utils.StringUtils;
@@ -19,6 +22,8 @@ import models.ConfigurarMensaje;
 import models.MensajeDocumentacion;
 import config.InjectorConfig;
 import controllers.gen.RellenarMensajesControllerGen;
+import es.gobcan.aciisi.portafirma.ws.PortafirmaException;
+import es.gobcan.aciisi.portafirma.ws.PortafirmaService;
 
 public class RellenarMensajesController extends RellenarMensajesControllerGen {
 	
@@ -150,6 +155,31 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 		return gestorDocumentalService.isConfigured();
 	}
 	
+	
+	
+	/*
+	 * Retorna false si el servicio Registro no está disponible, true en caso contrario.  
+	 * 
+	 */
+	private static boolean registroIsConfigured() {
+		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
+		return registroService.isConfigured();
+	}
+	
+	/*
+	 * Retorna false si el servicio Portafirmas no está disponible, true en caso contrario.  
+	 * 
+	 */
+	private static boolean portafirmaIsConfigured() {
+		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
+		try {
+			return (portafirmaService.obtenerVersion() != null);
+		} catch (PortafirmaFapServiceException e) {
+			e.printStackTrace();
+			log.warn("Excepción al obtener versión del servicio Portafirmas");
+			return false;
+		}
+	}
 
 	/*
 	 * Retorna un string con los servicios que no están disponibles, o una cadena vacía si están todos activos.
@@ -179,6 +209,19 @@ public class RellenarMensajesController extends RellenarMensajesControllerGen {
 				msg += "Gestor Documental";
 			else
 				msg += ", Gestor Documental";
+		}
+		if (!registroIsConfigured()) {
+			if (msg.isEmpty())
+				msg += "Registro";
+			else
+				msg += ", Registro";
+			
+		}
+		if (!portafirmaIsConfigured()) {
+			if (msg.isEmpty())
+				msg += "Portafirma";
+			else
+				msg += ", Portafirma";
 		}
 		return msg;
 	}

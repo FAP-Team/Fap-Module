@@ -54,7 +54,7 @@ import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.eadmon.procedimientos.ws.dominio.ObligatoriedadEnum;
 import es.gobcan.eadmon.verificacion.ws.dominio.EstadoDocumentoVerificacion;
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.NotificacionType;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.TransmisionDatos;
 

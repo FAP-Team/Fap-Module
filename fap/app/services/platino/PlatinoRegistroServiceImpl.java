@@ -131,7 +131,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         try {
             return PlatinoSecurityUtils.encriptarPassword(password);
         } catch (Exception e) {
-            throw new RuntimeException("Error encriptando la contraseña");
+            throw new RuntimeException("Error encriptando la contraseña", e);
         }	    
 	}
 	

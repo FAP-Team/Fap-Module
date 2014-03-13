@@ -314,7 +314,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    	}
 
 		} catch (AedExcepcion e) {
-			throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo");
+			throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo", e);
 			
 		}
     	    	return listaDocumentos;
@@ -345,7 +345,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         BinaryResponse response = new BinaryResponse();
         try {
             Documento doc;
-            if (!clasificado)
+            if (!(existeDocumentoClasificado(documento.uri)))
                 doc = aedPort.obtenerDocumentoNoClasificado(documento.uri);
             else
                 doc = aedPort.obtenerDocumento(documento.uri);
@@ -527,7 +527,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 throw new GestorDocumentalServiceException("El fichero está vacio");
             }
         } catch (IOException e) {
-            throw new GestorDocumentalServiceException("Error al comprobar si el fichero está disponible");
+            throw new GestorDocumentalServiceException("Error al comprobar si el fichero está disponible", e);
         }
     }
 	
@@ -664,7 +664,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                      }
                  }catch(AedExcepcion e){
                      todosClasificados = false;
-                     errores += "Error al clasificar el documento " + documento.uri + "\n";
+                     errores += "Error al clasificar el documento " + documento.uri + "\n" + e.getMessage();
                  }catch(SOAPFaultException e){
                      todosClasificados = false;
                      errores += "Error al clasificar el documento " + documento.uri + "\n";
@@ -746,10 +746,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	                    }
 	                }catch(AedExcepcion e){
 	                    todosClasificados = false;
-	                    errores += "Error al clasificar el documento " + documento.uri + "\n";
+	                    errores += "Error al clasificar el documento " + documento.uri + "\n" + e.getMessage();
 	                }catch(SOAPFaultException e){
 	                    todosClasificados = false;
-	                    errores += "Error al clasificar el documento " + documento.uri + "\n";
+	                    errores += "Error al clasificar el documento " + documento.uri + "\n" + e.getMessage();
 	                    e.printStackTrace();
 	                }
     			}
@@ -1003,6 +1003,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			int idxEnd = xml.indexOf("</" + elementName + ">", idxBegin);
 			return xml.substring(idxBegin, idxEnd);
 		} catch (Exception ex) {
+			play.Logger.error("Excepción: " + ex.getMessage(), ex);
 			return null;
 		}
 	}
@@ -1250,7 +1251,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				return numeroExpediente;
 			}
 		} catch (AedExcepcion e) {
-			play.Logger.error("Error al buscar los expedientes en el AED.");
+			play.Logger.error("Error al buscar los expedientes en el AED.", e);
 		}
 		
 		Interesados interesados = getInteresadosPorDefecto();
@@ -1457,6 +1458,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			response = firma.getContenido();
     	}
     	catch (AedExcepcion e) {
+    		play.Logger.error("Exepción: " + e.getMessage(), e);
 			// TODO: handle exception
 		}
     	
@@ -1550,8 +1552,8 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			}
 			return false;
 		} catch (AedExcepcion e) {
-			play.Logger.error("Error el documento no existe entre los documentos clasificados "+e);
-			e.printStackTrace();
+			play.Logger.info("El documento no existe entre los documentos clasificados "+e);
+			//e.printStackTrace();
 			return false;
 		}
 	}	

@@ -341,20 +341,22 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
      */
     @Override
     public BinaryResponse getDocumento(models.Documento documento) throws GestorDocumentalServiceException {
-        boolean clasificado = documento.clasificado;
         BinaryResponse response = new BinaryResponse();
         try {
             Documento doc;
-            if (!(existeDocumentoClasificado(documento.uri)))
-                doc = aedPort.obtenerDocumentoNoClasificado(documento.uri);
-            else
+            try{
+            	doc = aedPort.obtenerDocumentoNoClasificado(documento.uri);
+            }
+            catch(Exception e){
+            	play.Logger.info("El documento no está entre los documentos 'no clasificados'. Se procede a obtener " +
+            			"de documentos clasificados...", e);
                 doc = aedPort.obtenerDocumento(documento.uri);
-            
+            }
             response.contenido = doc.getContenido().getFichero();
             response.nombre = doc.getContenido().getNombre();
         } catch (AedExcepcion e) {
             throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + documento.uri + " clasificado= "
-                    + clasificado + " - error: " + getLogMessage(e), e);
+                    + documento.clasificado + " - error: " + getLogMessage(e), e);
         }        
         log.info("Documento recuperado del aed " + documento.uri);
         return response;
@@ -446,10 +448,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         Contenido contenido;
         boolean obtuveDocumento = false;
         try {
-        	 contenido = aedPort.obtenerDocumentoNoClasificadoConInformeFirma(uriDocumento);
-        	 response.contenido = contenido.getFichero();
-             response.nombre = contenido.getNombre();
-             obtuveDocumento = true;
+        	contenido = aedPort.obtenerDocumentoNoClasificadoConInformeFirma(uriDocumento);
+        	response.contenido = contenido.getFichero();
+            response.nombre = contenido.getNombre();
+            obtuveDocumento = true;
         } catch (AedExcepcion e) { ; }
         
         if (!obtuveDocumento) {
@@ -1458,7 +1460,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			response = firma.getContenido();
     	}
     	catch (AedExcepcion e) {
-    		play.Logger.error("Exepción: " + e.getMessage(), e);
+    		play.Logger.error("Excepción: " + e.getMessage(), e);
 			// TODO: handle exception
 		}
     	

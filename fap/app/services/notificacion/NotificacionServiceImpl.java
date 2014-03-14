@@ -96,7 +96,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         try {
               wsdlLocation = new URL(URL_WSDL);
         } catch (MalformedURLException e) {
-              play.Logger.error("No se puede inicializar la wsdl por defecto " + URL_WSDL);
+              play.Logger.error("No se puede inicializar la wsdl por defecto " + URL_WSDL, e);
         }
         
         try {

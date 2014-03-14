@@ -60,7 +60,7 @@ import enumerado.fap.gen.EstadosDocumentoVerificacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.eadmon.verificacion.ws.dominio.DocumentoVerificacion;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException;
 import es.gobcan.platino.servicios.registro.Documentos;
 
 public class PaginaVerificacionController extends PaginaVerificacionControllerGen {

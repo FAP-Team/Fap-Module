@@ -37,6 +37,7 @@ import es.gobcan.resoluciones.TipoResult;
 import es.gobcan.resoluciones.Tipos;
 import es.gobcan.resoluciones.TiposResult;
 
+import platino.PlatinoProxy;
 import play.libs.IO;
 import properties.FapProperties;
 
@@ -71,6 +72,8 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 	    bp.getRequestContext().put(
 	    		BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
 	    		FapProperties.get("fap.resoluciones.url"));
+	    
+	    PlatinoProxy.setProxy(port);
 	}
 
 	public boolean isConfigured() {

@@ -202,7 +202,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		ResolucionFAP dbResolucionFAP = PaginaNotificarResolucionController.getResolucionFAP(idResolucionFAP);
-
+		ResolucionUtils.actualizarSolicitudesFirmaPortafirmaAntiguasResolucion(dbResolucionFAP);
+		
 		PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirmaBindReferences(resolucionFAP);
 
 		if (!Messages.hasErrors()) {
@@ -398,7 +399,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				try  {
 					
 					if (!lineaResolucionFAP.registro.fasesRegistro.registro) {
-						play.Logger.info("Se inicia el proceso de Registro");
+						play.Logger.info("Se inicia el proceso de registro de salida del oficio de remisión "+lineaResolucionFAP.registro.oficial.uri);
 						// Se obtiene el justificante de registro de salida del oficio de remisión
 						models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
 						lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
@@ -406,10 +407,10 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 						documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
 						documento.descripcion = "Justificante de registro de salida del oficio de remisión";
 						documento.save();
-						play.Logger.info("Creado el documento de justificante en local, se procede a almacenar en el AED");
+						play.Logger.info("Creado el documento "+documento.descripcion+" en local, se procede a almacenar en el AED");
 						InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
 						gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
-						play.Logger.info("Justificante del documento oficio de remisión almacenado en el AED");
+						play.Logger.info(documento.descripcion+" almacenado en el AED");
 						lineaResolucionFAP.registro.fasesRegistro.registro = true;
 	
 						List<Documento> documentos = new ArrayList<Documento>();
@@ -423,13 +424,13 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 								doc.save();
 							}
 						}
-						Messages.ok("Se realizó el registro correctamente");
+						Messages.ok("Se realizó el registro de salida del oficio de remisión correctamente");
 					}
 					if (!lineaResolucionFAP.registro.fasesRegistro.clasificarAed) {
 						List<Documento> documentos = new ArrayList<Documento>();
 						documentos.add(lineaResolucionFAP.registro.oficial);
 						documentos.add(lineaResolucionFAP.registro.justificante);
-						play.Logger.info("Se procede a clasificar los documentos oficio de remisión y justificante de la línea: "+lineaResolucionFAP.id);
+						play.Logger.info("Se procede a clasificar los documentos oficio de remisión y justificante de registro de salida del oficio de remisión de la línea: "+lineaResolucionFAP.id);
 						// Se clasifican los documentos
 						gestorDocumentalService.clasificarDocumentos(solicitud, documentos, false);
 						lineaResolucionFAP.registro.fasesRegistro.clasificarAed = true;
@@ -440,8 +441,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 					}
 					
 				} catch (Throwable e)   {
-					Messages.error("Error almacenando el justificante del documento de oficio de remisión en el AED");
-					play.Logger.info("Error almacenando el justificante del documento de oficio de remisión en el AED");
+					Messages.error("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
+					play.Logger.info("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
 				}
 			}
 		}

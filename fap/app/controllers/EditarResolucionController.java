@@ -272,7 +272,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
-
+		ResolucionUtils.actualizarSolicitudesFirmaPortafirmaAntiguasResolucion(dbResolucionFAP);
+		
 		EditarResolucionController.formSelectJefeServicioBindReferences(resolucionFAP);
 		
 		if (!Messages.hasErrors()) {
@@ -330,7 +331,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void formSelectJefeServicioValidateCopy(String accion, ResolucionFAP dbResolucionFAP, ResolucionFAP resolucionFAP) {
 		CustomValidation.clearValidadas();
 		
-
 		CustomValidation.valid("resolucionFAP.solicitudFirmaPortafirma", resolucionFAP.solicitudFirmaPortafirma);
 		CustomValidation.valid("resolucionFAP", resolucionFAP);
 		CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.idDestinatario", resolucionFAP.solicitudFirmaPortafirma.idDestinatario);

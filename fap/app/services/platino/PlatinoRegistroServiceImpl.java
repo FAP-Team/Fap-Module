@@ -317,7 +317,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             return datosAFirmar;
         } catch (Exception e) {
             log.error("Error normalizando los datos " + e.getMessage());
-            log.error("RegistrarEntrada -> EXIT ERROR");
+            log.error("getDatosRegistroNormalizados -> EXIT ERROR");
             throw new RegistroServiceException("Error normalizando los datos de registro", e);
         }
     }
@@ -385,8 +385,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 
 		try {	
 			JustificanteRegistro justificantePlatino = registroDeSalida(datosAFirmar, datosFirmados);
-			play.Logger.info("Registro de entrada realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
-			play.Logger.info("RegistrarEntrada -> EXIT OK");
+			play.Logger.info("Registro de salida realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			play.Logger.info("registroDeSalida -> EXIT OK");
 			models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
 			play.Logger.info("Realizando un Registro de Salida: " +
 	        		"Agente: "+AgenteController.getAgente().name+
@@ -396,7 +396,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			return justificante;
 		} catch (Exception e) {
 			play.Logger.info("Error al obtener el justificante y EXIT "+e);
-			play.Logger.info("RegistrarEntrada -> EXIT ERROR");
+			play.Logger.info("registroDeSalida -> EXIT ERROR");
 			throw new RegistroServiceException("Error al registrar de salida: "+e.getMessage());
 		}		
 	}	

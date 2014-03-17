@@ -1,5 +1,6 @@
 package app;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -51,10 +52,16 @@ import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
+import es.gobcan.certificados.Areas;
+import es.gobcan.certificados.AreasFuncionales;
+import es.gobcan.certificados.CertificadosResult;
+import es.gobcan.certificados.Materias;
+import es.gobcan.certificados.Tipos;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
+import es.gobcan.certificados.Firmas;
 
 import messages.Messages;
 import models.*;
@@ -83,6 +90,8 @@ import properties.Properties;
 import services.BaremacionService;
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
+import services.CertificadosService;
+import services.CertificadosServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -240,36 +249,6 @@ public class Start extends Job {
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
 		
-//		System.out.println("INICIO PRUEBA PORTAFIRMA");
-//		SolicitudFirmaPortafirma solicitudFirmaPortafirma = new SolicitudFirmaPortafirma();
-////		solicitudFirmaPortafirma.tema = "Esto es el tema/título";
-////		solicitudFirmaPortafirma.materia = "Esto es la materia/descripción";
-////		solicitudFirmaPortafirma.tipoSolicitud = TipoSolicitudEnumType.OTROS.value();
-////		solicitudFirmaPortafirma.prioridad = PrioridadEnumType.NORMAL.value();
-////		solicitudFirmaPortafirma.plazoMaximo = new DateTime(); // Eliminar import al terminar la prueba
-////		solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");
-////		solicitudFirmaPortafirma.idDestinatario = "78712212W";
-////		solicitudFirmaPortafirma.emailNotificacion = "eleazar87@gmail.com";
-////		Documento documento = new Documento();
-////		documento.descripcion = "Documento de prueba portafirma";
-////		documento.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000025281/v01";
-////		solicitudFirmaPortafirma.documentosFirma.add(documento);
-////
-//		try {
-//			//PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(solicitudFirmaPortafirma);
-//			//String comentarios = response.getComentarios();
-//			//String idSolicitud = response.getIdSolicitud();
-//
-//			solicitudFirmaPortafirma.uriSolicitud = "133";
-//			solicitudFirmaPortafirma.idSolicitante = "PRESTAMOS";
-//			portafirmaService.eliminarSolicitudFirma(solicitudFirmaPortafirma);
-//			
-//		} catch (PortafirmaFapServiceException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		System.out.println("FINALIZADA PRUEBA PORTAFIRMA");
-		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
 		
@@ -285,88 +264,13 @@ public class Start extends Job {
 		ComunicacionesInternasService comunicacionInternaService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
 		comunicacionInternaService.mostrarInfoInyeccion();
 		
-		//Probando crear un asiento A MANO -> Todo esto tiene una página en el módulo -> TODO
-		
-//		AsientoAmpliadoCIFap asientoEntrada = new AsientoAmpliadoCIFap();
-//		asientoEntrada.resumen = "TEST";
-//		asientoEntrada.interesado = "TES";
-//		asientoEntrada.unidadOrganicaDestino = new ReturnUnidadOrganicaFap();
-//		asientoEntrada.unidadOrganicaDestino.codigo = new Long(23193);
-//		asientoEntrada.unidadOrganicaOrigen= new ReturnUnidadOrganicaFap();
-//		asientoEntrada.unidadOrganicaOrigen.codigo =new Long(23193);
-//		System.out.println("codigo" + asientoEntrada.unidadOrganicaDestino.codigo.toString());
-//		asientoEntrada.userId = "PLATIN";
-//		asientoEntrada.uris = new ArrayList<ListaUris>();
-//		ListaUris listaUris = new ListaUris(); // ListaUris es un STRING
-//		ListaUris listaUris2 = new ListaUris(); // ListaUris es un STRING
-//		listaUris.uri = "abc";
-//		asientoEntrada.uris.add(listaUris);
-//		listaUris2.uri = "https://www.gobiernodecanarias.org/aciisi/documentos/DOC000000000000013840/v01";
-//		asientoEntrada.uris.add(listaUris2);
-//		asientoEntrada.numeroDocumentos = new Integer(0);
-//		asientoEntrada.password=comunicacionInternaService.encriptarPassword("PLATIN");
-//		System.out.println("Rsumen: " + asientoEntrada.resumen);
-//		System.out.println("Rsumen: " + asientoEntrada.interesado);
-//		System.out.println("Rsumen: " + asientoEntrada.unidadOrganicaDestino);
-//		System.out.println("Rsumen: " + asientoEntrada.password);
-//		
-//		ReturnComunicacionInternaAmpliadaFap comInterna;
-//		try {
-//			comInterna = comunicacionInternaService.crearNuevoAsientoAmpliado(asientoEntrada);
-//			System.out.println("tIPO cOMUNICACION: " + comInterna.tipoComunicacion);
-//			System.out.println("tIPO cOMUNICACION: " + comInterna.unidadOrganicaOrigen);
-//			System.out.println("tIPO cOMUNICACION: " + comInterna.interesado.nombre);
-//			System.out.println("tIPO cOMUNICACION: " + comInterna.error.descripcion);
-//		} catch (ComunicacionesInternasServiceException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
+		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
+		verificarDatosService.mostrarInfoInyeccion();
+			
+		CertificadosService certificadosService = InjectorConfig.getInjector().getInstance(CertificadosService.class);
+		certificadosService.mostrarInfoInyeccion();
 		
-//		System.out.println("SALE: "+comunicacionesService.crearNuevoAsiento(asientoEntrada).fecha);
-		
-	//	List<ReturnUnidadOrganicaFap> resultado = comunicacionesService.obtenerUnidadesOrganicas("PLATIN", "PLATIN");
-
-//		ServiciosGenericosServiceImpl genericosService = InjectorConfig.getInjector().getInstance(ServiciosGenericosServiceImpl.class);
-//		genericosService.mostrarInfoInyeccion();
-		
-//		try{
-//			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");
-//		}
-//		catch(Exception e){
-//			System.out.println("Como que no tira esto");
-//		};
-//		
-//		try{
-//			ArrayOfMensajeType array = mensajeService.obtenerMensajes(uriRemesa);
-//			System.out.println("El mail al que fue enviado = " + array.getMensaje().get(0).getCorreoElectronico());
-//		}
-//		catch(Exception e){
-//			System.out.println("Como que no tira esto");
-//		};
-		
-////		try{
-////			mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 5);
-////		}
-////		catch(Exception e){
-////			play.Logger.error("Algo está fallando", e.getMessage());
-////		};
-////		
-//		try{
-//			List<String> lista = new ArrayList<String>();
-//			lista.add("eleazar87@gmail.com");
-//			lista.add("alecabdia@gmail.com");
-//			lista.add("aletepe@gmail.com");
-//			lista.add("yurena.cabcas@gmail.com");
-//		//mensajeService.enviarMensajesOficio(lista, "eleazar87@gmail.com");
-//		//mensajeService.enviarMensajeOficioaVarios("Correo de prueba, si llega dpm!!", lista);
-//		//mensajeService.buscarMensaje("EMAIL", "eleazar87@gmail.com", 4);
-//		}
-//		catch (MensajeServiceException e){
-//			play.Logger.error("No se han podido mandar los correos el de fuera!!. Causa: " + e.getMessage());
-//		};
-//		
-//		
 
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);
         if(assignableClasses.size() > 1){

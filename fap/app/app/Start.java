@@ -1,5 +1,6 @@
 package app;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -48,10 +49,16 @@ import controllers.AedController;
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.certificados.Areas;
+import es.gobcan.certificados.AreasFuncionales;
+import es.gobcan.certificados.CertificadosResult;
+import es.gobcan.certificados.Materias;
+import es.gobcan.certificados.Tipos;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
+import es.gobcan.certificados.Firmas;
 
 import messages.Messages;
 import models.*;
@@ -78,6 +85,8 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
+import services.CertificadosService;
+import services.CertificadosServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -251,7 +260,62 @@ public class Start extends Job {
 		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 		verificarDatosService.mostrarInfoInyeccion();
 			
-
+		CertificadosService certificadosService = InjectorConfig.getInjector().getInstance(CertificadosService.class);
+		certificadosService.mostrarInfoInyeccion();
+		
+		// PRUEBAS DE CERTFICADOS:
+//		try {
+//			List<AreasFuncionales> areasFuncionales = certificadosService.getAreasFuncionales();
+//			System.out.println("Descripcion area funcional: "+areasFuncionales.get(0).getDescripcion());
+//			List<Firmas> firmas = certificadosService.getFirmas();
+//			System.out.println("Antefirma: "+firmas.get(0).getAntefirma());
+//			List<Tipos> tipos = certificadosService.getTipos();
+//			System.out.println("Tipos: "+tipos.get(0).getId());
+//			List<Areas> areas = certificadosService.getAreas();
+//			System.out.println("ID Area: "+areas.get(0).getId());
+//			AreasFuncionales areaFuncional = certificadosService.getAreaFuncional();
+//			System.out.println("Departamento area funcional: "+areaFuncional.getDepartamento());
+//			Firmas firma = certificadosService.getFirma();
+//			System.out.println("Firmante: "+firma.getNombre());
+//			List<Materias> materias = certificadosService.getMaterias();
+//			System.out.println("Materia: "+materias.get(0).getDescripcion());
+//			
+//			
+//			// Salvar certificacion sin parametros
+//			CertificadosResult cert = certificadosService.saveCertificacion();
+//			if(cert.getCertificado() == null)
+//				System.out.println(cert.getErrores());
+//			else
+//				System.out.println("Fecha nueva certificacion: "+cert.getCertificado().getFechaCertificacion());
+			
+			// Salvar certificacion con documento
+//			Documento doc = new Documento().findByUri("4214SolicitudVPN.v6.8c-EXP-(9951).pdf");
+//			
+//			System.out.println("Documento: "+doc.getDescripcionVisible());
+//			CertificadosResult certWithDoc = certificadosService.saveCertificacionWithDocumento(doc);
+//			if(certWithDoc.getCertificado() == null)
+//				System.out.println(certWithDoc.getErrores());
+//			else
+//				System.out.println("Fecha nueva certificacion: "+certWithDoc.getCertificado().getFechaCertificacion());
+			
+//			CertificadosResult certWithURI = certificadosService.saveCertificacionWithURI("urn:uuid:e481df0e-c0ef-4bb0-9796-f5cb0ef2eabc");
+//			if(certWithURI.getCertificado() == null)
+//				System.out.println(certWithURI.getErrores());
+//			else
+//				System.out.println("Fecha nueva certificacion: "+certWithURI.getCertificado().getFechaCertificacion());
+//			
+//			CertificadosResult certWithNde = certificadosService.saveCertificacionWithNde("125978514");
+//			if(certWithNde.getCertificado() == null)
+//				System.out.println(certWithNde.getErrores());
+//			else
+//				System.out.println("Fecha nueva certificacion: "+certWithNde.getCertificado().getFechaCertificacion());
+//		} catch (CertificadosServiceException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		
+			
 //		String uriRemesa = "";
 //		try{
 //			uriRemesa = mensajeService.enviarMensajeOficio("el simple", "eleazar87@gmail.com");

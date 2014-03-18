@@ -63,7 +63,7 @@ public class LedProposalProvider extends AbstractLedProposalProvider {
 		acceptor.accept(createCompletionProposal(entidad.getName(), styledProposal(entidad.getName() + "  -  " + "Entidad", null), null, 0, context.getPrefix(), context));
 	}
 	
-//	TODO: Autocompletado del campo del when. (Descomentar líneas 182 y 183??)
+//	TODO: Autocompletado del campo del when. (Descomentar lÃ­neas 182 y 183??)
 //	@Override
 //	public void completeWSRuleCheck_Left(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 //		WSRuleCheck a = (WSRuleCheck)model;

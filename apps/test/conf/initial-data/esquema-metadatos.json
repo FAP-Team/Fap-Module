@@ -1,0 +1,376 @@
+{
+   "esquema metadatos":[
+      {
+         "nombre":"Versión NTI",
+         "definicion":"URI del Identificador normalizado de la versión de la Norma Técnica de Interoperabilidad de documento electrónico conforme a la cual se estructura el expediente",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 2.1",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Nombre",
+         "definicion":"Título o nombre dado al documento",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 3",
+         "automatizable":"no"
+      },
+      {
+         "nombre":"Descripción",
+         "definicion":"Información adicional en texto libre relativa a un documento",
+         "obligatoriedad":"opcional",
+         "tipoDeDato":"texto",
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 5",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Identificador",
+         "definicion":"Identificador normalizado del documento",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "patron":[
+            "ES_<Órgano>_<AAAA>_<ID_específico>"
+         ],
+         "repeticion":"unico",
+         "comentario":"Codificación del Identificador del documento. Ver detalles en BOC 213/2013",
+         "equivalencia":"e-EMGDE 2.1",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Órgano",
+         "definicion":"Identificador normalizado de la administración generadora del documento o que realiza la captura del mismo",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "repeticion":"multiple",
+         "comentario":"Código único para cada órgano/unidad/oficina extraído del Directorio Común de Unidades Orgánicas y Oficinas de la Norma Técnica de Interoperabilidad de Relación de modelos de datos",
+         "equivalencia":"e-EMGDE 2.1",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Fecha de captura",
+         "definicion":"Fecha de alta del documento en el sistema de gestión documental.",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "patron":[
+            "AAAAMMDD T HH:MM:SS formato ISO 8601"
+         ],
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 4,1",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Origen",
+         "definicion":"Indica si el contenido del documento fue creado por un ciudadano o por una administración",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"tabla codificada",
+         "valores":[
+            {
+               "clave":"0",
+               "valor":"Ciudadano"
+            },
+            {
+               "clave":"1",
+               "valor":"Administración"
+            }
+         ],
+         "repeticion":"unico",
+         "equivalencia":"Interoperable según la NTI de Documento Electrónico",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Sensibilidad de datos de carácter personal",
+         "definicion":"Término normalizado de acuero con los niveles de clasificación de la Ley Órganica 15/1999, de 13 de dicimebre, de Protección de Datos de Carácter Personal y normativa de desarollo",
+         "obligatoriedad":"condicional",
+         "tipoDeDato":"tabla codificada",
+         "valores":[
+            {
+               "clave":"1",
+               "valor":"Alto"
+            },
+            {
+               "clave":"2",
+               "valor":"Medio"
+            },
+            {
+               "clave":"3",
+               "valor":"Básico"
+            }
+         ],
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 8.4",
+         "automatizable":"no"
+      },
+      {
+         "nombre":"Clasificación de acceso",
+         "definicion":"Término normalizado que denota el nivel de seguridad del sistema de informaicón que genera el documento de conformidad con los criterios del Esquema Nacional de Seguridad (ENS)",
+         "obligatoriedad":"condicional",
+         "tipoDeDato":"tabla codificada",
+         "valores":[
+            {
+               "clave":"1",
+               "valor":"Alto"
+            },
+            {
+               "clave":"2",
+               "valor":"Medio"
+            },
+            {
+               "clave":"3",
+               "valor":"Bajo"
+            }
+         ],
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 8.5 - Clasificación ENS",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Verificación de integridad",
+         "definicion":"HASH del documento",
+         "obligatoriedad":"condicional",
+         "tipoDeDato":"texto",
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 16.2 Valor",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Tipo documental",
+         "definicion":"Modelo estructurado y reconocido que adopta un Documento, en el desarrollo de una competencia concreta, en base a una Regulación y cuyo formato, contenido informativoo soporte son homogéneos",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"tabla codificada",
+         "valores":[
+            {
+               "clave":"TD01",
+               "valor":"Resolución"
+            },
+            {
+               "clave":"TD02",
+               "valor":"Acuerdo"
+            },
+            {
+               "clave":"TD03",
+               "valor":"Contrato"
+            },
+            {
+               "clave":"TD04",
+               "valor":"Convenio"
+            },
+            {
+               "clave":"TD05",
+               "valor":"Declaración"
+            },
+            {
+               "clave":"TD06",
+               "valor":"Comunicación"
+            },
+            {
+               "clave":"TD07",
+               "valor":"Notificación"
+            },
+            {
+               "clave":"TD08",
+               "valor":"Publicación"
+            },
+            {
+               "clave":"TD09",
+               "valor":"Acuse de recibo"
+            },
+            {
+               "clave":"TD10",
+               "valor":"Acta"
+            },
+            {
+               "clave":"TD11",
+               "valor":"Certificado"
+            },
+            {
+               "clave":"TD12",
+               "valor":"Diligencia"
+            },
+            {
+               "clave":"TD13",
+               "valor":"Informe"
+            },
+            {
+               "clave":"TD14",
+               "valor":"Solicitud"
+            },
+            {
+               "clave":"TD15",
+               "valor":"Denuncia"
+            },
+            {
+               "clave":"TD16",
+               "valor":"Alegación"
+            },
+            {
+               "clave":"TD17",
+               "valor":"Recursos"
+            },
+            {
+               "clave":"TD18",
+               "valor":"Comunicación ciudadano"
+            },
+            {
+               "clave":"TD19",
+               "valor":"Factura"
+            },
+            {
+               "clave":"TD20",
+               "valor":"Otros incautados"
+            },
+            {
+               "clave":"TD21",
+               "valor":"Índice"
+            },
+            {
+               "clave":"TD99",
+               "valor":"Otros"
+            }
+         ],
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 18 - Tipo documental ",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Estado de elaboración",
+         "definicion":"Indica la naturaleza del documento. Si es copia, este metadato indica también si se ha realizado una digitalización o conversión de formato en el proceso de generación",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "valores":[
+            {
+               "clave":"EE01",
+               "valor":"Original (Ley 11/2007 Art30)"
+            },
+            {
+               "clave":"EE02",
+               "valor":"Copia electrónica auténtica con cambio de formato (Ley 11/2007 Art.30.1)"
+            },
+            {
+               "clave":"EE03",
+               "valor":"Copia electrónica auténtica de documento papel (Ley 11/2007 Art.30.2 y 30.3)"
+            },
+            {
+               "clave":"EE04",
+               "valor":"Copia electrónica parcial auténtica"
+            },
+            {
+               "clave":"EE99",
+               "valor":"Otros"
+            }
+         ],
+         "repeticion":"unico",
+         "comentario":"EE01-Original (Ley 11/2007 Art30); EE02-Copia electrónica auténtica con cambio de formato (Ley 11/2007 Art.30.1); EE03-Copia electrónica auténtica de documento papel (Ley 11/2007 Art.30.2 y 30.3); EE04-Copia electrónica parcial auténtica; EE99-Otros",
+         "equivalencia":"e-EMGDE 20.2 - Características de la copia ",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Identificador del documento origen",
+         "definicion":"Identificador del documento origen",
+         "obligatoriedad":"opcional",
+         "tipoDeDato":"texto",
+         "patron":[
+            "ES_<Órgano>_<AAAA>_<ID_específico>"
+         ],
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 2.1 - Identificador. Secuencia Identificador",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Nombre del formato",
+         "definicion":"Formato lógico del fichero de contenido del documento electrónico",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "comentario":"Valor extraído de la lista de formatos admitidos para ficheros definidos en la Norma Técnica de Interoperabilidad de Catálogo de estándares",
+         "repeticion":"unico",
+         "equivalencia":"e-EMGDE 14.2 - Características técnicas. NombreFormato",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Firma",
+         "definicion":"Contenido de la firma electrónica",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"texto",
+         "repeticion":"multiple",
+         "equivalencia":"e-EMGDE 17 - Firma",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Formato de firma",
+         "definicion":"Denominación normalizada del formato de firma utilizado",
+         "obligatoriedad":"obligatorio",
+         "tipoDeDato":"tabla codificada",
+         "valores":[
+            {
+               "clave":"TF01",
+               "valor":"CSV"
+            },
+            {
+               "clave":"TF02",
+               "valor":"XAdES internally detached signature"
+            },
+            {
+               "clave":"TF03",
+               "valor":"XAdES enveloped signature"
+            },
+            {
+               "clave":"TF04",
+               "valor":"CAdES detached/explicit signature"
+            },
+            {
+               "clave":"TF05",
+               "valor":"CAdES attached/implicit signature"
+            },
+            {
+               "clave":"TF06",
+               "valor":"PAdES"
+            },
+            {
+               "clave":"TFA1",
+               "valor":"XML Signature Detached"
+            }
+         ],
+         "repeticion":"multiple",
+         "equivalencia":"e-EMGDE 17.2 - Formato de firma",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Valor de CSV",
+         "definicion":"Valor de CSV",
+         "obligatoriedad":"opcional",
+         "tipoDeDato":"texto",
+         "repeticion":"multiple",
+         "equivalencia":"e-EMGDE 16.2 - Verificación Integridad.valor",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Definición generación CSV",
+         "definicion":"Referencia a la Orden, Resolución o documento que define la creación del CSV correspondiente",
+         "obligatoriedad":"opcional",
+         "tipoDeDato":"texto",
+         "patron":[
+            "BOC:BOC-[X]-[Año]-[Número]"
+         ],
+         "repeticion":"multiple",
+         "equivalencia":"e-EMGDE ",
+         "automatizable":"si"
+      },
+      {
+         "nombre":"Registro",
+         "definicion":"Datos del Registro de entrada o salida",
+         "obligatoriedad":"condicional",
+         "tipoDeDato":"texto",
+         "patron":[
+            "Si es un registro de entrada o de salida: [Tipo de registro]_[Número de registro general]_[Centro directivo]_[Número de centro directivo]_[Fecha y hora]",
+            "Si es una comunicación interna: RI_0_[Centro directivo]_[Número dentro de centro directivo]_[Fecha y hora]]",
+            "Si es una orden, resolución o certificado: [Tipo de registro]_[nº de orden]_[Año]_[Fecha y hora]. Fecha y hora en formato ISO. En el caso de múltiples registros, los valores se separarán mediante una coma (,)"
+         ],
+         "repeticion":"multiple",
+         "comentario":"Depende del tipo de registro según la siguiente tabla. E: Registro de entrada; S: Registro de salida; RI: Comunicaciones internas; RO: Registro de ordenes; RR: Registro de resoluciones; RC: Registro de certificados. Incluye datos de la oficina de registro, número de registro y fecha y hora",
+         "automatizable":"si"
+      }
+   ]
+}

@@ -106,6 +106,7 @@ Formulario Solicitud permiso=solicitudes{
 			Enlace "Activar FH" pagina=ActivarFuncionarioHabilitado
 			Enlace "Presentacion" pagina=PresentarFAP
 			Enlace "Resolucion" pagina=ResolucionesFAP
+    		Enlace "Listar Docs Expediente" pagina=ListaDocumentosExpedienteFAP
 	
 			Enlace "Firmante Director" pagina=PaginaDirector
 			Enlace "Certificados" pagina=CertificadosSolicitados

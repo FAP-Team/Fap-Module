@@ -224,21 +224,21 @@
 
 				#{form play.mvc.Router.reverse('EditarResolucionController.formSelectJefeServicio' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formSelectJefeServicio"}
 					
-			#{fap.combo campo:'resolucionFAP.jefeDeServicio', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
+			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirma.idDestinatario', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
 		
-			#{fap.combo campo:'resolucionFAP.prioridadFirma', id:'selectPrioridadFirma', requerido:true, titulo:'Prioridad Firma' /}		
+			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirma.prioridad', id:'selectPrioridadFirma', requerido:true, titulo:'Prioridad Firma' /}		
 		
-			#{fap.fecha campo:'resolucionFAP.fechaTopeFirma', requerido:true, titulo:'Fecha Tope Firma' /}		
+			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirma.plazoMaximo', requerido:true, titulo:'Fecha Tope Firma' /}		
 		
 			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}
 			
-			#{fap.grupo borde:false, mostrarSi:(properties.FapProperties.get("fap.platino.portafirma.url") != null)}
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.platino.portafirma") == true}
 				
-				#{fap.texto campo:'resolucionFAP.solicitudFirmaJefeServicio.usuarioLDAP', requerido:true, titulo:'Usuario LDAP' /}		
-			
-				#{fap.texto campo:'resolucionFAP.solicitudFirmaJefeServicio.passwordLDAP', password:true, requerido:true, titulo:'Contraseña LDAP' /}		
+			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirma.idSolicitante', requerido:true, titulo:'Usuario LDAP' /}		
 		
-			#{/fap.grupo}		
+			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante', password:true, requerido:true, titulo:'Contraseña LDAP' /}		
+		
+			#{/fap.grupo}	
 		
 			#{fap.boton id:'enviarFirmaJSPortafirma', titulo:'Enviar al portafirma' /}
 		
@@ -250,7 +250,7 @@
 				
 			#{fap.grupo borde:false, permiso:'noEditable'}
 				
-			#{fap.combo campo:'resolucionFAP.jefeDeServicio', id:'selectJefeServicio', titulo:'Jefe de Servicio Seleccionado' /}		
+			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirma.idDestinatario', id:'selectJefeServicio', titulo:'Jefe de Servicio Seleccionado' /}		
 		
 			#{/fap.grupo}
 		

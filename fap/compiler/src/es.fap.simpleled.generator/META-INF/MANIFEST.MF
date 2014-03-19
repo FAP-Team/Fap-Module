@@ -18,7 +18,7 @@ Require-Bundle: es.fap.simpleled;visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.7.0";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.7.100";visibility:=reexport,
  org.eclipse.text;visibility:=reexport
- org.eclipse.equinox.common,
+ org.eclipse.equinox.common
  org.eclipse.xtext.ui
 Import-Package: org.apache.log4j,
  org.eclipse.core.runtime;version="3.4.0",

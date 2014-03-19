@@ -17,14 +17,18 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import config.InjectorConfig;
+
 import messages.Messages;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
 
 public class WSUtils {
 
@@ -98,5 +102,21 @@ public class WSUtils {
 	
 	public static XMLGregorianCalendar getXmlGregorianCalendar(DateTime date) {
 	    return getXmlGregorianCalendar(date.toDate()); 
+	}
+	
+	public static void restoreSecurityHeadersBackoffice(Object service) {
+		String backoffice = FapProperties.get("fap.platino.security.backoffice.uri");
+		configureSecurityHeadersWithUser(service, backoffice);
+	}
+	
+	public static void setupSecurityHeadersWithUser(Object service, String uid) {
+		try {
+			PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+			String userUri = platinoDBOrgPort.recuperarURIPersona(uid);
+			configureSecurityHeadersWithUser(service, userUri);
+			
+		} catch (DBOrganizacionException_Exception e) {
+			play.Logger.info("Error al configurar cabecera de seguridad para el usuario: " + uid + ". " + e.getMessage());
+		}
 	}
 }

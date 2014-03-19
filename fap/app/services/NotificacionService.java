@@ -2,8 +2,8 @@ package services;
 
 import java.util.List;
 
-import es.gobcan.platino.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
-import es.gobcan.platino.servicios.enotificacion.notificacion.NotificacionException;
+import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
+import es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException;
 
 import models.Agente;
 import models.Documento;

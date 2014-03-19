@@ -1,7 +1,7 @@
 package controllers.popups;
 
-import controllers.gen.popups.popupLeerModificacionSolicitudControllerGen;
+import controllers.gen.popups.PopupLeerModificacionSolicitudControllerGen;
 
-public class popupLeerModificacionSolicitudController extends popupLeerModificacionSolicitudControllerGen {
+public class PopupLeerModificacionSolicitudController extends PopupLeerModificacionSolicitudControllerGen {
 
 }

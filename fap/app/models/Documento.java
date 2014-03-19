@@ -214,6 +214,11 @@ public class Documento extends FapModel {
 		return documento;
 	}
 
+	public static Documento findByUriPlatino(String uriPlatino) {
+		Documento documento = models.Documento.find("byUriPlatino", uriPlatino).first();
+		return documento;
+	}
+
 	public String getDescripcionVisible() {
 		String descripcionDevolver = "";
 		if ((this.descripcion != null) && !(this.descripcion.trim().equals("")))

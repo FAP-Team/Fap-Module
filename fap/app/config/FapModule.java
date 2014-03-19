@@ -7,6 +7,7 @@ import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
 import services.CertificadosService;
+import services.ComunicacionesInternasService;
 import services.ConversorService;
 import services.FirmaService;
 import services.GestorDocumentalService;
@@ -16,6 +17,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.VerificarDatosService;
 import services.filesystem.FileSystemCertificadosImpl;
 import services.filesystem.FileSystemConversor;
@@ -53,6 +55,7 @@ public class FapModule extends PlayAbstractModule {
 		terceros();
 		ticketing();
 		mensaje();
+		comunicacionesInternas();
 		verificarDatos();
 		certificados();
 //		conversor();
@@ -100,6 +103,11 @@ public class FapModule extends PlayAbstractModule {
 	
 	protected void mensaje() {
 		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
+	}
+	
+
+	protected void comunicacionesInternas(){
+		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);
 	}
 	
 	protected void verificarDatos() {

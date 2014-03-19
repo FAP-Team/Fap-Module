@@ -1,0 +1,59 @@
+%{
+def idComunicacionTabla = comunicacionInterna?.id;
+%}
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaNuevaComunicacionDocumentos', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Crear una nueva Comunicacion Interna', 
+     urlBorrar:play.mvc.Router.reverse('PaginaNuevaComunicacionDocumentosController.borrar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaNuevaComunicacionDocumentosController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaNuevaComunicacionDocumentosController.editar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id])
+}
+	
+			#{fap.grupo titulo:'Selección de Documentos'}
+				
+			<div class="wiki ">
+<p>Paso 1: Seleccione los documentos que desea enviar en la comunicación</p>
+
+			</div>
+		
+			<div class="wiki ">
+<p>Selecciones TODOS los documentos que desea adjuntar antes de pulsar el botón Seleccionar</p>
+
+			</div>
+		
+#{fap.tabla 
+     campo:'Solicitud.documentacion.documentos', 
+     id:'tablaDocumentos', 
+     idEntidad:'idDocumento', 
+     saveEntity:false, 
+     seleccionable:'Seleccionar', 
+     tipoContainer:'pagina', 
+     titulo:'Documentos a enviar en la comunicación', 
+     urlSeleccionable:'PaginaNuevaComunicacionDocumentosController.seleccionar', 
+     urlTabla:@PaginaNuevaComunicacionDocumentosController.tablatablaDocumentos(idSolicitud),
+     idP:idComunicacionTabla
+}
+	
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Tipo', campo:'tipo' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Descarga', campo:'enlaceDescarga' /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		
+		

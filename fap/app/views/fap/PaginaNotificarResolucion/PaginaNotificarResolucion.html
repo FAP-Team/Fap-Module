@@ -161,11 +161,19 @@
 				#{fap.permiso permiso:"permisoEnviarOficiosRemisionPortafirma", accion:accion}
 					
 				#{form play.mvc.Router.reverse('PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirma' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"formEnviarOficiosRemisionPortaFirma"}
-					
-			#{fap.combo campo:'resolucionFAP.destinatarioOficioRemisionPortafirma', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
+				
+			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
 		
-			#{fap.fecha campo:'resolucionFAP.fechaTopeFirmaOficiosRemision', requerido:true, titulo:'Fecha tope firma' /}		
+			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo', requerido:true, titulo:'Fecha tope firma' /}		
+
+			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.platino.portafirma") == true}
+				
+			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante', requerido:true, titulo:'Usuario LDAP' /}		
 		
+			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante', password:true, requerido:true, titulo:'Contraseña LDAP' /}		
+		
+			#{/fap.grupo}
+
 			#{fap.boton id:'botonEnviarOficiosRemisionPortaFirma', titulo:'Enviar Oficios de Remisión sin firmar', waitPopup:true /}
 		
 				#{/form}

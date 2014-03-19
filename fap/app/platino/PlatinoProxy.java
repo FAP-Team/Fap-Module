@@ -17,31 +17,39 @@ public class PlatinoProxy {
 
 	public static void setProxy(Object service) {
 		boolean enable = FapProperties.getBoolean(PROP_ENABLE);
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		if (enable) {
 			String server = FapProperties.get(PROP_SERVER);
 			int port = FapProperties.getInt(PROP_PORT);
-			enableProxy(service, server, port);
+			enableProxy(service, server, port, httpClientPolicy);
 		}
+		Client client = ClientProxy.getClient(service);
+		HTTPConduit http = (HTTPConduit) client.getConduit();
+		http.setClient(httpClientPolicy);
 	}
 
 	public static void setProxy(Object service, PropertyPlaceholder propertyPlaceholder) {
 		boolean enable = propertyPlaceholder.getBoolean(PROP_ENABLE);
+		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
+		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
 		if (enable) {
 			String server = propertyPlaceholder.get(PROP_SERVER);
 			int port = propertyPlaceholder.getInt(PROP_PORT);
-			enableProxy(service, server, port);
+			enableProxy(service, server, port, httpClientPolicy);
 		}
-	}
-
-	private static void enableProxy(Object service, String server, int port) {
 		Client client = ClientProxy.getClient(service);
 		HTTPConduit http = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+		http.setClient(httpClientPolicy);
+	}
+
+	private static void enableProxy(Object service, String server, int port, HTTPClientPolicy httpClientPolicy) {
 		httpClientPolicy.setAutoRedirect(false);
 		httpClientPolicy.setAllowChunking(false);
-		httpClientPolicy.setConnectionTimeout(400000);
 		httpClientPolicy.setProxyServer(server);
 		httpClientPolicy.setProxyServerPort(port);
-		http.setClient(httpClientPolicy);
+		
 	}
 }

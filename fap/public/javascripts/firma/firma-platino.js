@@ -1,7 +1,10 @@
 Firma._getCertificados = function(){
 		try {			
 			initPlatinoWebSigner();
-
+			//@firma
+			//initFirma();			
+			// Usar metodo de init certificados de @Firma??
+			
 			arrCAs = getArrayCAs();
 			arrRestrictions = getArrayRestrictions();
 			
@@ -47,6 +50,10 @@ var Platino = {
 
 		try {			
 			initPlatinoWebSigner();
+			
+			//@Firma
+			//initFirma();
+			alert("Platino");
 			
 			arrCAs = getArrayCAs();
 			arrRestrictions = getArrayRestrictions();
@@ -129,6 +136,11 @@ function actualizarCertificadosValidos(elementId, options) {
 			return;
 		
 		initPlatinoWebSigner();
+		
+		//@Firma
+		//initFirma();
+		alert("ActualizarCertificadosValidos");
+		
 		arrCAs = getArrayCAs();
 		arrRestrictions = getArrayRestrictions();
 		
@@ -183,9 +195,6 @@ function addEvent(obj, evType, fn) {
  * }
  */
 function firmarUrl(url, idCampoCerts, options) {
-
-	
-	
 	if (url == "" || url == null) {
 		MSGError(options.idError, "El fichero a firmar no está disponible");
 		return null;

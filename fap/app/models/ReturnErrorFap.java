@@ -19,32 +19,12 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class SolicitudPortafirmaFAP extends FapModel {
+public class ReturnErrorFap extends FapModel {
 	// Código de los atributos
 
-	public String codSolicitudPf;
+	public Integer codigo;
 
-	public String estadoPf;
-
-	public String tituloPf;
-
-	public String descripcionPf;
-
-	public String solicitantePf;
-
-	public String destinatarioPf;
-
-	public String emailNotificacionPf;
-
-	public String comentarioPf;
-
-	public String urlCorreoRedireccionPf;
-
-	public String flujoAnteriorPf;
-
-	public String usuarioLDAP;
-
-	public String passwordLDAP;
+	public String descripcion;
 
 	public void init() {
 

@@ -9,6 +9,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.joda.time.DateTime;
 
@@ -18,8 +19,8 @@ import controllers.fap.ResolucionControllerFAP;
 import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
-import models.Registro;
 import models.ResolucionFAP;
+import models.SolicitudFirmaPortafirma;
 
 import enumerado.fap.gen.EstadoPortafirmaEnum;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaException;
@@ -29,6 +30,7 @@ import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.CrearSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoAedType;
 import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoType;
+import es.gobcan.aciisi.portafirma.ws.dominio.EliminarSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosType;
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
@@ -78,7 +80,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	private CrearSolicitudType getCrearSolicitudWSTypeFromResolucionFAP (ResolucionFAP resolucion) {
-		CrearSolicitudType solFirma=new CrearSolicitudType();
+		CrearSolicitudType solFirma = new CrearSolicitudType();
 		solFirma.setTitulo(resolucion.tituloInterno);
         if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
               solFirma.setDescripcion(resolucion.sintesis);
@@ -86,14 +88,14 @@ public class PortafirmaImpl implements PortafirmaFapService {
               solFirma.setDescripcion(resolucion.descripcion);
 		Agente agenteActual = AgenteController.getAgente();
 		// Agente activo
-		solFirma.setIdSolicitante(FapProperties.get("portafirma.usuario"));
+		solFirma.setIdSolicitante(resolucion.solicitudFirmaPortafirma.idSolicitante);
 		// Destinatario -> Jefe de Servicio
-		solFirma.setIdDestinatario(resolucion.jefeDeServicio);
+		solFirma.setIdDestinatario(resolucion.solicitudFirmaPortafirma.idDestinatario);
 		solFirma.setComentario(""); // Dejarlo vacío, antes: resolucion.observaciones
 		// Email del agente activo
 		solFirma.setEmailNotificacion(agenteActual.email);
-		solFirma.setTipoSolicitud(TipoSolicitudEnumType.RESOLUCION);		
-		solFirma.setPrioridad(getEnumTypeFromValue(resolucion.prioridadFirma));
+		solFirma.setTipoSolicitud(TipoSolicitudEnumType.RESOLUCION);
+		solFirma.setPrioridad(getEnumTypeFromValue(resolucion.solicitudFirmaPortafirma.prioridad));
 		
 		// Documentos a Firmar
 		Integer numOrden = new Integer(1);
@@ -118,8 +120,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		solFirma.setDocumentosAed(listaDocumentos);
 		
 		try {
-			//solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar((new DateTime()).plusDays(ResolucionControllerFAP.getDiasLimiteFirma(resolucion.id))));
-			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar(resolucion.fechaTopeFirma)); // TODO Comprobar fecha en el portafirmas
+			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar(resolucion.solicitudFirmaPortafirma.plazoMaximo));
 		} catch (DatatypeConfigurationException e) {
 			play.Logger.error("Error al setear la fecha tope de firma."+ e);
 		}
@@ -127,45 +128,95 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		return solFirma;
 	}
 	
-	@Override
-	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (String titulo, String descripcion, String tipoSolicitud, String prioridad, XMLGregorianCalendar fechaTopeFirma, String idSolicitante, String idDestinatario, String emailNotificacion, ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-
-		CrearSolicitudType solFirma = new CrearSolicitudType();
-		solFirma.setTitulo(titulo);
-		solFirma.setDescripcion(descripcion);
-		solFirma.setTipoSolicitud(TipoSolicitudEnumType.fromValue(tipoSolicitud));	
-		solFirma.setPrioridad(PrioridadEnumType.fromValue(prioridad));
-		solFirma.setFechaTopeFirma(fechaTopeFirma);
-		solFirma.setIdSolicitante(idSolicitante);
-		solFirma.setIdDestinatario(idDestinatario);
-		solFirma.setEmailNotificacion(emailNotificacion);
+	private void documentos2DocumentossAedType (CrearSolicitudType solFirma, SolicitudFirmaPortafirma solicitudFirmaPortafirma) {
 		
-		ListaDocumentosAedType documentosAed = new ListaDocumentosAedType();
-		Integer numOrden = new Integer(1);
-		for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
-			if (!linea.registro.fasesRegistro.firmada) {
-				DocumentoAedType docAedType = new DocumentoAedType();
-				docAedType.setUriAed(linea.registro.oficial.uri);
-				docAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
-				docAedType.setNumeroOrden(numOrden.toString());
-				docAedType.setDescripcion(linea.registro.oficial.descripcionVisible);
-				documentosAed.getListaDocumento().add(docAedType);
-				numOrden++;
+		if (((solicitudFirmaPortafirma.documentosFirma != null) &&  (!solicitudFirmaPortafirma.documentosFirma.isEmpty()))
+				|| (((solicitudFirmaPortafirma.documentosConsulta != null) &&  (!solicitudFirmaPortafirma.documentosConsulta.isEmpty())))) {
+			
+			Integer numeroOrden = new Integer(1);
+			ListaDocumentosAedType listaDocumentosAedType = new ListaDocumentosAedType();
+			
+			// Documentos de firma
+			for (Documento documento: solicitudFirmaPortafirma.documentosFirma) {
+				DocumentoAedType documentoAedType = new DocumentoAedType();
+				documentoAedType.setTipoDocumento(TipoDocumentoEnumType.FIRMA);
+				documentoAedType.setUriAed(documento.uri);
+				documentoAedType.setDescripcion(documento.descripcionVisible);
+				documentoAedType.setNumeroOrden(numeroOrden.toString());
+				listaDocumentosAedType.getListaDocumento().add(documentoAedType);
+				numeroOrden++;
 			}
+			
+			// Documentos de consulta (añadidos)
+			for (Documento documento: solicitudFirmaPortafirma.documentosConsulta) {
+				DocumentoAedType documentoAedType = new DocumentoAedType();
+				documentoAedType.setTipoDocumento(TipoDocumentoEnumType.CONSULTA);
+				documentoAedType.setUriAed(documento.uri);
+				documentoAedType.setDescripcion(documento.descripcionVisible);
+				documentoAedType.setNumeroOrden(numeroOrden.toString());
+				listaDocumentosAedType.getListaDocumento().add(documentoAedType);
+				numeroOrden++;
+			}
+			
+			solFirma.setDocumentosAed(listaDocumentosAedType);
 		}
-		
-		solFirma.setDocumentosAed(documentosAed);
-		
-		CrearSolicitudResponseType wsType = new CrearSolicitudResponseType();
+	}
+	
+	// TODO: SIN TERMINAR
+	private void documentos2DocumentosType (CrearSolicitudType solFirma, SolicitudFirmaPortafirma solicitudFirmaPortafirma) {
+		if ((solicitudFirmaPortafirma.documento != null) && (solicitudFirmaPortafirma.documento.uri != null)) {
+			Integer numeroOrden = new Integer(1);
+			ListaDocumentosType listaDocumentosType = new ListaDocumentosType();
+			DocumentoType documentoType = new DocumentoType();
+			documentoType.setTipoDocumento(TipoDocumentoEnumType.CONSULTA);
+			documentoType.setContenido(null);		//  \
+			documentoType.setMimeType(null);		//   |---- TODO: Falta rellenar estos campos
+			documentoType.setNombreFichero(null);	//  /
+			documentoType.setDescripcion(solicitudFirmaPortafirma.documento.descripcionVisible);
+			documentoType.setNumeroOrden(numeroOrden.toString());
+			listaDocumentosType.getDocumento().add(documentoType);
+			solFirma.setDocumentos(listaDocumentosType);
+		}
+	}
+	
+	private CrearSolicitudType crearSolicitudFirmaACIISI (SolicitudFirmaPortafirma solicitudFirmaPortafirma) {
+		CrearSolicitudType solFirma = new CrearSolicitudType();
+		solFirma.setTitulo(solicitudFirmaPortafirma.tema);
+		solFirma.setDescripcion(solicitudFirmaPortafirma.materia);
+		solFirma.setTipoSolicitud(TipoSolicitudEnumType.fromValue(solicitudFirmaPortafirma.tipoSolicitud));
+		solFirma.setPrioridad(getEnumTypeFromValue(solicitudFirmaPortafirma.prioridad));
 		try {
-			wsType = portafirmaService.crearSolicitud(solFirma);
+			solFirma.setFechaTopeFirma(DateTime2XMLGregorianCalendar(solicitudFirmaPortafirma.plazoMaximo));
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		solFirma.setIdSolicitante(solicitudFirmaPortafirma.idSolicitante);
+		solFirma.setIdDestinatario(solicitudFirmaPortafirma.idDestinatario);
+		solFirma.setComentario(solicitudFirmaPortafirma.solicitudEstadoComentario);
+		solFirma.setEmailNotificacion(solicitudFirmaPortafirma.emailNotificacion);
+		solFirma.setUrlRedireccion(solicitudFirmaPortafirma.urlRedireccion);
+		solFirma.setUrlNotificacion(solicitudFirmaPortafirma.urlNotificacion);
+		solFirma.setFlujoSolicitud(solicitudFirmaPortafirma.flujoSolicitud);
+		documentos2DocumentossAedType(solFirma, solicitudFirmaPortafirma);
+		documentos2DocumentosType(solFirma, solicitudFirmaPortafirma);
+		return solFirma;
+	}
+	
+	@Override
+	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+
+		CrearSolicitudType crearSolicitudType = crearSolicitudFirmaACIISI(solicitudFirmaPortafirma);
+		CrearSolicitudResponseType crearSolicitudResponseType = new CrearSolicitudResponseType();
+		try {
+			crearSolicitudResponseType = portafirmaService.crearSolicitud(crearSolicitudType);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
 		PortafirmaCrearSolicitudResponse response = new PortafirmaCrearSolicitudResponse();
-		response.setIdSolicitud(wsType.getIdSolicitud());
-		response.setComentarios(wsType.getComentario());
+		response.setIdSolicitud(crearSolicitudResponseType.getIdSolicitud());
+		response.setComentarios(crearSolicitudResponseType.getComentario());
 		return response;
 	}
 	
@@ -207,33 +258,40 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
+	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		try {
-			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
-			oEstado.setIdSolicitud(resolucion.idSolicitudFirma);
-			oEstado.setIdUsuario(FapProperties.get("portafirma.usuario"));
-			return portafirmaService.obtenerEstadoSolicitud(oEstado).getEstado();
+			ObtenerEstadoSolicitudType obtenerEstadoSolicitudType = new ObtenerEstadoSolicitudType();
+			obtenerEstadoSolicitudType.setIdSolicitud(solicitudFirmaPortafirma.uriSolicitud);
+			obtenerEstadoSolicitudType.setIdUsuario(solicitudFirmaPortafirma.idSolicitante);
+			ObtenerEstadoSolicitudResponseType obtenerEstadoSolicitudResponseType = portafirmaService.obtenerEstadoSolicitud(obtenerEstadoSolicitudType);
+			solicitudFirmaPortafirma.solicitudEstado = obtenerEstadoSolicitudResponseType.getEstado();
+			solicitudFirmaPortafirma.solicitudEstadoComentario = obtenerEstadoSolicitudResponseType.getComentario();
+			solicitudFirmaPortafirma.save();
+			play.Logger.info("El estado de la solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" es "+solicitudFirmaPortafirma.solicitudEstado);
+			return solicitudFirmaPortafirma.solicitudEstado;
 		} catch (Exception e) {
-			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
-		}
-	}
-
-	@Override
-	public String obtenerEstadoFirma(ResolucionFAP resolucion, String idSolicitudFirma, String idUsuario) throws PortafirmaFapServiceException {
-		try {
-			ObtenerEstadoSolicitudType oEstado = new ObtenerEstadoSolicitudType();
-			oEstado.setIdSolicitud(idSolicitudFirma);
-			oEstado.setIdUsuario(idUsuario);
-			return portafirmaService.obtenerEstadoSolicitud(oEstado).getEstado();
-		} catch (Exception e) {
-			throw new PortafirmaFapServiceException("Error al comprobar el estado de la solicitud en el portafirma", e);
+			play.Logger.error("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
+			throw new PortafirmaFapServiceException("Error al obtener el estado de la solicitud de firma de portafirma: " + e.getMessage(), e);
 		}
 	}
 	
 	@Override
-	public void eliminarSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
-		// TODO Auto-generated method stub
-
+	public void eliminarSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		EliminarSolicitudType eliminarSolicitudType = new EliminarSolicitudType();
+		eliminarSolicitudType.setIdSolicitud(solicitudFirmaPortafirma.uriSolicitud);
+		eliminarSolicitudType.setIdSolicitante(solicitudFirmaPortafirma.idSolicitante);
+		try {
+			portafirmaService.eliminarSolicitud(eliminarSolicitudType);
+			solicitudFirmaPortafirma.comentarioSolicitante = "La solicitud de firma fue eliminada.";
+			play.Logger.info("La solicitud "+solicitudFirmaPortafirma.uriSolicitud+" ha sido eliminada correctamente.");
+		} catch (PortafirmaException e) {
+			play.Logger.error("No se ha podido eliminar la solicitud "+solicitudFirmaPortafirma.uriSolicitud+": "+e);
+			throw new PortafirmaFapServiceException("No se ha podido eliminar la solicitud "+solicitudFirmaPortafirma.uriSolicitud, e);
+		}
+		catch (SOAPFaultException e) {
+			play.Logger.error("La solicitud "+solicitudFirmaPortafirma.uriSolicitud+" no existe: "+e);
+			throw new PortafirmaFapServiceException("La solicitud "+solicitudFirmaPortafirma.uriSolicitud+" no existe.", e);
+		}
 	}
 
 	@Override
@@ -247,29 +305,39 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 
 	@Override
-	public boolean comprobarSiResolucionFirmada(ResolucionFAP resolucion, String idSolicitudFirma) throws PortafirmaFapServiceException {
+	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
+		Boolean firmada = false;
 		try {
-			return portafirmaService.comprobarSolicitudFinalizada(idSolicitudFirma, FapProperties.get("portafirma.usuario"));
+			firmada = portafirmaService.comprobarSolicitudFinalizada(solicitudFirmaPortafirma.uriSolicitud, solicitudFirmaPortafirma.idSolicitante);
+			if (firmada) {
+				obtenerEstadoFirma(solicitudFirmaPortafirma);
+				play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada y finalizada.");
+			}
+			else
+				play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" no ha sido firmada y finalizada.");
+			return firmada;
 		} catch (PortafirmaException e) {
+			play.Logger.error("Error al comprobar si la solicitud de firma de portafirma ha sido firmada y finalizada: " + e.getMessage(), e);
 			throw new PortafirmaFapServiceException(e.getMessage(), e);
 		}
 	}
 
+	// Obtiene los jefes de servicio de la aplicación
 	@Override
-	public List<ComboItem> obtenerUsuariosAdmitenEnvio() 
-			throws PortafirmaFapServiceException {
+	public List<ComboItem> obtenerUsuariosAdmitenEnvio() throws PortafirmaFapServiceException {
 		List<UsuarioType> listaUsuarios = null;
-		List<ComboItem> listResult = new ArrayList<ComboItem>();
+		List<ComboItem> listaResultados = new ArrayList<ComboItem>();
 		try {
+			// El parámetro debería ser solicitudFirmaPortafirma.idSolicitante en lugar de FapProperties.get("portafirma.usuario")
 			listaUsuarios = portafirmaService.obtenerUsuariosAdmitenEnvio(FapProperties.get("portafirma.usuario"));
-			for (UsuarioType user: listaUsuarios) {
-				listResult.add(new ComboItem(user.getIdUsuario(), user.getIdUsuario()+ " - "+user.getNombreCompleto()));
+			for (UsuarioType usuarioType: listaUsuarios) {
+				listaResultados.add(new ComboItem(usuarioType.getIdUsuario(), usuarioType.getIdUsuario()+ " - "+usuarioType.getNombreCompleto()));
 			}
 		} catch (PortafirmaException e) {
+			play.Logger.error("Error al obtener los usuarios que admiten envíos del portafirma: " + e.getMessage(), e);
 			throw new PortafirmaFapServiceException("Error al obtener los usuarios que admiten envíos del portafirma", e);
 		}
-		return listResult;
+		return listaResultados;
 	}
-
 
 }

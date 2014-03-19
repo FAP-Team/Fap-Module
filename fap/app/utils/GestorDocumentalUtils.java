@@ -3,7 +3,24 @@ package utils;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import models.Documento;
+import models.ExpedientePlatino;
+
+import org.joda.time.DateTime;
+
+import config.InjectorConfig;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
+
+import platino.DatosDocumento;
 import properties.FapProperties;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.platino.PlatinoGestorDocumentalService;
+import services.platino.PlatinoGestorDocumentalServiceException;
+import services.platino.PlatinoPortafirmaServiceImpl;
 
 public class GestorDocumentalUtils {
 	
@@ -57,5 +74,5 @@ public class GestorDocumentalUtils {
 			return name.substring(dot + 1);
 		return "";
 	}
-	
+
 }

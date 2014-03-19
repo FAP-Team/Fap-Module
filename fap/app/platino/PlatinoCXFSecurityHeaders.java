@@ -96,9 +96,9 @@ public class PlatinoCXFSecurityHeaders {
 		log.debug("Interceptor UsernameToken añadido.");
 		outInterceptors.add(wssSignatureInterceptor);
 		log.debug("Interceptor Signature añadido.");
-		if (log.isDebugEnabled()) {
+		//if (log.isDebugEnabled()) { //ESTO SE COMENTÓ PARA QUE OBTENER MÁS INFO 
 			cxfEndpoint.getOutInterceptors().add(new LoggingOutInterceptor());
 			log.debug("Interceptor Logging añadido");
-		}
+		//}
 	}
 }

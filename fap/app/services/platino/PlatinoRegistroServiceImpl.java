@@ -117,13 +117,6 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
         PlatinoProxy.setProxy(registroPort); 
         
-        Client client = ClientProxy.getClient(registroPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
         USERNAME = FapProperties.get("fap.platino.registro.username");
         PASSWORD = FapProperties.get("fap.platino.registro.password");
         ALIAS = FapProperties.get("fap.platino.registro.aliasServidor");
@@ -138,7 +131,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         try {
             return PlatinoSecurityUtils.encriptarPassword(password);
         } catch (Exception e) {
-            throw new RuntimeException("Error encriptando la contraseña");
+            throw new RuntimeException("Error encriptando la contraseña", e);
         }	    
 	}
 	
@@ -190,7 +183,9 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    		|| datosRegistro.getNumeroDocumento().equals("A99999999")) {
 	    	datosRegistro.setNumeroDocumento("A99999997");
 	    }
+	    log.info("Llamando al getDatosRegistroNormalizados");
 	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
+	    log.info("Llamando a firmarDatosRegistro");
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
         models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
@@ -276,7 +271,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
      */
 	
     private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
-    	log.info("[getDatosRegistroNormalizados] Ruta expediente " + datosRegistro.getExpediente().getRuta());
+        log.info("[getDatosRegistroNormalizados] Ruta expediente " + datosRegistro.getExpediente().getRuta());
         
         crearExpedienteSiNoExiste(expedientePlatino);
         
@@ -322,7 +317,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             return datosAFirmar;
         } catch (Exception e) {
             log.error("Error normalizando los datos " + e.getMessage());
-            log.error("RegistrarEntrada -> EXIT ERROR");
+            log.error("getDatosRegistroNormalizados -> EXIT ERROR");
             throw new RegistroServiceException("Error normalizando los datos de registro", e);
         }
     }
@@ -352,6 +347,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     private String firmarDatosRegistro(String datosAFirmar) throws RegistroServiceException {
     	log.info("[firmarDatosRegistro] Iniciando la firma de los datos de registro");
         try {
+        	log.info("Llamando a firmarTexto para firmar datosRegistro");
             String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
             log.info("[firmarDatosRegistro] Datos de registro firmados correctamente");
             return datosFirmados;
@@ -367,7 +363,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
             log.info("[registroDeEntrada] Registro de Entrada realizado correctamente en Platino");
             return justificante;
         }catch(Exception e){
-            throw new RegistroServiceException("Error en la llamada de registro de entrada"+ e);
+            throw new RegistroServiceException("Error en la llamada de registro de entrada: "+ e);
         }
     }
     
@@ -389,8 +385,8 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 
 		try {	
 			JustificanteRegistro justificantePlatino = registroDeSalida(datosAFirmar, datosFirmados);
-			play.Logger.info("Registro de entrada realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
-			play.Logger.info("RegistrarEntrada -> EXIT OK");
+			play.Logger.info("Registro de salida realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
+			play.Logger.info("registroDeSalida -> EXIT OK");
 			models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
 			play.Logger.info("Realizando un Registro de Salida: " +
 	        		"Agente: "+AgenteController.getAgente().name+
@@ -400,7 +396,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			return justificante;
 		} catch (Exception e) {
 			play.Logger.info("Error al obtener el justificante y EXIT "+e);
-			play.Logger.info("RegistrarEntrada -> EXIT ERROR");
+			play.Logger.info("registroDeSalida -> EXIT ERROR");
 			throw new RegistroServiceException("Error al registrar de salida: "+e.getMessage());
 		}		
 	}	

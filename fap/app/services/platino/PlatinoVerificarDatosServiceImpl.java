@@ -52,13 +52,6 @@ public class PlatinoVerificarDatosServiceImpl implements services.VerificarDatos
         WSUtils.configureEndPoint(verificaPort, getEndPoint());
         WSUtils.configureSecurityHeaders(verificaPort, propertyPlaceholder);
         PlatinoProxy.setProxy(verificaPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(verificaPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
     }
     
 

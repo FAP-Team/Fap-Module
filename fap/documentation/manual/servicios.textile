@@ -87,3 +87,10 @@ h3. BDD Terceros:
 
 * Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
 Para más infomación acerca del servicio de la base de datos a terceros vaya a su "documentación.":app-terceros
+
+h2. Mostrar errores al usuario
+
+En ocasiones un servicio web puede no estar disponible o puede que la petición sea incorrecta, por lo que no se podrá continuar con el proceso que llevaba el usuario. Si queremos mostrarle un mensaje de información o error al usuario en estas situaciones, podemos hacer uso de un método que, utilizando los mensajes flash de Play!, muestra los distintos avisos en el navegador.
+
+!images/flashServicesFail!
+Para utilizarlo basta con llamar al método @ControllersUtils.flashServicesFail(String mensaje)@, que almacenará el error y lo mostrará correspondientemente cuando la siguiente vista se renderice.

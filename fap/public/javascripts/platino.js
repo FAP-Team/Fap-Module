@@ -1,6 +1,9 @@
 Firma._getCertificados = function(){
 		try {			
 			initPlatinoWebSigner();
+			//@Firma
+			//initFirma();;
+			
 			arrCAs = new Array(
 					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
@@ -56,6 +59,9 @@ var Platino = {
 
 		try {			
 			initPlatinoWebSigner();
+			//@Firma
+			//initFirma();
+			
 			arrCAs = new Array(
 					'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 					'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',
@@ -118,20 +124,6 @@ var Platino = {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
 * Fichero que trabajo lista los certificados y firma con platino
  * Requisitos:
@@ -166,6 +158,8 @@ function actualizarCertificadosValidos(elementId, options) {
 			return;
 		
 		initPlatinoWebSigner();
+		//@Firma
+		//initFirma();
 		arrCAs = new Array(
 				'OU=FNMT Clase 2 CA, O=FNMT, C=ES',
 				'CN=AC DNIE 003, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES',

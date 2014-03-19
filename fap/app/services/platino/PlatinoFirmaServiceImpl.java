@@ -90,13 +90,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
         PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
         
-        Client client = ClientProxy.getClient(firmaPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
-        
         //Properties
         INVOKING_APP = propertyPlaceholder.get("fap.platino.firma.invokingApp");
         ALIAS = propertyPlaceholder.get("fap.platino.firma.alias");
@@ -157,15 +150,35 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         List<String> jsclient = new ArrayList<String>();
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
-            host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
-            jsclient.add(host + "CAValidas.js");
+        	host = "https://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	jsclient.add(host + "CAValidas.js");
+            // Cambio a host de @firma //host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
+//        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/";
+//        	
+//            //Nuevas librerias para @Firma
+//            //System.out.println("Insertando nuevas librerías de @firma <<------");
+//            jsclient.add(host + "common-js/deployJava.js");
+//            jsclient.add(host + "common-js/instalador.js");
+//            jsclient.add(host + "constantes.js");
+//        	
+//        	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
         }else{
-            host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
-            jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
+        	host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	// Cambio a host de @firma //host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
+//        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/";
+        	
+            //Nuevas librerias para @Firmadef uri = _uri ?: "No hay URI"<!--	def uri = _uri ?: "No hay URI"
+        	//System.out.println("Insertando nuevas librerías de @firma <<------");
+//            jsclient.add(host + "common-js/deployJava.js");
+//            jsclient.add(host + "common-js/instalador.js");
+//            jsclient.add(host + "constantes.js");
+            jsclient.add("https://www.gobiernodecanarias.org/platino/js/CAValidas.js");
         }
-        jsclient.add(host + "WS_Full.js");
+        
+        jsclient.add(host + "WS_Full.js"); //Se quita para @firma
         jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");
+        
         jsclient.add("/public/javascripts/firma/firma.js");
         jsclient.add("/public/javascripts/firma/firma-platino.js");
         jsclient.add("/public/javascripts/msg.js");
@@ -231,7 +244,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			byte[] certificadoEncoded = certificate.getEncoded();
 			certificado = Codec.encodeBASE64(certificadoEncoded);
 		} catch (Exception e) {
-			play.Logger.error("Error al extraer la información del certificado");
+			play.Logger.error("Error al extraer la información del certificado", e);
 		}
 		boolean certificadoValido = isValidCertificado(certificado);
         if(!certificadoValido)
@@ -289,7 +302,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				Messages.error("Error validando la firma");
 			}
 		} catch (Exception e) {
-			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri, e);
 			Messages.error("Error validando la firma");
 		}
 		return firmante;
@@ -310,7 +323,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				Messages.error("Error validando la firma");
 			}
 		} catch (Exception e) {
-			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri);
+			play.Logger.error("Error obteniendo el documento del AED para verificar la firma. Uri = " + documento.uri, e);
 			Messages.error("Error validando la firma");
 		}
 		return firmante;
@@ -354,7 +367,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			}
 			return null;
 		} catch (FirmaServiceException e){
-			play.Logger.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido: " + e.getMessage());
 		}catch (Exception e) {
 			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
@@ -401,7 +414,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				return firmante;
 			}
 		} catch (FirmaServiceException e){
-			play.Logger.error("El certificado no es válido");
+			play.Logger.error("El certificado no es válido: " +e.getMessage());
 		}catch (Exception e) {
 			play.Logger.error("Error en validateXMLSignature "+e);
 			Messages.error("Error al validar la firma");
@@ -453,7 +466,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 					
 					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
 				}catch(GestorDocumentalServiceException e){
-					play.Logger.error("Error guardando la firma en el aed");
+					play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
 					Messages.error("Error al guardar la firma");
 				}				
 			}

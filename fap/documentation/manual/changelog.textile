@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.4.1RC1
+
+* Cambiado el componente de firma Websigner por @firma
+
 h3. Versión 2.4RC5
 
 * FixedBug: Se ha corregido el método encriptarPassword
@@ -11,6 +15,8 @@ h3. Versión 2.4RC5
 * Reestructuración de las implementaciones del servicio de Portafirma (Portafirma Gobcan, Portafirma ACIISI) (Pendiente de corregir detalles).
 * Incorporación de la librería de certificados
 * Actualización de la librería de notificaciones (se ha cambiado el nombre del paquete de esta librería)
+* Añadido el parámetro procedimiento al método buscarExpedientes del AED
+* Añadido el identificador del elemento Fecha en el tag de éste
 
 h3. Versión 2.4RC4
 

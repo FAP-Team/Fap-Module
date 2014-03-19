@@ -18,7 +18,7 @@ public class GFecha extends GSaveCampoElement{
 		params.putStr("campo", campo.firstLower())
 		
 		if(fecha.name != null)
-		params.putStr("id", fecha.name)
+			params.putStr("id", fecha.name)
 		
 		if(fecha.titulo != null)
 			params.putStr("titulo", fecha.titulo)

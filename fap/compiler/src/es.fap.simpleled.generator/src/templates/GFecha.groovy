@@ -16,6 +16,10 @@ public class GFecha extends GSaveCampoElement{
 	public String view(){
 		TagParameters params = new TagParameters();
 		params.putStr("campo", campo.firstLower())
+		
+		if(fecha.name != null)
+		params.putStr("id", fecha.name)
+		
 		if(fecha.titulo != null)
 			params.putStr("titulo", fecha.titulo)
 		

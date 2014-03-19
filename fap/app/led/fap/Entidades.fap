@@ -64,7 +64,6 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	DateTime fechaFinDeAlegacion
 	Respuesta respuestaSvd
 	PeticionSVD peticion
-	OneToMany Registro registros
 
 }
 
@@ -841,6 +840,29 @@ Entidad CertificadoSolicitado {
 	DateTime fechaCreacion
 }
 
+
+
+Entidad ValoresValidosMetadatos {
+    String clave
+    String valor
+}
+
+Entidad EsquemaMetadato {
+    String identificador
+    String nombre
+    LongText definicion
+    String obligatoriedad
+    String tipoDeDato
+    OneToMany ValoresValidosMetadatos valores
+    String longitud
+    List <String> patron
+    String repeticion
+    LongText comentario
+    String equivalencia
+    String automatizable
+}
+
+
 // Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON
 Entidad Metadatos {    
     // Tipo de documento al que hacen referencia los metadatos. 
@@ -852,6 +874,10 @@ Entidad Metadato {
     String nombre
     String valor
 }
+
+//Extendemos la Entidad Metadatos para implementar códigos propios de comprobación
+Entidad MetadatoTipoTabla extends Metadato {}
+Entidad MetadatoTipoPatron extends Metadato {}
 
 
 

@@ -19,10 +19,10 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Metadato extends FapModel {
+public class ValoresValidosMetadatos extends FapModel {
 	// Código de los atributos
 
-	public String nombre;
+	public String clave;
 
 	public String valor;
 
@@ -32,32 +32,6 @@ public class Metadato extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-
-	public boolean esUnico() {
-		//TODO comprobar según el esquema
-		return false;
-	}
-
-	public boolean esObligatorio() {
-		//TODO comprobar según el esquema
-		return false;
-	}
-
-	public boolean esValido() {
-		//TODO comprobar según el esquema
-		//TODO comprobar la longitud
-		return true;
-	}
-
-	public boolean esAutomatizable() {
-		//		TODO comprobar según el esquema
-		return true;
-	}
-
-	public String getDescripcion() {
-		//		TODO comprobar según el esquema
-		return null;
-	}
 
 	// === MANUAL REGION END ===
 

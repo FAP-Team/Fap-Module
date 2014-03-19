@@ -19,44 +19,19 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class Metadato extends FapModel {
+public class MetadatoTipoTabla extends Metadato {
 	// Código de los atributos
 
-	public String nombre;
-
-	public String valor;
-
 	public void init() {
+		super.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-
-	public boolean esUnico() {
-		//TODO comprobar según el esquema
-		return false;
-	}
-
-	public boolean esObligatorio() {
-		//TODO comprobar según el esquema
-		return false;
-	}
-
+	@Override
 	public boolean esValido() {
-		//TODO comprobar según el esquema
-		//TODO comprobar la longitud
 		return true;
-	}
-
-	public boolean esAutomatizable() {
-		//		TODO comprobar según el esquema
-		return true;
-	}
-
-	public String getDescripcion() {
-		//		TODO comprobar según el esquema
-		return null;
 	}
 
 	// === MANUAL REGION END ===

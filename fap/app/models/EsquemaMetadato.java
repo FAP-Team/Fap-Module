@@ -64,7 +64,10 @@ public class EsquemaMetadato extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-
+	public static EsquemaMetadato get(String nombre) {
+		EsquemaMetadato esq = find("byNombre", nombre).first();
+		return esq;
+	}
 	// === MANUAL REGION END ===
 
 }

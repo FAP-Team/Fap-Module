@@ -43,10 +43,29 @@ public class Metadato extends FapModel {
 		return false;
 	}
 
+	
 	public boolean esValido() {
-		//TODO comprobar según el esquema
-		//TODO comprobar la longitud
-		return true;
+		if (valor == null)
+			return false;
+		
+		int longitud = Integer.MAX_VALUE;
+		String longitudString = EsquemaMetadato.get(nombre).longitud;
+		
+		if (longitudString == null) {
+			return true;
+		}
+		
+		try {
+			longitud = Integer.parseInt(longitudString);
+		} catch (NumberFormatException e) {
+			longitud = Integer.MAX_VALUE;
+		}
+		
+		if (valor.length() <= longitud) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	public boolean esAutomatizable() {

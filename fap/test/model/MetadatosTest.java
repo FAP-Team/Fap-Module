@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gson.Gson;
-
+import static org.hamcrest.CoreMatchers.*;
 import play.Logger;
 import play.test.UnitTest;
 import utils.MetadatosUtils;
@@ -121,5 +121,74 @@ public class MetadatosTest extends UnitTest{
 		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
 		actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
 		assertEquals(actual.nombre, esq.nombre);
+	}
+
+	@Test
+	public void metodoValidarGenericoEsValidoSinLongitud() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.longitud = null;
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = "Cadena que debería ser válida"; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(true));
+	}
+	
+	@Test
+	public void metodoValidarGenericoEsValidoConLongitud() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.longitud = "100";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = "Cadena que debería ser válida"; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(true));
+	}
+	
+	@Test
+	public void metodoValidarGenericoNoEsValidoPorLongitud() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.longitud = "10";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = "Cadena que es demasiado larga para ser válida"; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(false));
+	}
+	
+	@Test
+	public void metodoValidarGenericoNoEsValidoPorNull() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = null; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(false));
+	}
+	
+	@Test
+	public void metodoValidarTipoTablasEsValido(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "tabla codificada";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = esq.valores.get(0).clave; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(true));
+	}
+	
+	@Test
+	public void metodoValidarTipoTablasEsNoValido(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "tabla codificada";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValorNoValido = "~~cadena~No~Valida~~"; 
+		actual.valor = nuevoValorNoValido;
+		assertThat(actual.esValido(), is(false));
 	}
 }

@@ -31,7 +31,20 @@ public class MetadatoTipoTabla extends Metadato {
 	// === MANUAL REGION START ===
 	@Override
 	public boolean esValido() {
-		return true;
+		EsquemaMetadato esquema = EsquemaMetadato.get(nombre);
+		if (esquema == null) {
+			return false;
+		}
+		List<ValoresValidosMetadatos> validos = esquema.valores;
+		if ((validos == null) || (validos.isEmpty())) {
+			return false;
+		}
+		for(ValoresValidosMetadatos valido : validos) {
+			if (valido.clave.equals(this.valor))
+				return true;
+		}
+		
+		return false;
 	}
 
 	// === MANUAL REGION END ===

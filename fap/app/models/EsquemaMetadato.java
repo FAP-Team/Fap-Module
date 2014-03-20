@@ -68,6 +68,35 @@ public class EsquemaMetadato extends FapModel {
 		EsquemaMetadato esq = find("byNombre", nombre).first();
 		return esq;
 	}
+	
+	public boolean esObligatorio() {
+		if ("si".equals(obligatoriedad)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean esObligatorio(String metadatoNombre) {
+		EsquemaMetadato esq = get(metadatoNombre);
+		if (esq == null) {
+			return false;
+		}
+		return esq.esObligatorio();
+	}
+	
+	
+	public boolean esUnico() {
+		if ("unico".equals(repeticion)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean esUnico(String nombre) {
+		EsquemaMetadato esq = find("byNombre", nombre).first();
+		return esq.esUnico();
+	}
+
 	// === MANUAL REGION END ===
 
 }

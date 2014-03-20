@@ -34,13 +34,11 @@ public class Metadato extends FapModel {
 	// === MANUAL REGION START ===
 
 	public boolean esUnico() {
-		//TODO comprobar según el esquema
-		return false;
+		return EsquemaMetadato.esUnico(this.nombre);
 	}
 
 	public boolean esObligatorio() {
-		//TODO comprobar según el esquema
-		return false;
+		return EsquemaMetadato.esObligatorio(this.nombre);
 	}
 
 	

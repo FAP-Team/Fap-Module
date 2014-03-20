@@ -69,7 +69,7 @@ public class MetadatosTest extends UnitTest{
 		List<EsquemaMetadato> esquema = EsquemaMetadato.findAll();
 		assertFalse(esquema.isEmpty());
 		EsquemaMetadato actual = esquema.get(0);
-		assertEquals(expectedEsquema, actual);
+		assertThat(actual, is(equalTo(actual)));
 	}
 
 	@Test
@@ -105,10 +105,10 @@ public class MetadatosTest extends UnitTest{
 	public void factoriaDevuelveTipoPadre(){
 		Metadato expected;
 		Metadato actual;
-		expectedEsquema = EsquemaMetadato.get(expectedEsquema.nombre);
-		expectedEsquema.tipoDeDato = "texto";
-		expectedEsquema.patron = null;
-		expectedEsquema.save();
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.patron = null;
+		esq.save();
 		expected = new Metadato();
 		
 		actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
@@ -190,5 +190,48 @@ public class MetadatosTest extends UnitTest{
 		String nuevoValorNoValido = "~~cadena~No~Valida~~"; 
 		actual.valor = nuevoValorNoValido;
 		assertThat(actual.esValido(), is(false));
+	}
+
+	@Test
+	public void esObligatorio(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.obligatoriedad = "si";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertThat(esq.obligatoriedad, is(equalTo("si")));
+		assertThat(esq.esObligatorio(), is(true));
+		assertThat(esq.nombre,is(equalTo(actual.nombre)));
+		assertThat(actual.esObligatorio(), is(true));
+	}
+	
+	@Test
+	public void noEsObligatorio(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.obligatoriedad = "no";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertThat(esq.obligatoriedad, is(equalTo("no")));
+		assertThat(esq.esObligatorio(), is(false));
+		assertThat(esq.nombre,is(equalTo(actual.nombre)));
+		assertThat(actual.esObligatorio(), is(false));
+	}
+	
+	
+	@Test
+	public void esUnico(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.repeticion = "unico";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertTrue(actual.esUnico());
+	}
+	
+	@Test
+	public void noEsUnico(){
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.repeticion = "multiple";
+		expectedEsquema.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertThat(actual.esUnico(), is(false));
 	}
 }

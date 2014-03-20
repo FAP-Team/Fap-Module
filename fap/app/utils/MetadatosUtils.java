@@ -18,7 +18,24 @@ import models.MetadatoTipoPatron;
 import models.MetadatoTipoTabla;
 
 public class MetadatosUtils {
+	
+	public static class SimpleFactory {
+		public static Metadato getMetadato(String nombreEnEsquema) {
+			Metadato metadato = new Metadato();
+			EsquemaMetadato esquema = EsquemaMetadato.get(nombreEnEsquema);
+			
+			if("tabla codificada".equals(esquema.tipoDeDato)) {
+				metadato = new MetadatoTipoTabla();
+			} else if(("texto".equals(esquema.tipoDeDato)) && (esquema.patron != null)) {
+				metadato = new MetadatoTipoPatron();
+			}
 
+			metadato.nombre = nombreEnEsquema;
+				
+			return metadato;
+		}
+	}
+	
 	public static void esquemaFromJson(String jsonString) {
 		StringReader stringReader = new StringReader(jsonString);
 		JsonReader jsonReader = new JsonReader(stringReader);

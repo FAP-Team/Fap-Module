@@ -71,4 +71,55 @@ public class MetadatosTest extends UnitTest{
 		EsquemaMetadato actual = esquema.get(0);
 		assertEquals(expectedEsquema, actual);
 	}
+
+	@Test
+	public void factoriaDevuelveTipoTabla(){
+		Metadato expected;
+		Metadato actual;
+		expectedEsquema = EsquemaMetadato.get(expectedEsquema.nombre);
+		expected = new Metadato();
+		expectedEsquema.tipoDeDato = "tabla codificada";
+		expectedEsquema.save();
+		expected = new MetadatoTipoTabla();
+		
+		actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertEquals(expected.getClass(), actual.getClass());
+	}
+	
+	@Test
+	public void factoriaDevuelveTipoPatron(){
+		Metadato expected;
+		Metadato actual;
+		expectedEsquema = EsquemaMetadato.get(expectedEsquema.nombre);
+		expectedEsquema.tipoDeDato = "texto";
+		expectedEsquema.patron = new ArrayList<String>();
+		expectedEsquema.patron.add("123");
+		expectedEsquema.save();
+		expected = new MetadatoTipoPatron();
+		
+		actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertEquals(expected.getClass(), actual.getClass());
+	}
+	
+	@Test
+	public void factoriaDevuelveTipoPadre(){
+		Metadato expected;
+		Metadato actual;
+		expectedEsquema = EsquemaMetadato.get(expectedEsquema.nombre);
+		expectedEsquema.tipoDeDato = "texto";
+		expectedEsquema.patron = null;
+		expectedEsquema.save();
+		expected = new Metadato();
+		
+		actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
+		assertEquals(expected.getClass(), actual.getClass());
+	}
+
+	@Test
+	public void factoriaDevuelveNombre() {
+		Metadato actual;
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		assertEquals(actual.nombre, esq.nombre);
+	}
 }

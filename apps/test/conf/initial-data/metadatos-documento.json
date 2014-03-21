@@ -1,0 +1,83 @@
+{"metadatos documento":[
+    {
+        "tipoDocumento": "fs://base/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD99"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://solicitud/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD14"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://justificanteRegistro/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD09"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://solicitud/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD14"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://solicitudaportacion/v02",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD17"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://aportacionregistro/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD09"
+                            }
+                        ]
+    },    
+    {
+        "tipoDocumento": "fs://desestimiento/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD06"
+                            }
+                        ]
+    },
+    {
+        "tipoDocumento": "fs://justificanteregistro/v02",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD09"
+                            }
+                        ]
+    },   
+    {
+        "tipoDocumento": "fs://prefijojustificantepdf/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Tipo documental",
+                                "valor":  "TD16"
+                            }
+                        ]
+    }     
+]}

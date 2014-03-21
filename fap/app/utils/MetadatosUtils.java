@@ -16,6 +16,7 @@ import models.EsquemaMetadato;
 import models.Metadato;
 import models.MetadatoTipoPatron;
 import models.MetadatoTipoTabla;
+import models.MetadatosDocumento;
 
 public class MetadatosUtils {
 	
@@ -71,6 +72,42 @@ public class MetadatosUtils {
 			esquemaMetadato = gParser.fromJson(elemento, EsquemaMetadato.class);
 			esquemaMetadato.save();
 			Logger.info("Nuevo metadato: " + esquemaMetadato.nombre);
+		}
+	}
+	
+	// Lectura de los metadatos asociados a los tipos de documento desde el JSON
+	public static void metadatosFromJsonFile(String path){
+		FileReader metadatos;
+	
+		path = (path != null) ? path : "conf/initial-data/metadatos-documento.json";
+		try {
+			metadatos = new FileReader(path);
+			JsonReader jsonReader = new JsonReader(metadatos);
+			metadatosFromJson(jsonReader);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.error("Excepción al actualizar la lista de metadatos. Fichero no encontrado");
+		}
+	}
+	
+	// Procesamos el fichero JSon con la lista de metadatos asociados y lo validamos contra el esquema de metadatos del Gobierno
+	public static void metadatosFromJson(JsonReader jsonReader){
+		MetadatosDocumento metadatosDocumento = new MetadatosDocumento();
+		//Metadato metadatos = new Metadato();
+		
+		JsonParser parser = new JsonParser();
+		JsonElement jelement = parser.parse(jsonReader).
+				getAsJsonObject().get("metadatos documento");
+		JsonArray jArray = jelement.getAsJsonArray();
+		Gson gParser = new Gson();
+		for(JsonElement elemento: jArray){
+			metadatosDocumento = gParser.fromJson(elemento, MetadatosDocumento.class);
+			Logger.info("Nuevo tipo de documento con metadatos: "+metadatosDocumento.tipoDocumento);
+			// TODO: Validar metadatos antes de guardar
+			metadatosDocumento.save();
+		//	Logger.info("Lista de metadatos: "+metadatosDocumento.listaMetadatos.toString());
+		
 		}
 	}
 

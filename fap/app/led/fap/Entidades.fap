@@ -862,6 +862,13 @@ Entidad EsquemaMetadato {
     String automatizable
 }
 
+// Entidad para mantener los metadatos asociados a los documentos
+Entidad MetadatosDocumento {    
+    // Tipo de documento al que hacen referencia los metadatos. 
+    String tipoDocumento default="ALL"   // Si se parsea el JSON y no está presente, son metadatos comunes a todos los tipos de documentos
+    OneToMany Metadato listaMetadatos                                      
+}
+
 
 // Metadatos de los tipos de documentos. Hecho en principio para parsear de un JSON
 Entidad Metadatos {    

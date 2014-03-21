@@ -1,7 +1,7 @@
 {
    "esquema metadatos":[
       {
-         "nombre":"Versión NTI",
+         "nombre":"Version NTI",
          "definicion":"URI del Identificador normalizado de la versión de la Norma Técnica de Interoperabilidad de documento electrónico conforme a la cual se estructura el expediente",
          "obligatoriedad":"obligatorio",
          "tipoDeDato":"texto",
@@ -19,7 +19,7 @@
          "automatizable":"no"
       },
       {
-         "nombre":"Descripción",
+         "nombre":"Descripcion",
          "definicion":"Información adicional en texto libre relativa a un documento",
          "obligatoriedad":"opcional",
          "tipoDeDato":"texto",
@@ -33,7 +33,7 @@
          "obligatoriedad":"obligatorio",
          "tipoDeDato":"texto",
          "patron":[
-            "ES_<Órgano>_<AAAA>_<ID_específico>"
+            "ES_\\w*_\\d{4}_\\w*"
          ],
          "repeticion":"unico",
          "comentario":"Codificación del Identificador del documento. Ver detalles en BOC 213/2013",
@@ -41,7 +41,7 @@
          "automatizable":"si"
       },
       {
-         "nombre":"Órgano",
+         "nombre":"Organo",
          "definicion":"Identificador normalizado de la administración generadora del documento o que realiza la captura del mismo",
          "obligatoriedad":"obligatorio",
          "tipoDeDato":"texto",
@@ -56,7 +56,7 @@
          "obligatoriedad":"obligatorio",
          "tipoDeDato":"texto",
          "patron":[
-            "AAAAMMDD T HH:MM:SS formato ISO 8601"
+            "[0-9]{4}[0,1][0-2][0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]"
          ],
          "repeticion":"unico",
          "equivalencia":"e-EMGDE 4,1",
@@ -82,7 +82,7 @@
          "automatizable":"si"
       },
       {
-         "nombre":"Sensibilidad de datos de carácter personal",
+         "nombre":"Sensibilidad de datos de caracter personal",
          "definicion":"Término normalizado de acuero con los niveles de clasificación de la Ley Órganica 15/1999, de 13 de dicimebre, de Protección de Datos de Carácter Personal y normativa de desarollo",
          "obligatoriedad":"condicional",
          "tipoDeDato":"tabla codificada",
@@ -105,7 +105,7 @@
          "automatizable":"no"
       },
       {
-         "nombre":"Clasificación de acceso",
+         "nombre":"Clasificacion de acceso",
          "definicion":"Término normalizado que denota el nivel de seguridad del sistema de informaicón que genera el documento de conformidad con los criterios del Esquema Nacional de Seguridad (ENS)",
          "obligatoriedad":"condicional",
          "tipoDeDato":"tabla codificada",
@@ -128,7 +128,7 @@
          "automatizable":"si"
       },
       {
-         "nombre":"Verificación de integridad",
+         "nombre":"Verificacion de integridad",
          "definicion":"HASH del documento",
          "obligatoriedad":"condicional",
          "tipoDeDato":"texto",
@@ -224,7 +224,7 @@
             },
             {
                "clave":"TD21",
-               "valor":"Índice"
+               "valor":"�?ndice"
             },
             {
                "clave":"TD99",
@@ -236,7 +236,7 @@
          "automatizable":"si"
       },
       {
-         "nombre":"Estado de elaboración",
+         "nombre":"Estado de elaboracion",
          "definicion":"Indica la naturaleza del documento. Si es copia, este metadato indica también si se ha realizado una digitalización o conversión de formato en el proceso de generación",
          "obligatoriedad":"obligatorio",
          "tipoDeDato":"texto",
@@ -273,7 +273,7 @@
          "obligatoriedad":"opcional",
          "tipoDeDato":"texto",
          "patron":[
-            "ES_<Órgano>_<AAAA>_<ID_específico>"
+            "ES_\\w*_\\d{4}_\\w*"
          ],
          "repeticion":"unico",
          "equivalencia":"e-EMGDE 2.1 - Identificador. Secuencia Identificador",
@@ -347,12 +347,12 @@
          "automatizable":"si"
       },
       {
-         "nombre":"Definición generación CSV",
+         "nombre":"Definicion generación CSV",
          "definicion":"Referencia a la Orden, Resolución o documento que define la creación del CSV correspondiente",
          "obligatoriedad":"opcional",
          "tipoDeDato":"texto",
          "patron":[
-            "BOC:BOC-[X]-[Año]-[Número]"
+            "BOC:BOC-\\w+-[0-9]{4}-[0-9]+"
          ],
          "repeticion":"multiple",
          "equivalencia":"e-EMGDE ",
@@ -364,9 +364,9 @@
          "obligatoriedad":"condicional",
          "tipoDeDato":"texto",
          "patron":[
-            "Si es un registro de entrada o de salida: [Tipo de registro]_[Número de registro general]_[Centro directivo]_[Número de centro directivo]_[Fecha y hora]",
-            "Si es una comunicación interna: RI_0_[Centro directivo]_[Número dentro de centro directivo]_[Fecha y hora]]",
-            "Si es una orden, resolución o certificado: [Tipo de registro]_[nº de orden]_[Año]_[Fecha y hora]. Fecha y hora en formato ISO. En el caso de múltiples registros, los valores se separarán mediante una coma (,)"
+            "[E|S|RI|RO|RR|RC]_\\w*_\\w*_\\w*_\\w*_\\d*",
+            "RI_0_\\w*_\\w*_\\d*",
+            "[E|S|RI|RO|RR|RC]_\\w*_\\d{4}_\\d*"
          ],
          "repeticion":"multiple",
          "comentario":"Depende del tipo de registro según la siguiente tabla. E: Registro de entrada; S: Registro de salida; RI: Comunicaciones internas; RO: Registro de ordenes; RR: Registro de resoluciones; RC: Registro de certificados. Incluye datos de la oficina de registro, número de registro y fecha y hora",

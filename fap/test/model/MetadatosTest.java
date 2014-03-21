@@ -272,4 +272,83 @@ public class MetadatosTest extends UnitTest{
 		assertFalse(actual.valor.equals(nuevoValorNoValido));
 		assertEquals(actual.valor, nuevoValorValido);
 	}
+
+	@Test
+	public void esValidoPatron() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.longitud = null;
+		esq.patron = new ArrayList<String>();
+		String nuevoPatron = "\\w\\w\\w@\\[ejemplo\\].*";
+		esq.patron.add(nuevoPatron);
+		esq.save();
+		
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		assertThat(actual, is(instanceOf(MetadatoTipoPatron.class)));
+		
+		String nuevoValor = "123@[ejemplo]"; 
+		assertThat(nuevoValor.matches(nuevoPatron), is(true));
+		
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(true));
+	}
+	
+	@Test
+	public void esValidoPatronConVariosPatrones() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.longitud = null;
+		esq.patron = new ArrayList<String>();
+		String nuevoPatron = "\\w\\w\\w@\\[ejemplo\\].*";
+		esq.patron.add(nuevoPatron);
+		nuevoPatron = "OtroPatron\\d*";
+		esq.patron.add(nuevoPatron);
+		nuevoPatron = "1234\\w*4321";
+		esq.patron.add(nuevoPatron);
+		esq.save();
+		
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		assertThat(actual, is(instanceOf(MetadatoTipoPatron.class)));
+		
+		String nuevoValor = "1234ejemplo4321"; 
+		assertThat(nuevoValor.matches(nuevoPatron), is(true));
+		actual.valor = nuevoValor;
+		
+		assertThat(actual.valor, is(equalTo(nuevoValor)));
+		assertThat(actual.esValido(), is(true));
+	}
+	
+	@Test
+	public void noEsValidoPatron() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.patron = new ArrayList<String>();
+		String nuevoPatron = "\\w*";
+		esq.patron.add(nuevoPatron);
+		esq.save();
+		
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		assertThat(actual, is(instanceOf(MetadatoTipoPatron.class)));
+		
+		String nuevoValor = "12345@@"; 
+		assertThat(nuevoValor.matches(nuevoPatron), is(false));
+		
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(false));
+	}
+	
+	@Test
+	public void esValidoPatronNull() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "texto";
+		esq.patron = new ArrayList<String>();
+		esq.save();
+		
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		assertThat(actual, is(instanceOf(MetadatoTipoPatron.class)));
+		
+		String nuevoValor = "12345"; 
+		actual.valor = nuevoValor;
+		assertThat(actual.esValido(), is(true));
+	}
 }

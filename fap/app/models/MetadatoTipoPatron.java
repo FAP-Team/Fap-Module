@@ -29,6 +29,22 @@ public class MetadatoTipoPatron extends Metadato {
 	}
 
 	// === MANUAL REGION START ===
+	@Override
+	public boolean esValido() {
+		if(!super.esValido()) {
+			return false;
+		}
+		List<String> patrones = EsquemaMetadato.get(nombre).patron;
+		if ((patrones == null) || (patrones.isEmpty())) {
+			return true;
+		}
+		for(String patron : patrones) {
+			if (valor.matches(patron)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// === MANUAL REGION END ===
 

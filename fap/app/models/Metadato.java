@@ -32,6 +32,15 @@ public class Metadato extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+	
+	@Override
+	public <T extends play.db.jpa.JPABase> T save() {
+		if (esValido())
+			return super.save();
+		else  {
+			throw new PersistenceException("Metadato no válido");
+		}
+	}
 
 	public boolean esUnico() {
 		return EsquemaMetadato.esUnico(this.nombre);
@@ -47,7 +56,12 @@ public class Metadato extends FapModel {
 			return false;
 		
 		int longitud = Integer.MAX_VALUE;
-		String longitudString = EsquemaMetadato.get(nombre).longitud;
+		EsquemaMetadato esq = EsquemaMetadato.get(nombre);
+		if (esq == null) {
+			return false;
+		}
+		
+		String longitudString = esq.longitud;
 		
 		if (longitudString == null) {
 			return true;

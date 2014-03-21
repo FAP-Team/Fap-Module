@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import models.EsquemaMetadato;
 import models.Metadato;
 import models.MetadatoTipoPatron;
@@ -233,5 +235,41 @@ public class MetadatosTest extends UnitTest{
 		expectedEsquema.save();
 		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(expectedEsquema.nombre);
 		assertThat(actual.esUnico(), is(false));
+	}
+		
+	@Test
+	public void saveTipoTablaValido() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "tabla codificada";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValor = esq.valores.get(0).clave; 
+		actual.valor = nuevoValor;
+		assertTrue(actual.esValido());
+		actual.save();
+		actual.refresh();
+		assertEquals(actual.valor, nuevoValor);
+	}
+	
+	@Test
+	public void saveTipoTablaNoValido() {
+		EsquemaMetadato esq = EsquemaMetadato.get(expectedEsquema.nombre);
+		esq.tipoDeDato = "tabla codificada";
+		esq.save();
+		Metadato actual = MetadatosUtils.SimpleFactory.getMetadato(esq.nombre);
+		String nuevoValorValido = esq.valores.get(0).clave;
+		actual.valor = nuevoValorValido;
+		actual.save();
+		assertEquals(actual.valor, nuevoValorValido);
+
+		String nuevoValorNoValido = "~~cadena~No~Valida~~"; 
+		actual.valor = nuevoValorNoValido;
+		assertFalse(actual.esValido());
+		try {
+			actual.save();
+		} catch (PersistenceException e){}
+		actual.refresh();
+		assertFalse(actual.valor.equals(nuevoValorNoValido));
+		assertEquals(actual.valor, nuevoValorValido);
 	}
 }

@@ -1,0 +1,146 @@
+h1. Metadatos
+
+h2. Introducción
+
+Los documentos que se adjuntan en el gestor documental pueden tener asociados una serie de metadatos que informan de las diferentes propiedades del documento, como puede ser el nombre, la fecha en que se subió, tipo documental, etc.
+
+En FAP la información de metadatos se almacena en la entidad Metadato, que tan solo almacena la clave (o nombre del metadato), y el valor asociado.
+
+h2. Esquema de metadatos
+
+Antes de poder asociar metadatos a los documentos debemos saber que tipos de metadatos vamos a utilizar en la aplicación. Para ello definiremos inicialmente un esquema de metadatos donde indicaremos qué metadatos son válidos e información como su definición, obligatoriedad, o el tipo de dato. Podremos definir también que valores son válidos para un metadato en concreto, bien a través de tabla codificada o bien a través de patrones (expresiones regulares), que nos indiquen si el valor del metadato es correcto.
+
+El esquema vendrá dado en un fichero Json que cada aplicación deberá implementar, aunque en la aplicación "Test" de ejemplo de FAP viene ya un ejemplo de este fichero que puede adaptarse a otras aplicaciones (@FAP-Module/apps/test/conf/app/initial-data/esquema-metadatos.json@).
+
+
+
+h3. Formato Json
+
+El fichero json contendrá incialmente un objeto "esquema metadatos" que contendrá a su vez un array de objetos metadato.
+Los objetos puedener tener los siguientes campos:
+* Nombre (@nombre@): el nombre del metadato que nos servirá también para relacionar el metadato con el esquema, por lo que es recomendable utilizar nombres cortos y sin caracteres extraños que den problemas de codificación.
+* Definición (@definicion@): una descripción del metadato.
+* Obligatoriedad (@obligatoriedad@): acepta los valores @si@ | @no@]. Indica si el documento ha de llevar obligatoriamente este metadato.
+* Tipo de dato (@tipoDeDato@): inicialmente acepta los valores [@texto@ | @tabla codificada@]. Lo normal es utilizar tipo texto a no ser que queramos limitar los valores válidos a un conjunto en concreto. Veremos más adelante como se pueden incluir nuevos tipos propios a la aplicación.
+* Patrón (@patron@): si utilizamos el tipo de dato texto podremos validar los valores según un patrón, por ejemplo, para comprobar que una fecha está en el formato correcto. Para definir los patrones se utilizan las expresiones regulares de Java, "aquí tienes más información":http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html.
+* Valores (@valores@): Si utilizamos un tipo de dato de tabla codificada, podremos definir aquí que valores son válidos. Se utiliza un array de objetos con @clave@ y @valor@. El metadato se asociará con la clave y el valor servirá para mostrarlo de manera legible.
+* Repetición (@repeticion@): acepta los valores [@unico@| @multiple@]. Indica si un metadato es único por documento o se puede repetir.
+* Equivalencia: (@equivalencia@): información relativa a equivalencia con otros metadatos, por ejemplo, según el Esquema Nacional de Interoperabilidad ("ENI":http://administracionelectronica.gob.es/pae_Home/pae_Estrategias/pae_Interoperabilidad_Inicio/pae_Normas_tecnicas_de_interoperabilidad.html#.Uyw_oIURcuQ ) y el _e-EMGDE_.
+* Automatizable (@automatizable@): Indica si el metadato se puede automatizar, como por ejemplo, la fecha de subida.
+
+h4. Ejemplo
+
+bc. {
+"esquema metadatos":[
+  {
+     "nombre":"Version NTI",
+     "definicion":"URI del Identificador normalizado de la versión de la Norma Técnica de Interoperabilidad de documento electrónico conforme a la cual se estructura el expediente",
+     "obligatoriedad":"obligatorio",
+     "tipoDeDato":"texto",
+     "repeticion":"unico",
+     "equivalencia":"e-EMGDE 2.1",
+     "automatizable":"si"
+  },
+  {
+     "nombre":"Identificador",
+     "definicion":"Identificador normalizado del documento",
+     "obligatoriedad":"obligatorio",
+     "tipoDeDato":"texto",
+     "patron":[
+        "ES_\\w*_\\d{4}_\\w*"
+     ],
+     "repeticion":"unico",
+     "comentario":"Codificación del Identificador del documento. Ver detalles en BOC 213/2013",
+     "equivalencia":"e-EMGDE 2.1",
+     "automatizable":"si"
+  },   
+  {
+     "nombre":"Origen",
+     "definicion":"Indica si el contenido del documento fue creado por un ciudadano o por una administración",
+     "obligatoriedad":"obligatorio",
+     "tipoDeDato":"tabla codificada",
+     "valores":[
+        {
+           "clave":"0",
+           "valor":"Ciudadano"
+        },
+        {
+           "clave":"1",
+           "valor":"Administración"
+        }
+     ],
+     "repeticion":"unico",
+     "equivalencia":"Interoperable según la NTI de Documento Electrónico",
+     "automatizable":"si"
+},
+
+h2. Tipos de metadatos
+
+Como hemos visto, la clase principal de metadatos es la entidad Metadato, que genera a su vez la clase _Metadato.java_. Ésta es la clase genérica con la que se trabajará, pero como pueden existir diferentes tipos de metadatos (texto, tabla, números,...), y para mejorar la adaptabilidad del módulo FAP, las distintas comprobaciones y funcionalidades propias de cada tipo de metadato se implementan en clases derivadas. La clase _Metadato.java_ queda, por lo tanto, a modo de Interfaz, y contiene la implementación de los métodos genéricos.
+
+Como ejemplo, para poder hacer las comprobaciones de los metadatos que sean tipo tabla codificada, existe una clase derivada de Metadato llamada @MetadatoTipoTabla@. En esta nueva clase se redefinen los métodos propios de este tipo de metadato, como la validación, en la que hay que comprobar que el valor del metadato sea uno de los indicados en el esquema inicial de metadatos.
+
+h3. Creando metadatos
+
+Al haber distintos tipos de metadatos (y sus correspondientes clases), una buena estrategia para la creación de metadatos es delegar en una clase diferente (factoría) que cree el metadato correcto según el tipo indicado en el esquema. Por ello se ha definido una nueva clase estática dentro del fichero _MetadatosUtils.java_. La clase @MetadatosUtils.SimpleFactory@ será la encargada de crear los nuevos metadatos en lugar de llamar al método @new Metadato()@.
+
+La factoría tiene el método @MetadatosUtils.SimpleFactory.get(nombre)@, que recibe como parámetro el nombre del metadato que queramos crear, por ejemplo, "tipo documental". Entonces se crea un nuevo metadato según el esquema indicado para "tipo documental" y se le asigna el nombre "tipo documental". De esta manera se hace mucho más sencilla la utilización de distintos tipos de metadatos y se abre la puerta a la extensión con nuevos tipos.
+
+!images/metadatos-diagrama-clases!
+
+h3. Extendiendo las clases de Metadatos
+
+Gracias a haber definido los tipos especiales de metadatos en clases derivadas y delegar en la factoría para la creación de metadatos, podemos definir en cualquier momento nuevos tipos con características concretas. Imaginemos que necesitamos un nuevo tipo de metadato que requiera ser numérico y comprendido entre dos cantidades.
+
+Lo primero que hay que hacer es definir una nueva entidad en nuestra aplicación que extienda de Metadato:
+
+bc. Entidad MetadatoTipoNumerico extends Metadato {}
+
+Al generar la aplicación (@play fap:generate@) tendremos la nueva clase Java generada (_MetadatoTipoNumerico.java_)y podremos realizar modificaciones en la parte manual de esta clase. Modificamos aquí los métodos que necesitemos, en nuestro ejemplo sobreescribir el método @esValido()@.
+
+bc.	// === MANUAL REGION START ===
+@Override
+public boolean esValido() {
+	int valor = Integer.parseInt(this.valor);
+	if ((valor > miValorMinimo) && (valor < miValorMaximo))
+		return true;
+	
+	return false;
+}
+// === MANUAL REGION END ===
+
+Ya tenemos nuestra clase. Ahora hay que poder obtener objetos de este tipo cuando lo necesitemos, utilizando la factoría como con el resto de metadatos. Modificamos el método @SimpleFactory.getMetadato()@ para añadir nuestro nuevo tipo:
+
+bc. public static class SimpleFactory {
+	public static Metadato getMetadato(String nombreEnEsquema) {
+	[...]		
+		if("tabla codificada".equals(esquema.tipoDeDato)) {
+			metadato = new MetadatoTipoTabla();
+		} else if(("texto".equals(esquema.tipoDeDato)) && (esquema.patron != null)) {
+			metadato = new MetadatoTipoPatron();
+		} else if("miNuevoNumerico".equals(esquema.tipoDeDato)) {
+			metadato = new MetadatoTipoNumerico();
+		}			
+	[...]
+	}
+}
+
+Si hemos seguido correctamente los pasos, ahora podremos definir en el esquema inicial un metadato con tipo de dato igual a @miNuevoNumerico@, y cada vez que le pidamos a la factoria este metadato obtendremos el tipo adecuado para poder hacer las comprobaciones.
+
+
+h2. Asociación de documentos y metadatos
+
+Se puede configurar FAP para que automáticamente asocie determinados metadatos a los documentos según su tipo. Por ejemplo, podemos tener un metadato _Origen_ que indique si el metadato lo genera el ciudadano o lo genera la administración, entonces podemos asociar un tipo de documento "Notificación" con el metadato "Origen" y el valor "administración" automáticamente.
+
+h3. Formato Json
+
+La configuración de estas asociaciones se realiza mediante un fichero tipo json con el siguiente formato:
+
+h4. Ejemplo
+
+h2. Metadatos manuales
+
+Además de los metadatos asociados a los documentos, que serán asignados automáticamente, podemos asignar otros metadatos de manera manual.
+
+
+h3. DSL metadatos

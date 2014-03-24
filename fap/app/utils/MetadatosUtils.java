@@ -3,6 +3,7 @@ package utils;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.List;
 
 import play.Logger;
 
@@ -12,10 +13,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.ListaMetadatos;
+
+import messages.Messages;
 import models.EsquemaMetadato;
 import models.Metadato;
+import models.MetadatoDocumento;
 import models.MetadatoTipoPatron;
 import models.MetadatoTipoTabla;
+import models.Metadatos;
 import models.MetadatosDocumento;
 
 public class MetadatosUtils {
@@ -94,8 +100,7 @@ public class MetadatosUtils {
 	// Procesamos el fichero JSon con la lista de metadatos asociados y lo validamos contra el esquema de metadatos del Gobierno
 	public static void metadatosFromJson(JsonReader jsonReader){
 		MetadatosDocumento metadatosDocumento = new MetadatosDocumento();
-		//Metadato metadatos = new Metadato();
-		
+				
 		JsonParser parser = new JsonParser();
 		JsonElement jelement = parser.parse(jsonReader).
 				getAsJsonObject().get("metadatos documento");
@@ -103,12 +108,39 @@ public class MetadatosUtils {
 		Gson gParser = new Gson();
 		for(JsonElement elemento: jArray){
 			metadatosDocumento = gParser.fromJson(elemento, MetadatosDocumento.class);
-			Logger.info("Nuevo tipo de documento con metadatos: "+metadatosDocumento.tipoDocumento);
 			// TODO: Validar metadatos antes de guardar
-			metadatosDocumento.save();
-		//	Logger.info("Lista de metadatos: "+metadatosDocumento.listaMetadatos.toString());
+			boolean metadatosValidos = validarMetadatos(metadatosDocumento);
+			if(metadatosValidos){
+				//metadatosDocumento.save();
+				Messages.ok("Metadatos actualizados correctamente para el tipo de documento "+metadatosDocumento.tipoDocumento);
+				
+				Messages.keep();
+				
+				Logger.info("Se han asociado correctamente los metadatos para el tipo de documento: "+metadatosDocumento.tipoDocumento);
+			}else {
+				
+				Messages.error("No se han podido actualizar los metadatos");
+				
+				Messages.keep();
+				
+				Logger.error("Tipo de documento con metadatos erroneos "+metadatosDocumento.tipoDocumento);
+			}
 		
 		}
 	}
 
+	// Metodo que valida los metadatos asociados al documento segun el esquema
+	public static boolean validarMetadatos(MetadatosDocumento metadatosDocumento){
+		// Lista con los metadatos asociados al tipo de documento para su validacion
+		List<Metadato> listaMetadatos = metadatosDocumento.listaMetadatos;
+		// Lista con los metadatos cargados desde el esquema
+		for(Metadato metadato : listaMetadatos){
+			Logger.info("Metadato: "+metadato.nombre+", Valor: "+metadato.valor);
+			if(!metadato.esValido()){
+				Logger.error("Metadato NO valido: "+metadato.nombre+ ", con valor: "+metadato.valor);
+				return false;
+			}
+		}		
+		return true;
+	}
 }

@@ -64,6 +64,7 @@ public class EsquemaMetadato extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+
 	public static EsquemaMetadato get(String nombre) {
 		EsquemaMetadato esq = find("byNombre", nombre).first();
 		return esq;
@@ -97,6 +98,16 @@ public class EsquemaMetadato extends FapModel {
 		return esq.esUnico();
 	}
 
+
+	public static void deleteAllEsquema() {
+		// TODO: Comprobar como borrar correctamente los campos para evitar que queden nulos en al BBDD
+		List<EsquemaMetadato> listaEsquema = EsquemaMetadato.findAll();
+		for (EsquemaMetadato esquema : listaEsquema) {
+			esquema.patron = null;
+			esquema.valores = null;
+			esquema.delete();
+		}
+	}
 	// === MANUAL REGION END ===
 
 }

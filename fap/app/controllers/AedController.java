@@ -170,12 +170,10 @@ public class AedController extends AedControllerGen {
 //		AedController.actualizarMetadatosRender();
 //	}
     public static void actualizarMetadatos(String actualizarMetadatos) {
-		MetadatosDocumento.deleteAllMetadatos();
+		//MetadatosDocumento.deleteAllMetadatos();
 		
 		MetadatosUtils.metadatosFromJsonFile(null);
-		Messages.ok("Metadatos actualizados correctamente");
 		
-		Messages.keep();
 		AedController.actualizarMetadatosRender();
 		
 	}

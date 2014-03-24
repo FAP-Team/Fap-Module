@@ -5,7 +5,76 @@
                             {
                                 "nombre": "Tipo documental",
                                 "valor":  "TD99"
+                            },
+                            {
+                                "nombre": "Version NTI",
+                                "valor":  "http://administracionelectronica.gob.es/ENI/XSD/v1.0/expediente-e"
+                            },
+                            {
+                                "nombre": "Nombre",
+                                "valor": "Documento de prueba" 
+                            },
+                             {
+                                "nombre": "Descripción",
+                                "valor": "Estoy probando a meter metadatos en los documentos para ver si valida o no segun el esquema" 
+                            },
+                             {
+                                "nombre": "Identificador",
+                                "valor": "ES_E0010207_2014_DOC_MPR0000000000000000000000000010207" 
+                            },
+                              {
+                                "nombre": "Órgano",
+                                "valor": "E0010207" 
+                            },
+                               {
+                                "nombre": "Fecha de captura",
+                                "valor": "20140325T8:11:41" 
+                            },
+                            {
+                                "nombre": "Origen",
+                                "valor": "0" 
+                            },
+                            {
+                                "nombre": "Sensibilidad de datos de carácter personal",
+                                "valor": "1" 
+                            },
+                            {
+                                "nombre": "Clasificación de acceso",
+                                "valor": "1" 
+                            },
+                            {
+                                "nombre": "Verificación de integridad",
+                                "valor": "0158ab24571" 
+                            },
+                               {
+                                "nombre": "Estado de elaboración",
+                                "valor": "EE01" 
+                            },
+                              {
+                                "nombre": "Identificador del documento origen",
+                                "valor": "ES_E0010207_2014_DOC_MPR0000000000000000000000000010207" 
+                            },
+                            {
+                                "nombre": "Nombre del formato",
+                                "valor": "Formato" 
+                            },
+                            {
+                                "nombre": "Firma",
+                                "valor": "154947962365a87ea54b" 
+                            },
+                             {
+                                "nombre": "Valor de CSV",
+                                "valor": "CSV" 
+                            }, 
+                             {
+                                "nombre": "Definición generación CSV",
+                                "valor": "BOC:BOC-10-2014-215" 
+                            }, 
+                             {
+                                "nombre": "Registro",
+                                "valor": "E_254_94_11_20140325T08:30:15" 
                             }
+                                                  
                         ]
     },
     {

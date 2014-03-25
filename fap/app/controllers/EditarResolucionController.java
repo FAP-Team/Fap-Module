@@ -13,6 +13,7 @@ import messages.Messages;
 import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
+import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 import models.SolicitudGenerica;
@@ -684,11 +685,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		tables.TableRenderResponse<LineaResolucionFAP> response = new tables.TableRenderResponse<LineaResolucionFAP>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 		
 		for (LineaResolucionFAP row:rows) {
+			if (row.registro == null) {
+				row.registro = new Registro();
+				row.save();
+			}
 			if ((row.registro.oficial.uri == null) || (row.registro.fasesRegistro.firmada == null) || (row.registro.fasesRegistro.firmada == false)){
 				flag = false;
 				break;
 			}
-		}	
+		}
 		if (!flag) {
 			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado"));
 		}

@@ -1078,7 +1078,7 @@ Permiso notificarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada", "publicada")
-		and resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")
+		and ((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")))
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
@@ -1109,7 +1109,7 @@ Permiso permisoEnviarOficiosRemisionPortafirma {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estadoNotificacion in ("noNotificada")
+	   ((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada")))
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all
@@ -1149,7 +1149,7 @@ Permiso permisoOficiosRemisionProcesoPortaFirma {
 	vars
 		ResolucionFAP resolucion
 	when
-		resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma")
+		((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma")))
 		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
 	return
 		all

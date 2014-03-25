@@ -1145,13 +1145,12 @@ public class ResolucionBase {
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
-
 			if (!linea.generadoOficio){
-			
-				try  {
-					
-					// Se genera el documento oficio de remisión
+				try {
 					File fileOficioRemision = generarDocumentoOficioRemision(linea);
+					if (linea.registro == null) {
+						linea.registro = new Registro();
+					}
 					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
 					linea.generadoOficio = true;
 					linea.save();

@@ -805,6 +805,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			// Se actualizan las propiedades del documento
 			dbNotificacion.documentoRespondida.uri = uriDoc;
+			dbNotificacion.documentoRespondida.clasificado = true;
 			dbNotificacion.documentoRespondida.save();
 			
 			// Se cambia el estado de la notificación

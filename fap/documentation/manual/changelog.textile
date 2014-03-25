@@ -11,6 +11,9 @@ h3. Versión 2.4RC5
 * Reestructuración de las implementaciones del servicio de Portafirma (Portafirma Gobcan, Portafirma ACIISI) (Pendiente de corregir detalles).
 * Incorporación de la librería de certificados
 * Actualización de la librería de notificaciones (se ha cambiado el nombre del paquete de esta librería)
+* Properties de proxy añadidas con valores por defecto
+* Se pone a true el campo clasificado del documento de notificación marcada como respondida
+* Se comprueba que el documento oficio de remisión esté creado en la línea de resolución y se modifican permisos de oficios de remisión.
 
 h3. Versión 2.4RC4
 

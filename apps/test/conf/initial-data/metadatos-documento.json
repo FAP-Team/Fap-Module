@@ -4,7 +4,7 @@
         "listaMetadatos": [
                             {
                                 "nombre": "Tipo documental",
-                                "valor":  "TD99"
+                                "valor":  "TD01"
                             },
                             {
                                 "nombre": "Version NTI",
@@ -28,7 +28,7 @@
                             },
                                {
                                 "nombre": "Fecha de captura",
-                                "valor": "20140325T8:11:41" 
+                                "valor": "20140325T08:11:41" 
                             },
                             {
                                 "nombre": "Origen",
@@ -72,7 +72,7 @@
                             }, 
                              {
                                 "nombre": "Registro",
-                                "valor": "E_254_94_11_20140325T08:30:15" 
+                                "valor": "E_aaaa_gtg21_a_asaswq_20140325" 
                             }
                                                   
                         ]

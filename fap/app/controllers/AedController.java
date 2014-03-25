@@ -129,48 +129,9 @@ public class AedController extends AedControllerGen {
     	
     	AedControllerGen.actualizarEsquemaMetadatosRender();
     }
-    /**
-     * Borra todos los metadatos de la base de datos, e inserta los presentes en metadatos.json
-     * 
-     * @param actualizarMetadatos
-     */
-//	public static void actualizarMetadatos(String actualizarMetadatos) {
-//		Metadatos.deleteAllMetadatos();
-//		
-//		Type type;
-//		
-//		if ( new File(Play.applicationPath+"/conf/initial-data/metadatos.json").exists() ) {
-//			type = new TypeToken<ArrayList<Metadatos>>(){}.getType();
-//			List<Metadatos> listaMetadatos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/metadatos.json", type);
-//			// Averiguamos si hay algún conjunto de metadatos común para todos los tipos de documentos 
-//			// (No está presente en el json la variable tipoDocumento, pero la entidad tiene el valor por defecto "ALL")
-//			Metadatos metadatosComunes = new Metadatos();
-//			for (Metadatos metadatos : listaMetadatos) {
-//				if (metadatos.tipoDocumento.equals("ALL"))
-//					metadatosComunes = metadatos;
-//			}	
-//			listaMetadatos.remove(metadatosComunes);
-//
-//			for (Metadatos metadatos : listaMetadatos) {
-//				for (Metadato metadato : metadatosComunes.listaMetadatos) {
-//					Metadato nuevoMetadatoComun = new Metadato();
-//					nuevoMetadatoComun.nombre = metadato.nombre;
-//					nuevoMetadatoComun.valor = metadato.valor;
-//					metadatos.listaMetadatos.add(nuevoMetadatoComun);
-//				}
-//				metadatos.save();	
-//			}
-//			Messages.ok("Metadatos actualizados correctamente");
-//		} 
-//		else {
-//			Messages.error("Los metadatos no se han podido actualizar correctamente");
-//			play.Logger.info("No se puede leer el fichero que contiene los metadatos de los tipos de documentos (/conf/initial-data/metadatos.json)");
-//		}
-//		Messages.keep();
-//		AedController.actualizarMetadatosRender();
-//	}
+  
     public static void actualizarMetadatos(String actualizarMetadatos) {
-		//MetadatosDocumento.deleteAllMetadatos();
+	
 		
 		MetadatosUtils.metadatosFromJsonFile(null);
 		

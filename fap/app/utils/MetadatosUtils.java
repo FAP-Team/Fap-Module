@@ -18,7 +18,6 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.ListaMetada
 import messages.Messages;
 import models.EsquemaMetadato;
 import models.Metadato;
-import models.MetadatoDocumento;
 import models.MetadatoTipoPatron;
 import models.MetadatoTipoTabla;
 import models.Metadatos;
@@ -136,7 +135,9 @@ public class MetadatosUtils {
 		// Lista con los metadatos cargados desde el esquema
 		for(Metadato metadato : listaMetadatos){
 			Logger.info("Metadato: "+metadato.nombre+", Valor: "+metadato.valor);
-			if(!metadato.esValido()){
+			Metadato temp = SimpleFactory.getMetadato(metadato.nombre);
+			temp.valor = metadato.valor;
+			if(!temp.esValido()){
 				Logger.error("Metadato NO valido: "+metadato.nombre+ ", con valor: "+metadato.valor);
 				return false;
 			}

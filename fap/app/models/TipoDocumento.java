@@ -34,7 +34,18 @@ public class TipoDocumento extends FapModel {
 
 	public String cardinalidad;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tipodocumento_definicionmetadatos")
+	public List<DefinicionMetadatos> definicionMetadatos;
+
+	public TipoDocumento() {
+		init();
+	}
+
 	public void init() {
+
+		if (definicionMetadatos == null)
+			definicionMetadatos = new ArrayList<DefinicionMetadatos>();
 
 		postInit();
 	}

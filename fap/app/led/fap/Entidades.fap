@@ -589,6 +589,7 @@ Entidad TipoDocumento {
 	String obligatoriedad
 	String tramitePertenece
 	String cardinalidad
+	OneToMany DefinicionMetadatos definicionMetadatos
 }
 
 Entidad Tramite {
@@ -853,7 +854,12 @@ Entidad Metadato {
     String valor
 }
 
-
+Entidad DefinicionMetadatos{
+    String nombre
+    String descripcion
+    String autogenerado
+    OneToMany Metadato listaMetadatos
+}
 
 Entidad CargarTablaDeTablas extends Singleton{
 	Boolean checkNoCargarMunicipiosActualizando

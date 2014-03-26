@@ -24,6 +24,8 @@ import play.test.Fixtures;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalServiceException;
+import services.TiposDocumentosService;
+import utils.TiposDocumentosWSUtils;
 import utils.WSUtils;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
@@ -58,11 +60,11 @@ public class ProcedimientosService {
 	
 	private final PropertyPlaceholder propertyPlaceholder;
 
-	private final TiposDocumentosService tiposDocumentosService;
+	private final AedTiposDocumentosServiceImpl tiposDocumentosService;
 	
 	public ProcedimientosService(PropertyPlaceholder propertyPlaceholder, TiposDocumentosService tiposDocumentosService) {
 	    this.propertyPlaceholder = propertyPlaceholder;
-        this.tiposDocumentosService = tiposDocumentosService;
+        this.tiposDocumentosService = (AedTiposDocumentosServiceImpl) tiposDocumentosService;
         URL wsdlProcedimientosURL = Aed.class.getClassLoader().getResource ("wsdl/procedimientos/procedimientos.wsdl");
         procedimientosPort = new Procedimientos(wsdlProcedimientosURL).getProcedimientos();
         WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
@@ -94,8 +96,7 @@ public class ProcedimientosService {
 			tipoDocumentoDb.tramitePertenece = uriTramite;
 			
 			//Consulta al WS de Tipos de Documentos la descripción
-			TipoDocumento td = tiposDocumentosService.getTipoDocumento(tipoDocumento.getUri());
-			tipoDocumentoDb.nombre = td.getDescripcion();	
+			models.TipoDocumento td = tiposDocumentosService.getTipoDocumento(tipoDocumento.getUri());
 			
 			result.add(tipoDocumentoDb);
 			setCodigosRequerimientosTipoDocumento(tipoDocumento.getUri(), uriTramite);
@@ -196,8 +197,9 @@ public class ProcedimientosService {
 		List<TipoDocumentoEnTramite> listaCiudadanos = getTiposDocumentosAportadosCiudadano(tramite);
 		for (TipoDocumentoEnTramite tipoDoc : listaCiudadanos) {
 			try {
-				TipoDocumento tipoDocumento = tiposDocumentosService.getTipoDocumento(tipoDoc.getUri());
-				tiposDocumentos.add(tipoDocumento);
+				models.TipoDocumento tipoDocumento = tiposDocumentosService.getTipoDocumento(tipoDoc.getUri());
+				TipoDocumento tipoGob = TiposDocumentosWSUtils.convertTipoFap2Aed(tipoDocumento);
+				tiposDocumentos.add(tipoGob);
 			} catch (GestorDocumentalServiceException e) {
 				play.Logger.error("No se han podido obtener el tipo de Documento a partir de su uri: "+e.getMessage());
 				Messages.error("No se han podido obtener el tipo de Documento a partir de su uri");

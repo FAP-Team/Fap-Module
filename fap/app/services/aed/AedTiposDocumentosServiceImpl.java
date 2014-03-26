@@ -6,8 +6,14 @@ import java.util.List;
 
 import javassist.NotFoundException;
 
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebParam.Mode;
+import javax.jws.WebResult;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Holder;
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -29,16 +35,22 @@ import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalServiceException;
 import tags.StringUtils;
+import utils.TiposDocumentosWSUtils;
 import utils.WSUtils;
+
+import services.TiposDocumentosService;
 
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentos;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosInterface;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.DefinicionMetadato;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.Grupo;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.GrupoTipoDocumento;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.ListaGrupo;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.ListaGrupoTipoDocumento;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.ListaTipoDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.Procedimientos;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
@@ -63,13 +75,13 @@ import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
  * a la property
  * 
  */
-public class TiposDocumentosService {
+public class AedTiposDocumentosServiceImpl implements TiposDocumentosService {
 
 	private final PropertyPlaceholder propertyPlaceholder;
 	
 	private final TiposDocumentosInterface tiposPort;
 	
-	public TiposDocumentosService(PropertyPlaceholder propertyPlaceholder){
+	public AedTiposDocumentosServiceImpl(PropertyPlaceholder propertyPlaceholder){
 	    this.propertyPlaceholder = propertyPlaceholder;
         URL wsdlTipoURL = Aed.class.getClassLoader().getResource ("wsdl/tipos-documentos/tipos-documentos.wsdl");
         tiposPort = new TiposDocumentos(wsdlTipoURL).getTiposDocumentos();
@@ -84,15 +96,38 @@ public class TiposDocumentosService {
 	protected TiposDocumentosInterface getTiposPort(){
 		return this.tiposPort;
 	}
-		
-	public TipoDocumento getTipoDocumento(String uri) throws GestorDocumentalServiceException {
+	
+	
+	public models.TipoDocumento getTipoDocumento(String uri) throws GestorDocumentalServiceException {
 		if(uri == null)
 			throw new NullPointerException();
 		try {
-		    return tiposPort.obtenerTipoDocumento(uri);
+		    TipoDocumento tipoAed = tiposPort.obtenerTipoDocumento(uri);
+		    return TiposDocumentosWSUtils.convertTipoAed2TipoFap(tipoAed);
+		    
 		}catch(TiposDocumentosExcepcion e){
+		    play.Logger.error("Error recuperando el tipo de documento : " + e.getFaultInfo().getDescripcion(), e);
 		    throw new GestorDocumentalServiceException("Error recuperando el tipo de documento : " + e.getFaultInfo().getDescripcion(), e);
 		}
+	}
+	
+	public List<DefinicionMetadato> getDefinicionesMetadatos(String uri) throws NullPointerException{
+		List<DefinicionMetadato> listaToRet;
+		models.TipoDocumento tipoFap = new models.TipoDocumento();
+		if(uri == null) {
+			throw new NullPointerException("La uri no puede ser null"); 
+		}
+		try {
+			tipoFap = getTipoDocumento(uri);
+		} catch (GestorDocumentalServiceException e) {
+			play.Logger.error("Excepción al obtener las definiciones de Metadatos");
+			e.printStackTrace();
+		}
+		TipoDocumento tipo = TiposDocumentosWSUtils.convertTipoFap2Aed(tipoFap);
+		listaToRet = tipo.getDefinicionesMetadatos().getDefinicionMetadato();
+		return listaToRet; 
+		
+		
 	}
 
 }

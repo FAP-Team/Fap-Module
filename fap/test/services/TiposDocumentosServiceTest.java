@@ -15,7 +15,7 @@ import es.gobcan.platino.servicios.registro.Asunto;
 import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
 import properties.PropertyPlaceholder;
-import services.aed.TiposDocumentosService;
+import services.aed.AedTiposDocumentosServiceImpl;
 import static org.junit.Assume.*;
 import static org.mockito.Mockito.*;
 @InjectSupport
@@ -48,7 +48,7 @@ public class TiposDocumentosServiceTest extends UnitTest {
 	@Test
 	public void getTipoDocumentoBase() throws Exception {		
 		String uriDocumentoBase = propertyPlaceholder.get("fap.aed.tiposdocumentos.base");
-		TipoDocumento documentoBase = tiposDocumentosService.getTipoDocumento(uriDocumentoBase);
+		models.TipoDocumento documentoBase = tiposDocumentosService.getTipoDocumento(uriDocumentoBase);
 		assertNotNull(documentoBase);
 	}
 	

@@ -95,7 +95,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	
 	private static final Logger log = Logger.getLogger(AedGestorDocumentalServiceImpl.class);
 
-    protected final TiposDocumentosService tiposDocumentos;
+    protected final AedTiposDocumentosServiceImpl tiposDocumentos;
 	
     @Inject
 	public AedGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
@@ -108,7 +108,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         WSUtils.configureEndPoint(aedPort, getEndPoint());
         PlatinoProxy.setProxy(aedPort, propertyPlaceholder);
               
-        tiposDocumentos = new TiposDocumentosService(propertyPlaceholder);
+        tiposDocumentos = new AedTiposDocumentosServiceImpl(propertyPlaceholder);
         procedimientosService = new ProcedimientosService(propertyPlaceholder, tiposDocumentos);
 	}
 

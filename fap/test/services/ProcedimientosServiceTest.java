@@ -23,7 +23,7 @@ import play.test.UnitTest;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.aed.ProcedimientosService;
-import services.aed.TiposDocumentosService;
+import services.aed.AedTiposDocumentosServiceImpl;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.dominio.Procedimiento;

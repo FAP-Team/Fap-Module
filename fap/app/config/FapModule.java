@@ -17,6 +17,7 @@ import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
 import services.TiposDocumentosService;
+import services.aed.AedTiposDocumentosServiceImpl;
 import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.VerificarDatosService;
 import services.filesystem.FileSystemConversor;
@@ -123,7 +124,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 
 	protected void tiposDocumentos() {
-		bindLazySingletonOnDev(TiposDocumentosService.class, FileSystemTiposDocumentosServiceImpl.class);
+		bindLazySingletonOnDev(TiposDocumentosService.class, AedTiposDocumentosServiceImpl.class);
 	}
 
 }

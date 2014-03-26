@@ -857,7 +857,7 @@ Entidad Metadato {
 Entidad DefinicionMetadatos{
     String nombre
     String descripcion
-    String autogenerado
+    boolean autogenerado
     OneToMany Metadato listaMetadatos
 }
 

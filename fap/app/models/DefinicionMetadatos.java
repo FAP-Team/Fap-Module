@@ -26,7 +26,7 @@ public class DefinicionMetadatos extends FapModel {
 
 	public String descripcion;
 
-	public String autogenerado;
+	public boolean autogenerado;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "definicionmetadatos_listametadatos")

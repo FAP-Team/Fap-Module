@@ -19,7 +19,7 @@ import services.aed.AedTiposDocumentosServiceImpl;
 import static org.junit.Assume.*;
 import static org.mockito.Mockito.*;
 @InjectSupport
-public class TiposDocumentosServiceTest extends UnitTest {
+public class AedTiposDocumentosServiceImplTest extends UnitTest {
 
     
 	@Inject

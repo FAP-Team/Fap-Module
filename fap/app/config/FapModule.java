@@ -16,6 +16,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
+import services.TiposDocumentosService;
 import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.VerificarDatosService;
 import services.filesystem.FileSystemConversor;
@@ -28,6 +29,7 @@ import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.filesystem.FileSystemTercerosServiceImpl;
+import services.filesystem.FileSystemTiposDocumentosServiceImpl;
 import services.filesystem.FileSystemVerificarDatosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
 import services.notificacion.NotificacionServiceImpl;
@@ -56,6 +58,7 @@ public class FapModule extends PlayAbstractModule {
 		comunicacionesInternas();
 		verificarDatos();
 //		conversor();
+		tiposDocumentos();
 	}
 	
 	protected void portafirma() {
@@ -117,6 +120,10 @@ public class FapModule extends PlayAbstractModule {
 
 	protected void propertyPlaceholder() {
 		bind(PropertyPlaceholder.class).toInstance(new PropertyPlaceholderImpl());
+	}
+
+	protected void tiposDocumentos() {
+		bindLazySingletonOnDev(TiposDocumentosService.class, FileSystemTiposDocumentosServiceImpl.class);
 	}
 
 }

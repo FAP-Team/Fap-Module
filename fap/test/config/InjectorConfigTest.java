@@ -9,7 +9,6 @@ import services.GestorDocumentalService;
 import services.FirmaService;
 import services.RegistroService;
 import services.aed.ProcedimientosService;
-import services.aed.TiposDocumentosService;
 
 import com.google.inject.Injector;
 

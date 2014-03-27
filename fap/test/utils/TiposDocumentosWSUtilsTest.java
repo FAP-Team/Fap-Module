@@ -1,11 +1,14 @@
 package utils;
 
+import models.DefinicionMetadatos;
+
 import org.junit.Test;
 import org.mockito.Mock;
 
 import static org.hamcrest.CoreMatchers.*;
 
 import play.test.UnitTest;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.DefinicionMetadato;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 
 public class TiposDocumentosWSUtilsTest extends UnitTest{
@@ -51,4 +54,17 @@ public class TiposDocumentosWSUtilsTest extends UnitTest{
 		assertThat(tipoAed.getUri(), is(equalTo(uriExpected)));
 	}
 
+	@Test
+	public void convertirDefinicionAed2FapCorrecta() {
+		DefinicionMetadato defAed = new DefinicionMetadato();
+		defAed.setDescripcion("Descripción");
+		defAed.setAutoGenerado(true);
+		defAed.setIdentificador("Nombre");
+		
+		DefinicionMetadatos defFap = TiposDocumentosWSUtils.convertDefinicionAed2Fap(defAed);
+		
+		assertThat(defFap.descripcion, is(equalTo(defAed.getDescripcion())));
+		assertThat(defFap.autogenerado, is(equalTo(defAed.isAutoGenerado())));
+		assertThat(defFap.nombre, is(equalTo(defAed.getIdentificador())));
+	}
 }

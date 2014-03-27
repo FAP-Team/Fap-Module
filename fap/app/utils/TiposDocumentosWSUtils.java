@@ -1,5 +1,7 @@
 package utils;
 
+import models.DefinicionMetadatos;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.DefinicionMetadato;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 
 public class TiposDocumentosWSUtils {
@@ -20,6 +22,14 @@ public class TiposDocumentosWSUtils {
 		tipoAed.setUri(tipoFap.uri);
 		tipoAed.setDescripcion(tipoFap.nombre);
 		return tipoAed;
+	}
+	
+	public static models.DefinicionMetadatos convertDefinicionAed2Fap(DefinicionMetadato defAed) {
+		DefinicionMetadatos defFap = new DefinicionMetadatos();
+		defFap.nombre = defAed.getIdentificador();
+		defFap.descripcion = defAed.getDescripcion();
+		defFap.autogenerado = defAed.isAutoGenerado();
+		return defFap;
 	}
 
 }

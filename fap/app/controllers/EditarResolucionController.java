@@ -228,7 +228,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void crearResolucion(Long id, List<Long> idsSeleccionados) {
 		if (idsSeleccionados == null) {
 			play.Logger.error("Se debe seleccionar un expediente");
-			Messages.error("Se debe  un expediente");
+			Messages.error("Se debe seleccionar un expediente");
 			Messages.keep();
 		} else if (idsSeleccionados.size() > 1) {
 			play.Logger.error("Se debe seleccionar sólo un expediente");

@@ -73,4 +73,44 @@ public class FileSystemTiposDocumentosServiceTest extends UnitTest {
 	}
 
 	
+	@Test(expected=NullPointerException.class)
+	public void getMetadatosUriNoPuedeSerNull() {
+		tiposDocumentosService.getDefinicionesMetadatos(null);
+	}
+
+	
+	@Test
+	public void getDefinicionesMetadatosExistentes() {
+		List<DefinicionMetadatos> listaExpected = new ArrayList<DefinicionMetadatos>();
+		for (int i = 0; i < 5; i++) {
+			DefinicionMetadatos df = new DefinicionMetadatos();
+			df.nombre = "" + i;
+			df.descripcion = "Descripción de " + i;
+			listaExpected.add(df);
+			df.save();
+		}
+		TipoDocumento td = new TipoDocumento();
+		td.uri = uriExpected;
+		td.definicionMetadatos = listaExpected;
+		td.save();
+		
+		List<DefinicionMetadatos> actual = tiposDocumentosService.getDefinicionesMetadatos(uriExpected);
+		for(int i = 0; i < listaExpected.size();  i++) {
+			assertThat(actual.get(i).nombre, is(equalTo(listaExpected.get(i).nombre)));
+		}
+	}
+	
+	@Test
+	public void getDefinicionesMetadatosNoTieneMetadatos() {
+		List<DefinicionMetadatos> listaExpected = new ArrayList<DefinicionMetadatos>();
+		TipoDocumento td = new TipoDocumento();
+		td.uri = uriExpected;
+		td.definicionMetadatos = listaExpected;
+		
+		List<DefinicionMetadatos> actual = tiposDocumentosService.getDefinicionesMetadatos(uriExpected);
+		assertThat(actual.isEmpty(), is(true));
+		assertThat(actual, is(equalTo(listaExpected)));
+		
+	}
+	
 }

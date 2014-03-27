@@ -22,6 +22,7 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 
 import messages.Messages;
+import models.DefinicionMetadatos;
 import models.ObligatoriedadDocumentos;
 import models.Quartz;
 import models.Singleton;
@@ -111,21 +112,25 @@ public class AedTiposDocumentosServiceImpl implements TiposDocumentosService {
 		}
 	}
 	
-	public List<DefinicionMetadato> getDefinicionesMetadatos(String uri) throws NullPointerException{
-		List<DefinicionMetadato> listaToRet;
-		models.TipoDocumento tipoFap = new models.TipoDocumento();
+	@Override
+	public List<models.DefinicionMetadatos> getDefinicionesMetadatos(String uri) {
+		List<DefinicionMetadato> listaAed = new ArrayList<DefinicionMetadato>();
+		TipoDocumento tipo;
 		if(uri == null) {
 			throw new NullPointerException("La uri no puede ser null"); 
 		}
 		try {
-			tipoFap = getTipoDocumento(uri);
-		} catch (GestorDocumentalServiceException e) {
-			play.Logger.error("Excepción al obtener las definiciones de Metadatos");
+			tipo = tiposPort.obtenerTipoDocumento(uri);
+			listaAed = tipo.getDefinicionesMetadatos().getDefinicionMetadato();
+		} catch (TiposDocumentosExcepcion e) {
+			play.Logger.error("Excepción al obtener el tipo de documento " + uri);
 			e.printStackTrace();
 		}
-		TipoDocumento tipo = TiposDocumentosWSUtils.convertTipoFap2Aed(tipoFap);
-		listaToRet = tipo.getDefinicionesMetadatos().getDefinicionMetadato();
-		return listaToRet; 
+		List<models.DefinicionMetadatos> listaToRet = new ArrayList<models.DefinicionMetadatos>();
+		for (DefinicionMetadato def : listaAed) {
+			listaToRet.add(TiposDocumentosWSUtils.convertDefinicionAed2Fap(def));
+		}
+		return listaToRet;
 		
 		
 	}

@@ -25,7 +25,8 @@
      seleccionable:'Crear Resolucion', 
      tipoContainer:'pagina', 
      urlSeleccionable:'EditarResolucionController.crearResolucion', 
-     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico()
+     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico(),
+     idP:resolucionFAP?.id
 }
 	
 	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
@@ -381,7 +382,7 @@
 		
 			#{fap.areaTexto campo:'resolucionFAP.observaciones', titulo:'Observaciones' /}		
 		
-			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'Área resolución' /}		
+			#{fap.combo campo:'resolucionFAP.areasResolucion', id:'areasResolucion', requerido:true, titulo:'�?rea resolución' /}		
 		
 			#{fap.combo campo:'resolucionFAP.tiposResolucion', id:'tiposResolucion', requerido:true, titulo:'Tipo resolución' /}		
 		

@@ -131,8 +131,11 @@ public class AedTiposDocumentosServiceImpl implements TiposDocumentosService {
 			listaToRet.add(TiposDocumentosWSUtils.convertDefinicionAed2Fap(def));
 		}
 		return listaToRet;
-		
-		
+	}
+
+	@Override
+	public boolean isConfigured() {
+		return (tiposPort != null);
 	}
 
 }

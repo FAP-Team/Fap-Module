@@ -36,6 +36,11 @@ public class FileSystemTiposDocumentosServiceImpl implements
 		return lista;
 	}
 
+	@Override
+	public boolean isConfigured() {
+		return true;
+	}
+
 	
 	
 

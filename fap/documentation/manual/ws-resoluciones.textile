@@ -1,0 +1,29 @@
+h1. Servicio de Registro en el Libro de Resoluciones
+
+h2. Descripción
+
+El servicio de Registro en el Libro de Resoluciones es un servicio que permite realizar registrar resoluciones para solicitudes pendientes.
+
+* Registrar resolución.
+* ...
+
+h2. Servicios disponibles
+
+En FAP tenemos 2 posibles servicios a utilizar:
+
+* **RegistroLibroResolucionesServiceImpl**: Utiliza el servicio web creado por la ACIISI.
+* **FileSystemRegistroLibroResolucionesServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
+
+h2. Configuración en FAP
+
+bc. 
+# -----------------------------------------------------------------------------------------
+# Configuración de Notificaciones
+# -----------------------------------------------------------------------------------------
+fap.resoluciones.usuario=uwsaciisi
+fap.resoluciones.idAreaFuncional=136
+fap.resoluciones.url=http://www-pre.gobiernodecanarias.net/resoluc/services/resolucionesWe
+fap.resoluciones.generarDocumentoResolucion=false
+fap.resoluciones.publicarTablonAnuncios=true
+fap.resoluciones.notificar=true
+fap.resolucion.baremacion.permitida=true

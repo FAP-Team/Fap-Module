@@ -477,10 +477,10 @@ public class ResolucionBase {
 				// Se crea la notificación y se añade a la solicitud correspondiente
 				
 				Notificacion notificacion = new Notificacion();
-				DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-				DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
-				notificacion.documentosANotificar.add(docANotificar2);
-				notificacion.documentosANotificar.add(docANotificar);
+				DocumentoNotificacion documentoResolucion = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+				DocumentoNotificacion documentoJustificanteRegistroSalidaOficioRemisión = new DocumentoNotificacion(linea.registro.justificante.uri);
+				notificacion.documentosANotificar.add(documentoJustificanteRegistroSalidaOficioRemisión);
+				notificacion.documentosANotificar.add(documentoResolucion);
 				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
 				notificacion.plazoAcceso = fapNotificacionPlazoacceso;

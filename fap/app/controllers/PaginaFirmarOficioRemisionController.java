@@ -89,7 +89,8 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				if (!Messages.hasErrors()) {
 					lineaResolucionFAP.registro.fasesRegistro.firmada = true;
 				} else {
-					play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo");
+					Messages.error("Se produjeron errores en la firma, inténtelo de nuevo.");
+					play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo.");
 				}
 			}
 		} else {

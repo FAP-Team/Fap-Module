@@ -330,11 +330,15 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			notificacion.save();
 		}
+		catch (javax.xml.ws.soap.SOAPFaultException e) {
+			play.Logger.error("La notificación fue creada pero no se pudo enviar: "+e.getMessage());
+			throw new NotificacionException("La notificación fue creada pero no se pudo enviar.");
+		}
 		catch (es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException ex1) {
 			play.Logger.error(String.format(EXCEPTION_CON_WS, idGestor, "puesta a disposición", uriNotificacion), ex1);
 			throw new NotificacionException(MSG_CON_WS + ex1.getMessage(), ex1);
 		} catch (Exception ex4) {
-			play.Logger.error(String.format(EXCEPTION_DESCONOCIDO + ex4.getMessage(), idGestor, "puesta a dispoción", uriNotificacion));
+			play.Logger.error(String.format(EXCEPTION_DESCONOCIDO + ex4.getMessage(), idGestor, "puesta a disposición", uriNotificacion));
 			throw new NotificacionException(MSG_DESCONOCIDO + ex4.getMessage(), ex4);
 		}
 		

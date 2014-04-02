@@ -16,7 +16,7 @@ h3. Versión 2.4RC5
 * Se comprueba que el documento oficio de remisión esté creado en la línea de resolución y se modifican permisos de oficios de remisión.
 * Arreglado fallo a la hora de seleccionar un expediente en la resolución simple.
 * Añadida documentacion de properties que no estaban incluidas
-* Arreglado fallo cuando falla la notificación de una resolución
+* Arreglado fallo al notificar una resolución
 
 h3. Versión 2.4RC4
 

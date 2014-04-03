@@ -98,6 +98,8 @@ public class Firmante extends FapModel {
 		setIdentificador(persona);
 		this.tipo = tipo;
 		this.cardinalidad = cardinalidad;
+		this.idvalor = persona.numeroId;
+		this.idtipo = persona.tipoDeDocumento;
 	}
 
 	private static String getTipoRepresentanteFromPersona(Persona persona) {

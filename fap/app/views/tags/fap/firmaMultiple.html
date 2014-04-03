@@ -359,77 +359,93 @@
 // FIRMA
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
-		    var boton_firmar = new Ext.Button({
-		    	text: "Firmar",
-		    	disabled:true,
-		    	handler : function(){
-		    		popupWait_open();
-					var i;
-		    		var selected = sm${id}.getSelection();
-		    		var idDocumento;
-		    		var firmadoDocumento;
-		    		var urlDocumento;
-		    		var firma;
-		    		var resultado;
-		    		mensajes.clear();
-		    		if (selected.length == 0) {
-		    			mensajes.error('No hay documentos seleccionados para firmar.');
-		    		} else {
-			    		for (i in selected) {
-			    			resultado = "false";
-							firma = null;
-			    			idDocumento = selected[i].data.id;
-			    			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
-			    			if ((idDocumento != null) && (firmadoDocumento != null)) {
-			    				//j = parseInt(i) + 1;
-				    			if (firmadoDocumento == "false") {
-				    				//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
-				    				urlDocumento = obtenerUrlDocumento(idDocumento);
-				    				if (urlDocumento != null) {
-										firma = Firma.firmarDocumento('#${id_cert}certificado', urlDocumento, "", {mensajes: mensajes});
-										if (firma != null) {
-											//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
-											resultado = firmar(idDocumento, firma);
-											if (resultado == "true") {
-												//alert("Se ha firmado el documento: "+j+" | id: "+idDocumento);
-											} else {
-												//alert("No se ha firmado el documento: "+j+" | id: "+idDocumento);
-												break;
-											}
-										} else {
-											//alert("No se ha obtenido la firma del documento "+j+" | id: "+idDocumento);
-											break;
-										}
-									} else {
-										//alert("Error al obtener urlDocumento");
-										break;
-									}
-								} else if (firmadoDocumento == "true") {
-									resultado = "true";
-									//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
-								}
-							} else {
-								//alert("Error al obtener idDocumento o firmadoDocumento");
-								break;
-							}
-			    		} // for
-						i = parseInt(i) + 1;
-			    		if ((i == selected.length) && (resultado == "true")) {
-			    			mensajes.ok('Se han firmado todos los documentos seleccionados.');
-			    		} else {
-			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
-		    			}
+	function obtenerUrlsDocumentos(selected) {
+		var resultado;
+		var idDocumento;
+		var firmadoDocumento;
+		var urlDocumento;
+		var urlsDocumentos = {};
+		var firma;
+		for (i in selected) {
+			resultado = "false";
+			firma = null;
+			idDocumento = selected[i].data.id;
+			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
+			if ((idDocumento != null) && (firmadoDocumento != null)) {
+				if (firmadoDocumento == "false") {
+					//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
+					urlDocumento = obtenerUrlDocumento(idDocumento);
+					if (urlDocumento != null) {
+						urlsDocumentos[selected[i].data.id] = urlDocumento;
+					} else {
+						//alert("Error al obtener urlDocumento");
+						break;
+					}
+				} else if (firmadoDocumento == "true") {
+					resultado = "true";
+					//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
+				}
+			} else {
+				//alert("Error al obtener idDocumento o firmadoDocumento");
+				break;
+			}
+		} // for
+		return urlsDocumentos;
+	}
+
+    var boton_firmar = new Ext.Button({
+    	text: "Firmar",
+    	disabled:true,
+    	handler : function(){
+    		popupWait_open();
+			var i;
+    		var selected = sm${id}.getSelection();
+    		var idDocumento;
+    		var firmadoDocumento;
+    		var urlDocumento;
+    		var urlsDocumentos;
+    		var firma;
+    		var resultado;
+    		var errores = {};
+
+    		mensajes.clear();
+    		if (selected.length == 0) {
+    			mensajes.error('No hay documentos seleccionados para firmar.');
+    		} else {		    			
+	    		urlsDocumentos = obtenerUrlsDocumentos(selected);
+	    		console.log("Urls Documentos: " + urlsDocumentos);
+	    		console.log("Keys: " + Object.keys(urlsDocumentos));
+   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores);
+   				console.log("Firmas: " + firmas);
+    			for (var key in urlsDocumentos) {
+					if (urlsDocumentos.hasOwnProperty(key)){
+						idDocumento = key;
+						firma = firmas[key];
+						if (firma != null) {
+							//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
+							resultado = firmar(idDocumento, firma);
+						}
+
 		    		}
-		    		if(grid.getSelectionModel().hasSelection()) {
-		    			grid.getSelectionModel().deselectAll();
-		    		}
-		    		// Se actualiza contenido de la tabla
-		    		popupWait_close();
-					grid.body.mask("Cargando....");
-		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-		    		peticionJSON${id}();
-			   	}
-		    });
+	    		}
+
+	    		for (var k in errores) {
+					if (errores.hasOwnProperty(k)){
+    					mensajes.error(errores[k]);
+	    			}
+	    		}
+	    		
+    		}
+    		if(grid.getSelectionModel().hasSelection()) {
+    			grid.getSelectionModel().deselectAll();
+    		}
+    		// Se actualiza contenido de la tabla
+    		popupWait_close();
+			grid.body.mask("Cargando....");
+    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+    		peticionJSON${id}();
+	   	}
+    });
 
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------

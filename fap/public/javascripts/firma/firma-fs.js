@@ -23,3 +23,15 @@ Firma._firmarDocumento = function(url, certificado){
 	//alert("Método: _firmarDocumento (firma-fs.js) | Simulación: fallo | url: "+url+" | certificado: "+certificado.clave);
 	//return null;
 }
+
+function initFirma() {}
+
+Firma._firmarVariosDocumentos = function(urls, certificado){
+	var firmas = {};
+	for (var k in urls) {
+		if (urls.hasOwnProperty(k)){
+			firmas[k] = Firma._firmarTexto(k, certificado);
+		}
+	}
+	return firmas;
+}

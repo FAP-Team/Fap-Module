@@ -428,12 +428,15 @@
 
 		    		}
 	    		}
-
-	    		for (var k in errores) {
-					if (errores.hasOwnProperty(k)){
-    					mensajes.error(errores[k]);
-	    			}
-	    		}
+	    		if (Object.keys(errores).length == 0) {
+	    			mensajes.ok("Documentos firmados correctamente");
+	    		} else {
+		    		for (var k in errores) {
+						if (errores.hasOwnProperty(k)){
+	    					mensajes.error(errores[k]);
+		    			}
+		    		}
+		    	}
 	    		
     		}
     		if(grid.getSelectionModel().hasSelection()) {

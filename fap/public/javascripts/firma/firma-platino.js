@@ -31,6 +31,40 @@ Firma._firmarDocumento = function(url, certificado){
 	return signFile(certificado.clave, url);
 }
 
+
+Firma._firmarVariosDocumentos = function(urls, certificado, errores){
+	//alert("Método: _firmarDocumento (firma-platino.js) | url: "+url+" | certificado: "+certificado.clave);
+	var firmas = {};
+	
+	clienteFirma.setSelectedCertificateAlias(certificado.clave);
+	clienteFirma.setSignatureAlgorithm("SHA1withRSA");
+	clienteFirma.setSignatureFormat("XADES");
+	clienteFirma.setSignatureMode("implicit");
+	clienteFirma.addExtraParam("includeOnlySignningCertificate", "true");
+	//Inactivo de momento en Platino
+	//clienteFirma.setPolicy(
+	//		'urn:oid:2.16.724.1.3.1.1.2.1.8',
+	//		'Politica de firma electronica para la Administracion General del Estado'
+	//		,'http://administracionelectronica.gob.es/es/ctt/politicafirma/politica_firma_AGE_v1_8.pdf',
+	//		'V8lVVNGDCPen6VELRD1Ja8HARFk=');
+
+	clienteFirma.initMassiveSignature();
+	for (var k in urls) {
+		if (urls.hasOwnProperty(k)){
+			var firmaAux = clienteFirma.massiveSignatureFile(urls[k]);
+			firmas[k] = clienteFirma.getTextFromBase64(firmaAux, "iso-8859-1");
+			var mensaje = clienteFirma.getMassiveSignatureCurrentLog(); 
+			if (mensaje.toLowerCase().indexOf("correcta") == -1) {
+				errores[k] = mensaje;
+			}
+			console.log(k + ": " + firmas[k]);
+		}
+	}
+
+	clienteFirma.endMassiveSignature();
+	return firmas;
+}
+
 var Platino = {
 	
 	listarCertificados : function(combo, opciones){

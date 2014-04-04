@@ -1,18 +1,24 @@
 package services.platino;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.soap.MTOMFeature;
 
+import messages.Messages;
 import models.ExpedientePlatino;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -26,6 +32,7 @@ import platino.DatosDocumento;
 import platino.DatosFirmante;
 import platino.DatosRegistro;
 import platino.PlatinoProxy;
+import play.Play;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
@@ -37,6 +44,7 @@ import es.gobcan.platino.servicios.registro.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
+import es.gobcan.platino.servicios.sgrde.ElementoNoEncontradoException;
 import es.gobcan.platino.servicios.sgrde.ErrorInternoException;
 import es.gobcan.platino.servicios.sgrde.Expediente;
 import es.gobcan.platino.servicios.sgrde.FirmasElectronicas;
@@ -44,6 +52,9 @@ import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
 import es.gobcan.platino.servicios.sgrde.MetaInformacionException;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
+import es.gobcan.platino.servicios.sgrde.UsuarioNoValidoException;
+
+import play.mvc.results.*;
 
 /**
  * GestorDocumentalServiceImpl
@@ -275,5 +286,30 @@ public class PlatinoGestorDocumentalService {
 			e.printStackTrace();
 		}
 		return null;	
+	}
+	
+	/**
+	 * Método para obtener la firma electrónica de un documento firmado desde el AED de Platino
+	 * @param uriDocumento URI del documento que se sube al gestor documental de Platino
+	 * @return documento firmado según la clase Models.Documento
+	 */
+	public FirmasElectronicas obtenerFirmaDocumento(String uriDocumento){
+		String firma = null;
+		FirmasElectronicas firmasElectronicas = null;
+		play.Logger.info("Obtener documento.");
+		try {
+			// Obtenemos la firma electronica del documento que buscamos el aed de Platino
+			firmasElectronicas = gestorDocumentalPort.obtenerMetaDoc(uriDocumento).getFirmasElectronicas();
+			firma = firmasElectronicas.getFirma();
+			System.out.println("Firma = "+ firma);
+		} catch (ElementoNoEncontradoException e) {
+			play.Logger.error("El documento con la uri "+uriDocumento+" no existe.");
+		} catch (UsuarioNoValidoException e) {
+			play.Logger.error("Usuario no válido");
+		} catch (ErrorInternoException e) {
+			play.Logger.error("Se ha producido un error en el servicio");
+		}
+
+		return firmasElectronicas;
 	}
 }

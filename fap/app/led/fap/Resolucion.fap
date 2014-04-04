@@ -1073,6 +1073,7 @@ Permiso permisoNotificar {
 		all
 }
 
+// sobreescrito
 Permiso notificarResolucion {
 	vars
 		ResolucionFAP resolucion

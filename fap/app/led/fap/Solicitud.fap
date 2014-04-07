@@ -24,9 +24,9 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 		
-		Grupo borde=false mostrarSiCampo SolicitudGenerica.activoFH="true"{
+		Grupo borde=false mostrarSiExpresion "solicitud.activoFH==true"{
 			Grupo titulo="Habilitar la firma y presentación por Funcionario Público" mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.firmaYRegistro.funcionarioHabilitado\")"{
-				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación de esta página."}
+				Wiki{"Para habilitar la firma y presentación por un Funcionario Público, imprima la autorización fírmela y adjúntela como documento en el apartado “Documentación�? de esta página."}
 				Form formAbrirPlantillaFH destino="_blank"{
 					Boton btnAbrirPlantillaFH titulo="Descargar Autorización"
 				}

@@ -13,7 +13,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 			accion = getAccion();
 		if (!permiso(accion)) {
 			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
-			renderTemplate("fap/DocumentacionFAP/DocumentacionFAP.html");
+			renderTemplate("gen/DocumentacionFAP/DocumentacionFAP.html");
 		}
 
 		SolicitudGenerica solicitud = null;
@@ -31,7 +31,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 			solicitud = DocumentacionFAPController.getSolicitudGenerica(idSolicitud);
 
 		log.info("Visitando página: " + "fap/DocumentacionFAP/DocumentacionFAP.html");
-		renderTemplate("fap/DocumentacionFAP/DocumentacionFAP.html", accion, idSolicitud, solicitud);
+		renderTemplate("gen/DocumentacionFAP/DocumentacionFAP.html", accion, idSolicitud, solicitud);
 	}
 	
 	@Util

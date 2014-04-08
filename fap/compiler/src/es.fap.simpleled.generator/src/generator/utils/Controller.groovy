@@ -21,6 +21,7 @@ import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
+import es.fap.simpleled.led.FirmaMultiple
 import es.fap.simpleled.led.impl.FormImpl;
 import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.LedPackage;
@@ -1484,6 +1485,16 @@ public class ${controllerName} extends ${controllerGenName} {
 				editar = true;
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
+		}
+		for (FirmaMultiple firmaMultiple: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMultiple())){
+//			if (firmaMultiple.pagina != null && firmaMultiple.pagina.name.equals(pagina.name))
+//				crear = borrar = editar = true;
+			if (firmaMultiple.paginaCrear != null && firmaMultiple.paginaCrear.name.equals(pagina.name))
+				crear = true;
+//			if (firmaMultiple.paginaEditar != null && firmaMultiple.paginaEditar.name.equals(pagina.name))
+//				editar = true;
+//			if (firmaMultiple.paginaBorrar != null && firmaMultiple.paginaBorrar.name.equals(pagina.name))
+//				borrar = true;
 		}
 		for (Form form: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getForm())){
 			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))

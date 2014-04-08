@@ -35,6 +35,14 @@
 	String popupLeer = _popupLeer;
 	String urlLeer = _urlLeer;
 	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
+	
+	String popupCrear = _popupCrear;
+	String paginaCrear = _paginaCrear;
+	String urlCrear = _urlCrear;
+	String nombreBotonCrear = _nombreBotonCrear ?: 'Nuevo';
+	
+    boolean botonCrear = urlCrear;
+	
 
 	def modelName = id + "_model";
 	Set<String> campos = new HashSet<String>();
@@ -449,6 +457,89 @@
     		peticionJSON${id}();
 	   	}
     });
+    
+//---- Inicio botón crear
+            #{if botonCrear}
+            var boton_crear = new Ext.Button({
+                text: '${nombreBotonCrear}',
+                disabled:false,
+                handler : function(){
+                    var urlCrear = replaceAmpersand("${urlCrear}");
+                    var urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                    var funcionCrear = function(){
+                        #{if popupCrear}
+                            var urlCrearRedirigir;
+                            if ("${urlRedirigir}" !== "")
+                                urlCrearRedirigir = urlCrear+"&urlRedirigir="+replaceAmpersand("${urlRedirigir}").split("&")[0];
+                            else
+                                urlCrearRedirigir = urlCrear;
+                            popup_open(
+                                "${popupCrear}_popup",
+                                urlCrearRedirigir,
+                                reload
+                            );
+                        #{/if}
+                        #{else}
+                            #{if saveBefore && saveEntity}
+                                $('#${id}').closest('form').attr("action",urlBeforeOpenPageTableCrear).submit();
+                            #{/if}
+                            #{else}
+                                window.location.href = urlCrear;
+                            #{/else}
+                        #{/else}
+                    }   
+
+                    #{if _crearEntidad}
+                    
+                        if ($('#${_idEntidad}').length == 0){
+                            var data = $('#${_nameContainer}crearForm').serialize();
+                            $.post(replaceAmpersand("${_urlCrearEntidad}"), data, function(data){
+                                if (data.id == "none"){
+                                    #{if tipoContainer == "popup"}
+                                        $.get(replaceAmpersand('${_urlContainerCrear}'), function(data){
+                                            $('#${_nameContainer}_popup').html(data);
+                                        });
+                                    #{/if}
+                                    #{else} 
+                                        window.location.href = replaceAmpersand('${_urlContainerCrear}');
+                                    #{/else}
+                                    return;
+                                }
+                            
+                                urlCrear = replaceId(urlCrear, "_${_idContainer}_", data.id);
+                                var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", data.id);
+                                urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+                            
+                                urlTabla += "?${_idContainer}=" + data.id;
+                                var input = document.createElement("input");
+                                input.setAttribute("type", "hidden");
+                                input.setAttribute("name", "${_idContainer}");
+                                input.setAttribute("id", "${_idEntidad}");
+                                input.setAttribute("value", data.id);
+                                $('#${_nameContainer}crearForm').append(input);
+                                
+                                urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                                funcionCrear();
+                            });
+                        }
+                        else{
+                            var dataId = $('#${_idEntidad}').get(0).value;
+                            urlCrear = replaceId(urlCrear, "_${_idContainer}_", dataId);
+                            var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", dataId);
+                            urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+                            urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                            funcionCrear();
+                        }
+                        
+                    #{/if}
+                    
+                    #{else}
+                        funcionCrear();
+                    #{/else}
+                }
+            });
+            #{/if}
+//---- Fin botón crear    
 
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -516,6 +607,9 @@
 				        	boton_leer,
 				        #{/if}
                         boton_firmar,
+                        #{if botonCrear }
+                            boton_crear,
+                        #{/if}
 			            boton_actualizar
         				]
     				}

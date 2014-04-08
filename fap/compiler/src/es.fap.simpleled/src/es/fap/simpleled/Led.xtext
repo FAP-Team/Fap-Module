@@ -421,9 +421,14 @@ FirmaMultiple:
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
-	   	& ('popupLeer' '=' popupLeer=[Popup|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
+	   	& ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
+   	    & ('popup' '=' popup=[Popup|IDS])?
+   	    & ('popupLeer' '=' popupLeer=[Popup|IDS])?    
+	   	& ('popupCrear' '=' popupCrear=[Popup|IDS])?
+	   	& ('popupEditar' '=' popupEditar=[Popup|IDS])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|IDS])?
 	)
 	'{'
 		columnas += Columna*

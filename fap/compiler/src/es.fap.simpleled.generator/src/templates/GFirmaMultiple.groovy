@@ -78,9 +78,35 @@ public class GFirmaMultiple extends GElement{
 	
 		controller = Controller.create(getPaginaOrPopupContainer());
 		
+		if (firmaMultiple.documentos.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (firmaMultiple.paginaCrear || firmaMultiple.popupCrear) && !controller.entidad.isSingleton()){
+			params.put 'crearEntidad', "accion == 'crear'";
+			params.putStr 'nameContainer', gPaginaPopup.name;
+			params.putStr 'idContainer', controller.entidad.id;
+			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
+			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
+			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForfirmaMultiples");
+		}
+		
 		//Nombre de los botones (opcional)
 		if(firmaMultiple.nombreBotonVer != null){
 			params.putStr 'nombreBotonVer', firmaMultiple.nombreBotonVer;
+		}
+		
+		if (firmaMultiple.popupCrear){
+			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
+		}
+		
+		if (firmaMultiple.paginaCrear){
+			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
+		}
+		if (firmaMultiple.paginaCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.paginaCrear, null)).getRouteIndex("crear", true, true);
+			if (firmaMultiple.paginaCrear.permiso)
+				params.putStr 'permisoCrear', firmaMultiple.paginaCrear.permiso.name;
+		}
+		
+		if (firmaMultiple.popup || firmaMultiple.popupCrear){
+			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
 		
 		StringBuffer columnasView = new StringBuffer();
@@ -112,15 +138,48 @@ public class GFirmaMultiple extends GElement{
 	}
 	
 	private void botonesPopup(TagParameters params){
+		if (firmaMultiple.popup != null) {
+			Controller popupUtil = Controller.create(GElement.getInstance(firmaMultiple.popup, null));
+			params.put 'urlLeer', popupUtil.getRouteIndex("leer", true, true);
+			params.putStr 'popupLeer', firmaMultiple.popup.name;
+			params.put 'urlCrear', popupUtil.getRouteIndex("crear", true, true);
+			params.putStr 'popupCrear', firmaMultiple.popup.name;
+			params.put 'urlEditar', popupUtil.getRouteIndex("editar", true, true);
+			params.putStr 'popupEditar', firmaMultiple.popup.name;
+			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
+			params.putStr 'popupBorrar', firmaMultiple.popup.name;
+			if (firmaMultiple.popup.permiso)
+				params.putStr 'permisoCrear', firmaMultiple.popup.permiso.name;
+		}
 		if (firmaMultiple.popupLeer != null) {
 			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.popupLeer, null)).getRouteIndex("leer", true, true);
 			params.putStr 'popupLeer', firmaMultiple.popupLeer.name;
 		}
+		if (firmaMultiple.popupCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.popupCrear, null)).getRouteIndex("crear", true, true);
+			params.putStr 'popupCrear', firmaMultiple.popupCrear.name;
+			if (firmaMultiple.popupCrear.permiso)
+				params.putStr 'permisoCrear', firmaMultiple.popupCrear.permiso.name;
+		}
+		if (firmaMultiple.popupEditar != null) {
+			params.put 'urlEditar', Controller.create(GElement.getInstance(firmaMultiple.popupEditar, null)).getRouteIndex("editar", true, true);
+			params.putStr 'popupEditar', firmaMultiple.popupEditar.name;
+		}
+		if (firmaMultiple.popupBorrar != null) {
+			params.put 'urlBorrar', Controller.create(GElement.getInstance(firmaMultiple.popupBorrar, null)).getRouteIndex("borrar", true, true);
+			params.putStr 'popupBorrar', firmaMultiple.popupBorrar.name;
+		}
 	}
 	
 	private void botonesPagina(TagParameters params){
-		if (firmaMultiple.paginaLeer != null)
+		if (firmaMultiple.paginaLeer != null) {
 			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.paginaLeer, null)).getRouteIndex("leer", true, true);
+		}
+		if (firmaMultiple.paginaCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.paginaCrear, null)).getRouteIndex("crear", true, true);
+			if (firmaMultiple.paginaCrear.permiso)
+				params.putStr 'permisoCrear', firmaMultiple.paginaCrear.permiso.name;
+		}
 	}
 	
 	private void addPopupBoton(Map popups, Popup popup, List<String> botones){
@@ -433,35 +492,58 @@ public class GFirmaMultiple extends GElement{
 		String ret="";
 		String paramsPermiso="";
 		String paramsNombrePermiso="";
-		
-		paramsPermiso+="false, ";
-		paramsNombrePermiso+="\"\", ";
-		
-		paramsPermiso+="false, ";
-		paramsNombrePermiso+="\"\", ";
-		
-		if(firmaMultiple.paginaLeer != null){
-			Pagina pagina = (Pagina)firmaMultiple.paginaLeer;
-			if (pagina.permiso != null){
-				paramsPermiso+="true, ";
-				paramsNombrePermiso+="\"${pagina.permiso.name}\"";
-			} else{
-				paramsPermiso+="false, ";
-				paramsNombrePermiso+="\"\"";
-			}
-		} else if(firmaMultiple.popupLeer != null){
-			Popup popUp = (Popup)firmaMultiple.popupLeer;
+	
+		if(firmaMultiple.popup != null){
+			Popup popUp = (Popup)firmaMultiple.popup;
 			if (popUp.permiso != null){
-				paramsPermiso+="true, ";
-				paramsNombrePermiso+="\"${popUp.permiso.name}\"";
-			} else{
-				paramsPermiso+="false, ";
-				paramsNombrePermiso+="\"\"";
-			}
+				paramsPermiso+="true, true, true, \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", getAccion(), ids";
+			} else {
+				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
+			} 
 		} else {
-			paramsPermiso+="false, ";
-			paramsNombrePermiso+="\"\"";
-		}
+				if(firmaMultiple.popupEditar != null){
+					Popup popUp = (Popup)firmaMultiple.popupEditar;
+					if (popUp.permiso != null){
+						paramsPermiso+="true, ";
+						paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
+					} else{
+						paramsPermiso+="false, ";
+						paramsNombrePermiso+="\"\", ";
+					}
+				} else {
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+				
+				if(firmaMultiple.popupBorrar != null){
+					Popup popUp = (Popup)firmaMultiple.popupBorrar;
+					if (popUp.permiso != null){
+						paramsPermiso+="true, ";
+						paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
+					} else{
+						paramsPermiso+="false, ";
+						paramsNombrePermiso+="\"\", ";
+					}
+				} else {
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\", ";
+				}
+				
+				if(firmaMultiple.popupLeer != null){
+					Popup popUp = (Popup)firmaMultiple.popupLeer;
+					if (popUp.permiso != null){
+						paramsPermiso+="true, ";
+						paramsNombrePermiso+="\"${popUp.permiso.name}\"";
+					} else{
+						paramsPermiso+="false, ";
+						paramsNombrePermiso+="\"\"";
+					}
+				} else {
+					paramsPermiso+="false, ";
+					paramsNombrePermiso+="\"\"";
+				}
+			}
+
 		paramsPermiso+=paramsNombrePermiso+", getAccion(), ids"
 
 		ret+="""tables.TableRenderResponse<${entidad.clase}> response = new tables.TableRenderResponse<${entidad.clase}>(rowsFiltered, ${paramsPermiso});

@@ -1,17 +1,16 @@
 Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {	
 
-	// Sobreescrita
 	Pagina DocumentacionFAP titulo = "Documentación" campo=SolicitudGenerica noForm perteneceA ="Documentacion" {
 	
-		Tabla documentos titulo="Documentos" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP{
-			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
-            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="85"
-			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+        FirmaMultiple documentos titulo="Documentación" campo=SolicitudGenerica.documentacion.documentos paginaCrear=DocumentosFAP popupEditar=DocumentosEditarFAP popupLeer=DocumentosEditarFAP popupBorrar=DocumentosEditarFAP {
+            Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
+            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
+            Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
             Columna campo=Documento.tipo titulo="Tipo Documento"expandir
-			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="80"
-			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
-			Columna campo=Documento.firmadoVisible titulo="Firmado"expandir
-		}
+            Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
+            Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
+            Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+        }
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
 			Grupo docExt titulo="Documentos ya aportados en la Administración"{

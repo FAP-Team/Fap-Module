@@ -41,6 +41,7 @@ Firma._firmarVariosDocumentos = function(urls, certificado, errores){
 	clienteFirma.setSignatureFormat("XADES");
 	clienteFirma.setSignatureMode("implicit");
 	clienteFirma.addExtraParam("includeOnlySignningCertificate", "true");
+	clienteFirma.setOriginalFormat("false");
 	//Inactivo de momento en Platino
 	//clienteFirma.setPolicy(
 	//		'urn:oid:2.16.724.1.3.1.1.2.1.8',
@@ -57,7 +58,6 @@ Firma._firmarVariosDocumentos = function(urls, certificado, errores){
 			if (mensaje.toLowerCase().indexOf("correcta") == -1) {
 				errores[k] = mensaje;
 			}
-			console.log(k + ": " + firmas[k]);
 		}
 	}
 

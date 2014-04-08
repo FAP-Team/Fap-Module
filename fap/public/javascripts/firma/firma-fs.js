@@ -30,7 +30,7 @@ Firma._firmarVariosDocumentos = function(urls, certificado){
 	var firmas = {};
 	for (var k in urls) {
 		if (urls.hasOwnProperty(k)){
-			firmas[k] = Firma._firmarTexto(k, certificado);
+			firmas[k] = Firma._firmarDocumento(k, certificado);
 		}
 	}
 	return firmas;

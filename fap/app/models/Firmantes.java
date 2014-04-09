@@ -45,11 +45,14 @@ public class Firmantes extends FapModel {
 	}
 
 	public boolean hanFirmadoTodos() {
+		if ((todos == null) || (todos.isEmpty())) {
+			return false;
+		}
 		boolean multiple = true;
 		for (Firmante f : todos) {
-			// Firmante único que ya ha firmado
-			if (f.cardinalidad.equals("unico") && f.fechaFirma != null)
-				return true;
+			// Firmante único que no ha firmado
+			if (f.cardinalidad.equals("unico") && (!f.tipo.equals("personajuridica")) && f.fechaFirma == null)
+				return false;
 
 			// Uno de los firmantes multiples no ha firmado
 			if (f.cardinalidad.equals("multiple") && f.fechaFirma == null)

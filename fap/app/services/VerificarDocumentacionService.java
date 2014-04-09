@@ -80,6 +80,7 @@ public class VerificarDocumentacionService {
 		excluirObligatoriosCondicionadosAutomaticosAportados(lstObligatoriosCondicionadosAutomatico);
 		// Se comprueba los tipos de obligatoriedad documentos que el usuario ya ha aportado, para quedarse con los que NO ha aportado
 		for (Documento doc : lstDocumentosSubidos) {
+			comprobarFirma(doc);
 			if (doc.tipo != null) {
 				String tipo = eliminarVersionUri(doc.tipo);
 				// Si recorriendo todos los documentos que el usuario ha aportado
@@ -189,6 +190,17 @@ public class VerificarDocumentacionService {
 	// Para eliminar de la URI, la Versión, que no hará falta en el proceso de verificación de documentación
 	static String eliminarVersionUri(String uri){
 		return uri.substring(0,uri.length()-4);
+	}
+	
+	static boolean comprobarFirma(Documento doc) {
+		play.Logger.info("Comprobando firmantes de %s", doc);
+		if ((doc.firmantes == null) || (!doc.firmantes.hanFirmadoTodos())) {
+			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
+			Messages.error(String.format("El documento %s no ha sido firmado o faltan firmas.", descripcion));
+			return false;
+		}
+		
+		return true;
 	}
 }
 

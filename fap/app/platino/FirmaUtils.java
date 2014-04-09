@@ -68,7 +68,7 @@ public class FirmaUtils {
 		if (!Messages.hasMessages()) {
 			Messages.ok("El documento se firmó correctamente");
 			
-			if(hanFirmadoTodos(listaFirmantes)){
+			if(documento.firmantes.hanFirmadoTodos()){
 				documento.firmado = true;
 				documento.save();
 				Messages.ok("La solicitud está preparada para el registro");

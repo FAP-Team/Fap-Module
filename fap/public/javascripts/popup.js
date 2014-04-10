@@ -48,6 +48,19 @@ function popup_open(popup, url, callback) {
 	}, 100);
 }
 
+function popup_hide(popup) {
+	var $popup = $("#" + popup);
+	$popup.unbind('hidden');
+	$popup.modal('hide');
+}
+
+function popup_show(popup) {
+	var $popup = $("#" + popup);
+	$popup.modal('show');
+}
+
+
+
 function popupWait_open() {
 	popupWait_openWithMessage("Espere mientras se realiza la acción solicitada...");
 }

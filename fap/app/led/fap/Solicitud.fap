@@ -1833,5 +1833,10 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		}
 		
 	} 
-	
+
+//=========================== METADATOS =========================
+    Popup RellenarMetadatos titulo="Formulario Rellenar Metadatos" campo=TipoDocumento {
+        Wiki {"Rellene aquí los metadatos"}
+    }
+//========================= FIN METADATOS =======================	
 }

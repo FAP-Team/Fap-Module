@@ -1,0 +1,31 @@
+#{fap.popup 
+     accion:accion, 
+     maximizar:false, 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     popup:'RellenarMetadatos', 
+     titulo:'Formulario Rellenar Metadatos', 
+     urlBorrar:play.mvc.Router.reverse('popups.RellenarMetadatosController.borrar' , ['idTipoDocumento':tipoDocumento?.id]), 
+     urlCrear:play.mvc.Router.reverse('popups.RellenarMetadatosController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('popups.RellenarMetadatosController.editar' , ['idTipoDocumento':tipoDocumento?.id]), 
+     urlRedirigir:urlRedirigir
+}
+    
+<div class="wiki ">
+    <p>Rellene aquí los metadatos</p>
+</div>
+
+<div id="FormularioPopupRellenarMetadatos">
+%{
+        models.TipoDocumento tipoDoc = models.TipoDocumento.findById(idTipoDocumento);
+        for (models.DefinicionMetadatos dmd : tipoDoc.definicionMetadatos ) {
+            String nombre = dmd.nombre;
+}%
+            #{fap.texto titulo:nombre, obj:"Documento", campo:"metadatos.nombre" /}
+%{
+        }
+}%
+   
+        #{fap.boton idFijo:"BotonGuardarPopupMetadatos", titulo:"Guardar", noSubmit:true /}
+</div>
+#{/fap.popup}

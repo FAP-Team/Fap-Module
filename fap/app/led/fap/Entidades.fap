@@ -172,6 +172,7 @@ Entidad Documento {
 	String firmadoVisible transient
 	String firmadoVisibleLocal transient
 	Firmantes firmantes
+	OneToMany Metadato metadatos
 }
 
 // La entidad Documentación agrupa aportaciones de documentos

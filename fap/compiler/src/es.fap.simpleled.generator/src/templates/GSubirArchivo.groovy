@@ -31,6 +31,8 @@ public class GSubirArchivo extends GSaveCampoElement{
 			params.putStr("aportadoPor", subirArchivo.aportadoPor)
 		if(subirArchivo.listarDocumentosSubidos != null) 
 			params.put("listarDocumentosSubidos", subirArchivo.listarDocumentosSubidos)
+		if(subirArchivo.conMetadatos != null)
+			params.put("conMetadatos", subirArchivo.conMetadatos)
 		return "#{fap.documento ${params.lista()} /}	";
 	}
 	
@@ -155,6 +157,9 @@ public class GSubirArchivo extends GSaveCampoElement{
 	public List<String> extraParams(){
 		List<String> extraParams = super.extraParams();
 		extraParams.add("java.io.File ${subirArchivo.name}");
+		if (subirArchivo.conMetadatos == true) {
+			extraParams.add("List<Metadato> metadatos");
+		}
 		return extraParams;
 	}
 	

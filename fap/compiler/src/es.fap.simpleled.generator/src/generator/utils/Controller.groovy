@@ -93,6 +93,7 @@ public class Controller implements Comparator<Entidad>{
 	private Accion accionEditar;
 	private Accion accionBorrar;
 	private String strProcesandoMethods = "";
+	private boolean conMetadatos;
 	
 	public Controller initialize(){
 		saveEntities = gElement.saveEntities();
@@ -181,8 +182,14 @@ import services.FirmaService;
 import com.google.inject.Inject;
 import utils.PeticionModificacion;
 import controllers.fap.AgenteController;
-
-${withSecure}
+"""
+if (extraParams.contains("List<Metadato> metadatos")) {
+	conMetadatos = true;	
+	controllerGen += """
+import models.Metadato;
+"""
+}		
+controllerGen += """${withSecure}
 public class ${controllerGenName} extends GenericController {
 
 	protected static Logger log = Logger.getLogger("Paginas");
@@ -535,6 +542,7 @@ public class ${controllerName} extends ${controllerGenName} {
 				Agente logAgente = AgenteController.getAgente();
 				if(!Messages.hasErrors()){
 					$crearSaveCall
+					${crearLogicaCopiarMetadatos()}
 					${saveEntities.collect{
 						if (!it.equals(entidad))
 							return "${it.variableDb}.save();";
@@ -1759,6 +1767,19 @@ public class ${controllerName} extends ${controllerGenName} {
 			}
 		}""";
 	}
+	
+	private String crearLogicaCopiarMetadatos() {
+		if (conMetadatos) {
+		return """
+			for (Metadato metadato:metadatos) {
+				dbDocumento.metadatos.add(metadato);
+			}
+			dbDocumento.save();
+			"""
+		} else {
+			return "";
+		}
+	} 
 	
 	
 }

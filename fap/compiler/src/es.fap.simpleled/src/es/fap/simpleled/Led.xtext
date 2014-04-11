@@ -492,6 +492,7 @@ SubirArchivo:
 			('extensiones' '=' extensiones+=STRING ("," extensiones+=STRING)*)
 		)?
 		& (listarDocumentosSubidos?='listarDocumentosSubidos')?
+		& (conMetadatos?='conMetadatos')?
 	)
 ;
 

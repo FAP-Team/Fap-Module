@@ -59,7 +59,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 	Pagina DocumentosFAP titulo="Nuevo Documento" campo=SolicitudGenerica.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
 		Accion crear redirigir=DocumentacionFAP	
 		Grupo gSubirDocumento titulo="Adjuntar Documento"{
-			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
+			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" conMetadatos extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 	

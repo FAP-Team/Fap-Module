@@ -1,0 +1,97 @@
+%{def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+%{
+    def comboId = _comboId;
+    String idEntidad = "idSolicitudPlaceHolder";
+    String idTipoDocumento = "idTipoDocumentoPlaceholder";
+    String urlPopupRellenarMD=play.mvc.Router.reverse("popups.RellenarMetadatosController.editar" , ['accion':'editar', 'uriTipoDocumento':idTipoDocumento]);
+}%
+
+<div id="rellenarMetadatos">
+</div>
+
+#{fap.boton idFijo:'botonRellenarMetadatos', titulo:'Rellenar Metadatos', noSubmit:true/}
+%{ urlRellenarMD = play.mvc.Router.reverse('popups.RellenarMetadatosController.editar' , ['idSolicitud':solicitud?.id]) }%    
+<script type="text/javascript">
+    var $combo = $('#${comboId}');
+    var botonRellenar = $('#botonRellenarMetadatos');
+
+    //Preparo un contenedor para los campos ocultos
+    var inicializaDivMetadatados = function() {
+        var divFormMD = $('#formHiddenMetadatos');
+        if (divFormMD.length <= 0) {
+            $('#rellenarMetadatos').append("<div id=\"formHiddenMetadatos\"></div>") ;
+            divFormMD = $('#formHiddenMetadatos');
+        }
+        divFormMD.empty();
+    }
+
+    var toggleBotonRellenarMetadatos = function() {
+       if ($combo.val() == "") {
+            botonRellenar.hide();
+        } else {
+            botonRellenar.show();
+        }
+    }
+
+    $(document).ready(function() {
+        inicializaDivMetadatados();
+        toggleBotonRellenarMetadatos();
+    });
+
+    //Cada vez que se cambie el tipo de documento hay que limpiar por si habían datos
+    $combo.change(function() {
+        toggleBotonRellenarMetadatos();
+        inicializaDivMetadatados();
+    });
+   
+
+
+    //Listener para el botón. Lanza el popup
+    botonRellenar.click(function() {
+        var uriTipo = $('#${comboId}').val();
+        var url = '${urlPopupRellenarMD}';
+        url = replaceId(url,"${idTipoDocumento}", uriTipo);
+        if ( $('#formHiddenMetadatos').children().length > 0) {
+            popup_show("${popup_rellenarMD}_popup");
+        } else {
+            popup_open("${popup_rellenarMD}_popup", url, listenerGuardarPopup());
+        }
+    });
+
+    //Listener botón guardar de dentro del popup
+    //Al guardar se añaden los campos hidden al formulario
+    var listenerGuardarPopup = function() {
+        var selectorBotonGuardar = '#BotonGuardarPopupMetadatos';
+        $(selectorBotonGuardar).live('click',function(){
+            inicializaDivMetadatados();
+            var contenido = $('#agente_username').val();
+            var nombres =  $('#FormularioPopupRellenarMetadatos').children().filter(".control-group").children().filter('.control-label');
+            var valores =  $('#FormularioPopupRellenarMetadatos').children().filter(".control-group").children().filter('.controls').children().filter(':input');
+
+            for(var i = 0; i < valores.length; i++) {
+               crearHiddenMetadato(i, nombres[i].innerHTML.trim(), valores[i].value);
+            }
+            popup_hide("${popup_rellenarMD}_popup");
+        });
+    } 
+
+    var crearHiddenMetadato= function(numero, nombre, valor) {
+        var input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", "metadatos[" + numero + "].nombre");
+        input.setAttribute("value", nombre);
+        $('#formHiddenMetadatos').append(input);
+
+        input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", "metadatos[" + numero + "].valor");
+        input.setAttribute("value", valor);
+        $('#formHiddenMetadatos').append(input);
+    }
+
+</script>
+  
+      
+    
+    

@@ -20,9 +20,11 @@
         models.TipoDocumento tipoDoc = models.TipoDocumento.findById(idTipoDocumento);
         for (models.DefinicionMetadatos dmd : tipoDoc.definicionMetadatos ) {
             String nombre = dmd.nombre;
+            if (!dmd.autogenerado) {
 }%
-            #{fap.texto titulo:nombre, obj:"Documento", campo:"metadatos.nombre" /}
+                #{fap.texto titulo:nombre, obj:"Documento", campo:"metadatos.nombre" /}
 %{
+            }
         }
 }%
    

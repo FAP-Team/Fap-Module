@@ -17,6 +17,7 @@
 	def tramite = _tramite
 	def aportadoPor = _aportadoPor
 	def esFactura = _esFactura != null? _esFactura : false
+	def rellenarMetadatos =  _conMetadatos != null? _conMetadatos : false;
 
 	def tiposDocumentos
 	if (esFactura) {
@@ -102,6 +103,10 @@
 	 	</script>
 		 
   	#{/if}	 
+
+  	#{if rellenarMetadatos}
+        #{fap.rellenaMetadatos field:field, comboId:comboId, obj:obj/}
+    #{/if}
 
 	#{if download}
 		<div class="control-group">

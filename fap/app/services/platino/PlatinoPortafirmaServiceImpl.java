@@ -2,6 +2,7 @@ package services.platino;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -24,11 +25,14 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.pattern.PropertiesPatternConverter;
 import org.joda.time.DateTime;
 
+import com.sun.media.sound.AlawCodec;
+
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 
 import platino.DatosDocumento;
+import platino.Firma;
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
@@ -40,6 +44,8 @@ import models.Agente;
 import models.Convocatoria;
 import models.Documento;
 import models.ExpedientePlatino;
+import models.Firmante;
+import models.Firmantes;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 
@@ -57,6 +63,8 @@ import es.gobcan.platino.servicios.organizacion.DBOrganizacionServiceBean;
 import es.gobcan.platino.servicios.portafirmas.dominio.*;
 import es.gobcan.platino.servicios.portafirmas.servicio.solicitudfirma.*;
 import es.gobcan.platino.servicios.portafirmas.wsdl.solicitudfirma.*;
+import es.gobcan.platino.servicios.sgrde.FirmasElectronicas;
+import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
 
 @InjectSupport
 public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
@@ -373,13 +381,59 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 		}
 	}
 
+	// Metodo para almacenar la firma de un documento subido en Platino en el AED de la ACIISI
+	private void almacenarFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma){
+		// Obtenemos los documentos de la solicitud
+		List<models.Documento> listaDocumentos = solicitudFirmaPortafirma.documentosFirma;
+		for(Documento documento : listaDocumentos){
+			String URIdocumento = documento.uri;
+			String URIPlatino = documento.uriPlatino;
+			// Obtenemos los datos de la firma del documento subido a Platino y la lista de firmantes
+			FirmasElectronicas firmasPlatino = platinoGestorDocumentalPort.obtenerFirmaDocumento(URIPlatino);
+			List<InformacionFirmaElectronica> datosFirma = firmasPlatino.getInformacionFirmaElectronica();
+			// Obtenemos el firmante del documento en el AED de la ACIISI
+			Firmantes firmantesDocumento = documento.firmantes;
+			// Flag para comprobar si alguno de los firmantes del documento en Platino se corresponden
+			// con los que tiene en el AED de la ACIISI
+			boolean firmanteEnPlatino = false;
+			for(InformacionFirmaElectronica firmantesPlatino : datosFirma){
+				// Comprobamos si alguno de los firmantes del documento en Platino se corresponde con los del documento en el AED de la ACIISI
+				for(Firmante firmante : firmantesDocumento.todos){
+					if(firmante.idvalor.equals(firmantesPlatino.getIdFirmante())){
+						// Si alguno de los firmantes del documento en Platino se corresponde
+						// con alguno de los de la AED de la ACIISI, paramos
+						firmanteEnPlatino = true;
+						break;
+					}
+				}
+				if(firmanteEnPlatino) {
+					break;
+				}			
+			}
+
+			// Agregamos la firma de Platino al Documento
+			if(firmanteEnPlatino){
+				models.Firma firmaNueva = new models.Firma(firmasPlatino.getFirma(), documento.firmantes.todos);
+				try {
+					//play.Logger.info("Firma a añadir al documento: "+firmaNueva.getContenido());
+					gestorDocumentalPort.agregarFirma(documento, firmaNueva);
+				} catch (GestorDocumentalServiceException e) {
+					play.Logger.error("Se ha producido un error al agregar la firma al documento"+e);
+				}
+			} 
+			
+		}	
+	}
+	
+	
 	// TODO: ¿Quitar estado FIRMADA_Y_REENVIADA?
 	@Override
 	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		String estadoSolicitudFirma = obtenerEstadoFirma(solicitudFirmaPortafirma);
 		if ((EstadoSolicitudEnumType.FIRMADA.value().equalsIgnoreCase(estadoSolicitudFirma)) || (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.value().equalsIgnoreCase(estadoSolicitudFirma))) {
 			play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada.");
-			//play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada y finalizada.");
+			play.Logger.info("Se procede a almacenar la firma en el AED");
+			almacenarFirma(solicitudFirmaPortafirma);
 			return true;
 		}
 		else {

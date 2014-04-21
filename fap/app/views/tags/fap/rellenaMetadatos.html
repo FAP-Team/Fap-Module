@@ -19,12 +19,11 @@
 
     //Preparo un contenedor para los campos ocultos
     var inicializaDivMetadatados = function() {
-        var divFormMD = $('#formHiddenMetadatos');
-        if (divFormMD.length <= 0) {
-            $('#rellenarMetadatos').append("<div id=\"formHiddenMetadatos\"></div>") ;
-            divFormMD = $('#formHiddenMetadatos');
-        }
-        divFormMD.empty();
+        $('#rellenarMetadatos').empty();
+        $('#rellenarMetadatos').append("<div id='listaMetadatos'>Lista de Metadatos<ul></ul></div>");
+        $("#listaMetadatos").hide()
+        $('#rellenarMetadatos').append("<div id='formHiddenMetadatos'></div>") ;
+        $('#formHiddenMetadatos').empty();
     }
 
     var toggleBotonRellenarMetadatos = function() {
@@ -91,6 +90,9 @@
         input.setAttribute("name", "metadatos[" + numero + "].valor");
         input.setAttribute("value", valor);
         $('#formHiddenMetadatos').append(input);
+        
+        $('#listaMetadatos>ul').append("<li>" + nombre + " - " + valor + "</li>");
+        $("#listaMetadatos").show();
     }
 
 </script>

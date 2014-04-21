@@ -29,5 +29,17 @@
 }%
    
         #{fap.boton idFijo:"BotonGuardarPopupMetadatos", titulo:"Guardar", noSubmit:true /}
+        
+
+    <script type="text/javascript">
+%{if ((metadatos != null) && (metadatos.size() > 0)) {
+    for(int i = 0; i < metadatos.size(); i++) {
+}%
+        $("label:contains(${metadatos.get(i).nombre})").next().children("input").val("${metadatos.get(i).valor}");
+%{
+    }
+}
+}%
+    </script>
 </div>
 #{/fap.popup}

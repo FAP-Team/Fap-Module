@@ -1,8 +1,11 @@
 package controllers.popups;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import messages.Messages;
 import models.Agente;
-import models.DefinicionMetadatos;
+import models.Metadato;
 import models.SolicitudGenerica;
 import models.TipoDocumento;
 import controllers.fap.AgenteController;
@@ -36,7 +39,8 @@ public class RellenarMetadatosController extends RellenarMetadatosControllerGen 
 
 		Agente logAgente = AgenteController.getAgente();
 		log.info("Visitando página: " + "gen/popups/RellenarMetadatos.html" + " Agente: " + logAgente);
-		renderTemplate("fap/Documentacion/PopupRellenarMetadatos.html", accion, idTipoDocumento, tipoDocumento, urlRedirigir);
+		List<Metadato> metadatos = (List<Metadato>) play.cache.Cache.get("metadatos");
+		renderTemplate("fap/Documentacion/PopupRellenarMetadatos.html", accion, idTipoDocumento, tipoDocumento, urlRedirigir, metadatos);
 	}
 	
 	public static void editar(String accion, Long idSolicitud, String uriTipoDocumento, String urlRedirigir) {

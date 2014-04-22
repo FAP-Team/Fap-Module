@@ -1,0 +1,25 @@
+{"metadatos documento":[
+    {
+        "tipoDocumento": "fs://aportacionsolicitud/v01",
+        "listaMetadatos": [
+                            {
+                                "nombre": "Metadato1",
+                                "valor":  "valor1"
+                            },
+                            {
+                                "nombre": "Metadato1",
+                                "valor":  "valor2"
+                            },
+                            {
+                                "nombre": "Metadato2",
+                                "valor":  "valor21"
+                            },
+                            {
+                                "nombre": "Metadato2",
+                                "valor":  "valor22"
+                            }
+                       
+                                                  
+                        ]
+    }
+]}

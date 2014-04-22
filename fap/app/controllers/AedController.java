@@ -30,6 +30,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.aed.ProcedimientosService;
 import utils.Fixtures;
+import utils.MetadatosUtils;
 
 import utils.JsonUtils;
 
@@ -121,34 +122,11 @@ public class AedController extends AedControllerGen {
      */
 	public static void actualizarMetadatos(String actualizarMetadatos) {
 		Metadatos.deleteAllMetadatos();
-		
-		Type type;
-		if ( new File(Play.applicationPath+"/conf/initial-data/metadatos.json").exists() ) {
-			type = new TypeToken<ArrayList<Metadatos>>(){}.getType();
-			List<Metadatos> listaMetadatos = JsonUtils.loadObjectFromJsonFile("conf/initial-data/metadatos.json", type);
-			// Averiguamos si hay algún conjunto de metadatos común para todos los tipos de documentos 
-			// (No está presente en el json la variable tipoDocumento, pero la entidad tiene el valor por defecto "ALL")
-			Metadatos metadatosComunes = new Metadatos();
-			for (Metadatos metadatos : listaMetadatos) {
-				if (metadatos.tipoDocumento.equals("ALL"))
-					metadatosComunes = metadatos;
-			}	
-			listaMetadatos.remove(metadatosComunes);
-
-			for (Metadatos metadatos : listaMetadatos) {
-				for (Metadato metadato : metadatosComunes.listaMetadatos) {
-					Metadato nuevoMetadatoComun = new Metadato();
-					nuevoMetadatoComun.nombre = metadato.nombre;
-					nuevoMetadatoComun.valor = metadato.valor;
-					metadatos.listaMetadatos.add(nuevoMetadatoComun);
-				}
-				metadatos.save();	
-			}
-			Messages.ok("Metadatos actualizados correctamente");
-		} 
-		else {
-			Messages.error("Los metadatos no se han podido actualizar correctamente");
-			play.Logger.info("No se puede leer el fichero que contiene los metadatos de los tipos de documentos (/conf/initial-data/metadatos.json)");
+		try {
+			MetadatosUtils.cargarJsonMetadatosTipoDocumento();
+			Messages.ok("Metadatos asociados a tipos de documentos cargados correctamente");
+		} catch(IllegalArgumentException | NullPointerException  e) {
+			Messages.error("Error cargando lo metadatos: " + e.getMessage());
 		}
 		Messages.keep();
 		AedController.actualizarMetadatosRender();

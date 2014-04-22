@@ -9,6 +9,8 @@ import static org.hamcrest.CoreMatchers.*;
 
 import play.test.UnitTest;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.DefinicionMetadato;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.ListaDefinicionMetadato;
+import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.ListaValorPosible;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
 
 public class TiposDocumentosWSUtilsTest extends UnitTest{
@@ -20,6 +22,7 @@ public class TiposDocumentosWSUtilsTest extends UnitTest{
 	public void convertTipoAed2TipoFapCorrecto() {
 		TipoDocumento tipoAed = new TipoDocumento();
 		tipoAed.setDescripcion(nombreExpected);
+		tipoAed.setDefinicionesMetadatos(getNuevaListaDefinicionMetadato());
 		models.TipoDocumento tipoFap = 
 				TiposDocumentosWSUtils.convertTipoAed2TipoFap(tipoAed);
 		assertThat(tipoFap.nombre, is(equalTo((nombreExpected))));
@@ -34,6 +37,7 @@ public class TiposDocumentosWSUtilsTest extends UnitTest{
 		tipoExpected.save();
 		
 		tipoAed.setUri(uriExpected);
+		tipoAed.setDefinicionesMetadatos(getNuevaListaDefinicionMetadato());
 		models.TipoDocumento tipoFap = 
 				TiposDocumentosWSUtils.convertTipoAed2TipoFap(tipoAed);
 		
@@ -60,11 +64,37 @@ public class TiposDocumentosWSUtilsTest extends UnitTest{
 		defAed.setDescripcion("Descripción");
 		defAed.setAutoGenerado(true);
 		defAed.setIdentificador("Nombre");
+		defAed.setValoresPosibles(getNuevaListaValorPosible());
 		
 		DefinicionMetadatos defFap = TiposDocumentosWSUtils.convertDefinicionAed2Fap(defAed);
 		
 		assertThat(defFap.descripcion, is(equalTo(defAed.getDescripcion())));
 		assertThat(defFap.autogenerado, is(equalTo(defAed.isAutoGenerado())));
 		assertThat(defFap.nombre, is(equalTo(defAed.getIdentificador())));
+		
+		assertThat(defFap.valoresPosibles.size(), is(equalTo(2)));
+		assertThat(defFap.valoresPosibles.contains("valor1"), is(equalTo(true)));
+		assertThat(defFap.valoresPosibles.contains("valor2"), is(equalTo(true)));
+	}
+	
+	
+	private ListaDefinicionMetadato getNuevaListaDefinicionMetadato() {
+		ListaDefinicionMetadato lista = new ListaDefinicionMetadato();
+		lista.getDefinicionMetadato().add(getNuevaDefinicionMetadato());
+		return lista;
+	}
+	
+	private DefinicionMetadato getNuevaDefinicionMetadato() {
+		DefinicionMetadato definicion = new DefinicionMetadato();
+		definicion.setDescripcion("NombreDefinicion");
+		definicion.setValoresPosibles(getNuevaListaValorPosible());
+		return definicion;
+	}
+	
+	private ListaValorPosible getNuevaListaValorPosible() {
+		ListaValorPosible valores = new ListaValorPosible();
+		valores.getValorPosible().add("valor1");
+		valores.getValorPosible().add("valor2");
+		return valores;
 	}
 }

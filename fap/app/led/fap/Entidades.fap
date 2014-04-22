@@ -851,6 +851,7 @@ Entidad Metadatos {
 }
 
 Entidad Metadato {
+    DefinicionMetadatos definicion
     String nombre
     String valor
 }
@@ -859,7 +860,9 @@ Entidad DefinicionMetadatos{
     String nombre
     String descripcion
     boolean autogenerado
-    OneToMany Metadato listaMetadatos
+    //OneToMany Metadato listaMetadatos
+    List<String> valoresPosibles
+    List<String> valoresPorDefecto
 }
 
 Entidad CargarTablaDeTablas extends Singleton{

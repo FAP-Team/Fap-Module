@@ -45,7 +45,16 @@ public class DefinicionMetadatos extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+	@Override
+	public void postInit() {
+		super.postInit();
+		valoresPosibles = new ArrayList<>();
+		valoresPorDefecto = new ArrayList<>();
+	}
 
+	public boolean esValido(String valor) {
+        return valoresPosibles.contains(valor);
+	}
 	// === MANUAL REGION END ===
 
 }

@@ -70,6 +70,15 @@ public class TipoDocumento extends FapModel {
 			play.Logger.warn("Alguno de los tipos de factura no existe en los tipos de documentos. Tipo facturas: " + tipos);
 		return listaTipos;
 	}
+	
+	public DefinicionMetadatos getDefinicionMetadatos(String nombre) {
+		for (DefinicionMetadatos def : definicionMetadatos) {
+			if (def.nombre.equals(nombre)) {
+				return def;
+			}
+		}
+		return null;
+	}
 
 	// === MANUAL REGION END ===
 

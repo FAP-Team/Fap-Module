@@ -234,12 +234,26 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			// Se añaden los documentos a notificar
 			for (DocumentoNotificacion doc : notificacion.documentosANotificar) {
-				notificacionCreateType.getUrisDocumentosANotificar().add(doc.uri);
+				Documento documento = Documento.findByUri(doc.uri);
+				if ((documento.clasificado) && (documento != null)){
+					notificacionCreateType.getUrisDocumentosANotificar().add(doc.uri);
+				}
+				else{
+					throw new NotificacionException ("No se pudo realizar la notificación debido a que hay documentos no" +
+							" clasificados: " + doc.uri);
+				}
 			}
 			
 			// Se añaden los documentos adjuntos
 			for (DocumentoNotificacion doc : notificacion.documentosAnexos) {
-				notificacionCreateType.getUrisDocumentosAdjuntos().add(doc.uri);
+				Documento documento = Documento.findByUri(doc.uri);
+				if ((documento.clasificado) && (documento != null)){
+					notificacionCreateType.getUrisDocumentosAdjuntos().add(doc.uri);
+				}
+				else{
+					throw new NotificacionException ("No se pudo realizar la notificación debido a que hay documentos no" +
+							" clasificados: " + doc.uri);
+				}
 			}
 			
 			NotificacionEnvioType notificacionEnvioType = new NotificacionEnvioType();

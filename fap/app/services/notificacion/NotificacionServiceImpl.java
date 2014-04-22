@@ -43,6 +43,7 @@ import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.Notificacio
 import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
 import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ResultadoType;
 
+import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
@@ -109,14 +110,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	        
         notificacionPort = notificacionService.getNotificacionService();
 			
-		Client client = ClientProxy.getClient(notificacionPort);
-	    HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-	        
-	    HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-	    httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-	    httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-	        
-	    httpConduit.setClient(httpClientPolicy);
+		PlatinoProxy.setProxy(notificacionPort, propertyPlaceholder);
  
 	    activo = FapProperties.getBoolean("fap.notificacion.activa");
 	}

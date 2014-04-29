@@ -3,19 +3,29 @@ package utils;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.inject.Inject;
+
+import messages.Messages;
 import models.DefinicionMetadatos;
 import models.TipoDocumento;
+import services.TiposDocumentosService;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import config.InjectorConfig;
+
+import static config.InjectorConfig.getInjector;
+
 public class MetadatosUtils {
 	
+	@Inject
+	static TiposDocumentosService tiposDocumentosService; 
 	
 	public static void cargarJsonMetadatosTipoDocumento() {
 		cargarJsonMetadatosTipoDocumento(null);
@@ -78,5 +88,34 @@ public class MetadatosUtils {
 						"Valor '%s' de metadato '%s' no válido", valor, nombre));
 			}
 		}
+	}
+
+	public static void cargarDefinicionesMetadatosPorUri(List<String> uris) {
+        if (tiposDocumentosService == null) {
+            tiposDocumentosService = getInjector().getInstance(TiposDocumentosService.class);
+        }
+		for (String uri : uris) {
+			TipoDocumento tipoDoc = TipoDocumento.find("byUri", uri).first();
+			if (tipoDoc == null) {
+				Messages.error("Tipo de documento " + uri + " no encontrado");
+				throw new IllegalArgumentException("Tipo de documento " + uri + " no encontrado");
+			}
+			List<DefinicionMetadatos> definiciones = 
+					tiposDocumentosService.getDefinicionesMetadatos(uri);
+			for (DefinicionMetadatos def : definiciones) {
+                play.Logger.info("Cargando definición %s para uri %s", def.nombre, uri);
+				def.save();
+			}
+			tipoDoc.definicionMetadatos.addAll(definiciones);
+			tipoDoc.save();	
+		}
+	}
+	
+	public static void cargarDefinicionesMetadatosPorTipo(List<TipoDocumento> tiposDocumento) {
+		List<String> uris = new ArrayList<String>();
+		for (TipoDocumento tipoDoc : tiposDocumento) {
+			uris.add(tipoDoc.uri);
+		}
+		cargarDefinicionesMetadatosPorUri(uris);
 	}
 }

@@ -48,12 +48,23 @@ public class DefinicionMetadatos extends FapModel {
 	@Override
 	public void postInit() {
 		super.postInit();
-		valoresPosibles = new ArrayList<>();
-		valoresPorDefecto = new ArrayList<>();
+		valoresPosibles = new ArrayList<String>();
+		valoresPorDefecto = new ArrayList<String>();
 	}
 
 	public boolean esValido(String valor) {
         return valoresPosibles.contains(valor);
+	}
+
+	public static int deleteAllDefiniciones() {
+		JPA.em().createNativeQuery("delete from definicionmetadatos_valorespordefecto").executeUpdate();
+		JPA.em().createNativeQuery("delete from definicionmetadatos_valoresposibles").executeUpdate();
+		JPA.em().createNativeQuery("delete from tipodocumento_definicionmetadatos").executeUpdate();
+		List<DefinicionMetadatos> definiciones = DefinicionMetadatos.findAll();
+		for (DefinicionMetadatos def : definiciones) {
+			def.delete();
+		}
+		return definiciones.size();
 	}
 	// === MANUAL REGION END ===
 

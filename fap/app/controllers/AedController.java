@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import com.google.gson.reflect.TypeToken;
 
 import messages.Messages;
+import models.DefinicionMetadatos;
 import models.Metadato;
-import models.Metadatos;
 import models.TableKeyValue;
 import models.TipoCriterio;
 import models.TipoDocumento;
@@ -116,17 +116,27 @@ public class AedController extends AedControllerGen {
     }
 
     /**
-     * Borra todos los metadatos de la base de datos, e inserta los presentes en metadatos.json
+     * Carga las definiciones de metadatos según tipo de documento
+     * Carga las asociaciones de metadatos por defecto según tipo de documento
      * 
      * @param actualizarMetadatos
      */
 	public static void actualizarMetadatos(String actualizarMetadatos) {
-		Metadatos.deleteAllMetadatos();
-		try {
-			MetadatosUtils.cargarJsonMetadatosTipoDocumento();
-			Messages.ok("Metadatos asociados a tipos de documentos cargados correctamente");
-		} catch(IllegalArgumentException | NullPointerException  e) {
-			Messages.error("Error cargando lo metadatos: " + e.getMessage());
+		DefinicionMetadatos.deleteAllDefiniciones();
+		List<TipoDocumento> tiposDocumento = TipoDocumento.findAll();
+        try {
+            MetadatosUtils.cargarDefinicionesMetadatosPorTipo(tiposDocumento);
+            Messages.ok("Definiciones de metadatos asociadas a documentos cargadas correctamente");
+        } catch (IllegalArgumentException e) {
+            Messages.error("Error cargando las definiciones de metadatos por tipo de documento");
+        }
+		if (!Messages.hasErrors()) {
+			try {
+				MetadatosUtils.cargarJsonMetadatosTipoDocumento();
+				Messages.ok("Metadatos asociados a tipos de documentos cargados correctamente");
+			} catch(IllegalArgumentException | NullPointerException  e) {
+				Messages.error("Error cargando los metadatos: " + e.getMessage());
+			}
 		}
 		Messages.keep();
 		AedController.actualizarMetadatosRender();

@@ -122,6 +122,11 @@ public class AedController extends AedControllerGen {
      * @param actualizarMetadatos
      */
 	public static void actualizarMetadatos(String actualizarMetadatos) {
+        if (!properties.FapProperties.getBoolean("fap.metadatos.activo")) {
+            Messages.error("Ha intentado actualizar los metadatos pero éstos están desactivados. Configure correctamente las propiedades de la aplicación.");
+            Messages.keep();
+            AedController.actualizarMetadatosRender();
+        }
 		DefinicionMetadatos.deleteAllDefiniciones();
 		List<TipoDocumento> tiposDocumento = TipoDocumento.findAll();
         try {

@@ -124,7 +124,7 @@ public class FapModule extends PlayAbstractModule {
 	}
 
 	protected void tiposDocumentos() {
-		bindLazySingletonOnDev(TiposDocumentosService.class, AedTiposDocumentosServiceImpl.class);
+		bindLazySingletonOnDev(TiposDocumentosService.class, FileSystemTiposDocumentosServiceImpl.class);
 	}
 
 }

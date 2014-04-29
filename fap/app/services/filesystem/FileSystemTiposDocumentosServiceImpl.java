@@ -1,6 +1,7 @@
 package services.filesystem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.xhtmlrenderer.css.parser.property.PrimitivePropertyBuilders.Src;
@@ -31,8 +32,20 @@ public class FileSystemTiposDocumentosServiceImpl implements
 		TipoDocumento doc = TipoDocumento.find("byUri", uri).first();
 		List<DefinicionMetadatos> lista = new ArrayList<DefinicionMetadatos>();
 		if (doc != null) {
-			lista = doc.definicionMetadatos;
-		}
+			//implementación falsa del servicio
+            play.Logger.info("FileSystemTiposDocumentosService: nueva definición para %s", uri);
+            DefinicionMetadatos def = new DefinicionMetadatos();
+            def.nombre = "Metadato1";
+            def.descripcion = "Definicion generada en FileSystemTiposDocumentosServiceImpl";
+            def.autogenerado = true;
+            def.valoresPosibles.addAll(Arrays.asList("valor1","valor2"));
+            lista.add(def);
+            def = new DefinicionMetadatos();
+            def.nombre = "Metadato2";
+            def.descripcion = "Definicion generada en FileSystemTiposDocumentosServiceImpl";
+            def.valoresPosibles.addAll(Arrays.asList("valor21","valor22"));
+            lista.add(def);
+        }
 		return lista;
 	}
 

@@ -140,6 +140,7 @@ h4. Visible
 | Define el tipo de trámite de modificación | *fap.tramitacion.tramite.modificacion.tipo* | | fap.tramitacion.tramite.modificacion.tipo=Solicitud |
 | Para inhabilitar el botón de finalizar la evaluación de una solicitud | *fap.baremacion.finalizar.evaluacion* | _[true / false]_ | fap.baremacion.finalizar.evaluacion=true
 | En la tabla de evaluaciones permitir que se recarguen los conceptos económicos | *fap.baremacion.evaluacion.permitirRecargarConceptos* | _[true / false]_ | fap.baremacion.evaluacion.permitirRecargarConceptos=true
+| Comprueba que los anexos (documentos adjuntos a la solicitud) han sido firmados antes de realizar la presentación | *fap.documentacion.comprobarAnexosFirmados* | _[true / false]_ | fap.documentacion.comprobarAnexosFirmados=true
 
 h3. Baremación
 

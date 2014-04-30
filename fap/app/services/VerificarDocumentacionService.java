@@ -194,6 +194,9 @@ public class VerificarDocumentacionService {
 	
 	static boolean comprobarFirma(Documento doc) {
 		play.Logger.info("Comprobando firmantes de %s", doc);
+        if (properties.FapProperties.getBoolean("fap.documentacion.comprobarAnexosFirmados") == false) {
+            return true;
+        }
 		if ((doc.firmantes == null) || (!doc.firmantes.hanFirmadoTodos())) {
 			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
 			Messages.error(String.format("El documento %s no ha sido firmado o faltan firmas.", descripcion));

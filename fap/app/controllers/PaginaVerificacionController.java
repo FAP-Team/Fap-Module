@@ -416,7 +416,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 				List<String> roles = ag.getSortRoles();
 				if (roles != null){
 					for(String rol : roles){
-						if ((rol != null) && (rol.equals("gestor"))){
+						if ((rol != null) && ((rol.equals("gestor") || rol.equals("gestorTenerife") || rol.equals("gestorLasPalmas")))){
 							result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
 						}
 					}

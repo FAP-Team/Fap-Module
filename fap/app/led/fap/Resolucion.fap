@@ -707,7 +707,7 @@ Permiso permisoGenerarInformeConComentarios {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor") and
 		resolucion.estadoInformeBaremacionConComentarios = null and
 		resolucion.estadoDocBaremacionResolucion = "clasificado"
 	return
@@ -719,7 +719,7 @@ Permiso permisoGenerarInformeSinComentarios {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor") and
 		resolucion.estadoInformeBaremacionSinComentarios = null
 		and resolucion.estadoDocBaremacionResolucion = "clasificado"
 	return 
@@ -731,7 +731,7 @@ Permiso permisoClasificarInformeConComentarios {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas",  "jefeServicio", "revisor")
 		and resolucion.estadoInformeBaremacionConComentarios != null
 		and resolucion.estadoInformeBaremacionConComentarios = "generado"
 	return
@@ -743,7 +743,7 @@ Permiso permisoClasificarInformeSinComentarios {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 		and resolucion.estadoInformeBaremacionSinComentarios != null
 		and resolucion.estadoInformeBaremacionSinComentarios = "generado"
 	return 
@@ -756,12 +756,12 @@ Permiso permisoClasificarDocBaremacion {
 	when
 		resolucion.estadoDocBaremacionResolucion != null and
 		resolucion.estadoDocBaremacionResolucion = "generado" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		editar
 	when
 		resolucion.estadoDocBaremacionResolucion != null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return 
 		visible
 }
@@ -771,12 +771,12 @@ Permiso permisoGenerarDocBaremacion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoDocBaremacionResolucion = null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		editar
 	when
 		resolucion.estadoDocBaremacionResolucion != null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return 
 		visible
 }
@@ -786,12 +786,12 @@ Permiso permisoCambioEstadoFecha {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoPublicacion = null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		editar
 	when
 		resolucion.estadoPublicacion != null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return 
 		visible
 }
@@ -810,12 +810,12 @@ Permiso permisoCopiaExpedientes {
 			resolucion.estado = "notificada" or
 			resolucion.estado = "publicadaYNotificada"
 		) and (
-			agente.rolActivo  in ("administrador", "gestor", "jefeServicio", "revisor")
+			agente.rolActivo  in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 		)
 	return
 		editar
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return 
 		visible
 }
@@ -828,7 +828,7 @@ Permiso permisoGenerarBaremacionResolucion {
 	when
 		resolucion.estadoPublicacion != null and
 		resolucion.estadoPublicacion = "publicada" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor") and
 		resolucion.conBaremacion = true
 	return
 		editar
@@ -846,7 +846,7 @@ Permiso permisoFirmarDocBaremacionResolucion {
 	when
 		resolucion.estadoPublicacion != null and
 		resolucion.estadoPublicacion = "documentoGenerado" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor") and
 		resolucion.estadoInformeBaremacionConComentarios = "clasificado" and
 		resolucion.estadoInformeBaremacionSinComentarios = "clasificado" and
 		resolucion.conBaremacion = true
@@ -873,7 +873,7 @@ Permiso mostrarDatosResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado != null and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return 
 		visible
 }
@@ -884,7 +884,7 @@ Permiso seleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "parcial" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas",  "jefeServicio", "revisor")
 	return
 		all
 }
@@ -906,7 +906,7 @@ Permiso seleccionarUnExpediente {
 	when
 		resolucion.modalidad="resolucionSimple" and
 		resolucion.estado = "borrador" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -917,7 +917,7 @@ Permiso noSeleccionarExpedientes {
 	when
 		resolucion.estado = "borrador" and
 		resolucion.tipoMultiple = "total" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -937,7 +937,7 @@ Permiso prepararResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado = "creada" and
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -951,7 +951,7 @@ Permiso firmaJefeServicio {
 	when
 		resolucion.estado in ("preparada")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 	when
@@ -967,7 +967,7 @@ Permiso esperaFirmaJefeServicio {
 	when
 		resolucion.estado in ("pendienteFirmaJefeServicio")
 		and resolucion.firmarJefeServicio = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 	when
@@ -987,7 +987,7 @@ Permiso firmaDirector {
 	when
 		resolucion.estado in ("firmadaJefeServicio")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 	when
@@ -1003,7 +1003,7 @@ Permiso esperaFirmaDirector {
 	when
 		resolucion.estado in ("pendienteFirmaDirector")
 		and resolucion.firmarDirector = "true"
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 	when
@@ -1018,7 +1018,7 @@ Permiso registrarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("firmada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1028,7 +1028,7 @@ Permiso publicarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada", "notificada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1038,7 +1038,7 @@ Permiso permisoOficioRemision {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "revisor")
+		agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "revisor")
 	return
 		all
 }
@@ -1048,7 +1048,7 @@ Permiso permisoGenerarOficioRemision {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "revisor")
+		agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "revisor")
 	return
 		all
 }
@@ -1058,7 +1058,7 @@ Permiso permisoFirmarOficioRemision {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "revisor")
+		agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "revisor")
 	return
 		all
 }
@@ -1068,7 +1068,7 @@ Permiso permisoNotificar {
 	vars
 		ResolucionFAP resolucion
 	when
-		agente.rolActivo in ("gestor", "administrador", "revisor")
+		agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "revisor")
 	return
 		all
 }
@@ -1080,7 +1080,7 @@ Permiso notificarResolucion {
 	when
 		resolucion.estado in ("registrada", "publicada")
 		and ((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")))
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1091,7 +1091,7 @@ Permiso finalizarResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("publicada", "notificada", "publicadaYNotificada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1101,7 +1101,7 @@ Permiso verDocumentoResolucion {
 		ResolucionFAP resolucion
 	when
 		resolucion.estado in ("registrada", "publicada", "notificada", "publicadaYNotificada", "finalizada")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1111,7 +1111,7 @@ Permiso permisoEnviarOficiosRemisionPortafirma {
 		ResolucionFAP resolucion
 	when
 	   ((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada")))
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1121,7 +1121,7 @@ Permiso permisoComprobarFirmasOficiosRemisionPortaFirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1131,7 +1131,7 @@ Permiso permisoOficiosRemisionFirmados {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionFirmados")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1141,7 +1141,7 @@ Permiso permisoOficiosRemisionPortaFirma {
 		ResolucionFAP resolucion
 	when
 		resolucion.estadoNotificacion in ("oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados")
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }
@@ -1151,7 +1151,7 @@ Permiso permisoOficiosRemisionProcesoPortaFirma {
 		ResolucionFAP resolucion
 	when
 		((resolucion.estadoNotificacion = null) or (resolucion.estadoNotificacion in ("noNotificada", "oficiosRemisionPendientesPortafirma")))
-		and agente.rolActivo in ("gestor", "administrador", "jefeServicio", "revisor")
+		and agente.rolActivo in ("gestor", "gestorTenerife", "gestorLasPalmas", "administrador", "jefeServicio", "revisor")
 	return
 		all
 }

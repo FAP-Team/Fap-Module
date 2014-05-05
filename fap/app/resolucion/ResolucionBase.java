@@ -188,6 +188,24 @@ public class ResolucionBase {
 	}
 	
 	/**
+	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará) pertenecientes a la provincia de Santa Cruz de Tenerife
+	 * @return
+	 */
+	public java.util.List<?> getSolicitudesAResolverSC (Long idResolucion) {
+		// TODO: filtrar la consulta para que devulve las solicitudes cuyo solicitante es de SC
+		return SolicitudGenerica.find("select solicitud from  SolicitudGenerica solicitud where solicitud.estado not in ('borrador') and solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_38')").fetch();
+	}
+	
+	/**
+	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará) pertenecientes a la provincia de Las Palmas de Gran Canaria
+	 * @return
+	 */
+	public java.util.List<?> getSolicitudesAResolverLP (Long idResolucion) {
+		// TODO: filtrar la consulta para que devulve las solicitudes cuyo solicitante es de SC
+		return SolicitudGenerica.find("select solicitud from  SolicitudGenerica solicitud where solicitud.estado not in ('borrador') and solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_35')").fetch();
+	}
+	
+	/**
 	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
 	 * @param idResolucion
 	 */

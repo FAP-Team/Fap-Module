@@ -199,6 +199,8 @@ ${metodoBorrar()}
 
 ${metodoValidateCopy()}
 
+${metodoIfCreandoValidateCopy()}
+
 ${metodoValidateCopyBeforeOpenPageTable()}
 
 ${metodoPermiso()}
@@ -1029,22 +1031,18 @@ public class ${controllerName} extends ${controllerGenName} {
 						creando = true;
 						}
 						""";
-			List<String> atributos =  new ArrayList<String>();
-			codigoCrear = """if (creando) {"""
-			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
-				atributos.addAll(item.name);
-				if ((!item.name.startsWith("id")) && (!item.isTransient))
-					codigoCrear += """
-					if (${lista.get(1)}.${item.name} != null){
-						valoresNuevos = new ArrayList<String>();
-						valoresNuevos.add(${lista.get(1)}.${item.name}.toString());
-						peticionModificacion.setValorCreado("${lista.get(1)}.${item.name}", new ArrayList<String>(), valoresNuevos);
-						hayModificaciones = true;
-						db${lista.get(0)}.${item.name} = ${lista.get(1)}.${item.name};
-					}
+
+			if (saveEntities.size() == 0 || (!editar && !crear)) {
+				codigoCrear = "";
+			} else {
+				codigoCrear = """
+						if (creando) {
+							ifCreandoValidateCopy(peticionModificacion, valoresAntiguos, valoresNuevos, hayModificaciones,  
+							${StringUtils.params(saveDbEntities.collect{if (saveEntities.contains(it)) return "${it.variableDb}, ${it.variable}";
+						else return "${it.typeDb}";})});
+						}
 					"""
 			}
-			codigoCrear += "}";
 		}
 		
 		return """
@@ -1065,6 +1063,43 @@ public class ${controllerName} extends ${controllerGenName} {
 				${gElement.saveCode()}
 			}
 		"""
+	}
+	
+	public String metodoIfCreandoValidateCopy(){
+		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		String codigoCrear = ""
+		if ((copia) && (!saveEntities.collect{ it.variableDb }.contains("dbSolicitud"))) {
+		
+			List<String> lista = saveEntities.collect{"${it.typeVariable}"}.join(" ").toString().split(" ");
+			codigoCrear = """
+	@Util
+	private static void ifCreandoValidateCopy(PeticionModificacion peticionModificacion,
+							List<String> valoresAntiguos,
+							List<String> valoresNuevos, 
+							boolean hayModificaciones, ${StringUtils.params(
+					saveDbEntities.collect{
+						if (saveEntities.contains(it)) return "${it.typeDb}, ${it.typeVariable}";
+						else return "${it.typeDb}";})}) {
+			"""
+				List<String> atributos =  new ArrayList<String>();
+				campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
+					atributos.addAll(item.name);
+					if ((!item.name.startsWith("id")) && (!item.isTransient))
+						codigoCrear += """
+					if (${lista.get(1)}.${item.name} != null){
+						valoresNuevos = new ArrayList<String>();
+						valoresNuevos.add(${lista.get(1)}.${item.name}.toString());
+						peticionModificacion.setValorCreado("${lista.get(1)}.${item.name}", new ArrayList<String>(), valoresNuevos);
+						hayModificaciones = true;
+						db${lista.get(0)}.${item.name} = ${lista.get(1)}.${item.name};
+					}
+					"""
+				}
+				codigoCrear += """
+				
+			}""";
+		}
+		return codigoCrear;
 	}
 	
 	public boolean algoQueGuardar(){

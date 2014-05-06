@@ -1,0 +1,28 @@
+%{
+play.mvc.Controller.session.put("username", "admin");
+controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+
+controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+    open('/#')
+    clickAndWait('link=Administración')
+    clickAndWait('link=Gestor Documental')
+    clickAndWait('//form[@id='configurar']/input[2]')
+    pause('3000')
+    waitForText('//div[@id='content']/div','*Se configuró correctamente el gestor documental*')
+    clickAndWait('//form[@id='actualizarTramites']/input[2]')
+    pause('3000')
+    assertText('//div[@id='content']/div','*Recuperados * tramites*')
+    %{ if(properties.FapProperties.getBoolean("fap.metadatos.activo")) { }%
+            clickAndWait('//form[@id='actualizarMetadatos']/input[2]')
+            assertText('//div[@id='content']/div','*Definiciones de metadatos asociadas a documentos cargadas correctamente*')
+            assertText('//div[@id='content']/div','*Metadatos asociados a tipos de documentos cargados correctamente*')
+    %{} else {}%
+            assertElementNotPresent('//form[@id='actualizarMetadatos']/input[2]')
+            assertNotText('//div[2]/p','*Metadatos*')
+    %{}}%
+
+}%
+#{/selenium}

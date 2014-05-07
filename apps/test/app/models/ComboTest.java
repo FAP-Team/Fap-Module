@@ -34,6 +34,18 @@ public class ComboTest extends FapModel {
 	@ValueFromTable("municipios")
 	public String municipios;
 
+	@ValueFromTable("provin")
+	public String provin;
+
+	@ValueFromTable("islitas")
+	public String islitas;
+
+	@ValueFromTable("tipoCentros")
+	public String tipoCentros;
+
+	@ValueFromTable("islasTipoCentroCide")
+	public String islasTipoCentroCide;
+
 	@ValueFromTable("ComboTestList")
 	public String list;
 

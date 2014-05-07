@@ -12,8 +12,11 @@ h3. Versión 2.4RC5
 * Incorporación de la librería de certificados
 * Actualización de la librería de notificaciones (se ha cambiado el nombre del paquete de esta librería)
 * Properties de proxy añadidas con valores por defecto
-* Se pone a true el campo clasificado del documento de notificación marcada como respondida
+* Se pone a true el campo clasificado de los documentos de notificación "ACUSE_RECIBO" y "MARCADA_RESPONDIDA".
 * Se comprueba que el documento oficio de remisión esté creado en la línea de resolución y se modifican permisos de oficios de remisión.
+* Arreglado fallo a la hora de seleccionar un expediente en la resolución simple.
+* Añadida documentacion de properties que no estaban incluidas
+* Arreglado fallo al notificar una resolución
 
 h3. Versión 2.4RC4
 

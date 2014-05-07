@@ -109,6 +109,8 @@ public class SecureFap extends Secure {
 			return permisoFirmarOficioRemision(_permiso, action, ids, vars);
 		else if ("permisoNotificar".equals(id))
 			return permisoNotificar(_permiso, action, ids, vars);
+		else if ("notificarResolucion".equals(id))
+			return notificarResolucion(_permiso, action, ids, vars);
 		else if ("noHayverificacion".equals(id))
 			return noHayverificacion(_permiso, action, ids, vars);
 		else if ("permisoCopiaExpedientes".equals(id))
@@ -1299,6 +1301,28 @@ public class SecureFap extends Secure {
 		return new ResultadoPermiso(Accion.All);
 	}
 
+	private ResultadoPermiso notificarResolucion(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		//Variables
+		Agente agente = AgenteController.getAgente();
+
+		ResolucionFAP resolucion = getResolucionFAP(ids, vars);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "gestor", "administrador", "revisor")) {
+			if (utils.StringUtils.in(resolucion.estado.toString(), "registrada", "publicada")) {
+				if ((resolucion.estadoNotificacion == null) || (utils.StringUtils.in(resolucion.estadoNotificacion.toString(), "noNotificada", "oficiosRemisionPendientesPortafirma", "oficiosRemisionFirmados"))) {
+					return new ResultadoPermiso(Accion.All);
+				}
+				for (LineaResolucionFAP linea: resolucion.lineasResolucion) {
+					if (!linea.notificada) {
+						return new ResultadoPermiso(Accion.All);
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+	
 	public ResolucionFAP getResolucionFAP(Map<String, Long> ids, Map<String, Object> vars) {
 		if (vars != null && vars.containsKey("resolucionFAP"))
 			return (ResolucionFAP) vars.get("resolucionFAP");
@@ -1582,4 +1606,5 @@ public class SecureFap extends Secure {
 
 		return null;
 	}
+
 }

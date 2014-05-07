@@ -1,0 +1,36 @@
+h1. Servicio de Portafirma
+
+h2. Descripción
+
+El servicio de Portafirma es un servicio que permite el acceso al portafirma electrónico de la ACIISI.
+
+* Crear una solicitud de firma.
+* Obtener el estado de la solicitud.
+* Eliminar la solicitud de una firma.
+* Comprobar si la solicitud ya ha sido firmada.
+* Obtener la lista de los usuarios que admiten el envío de solicitudes para firmar.
+
+h2. Servicios disponibles
+
+En FAP tenemos 2 posibles servicios a utilizar:
+
+* **PortafirmaImpl**: Utiliza el servicio web creado por la ACIISI.
+* **FileSystemPortafirmaImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
+
+h2. Configuración en FAP
+
+bc. 
+# -----------------------------------------------------------------------------------------
+# Configuración de Portafirma
+# -----------------------------------------------------------------------------------------
+fap.portafirma.secret.key=undefined
+portafirma.usuario=42022015A
+portafirma.urlCorreoRedireccion=http://wwww.gobiernodecanarias/aciisi/jano/pre/prebt/c201201
+portafirma.resolucion.titulo=RESOLUCIÓN POR LA QUE SE CONCEDEN ... 2012
+portafirma.resolucion.descripcion=RESOLUCIÓN DEL DIRECTOR DE LA AGENCIA CANARIA DE INVESTIGACIÓN, INNOVACIÓN Y SOCIEDAD DE LA INFORMACIÓN, POR LA QUE SE CONCEDEN AYUDAS ... 2012
+portafirma.resolucion.comentario=Solicitud de Firma de Resolución. Deb estar firmada previamente por el Jefe de Servicio y reenciar al Director de ACIISI
+#PRE
+portafirma.webservice.wsdlURL=http://10.140.209.249:8180/servicios/PortafirmaServiceImpl
+#PRO
+#portafirma.webservice.wsdlURL=http://10.140.209.67:8280/servicios/PortafirmaServiceImpl
+

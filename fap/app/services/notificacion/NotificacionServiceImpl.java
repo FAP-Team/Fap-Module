@@ -43,6 +43,7 @@ import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.Notificacio
 import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.NotificacionType;
 import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.ResultadoType;
 
+import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
@@ -109,14 +110,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 	        
         notificacionPort = notificacionService.getNotificacionService();
 			
-		Client client = ClientProxy.getClient(notificacionPort);
-	    HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-	        
-	    HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-	    httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-	    httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-	        
-	    httpConduit.setClient(httpClientPolicy);
+		PlatinoProxy.setProxy(notificacionPort, propertyPlaceholder);
  
 	    activo = FapProperties.getBoolean("fap.notificacion.activa");
 	}
@@ -234,12 +228,26 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			// Se añaden los documentos a notificar
 			for (DocumentoNotificacion doc : notificacion.documentosANotificar) {
-				notificacionCreateType.getUrisDocumentosANotificar().add(doc.uri);
+				Documento documento = Documento.findByUri(doc.uri);
+				if ((documento.clasificado) && (documento != null)){
+					notificacionCreateType.getUrisDocumentosANotificar().add(doc.uri);
+				}
+				else{
+					throw new NotificacionException ("No se pudo realizar la notificación debido a que hay documentos no" +
+							" clasificados: " + doc.uri);
+				}
 			}
 			
 			// Se añaden los documentos adjuntos
 			for (DocumentoNotificacion doc : notificacion.documentosAnexos) {
-				notificacionCreateType.getUrisDocumentosAdjuntos().add(doc.uri);
+				Documento documento = Documento.findByUri(doc.uri);
+				if ((documento.clasificado) && (documento != null)){
+					notificacionCreateType.getUrisDocumentosAdjuntos().add(doc.uri);
+				}
+				else{
+					throw new NotificacionException ("No se pudo realizar la notificación debido a que hay documentos no" +
+							" clasificados: " + doc.uri);
+				}
 			}
 			
 			NotificacionEnvioType notificacionEnvioType = new NotificacionEnvioType();
@@ -330,11 +338,15 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			notificacion.save();
 		}
+		catch (javax.xml.ws.soap.SOAPFaultException e) {
+			play.Logger.error("La notificación fue creada pero no se pudo enviar: "+e.getMessage());
+			throw new NotificacionException("La notificación fue creada pero no se pudo enviar.");
+		}
 		catch (es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionException ex1) {
 			play.Logger.error(String.format(EXCEPTION_CON_WS, idGestor, "puesta a disposición", uriNotificacion), ex1);
 			throw new NotificacionException(MSG_CON_WS + ex1.getMessage(), ex1);
 		} catch (Exception ex4) {
-			play.Logger.error(String.format(EXCEPTION_DESCONOCIDO + ex4.getMessage(), idGestor, "puesta a dispoción", uriNotificacion));
+			play.Logger.error(String.format(EXCEPTION_DESCONOCIDO + ex4.getMessage(), idGestor, "puesta a disposición", uriNotificacion));
 			throw new NotificacionException(MSG_DESCONOCIDO + ex4.getMessage(), ex4);
 		}
 		
@@ -361,6 +373,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 				
 				// Se actualizan las propiedades del documento
 				dbNotificacion.documentoAcuseRecibo.uri = uriDoc;
+				dbNotificacion.documentoAcuseRecibo.clasificado = true;
 				dbNotificacion.documentoAcuseRecibo.save();
 				
 				// Se cambia el estado de la notificación
@@ -711,6 +724,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 				
 				// Se actualizan las propiedades del documento
 				dbNotificacion.documentoRespondida.uri = uriDoc;
+				dbNotificacion.documentoRespondida.clasificado = true;
 				dbNotificacion.documentoRespondida.save();
 				
 				// Se cambia el estado de la notificación

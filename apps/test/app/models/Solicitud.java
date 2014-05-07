@@ -96,10 +96,6 @@ public class Solicitud extends SolicitudGenerica {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public PruebaConversion pruebaConversion;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "solicitud_registros")
-	public List<Registro> registros;
-
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SavePages savePages;
 
@@ -208,9 +204,6 @@ public class Solicitud extends SolicitudGenerica {
 			pruebaConversion = new PruebaConversion();
 		else
 			pruebaConversion.init();
-
-		if (registros == null)
-			registros = new ArrayList<Registro>();
 
 		if (savePages == null)
 			savePages = new SavePages();

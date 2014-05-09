@@ -60,6 +60,10 @@ public class DefinicionMetadatos extends FapModel {
 		JPA.em().createNativeQuery("delete from definicionmetadatos_valorespordefecto").executeUpdate();
 		JPA.em().createNativeQuery("delete from definicionmetadatos_valoresposibles").executeUpdate();
 		JPA.em().createNativeQuery("delete from tipodocumento_definicionmetadatos").executeUpdate();
+		List<Metadato> metadatos = Metadato.findAll();
+		for (Metadato metadato : metadatos) {
+			metadato.delete();
+		}
 		List<DefinicionMetadatos> definiciones = DefinicionMetadatos.findAll();
 		for (DefinicionMetadatos def : definiciones) {
 			def.delete();

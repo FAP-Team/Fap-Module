@@ -80,6 +80,16 @@ public class TipoDocumento extends FapModel {
 		return null;
 	}
 
+	public static int deleteAllTipoDocumento() {
+		Logger.info("Eliminando todos los %s", TipoDocumento.class);
+		DefinicionMetadatos.deleteAllDefiniciones();
+		List<TipoDocumento> tipos = TipoDocumento.findAll();
+		for (TipoDocumento tipo : tipos) {
+			tipo.delete();
+		}
+		return tipos.size();
+	}
+
 	// === MANUAL REGION END ===
 
 }

@@ -172,7 +172,7 @@ Entidad Documento {
 	String firmadoVisible transient
 	String firmadoVisibleLocal transient
 	Firmantes firmantes
-	OneToMany Metadato metadatos
+	//OneToMany Metadato metadatos
 }
 
 // La entidad Documentación agrupa aportaciones de documentos
@@ -844,7 +844,8 @@ Entidad CertificadoSolicitado {
 }
 
 Entidad Metadato {
-    DefinicionMetadatos definicion
+    Documento documento cascadeType=NONE
+    DefinicionMetadatos definicion cascadeType=NONE
     String nombre
     String valor
 }

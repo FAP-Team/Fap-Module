@@ -272,6 +272,16 @@ public class Documento extends FapModel {
 		firmantes = doc.firmantes;
 	}
 
+
+    public List<Metadato> getMetadatos() {
+        List<Metadato> metadatos = Metadato.find("byDocumento_id", id).fetch();
+        return metadatos;
+    }
+
+    public Metadato getMetadatos(int i) {
+        return getMetadatos().get(i);
+    }
+
 	// === MANUAL REGION END ===
 
 }

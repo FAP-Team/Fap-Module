@@ -33,6 +33,14 @@ public class Metadato extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	// === MANUAL REGION END ===
+    public Metadato(DefinicionMetadatos definicion, String valor, Documento documento) {
+        this.documento = documento;
+        this.definicion = definicion;
+        this.nombre = definicion.nombre;
+        this.valor = valor;
+    }
+
+
+    // === MANUAL REGION END ===
 
 }

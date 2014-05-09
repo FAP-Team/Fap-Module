@@ -64,7 +64,7 @@ public class Tramite extends FapModel {
 			tramite.documentos = null;
 			tramite.delete();
 		}
-		TipoDocumento.deleteAll();
+		TipoDocumento.deleteAllTipoDocumento();
 		TipoCodigoExclusion.deleteAll();
 		TiposCodigoRequerimiento.deleteAll();
 	}

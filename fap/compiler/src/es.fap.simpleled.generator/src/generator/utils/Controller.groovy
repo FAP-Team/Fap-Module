@@ -1806,8 +1806,10 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String crearLogicaCopiarMetadatos() {
 		if (conMetadatos) {
 		return """
+            dbDocumento.rellenarMetadatosAutomaticos();
 			for (Metadato metadato:metadatos) {
-				dbDocumento.metadatos.add(metadato);
+				metadato.documento = dbDocumento;
+				metadato.save();
 			}
 			dbDocumento.save();
 			"""

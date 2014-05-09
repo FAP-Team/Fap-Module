@@ -1,7 +1,7 @@
-# Ficheros que se ignorarán #
+# Ficheros que se ignorarÃ¡n #
 #############################
 
-# Añadimos el fichero de configuración, para no incluir información importante
+# AÃ±adimos el fichero de configuraciÃ³n, para no incluir informaciÃ³n importante
 fap/conf/application.conf
 fap/app/platino/client_sign.properties
 
@@ -11,6 +11,11 @@ fap/app/platino/client_sign.properties
 eclipse/
 modules/
 *.jks
+
+# Ficheros configuracion IntelliJ
+*.ipr
+*.iws
+*.iml
 
 .*
 !.gitignore
@@ -103,7 +108,7 @@ apps/*/dist
 apps/test/app/DiffGen.patch
 fap/app/DiffGen.patch
 
-# Configuración de platino
+# Configuraciï¿½n de platino
 apps/test/conf/platino
 
 #Gestor documental FileSystem
@@ -116,12 +121,12 @@ fap/app/listas/initial-data/paginasMsj.yml
 fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
-#Aplicación Cuadro de Mandos
+#Aplicaciï¿½n Cuadro de Mandos
 apps/cuadroMandos/tmp/*
 apps/cuadroMandos/app/listas/initial-data/*.yml
 apps/cuadroMandos/app/views/gen/*
 
-#Aplicación Genérica
+#Aplicaciï¿½n Genï¿½rica
 apps/aplicacionGenerica/gestorDocumental/temporal/*
 apps/aplicacionGenerica/gestorDocumental/clasificado/*
 apps/aplicacionGenerica/conf/platino

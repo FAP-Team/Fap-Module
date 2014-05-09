@@ -67,6 +67,41 @@ public class DefinicionMetadatosTest extends UnitTest {
 	}
 
     @Test
+    public void crearNuevoMetadatoAPartirDefinicion() {
+        DefinicionMetadatos dmd = getNuevaDefinicion();
+        dmd.save();
+        TipoDocumento tipoDoc = getNuevoTipoDocumento();
+        tipoDoc.save();
+        Documento doc = getNuevoDocumento();
+        doc.tipo = tipoDoc.uri;
+        doc.save();
+        List<Metadato> metadatos = dmd.crearMetadatosPorDefecto(doc);
+
+        assertThat(metadatos, is(not(equalTo(null))));
+        assertThat(metadatos.size(), is(equalTo(dmd.valoresPorDefecto.size())));
+        int i = 0;
+        for(String valor : dmd.valoresPorDefecto) {
+            assertThat(metadatos.get(i).nombre, is(equalTo(dmd.nombre)));
+            assertThat(metadatos.get(i).documento, is(equalTo(doc)));
+            assertThat(metadatos.get(i).valor, is(equalTo(valor)));
+            i++;
+        }
+        assertThat(metadatos.contains(DEF_METADATOS_VALORES_NO_VALIDOS.get(0)), is(false));
+        eliminaDocumento(doc);
+    }
+
+    @Test
+    public void excepcionSiDocNoGuardado() {
+        DefinicionMetadatos dmd = getNuevaDefinicion();
+        try {
+            dmd.crearMetadatosPorDefecto(new Documento());
+            fail("No lanzó la excepción");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(IllegalStateException.class)));
+        }
+    }
+
+    @Test
     public void guardaListasValores() {
         DefinicionMetadatos dmdExpected = getNuevaDefinicion();
         dmdExpected.save();

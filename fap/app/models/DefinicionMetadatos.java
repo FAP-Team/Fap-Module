@@ -70,6 +70,24 @@ public class DefinicionMetadatos extends FapModel {
 		}
 		return definiciones.size();
 	}
+
+	public List<Metadato> crearMetadatosPorDefecto(Documento doc) {
+		List<Metadato> lista = new ArrayList<Metadato>();
+        try {
+            for (String valor : valoresPorDefecto) {
+                Metadato md = new Metadato(this, valor, doc);
+                md.documento = doc;
+                md.save();
+                lista.add(md);
+            }
+        } catch (IllegalStateException e) {
+            String mensajeError = "Error al guardar los Metadatos asociados al documento."
+                    + ". Tanto la DefinicionMetadatos como el Documento han de estar en BBDD primero.";
+            play.Logger.error(mensajeError);
+            throw e;
+        }
+        return lista;
+	}
 	// === MANUAL REGION END ===
 
 }

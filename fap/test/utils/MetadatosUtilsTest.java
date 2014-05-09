@@ -3,6 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
+import messages.Messages;
 import models.DefinicionMetadatos;
 import models.Metadato;
 import models.TipoDocumento;
@@ -29,6 +30,7 @@ public class MetadatosUtilsTest extends UnitTest {
 		Metadato.deleteAll();
 		DefinicionMetadatos.deleteAllDefiniciones();
 		TipoDocumento.deleteAll();
+        Messages.clear();
 	}
 	
 	private TipoDocumento inicializaDefinicionesMetadatos() {

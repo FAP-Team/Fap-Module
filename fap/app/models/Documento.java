@@ -272,6 +272,14 @@ public class Documento extends FapModel {
 		firmantes = doc.firmantes;
 	}
 
+	public void rellenarMetadatosAutomaticos() {
+		TipoDocumento tipoDoc = TipoDocumento.find("byUri", tipo).first();
+		for (DefinicionMetadatos def : tipoDoc.definicionMetadatos) {
+            def = DefinicionMetadatos.findById(def.id);
+			def.crearMetadatosPorDefecto(this);
+		}
+		save();
+	}
 
     public List<Metadato> getMetadatos() {
         List<Metadato> metadatos = Metadato.find("byDocumento_id", id).fetch();

@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.4RC6
+* FixedBug: Se ha corregido el error en combos dependientes cuando tenían valores previos en bbdd.
+	No se pueden declarar listas en las cuales la clave tenga guiones bajos.
+
 h3. Versión 2.4RC5
 
 * FixedBug: Se ha corregido el método encriptarPassword

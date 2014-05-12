@@ -98,7 +98,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientes() {
 		
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		Long idResolucionFAP = ids.get("idResolucionFAP");
@@ -119,7 +118,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientesUnico() {
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
+
+		// Obtenemos el usuario conectado al sistema y el rol activo
+		Agente usuario = AgenteController.getAgente();
+		String rolActivo = usuario.getRolActivo();
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		try {
@@ -127,7 +129,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		} catch (Throwable e) {
 			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
 		}
-		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		
+		java.util.List<SolicitudGenerica> rows;
+		// Listamos los expedientes segun la provincia a la que esta asignado el gestor o todos
+		if(rolActivo.equals("gestorTenerife")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverSC(ids.get("idResolucionFAP"));
+		} else if(rolActivo.equals("gestorLasPalmas")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverLP(ids.get("idResolucionFAP"));
+		}else {
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		}
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);

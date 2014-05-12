@@ -9,12 +9,19 @@
 #{selenium}
 	open(/Principal/solicitudes)
 	waitForPageToLoad()
+	// Simulamos que el usuario a seleccionado el rol de Usuario para que cargue la lista de solicitudes
+	click(//li[@class='dropdown'])
+	click(link=Usuario)
+	
 	waitForElementPresent(//div[text()='Borrador'])
 	
     open('/Solicitud/combos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     
+	//select('solicitud_comboTest_list', label=B)
     assertValue('solicitud_comboTest_list', 'b')
     //select('solicitud_comboTest_list', label=B)
+	//select('solicitud_comboTest_listMultiple', label=A)
+	//select('solicitud_comboTest_listMultiple', label=C)
     assertSelectedLabels('solicitud_comboTest_listMultiple', 'A,C')
 #{/selenium}

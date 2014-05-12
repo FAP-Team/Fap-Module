@@ -11,6 +11,8 @@
 #{selenium}
 	open('Principal/solicitudes')
 	waitForPageToLoad()
+	click(//li[@class='dropdown'])
+	click(link=Usuario)
 	waitForElementPresent(//div[text()='Borrador'])
     open('/Solicitud/elementosbasicos?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()

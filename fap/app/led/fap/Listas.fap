@@ -107,6 +107,8 @@ Lista roles crearEnumerado {
 	administrador: "Administrador"
 	usuario: "Usuario"
 	gestor: "Gestor"
+	gestorTenerife: "Gestor Santa Cruz"
+	gestorLasPalmas: "Gestor Las Palmas"
 	revisor: "Revisor"
 	evaluador: "Evaluador"
 	lector: "Lector"

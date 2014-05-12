@@ -150,7 +150,17 @@ public class SolicitudesController extends SolicitudesControllerGen {
 	
 	public static void tablalistaSolicitudes() {
 		java.util.List<SolicitudGenerica> rows = new ArrayList<SolicitudGenerica>();
-		java.util.List<SolicitudGenerica> allrows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
+		Agente usuario = AgenteController.getAgente();
+		String rolActivo = usuario.getRolActivo();
+		
+		java.util.List<SolicitudGenerica> allrows = null;
+		if(rolActivo.equals("gestorTenerife")){
+			allrows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_38')").fetch();
+		}else if(rolActivo.equals("gestorLasPalmas")){
+			 allrows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud where solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_35')").fetch();
+		}else{
+			allrows = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud").fetch();
+		}
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		for (SolicitudGenerica solicitud : allrows) {
 			Map<String, Object> vars = new HashMap<String, Object>();

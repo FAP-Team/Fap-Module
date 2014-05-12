@@ -12,6 +12,10 @@
     // Open the home page, and check that no error occured
    	open(/Principal/solicitudes)
 	waitForPageToLoad()
+	
+	// Simulamos que el usuario a seleccionado el rol de Usuario para que cargue la lista de solicitudes
+	click(//li[@class='dropdown'])
+	click(link=Usuario)
 	waitForElementPresent(//div[text()='Borrador'])
 	
 	mouseOver(//div[text()='${s.id}']/parent::td/parent::tr)

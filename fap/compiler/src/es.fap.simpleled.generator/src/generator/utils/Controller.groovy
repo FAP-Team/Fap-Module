@@ -1807,9 +1807,11 @@ public class ${controllerName} extends ${controllerGenName} {
 		if (conMetadatos) {
 		return """
             dbDocumento.rellenarMetadatosAutomaticos();
-			for (Metadato metadato:metadatos) {
-				metadato.documento = dbDocumento;
-				metadato.save();
+            if (metadatos != null) {
+                for (Metadato metadato:metadatos) {
+                    metadato.documento = dbDocumento;
+                    metadato.save();
+                }
 			}
 			dbDocumento.save();
 			"""

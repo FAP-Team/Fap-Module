@@ -76,7 +76,6 @@ public class DefinicionMetadatos extends FapModel {
         try {
             for (String valor : valoresPorDefecto) {
                 Metadato md = new Metadato(this, valor, doc);
-                md.documento = doc;
                 md.save();
                 lista.add(md);
             }

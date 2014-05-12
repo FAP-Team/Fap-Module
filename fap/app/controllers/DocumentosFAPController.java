@@ -43,4 +43,21 @@ public class DocumentosFAPController extends DocumentosFAPControllerGen {
 		return idDocumento;
 		
 	}
+
+    @Util
+    public static void DocumentosFAPBindReferences(Documento documento, java.io.File fileAportacion, List<Metadato> metadatos) {
+        if (metadatos == null) {
+            return;
+        }
+        Long idDocumento = documento.id;
+        TipoDocumento tipoDoc = TipoDocumento.find("byUri", documento.tipo).first();
+        List<DefinicionMetadatos> definiciones = tipoDoc.definicionMetadatos;
+        for (Metadato md : metadatos) {
+            for (DefinicionMetadatos definicion : definiciones) {
+                if (definicion.nombre.equals(md.nombre)) {
+                    md.definicion = definicion;
+                }
+            }
+        }
+    }
 }

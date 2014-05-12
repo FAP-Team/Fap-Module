@@ -1806,14 +1806,18 @@ public class ${controllerName} extends ${controllerGenName} {
 	private String crearLogicaCopiarMetadatos() {
 		if (conMetadatos) {
 		return """
-            dbDocumento.rellenarMetadatosAutomaticos();
-            if (metadatos != null) {
-                for (Metadato metadato:metadatos) {
-                    metadato.documento = dbDocumento;
-                    metadato.save();
+            if (properties.FapProperties.getBoolean("fap.metadatos.activo")) {
+                dbDocumento.rellenarMetadatosAutomaticos();
+                if (metadatos != null) {
+                    for (Metadato metadato:metadatos) {
+                        if(!(metadato.valor == null) && !("".equals(metadato.valor.trim()))) {
+                            metadato.documento = dbDocumento;
+                            metadato.save();
+                        }
+                    }
                 }
-			}
-			dbDocumento.save();
+                dbDocumento.save();
+            }
 			"""
 		} else {
 			return "";

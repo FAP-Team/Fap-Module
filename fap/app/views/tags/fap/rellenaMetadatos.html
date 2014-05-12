@@ -71,7 +71,9 @@
             var valores =  $('#FormularioPopupRellenarMetadatos').children().filter(".control-group").children().filter('.controls').children().filter(':input');
 
             for(var i = 0; i < valores.length; i++) {
-               crearHiddenMetadato(i, nombres[i].innerHTML.trim(), valores[i].value);
+                if(valores[i].value.trim().length > 0){
+                    crearHiddenMetadato(i, nombres[i].innerHTML.trim(), valores[i].value.trim());
+                }
             }
             popup_hide("${popup_rellenarMD}_popup");
             popupMostrado = true;

@@ -20,11 +20,31 @@ if (properties.FapProperties.getBoolean("fap.metadatos.activo")) {
 }%
         assertElementPresent('id=botonRellenarMetadatos')
         click('id=botonRellenarMetadatos')
-        pause('5000')
-        assertElementPresent('id=BotonGuardarPopupMetadatos')
-        type('id=metadatos_nombre','valorMetadatoTest')
+        waitForElementPresent('id=BotonGuardarPopupMetadatos')
+        type('id=metadatos_nombre','valor22')
         click('id=BotonGuardarPopupMetadatos')
-        assertElementPresent('css=#formHiddenMetadatos > input:nth-child(1)','valorMetadatoTest')
+        assertElementPresent('css=#formHiddenMetadatos>input:nth-child(1)','valor22')
+        waitForElementPresent('css=input.btn.default')
+        click('css=input.btn.default')
+        waitForPageToLoad()
+        waitForText('css=div.alert.alert-error','*Error al guardar. La página contiene errores.*')
+        click('link=Ver detalles')
+        assertNotText('css=div.alert.alert-error>ul','*El metadato * no tiene un valor válido*')
+        //Valor no valido
+        click('id=botonRellenarMetadatos')
+        waitForElementPresent('id=BotonGuardarPopupMetadatos')
+        type('id=metadatos_nombre','valorNoValido')
+        click('id=BotonGuardarPopupMetadatos')
+        assertElementPresent('css=#formHiddenMetadatos> input:nth-child(1)','valorNovalido')
+        waitForElementPresent('css=input.btn.default')
+        click('css=input.btn.default')
+        waitForPageToLoad()
+        waitForText('css=div.alert.alert-error','*Error al guardar. La página contiene errores. Ver detalles*')
+        click('link=Ver detalles')
+        waitForText('css=div.alert.alert-error>ul','*El metadato * no tiene un valor válido*')
+
+
+
 %{} else {}%
         assertElementNotPresent('id=botonRellenarMetadatos')
 %{}}%

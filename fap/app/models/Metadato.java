@@ -40,6 +40,9 @@ public class Metadato extends FapModel {
         this.valor = valor;
     }
 
+    public boolean esValido() {
+        return definicion.esValido(valor);
+    }
 
     // === MANUAL REGION END ===
 

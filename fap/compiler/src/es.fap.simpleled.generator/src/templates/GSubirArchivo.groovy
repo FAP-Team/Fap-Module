@@ -122,6 +122,12 @@ public class GSubirArchivo extends GSaveCampoElement{
 				else{
 					${checkFile}
 				}""";
+        if (subirArchivo.conMetadatos) {
+            out += "if ((metadatos != null) && (metadatos.size() >= 0)) {for (Metadato md : metadatos) { if" +
+                    "(!md.esValido()) { validation.addError(\"${campo.firstLower()}.metadatos\"," +
+                    " \"El metadato \" + md.nombre + \" no tiene un " +
+                    "valor válido\");}}}"
+        }
 		
 		if((subirArchivo.listarDocumentosSubidos != null) && subirArchivo.listarDocumentosSubidos)
 			out += """}""";

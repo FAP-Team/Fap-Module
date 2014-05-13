@@ -53,7 +53,11 @@ public class DefinicionMetadatos extends FapModel {
 	}
 
 	public boolean esValido(String valor) {
-        return valoresPosibles.contains(valor);
+		if ((valoresPosibles == null) || (valoresPosibles.size() == 0)) {
+			return true;
+		} else {
+			return valoresPosibles.contains(valor);
+		}
 	}
 
 	public static int deleteAllDefiniciones() {

@@ -7,6 +7,7 @@ import messages.Messages.MessageType;
 import models.Agente;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -22,7 +23,11 @@ import java.util.ArrayList;
 import static junit.framework.Assert.*;
 
 public class TableRenderResponseTest extends Assert {
-
+    @Before
+    public void vaciarMensajes() {
+        Messages.clear();
+    }
+    
 	@Test
 	public void emptyRows(){
 		TableRenderResponse<TableRenderResponseTestMock> response = new TableRenderResponse<TableRenderResponseTestMock>(null);

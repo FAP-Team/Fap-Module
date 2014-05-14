@@ -33,7 +33,8 @@ import utils.BinaryResponse;
 
 @InjectSupport
 public class FileSystemFirmaServiceImpl implements FirmaService {
-	
+
+    public static final String NOMBRE_IMPLEMENTACION = "FileSystemFirmaServiceImpl";
 	private static Logger log = Logger.getLogger(FileSystemFirmaServiceImpl.class);
 	
 	@Inject
@@ -51,6 +52,11 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 			play.Logger.info("El servicio de Firma ha sido inyectado con FileSystem y está operativo.");
 		else
 			play.Logger.info("El servicio de Firma ha sido inyectado con FileSystem y NO está operativo.");
+    }
+
+    @Override
+    public String getInfoInyeccion() {
+        return NOMBRE_IMPLEMENTACION;
     }
 
     @Override

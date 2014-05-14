@@ -15,7 +15,9 @@ public interface FirmaService {
     public boolean isConfigured();
     
     public void mostrarInfoInyeccion();
-    
+
+    public String getInfoInyeccion();
+
     public List<String> getFirmaEnClienteJS();
     
     public String firmarTexto(byte[] texto) throws FirmaServiceException;

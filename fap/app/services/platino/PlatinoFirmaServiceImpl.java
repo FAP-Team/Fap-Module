@@ -68,6 +68,7 @@ import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 @InjectSupport
 public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
+    public static final String NOMBRE_IMPLEMENTACION = "PlatinoFirmaServiceImpl";
 	private static Logger log = Logger.getLogger(PlatinoFirmaServiceImpl.class);
 	
 	@Inject
@@ -106,6 +107,11 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			play.Logger.info("El servicio de Firma ha sido inyectado con Platino y está operativo.");
 		else
 			play.Logger.info("El servicio de Firma ha sido inyectado con Platino y NO está operativo.");
+    }
+
+    @Override
+    public String getInfoInyeccion() {
+        return NOMBRE_IMPLEMENTACION;
     }
 	
 	private boolean hasConnection() {

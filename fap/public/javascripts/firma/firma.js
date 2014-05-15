@@ -65,17 +65,19 @@ Firma.firmarDocumento = function(elCertificado, url, elFirma, opciones){
 	if(opciones == null) opciones = {};
 	var mensajes = opciones.mensajes != null? opciones.mensajes : new Mensajes();
 	
-	var certificadoSeleccionado = getSelectedCert(elCertificado);
-	
-	if(certificadoSeleccionado == null){
-		mensajes.error('No hay seleccionado ningún certificado');
-	}else{
-		var $firma = $(elFirma);
-		
-		firma = Firma._firmarDocumento(url, certificadoSeleccionado);
-		$firma.val(firma);
-	}
-	//alert("Método: firmarDocumento (firma.js) | url: "+url+" | certificado: "+certificadoSeleccionado.clave+ " | firma: "+firma);
+	if(elCertificado) {
+        var certificadoSeleccionado = getSelectedCert(elCertificado);
+        if(certificadoSeleccionado == null){
+            mensajes.error('No hay seleccionado ningún certificado');
+        }
+    }
+    var $firma = $(elFirma);
+
+    firma = Firma._firmarDocumento(url, certificadoSeleccionado);
+    $.when(firma).done(function(valorFirma){
+        $firma.val(valorFirma);
+        $firma.change()
+    });
 	return firma;
 }
 

@@ -35,7 +35,24 @@ Firma._firmarUrl = function(url, certificado){
 
 Firma._firmarDocumento = function(url, certificado){
 	//alert("Método: _firmarDocumento (firma-platino.js) | url: "+url+" | certificado: "+certificado.clave);
-	return signFile(certificado.clave, url);
+	formatoFirmaPlatino = "CAdES";
+	var firma;
+    firma = peticionFirma(url);
+    return firma;
+}
+
+function peticionFirma(url) {
+    var deferred = $.Deferred();
+	signFile(url,
+        function (firma) {
+            deferred.resolve(firma);
+        },
+        function(tipo, desc) {
+        	deferred.reject("Error firmando: " + desc);
+        },
+        function(){});
+
+    return deferred.promise();
 }
 
 

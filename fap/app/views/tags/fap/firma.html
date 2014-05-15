@@ -33,6 +33,8 @@
 	def id_firma = id + "_firma";
 	def id_row = id + "_row";
 	def id_cert = id.replace('-', '');
+    firmaService = config.InjectorConfig.getInjector().getInstance(services.FirmaService.class)
+    miniApplet = firmaService.getInfoInyeccion().toLowerCase().matches(".*platino.*")
 }%
 
 #{set 'moreScripts'}
@@ -40,12 +42,13 @@
 #{/set}
 
 <input type="hidden" id="${id_firma}" name="${firma}"/>
-
+#{if !miniApplet}
 #{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
 <select id="${id_cert}certificado" name="certificado" class="certificado">
 	<option disabled="disabled">--Certificados--</option>
 </select>
 #{/fap.formrow}
+#{/if}
 
 <div id="cert-msg"></div>
 
@@ -56,15 +59,25 @@
 		//alert("desactivar vpn gobcan");
 		initFirma();
 		//alert("activar vpn gobcan");
-		
+		var firma;
+
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
 			var form = $('#${id}').parents('form');
-			Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
+			var elCertificado = null;
+			#{if !miniApplet}
+			elCertificado = "#${id_cert}certificado";
+			Firma.listarCertificados(elCertificado, {mensajes: mensajes});
+            #{/if}
+
+			$firma = $("input:hidden#${id_firma}")
 						
 			$('#${id_boton}').click(function(e){
+			    e.stopPropagation();
+			    e.preventDefault();
+			    $firma.siblings("input:submit").submit();
 				mensajes.clear();
-				var firma = Firma.firmarDocumento('#${id_cert}certificado','${url}', '#${id_firma}', {mensajes: mensajes});
+				var firma = Firma.firmarDocumento(elCertificado,'${url}', '#${id_firma}', {mensajes: mensajes});
 				input = $("<input>").attr("type", "hidden").attr("name", "${id_boton}").val("${id_boton}");
 				form.append($(input));
 				if(firma == null){
@@ -72,6 +85,10 @@
 					return false;
 				}
 			});
+
+			$($firma.change(function() {
+				$firma.parents("form").submit();
+			}))
 		});
 </script>
 

@@ -11,6 +11,8 @@
 #{/set}
 
 %{
+	firmaService = config.InjectorConfig.getInjector().getInstance(services.FirmaService.class)
+    miniApplet = firmaService.getInfoInyeccion().toLowerCase().matches(".*platino.*")
 	showCert = configfap.getBoolean('fap.login.type.cert')
 	showUser = configfap.getBoolean('fap.login.type.user')
 	manualApp = configfap.get('fap.manual.aplicacion')
@@ -48,11 +50,13 @@
 		#{form @authenticateCertificateFap(), id:"cert-form"}
 			<input type="hidden" id="token" name="token" value="${token}"/>
 			<input type="hidden" id="firma" name="firma" value=""/>
+    #{if !miniApplet}
 			<div class="form-vertical">
 				<select id="certificado" name="certificado">
 					<option disabled="disabled">--Certificados--</option>
 				</select>
 			</div>
+    #{/if}
 			
 			<div class="form-actions">
 				<input type="submit" id="loginsignin" value="&{'fap.login.signin'}" class="btn " />
@@ -71,11 +75,14 @@
 		
 		$(function(){
 			var mensajes = new Mensajes("#cert-msg");
-			Firma.listarCertificados("#certificado", {mensajes: mensajes});
-			
+			var elCertificado = null;
+			#{if !miniApplet}
+			elCertificado = "#certificado";
+			Firma.listarCertificados(elCertificado, {mensajes: mensajes});
+            #{/if}
 			$('#cert-form').submit(function(e){
 				mensajes.clear();
-				firma = Firma.firmarTexto("#certificado", "#token", "#firma", {mensajes: mensajes});
+				firma = Firma.firmarTexto(elCertificado, "#token", "#firma", {mensajes: mensajes});
 			});
 		});
 	</script>

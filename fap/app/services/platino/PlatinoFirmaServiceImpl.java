@@ -57,10 +57,7 @@ import utils.BinaryResponse;
 import utils.WSUtils;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.AedPortType;
-import es.gobcan.platino.servicios.sfst.FirmaService;
-import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
-import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
-import es.gobcan.platino.servicios.sfst.ValidateCertResult;
+import es.gobcan.platino.servicios.sfst.*;
 
 /**
  * FirmaServiceImpl
@@ -157,11 +154,12 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
 //        	host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/"; // webSigner
-        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/"; // @firma
+//        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/"; // @firma
+        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/mini/js/"; // @firma Miniapplet
         	
             // Librerias para @Firma
             jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "common-js/instalador.js");
+            jsclient.add(host + "miniapplet.js");
             jsclient.add(host + "constantes.js");
         	
         	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
@@ -178,7 +176,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         }
         
 //        jsclient.add(host + "WS_Full.js"); //webSigner
-        jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");
         
         jsclient.add("/public/javascripts/firma/firma.js");
@@ -203,9 +200,9 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException{
         boolean result = false;
         try {
-            result = firmaPort.verifyPKCS7Signature(texto, firma.getBytes(), INVOKING_APP);
+            result = firmaPort.verifyContentSignature(texto, firma.getBytes(), INVOKING_APP);
         } catch (Exception e) {
-            throw newFirmaServiceException("Error al validar la firma pkcs7", e);
+            throw newFirmaServiceException("Error al validar la firma en el texto", e);
         }
         return result;  
     }
@@ -257,13 +254,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	private String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
 		try {
 			//"Extrayendo el certificado de la firma 
-	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	        dbf.setNamespaceAware(true);
-	        DocumentBuilder db  = dbf.newDocumentBuilder();
-	        org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(firma)));
-	        //Pillamos certificado
-	        Element x509Certificate = (Element) doc.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Certificate").item(0);
-	        return x509Certificate.getTextContent();
+            FirmaInfoResult firmaInfoResult = firmaPort.getSignInfo(firma.getBytes());
+            return firmaInfoResult.getNodosFirma().getNodoFirma().get(0).getCertificado().get(0);
 		} catch (Exception e) {
 			System.out.println("Exception extraer: "+e.getMessage());
 			throw new FirmaServiceException("Error al extraer el certificado de la firma", e);
@@ -333,7 +325,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	
 	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
 		try {
-			Boolean verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(null, signature, INVOKING_APP, "XADES");
+			Boolean verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(content, signature, INVOKING_APP, "CADES");
 			play.Logger.info("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
 			return verifySignatureByFormatResponse;
 		} catch (SignatureServiceException_Exception e) {

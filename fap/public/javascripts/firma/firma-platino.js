@@ -19,7 +19,14 @@ Firma._getCertificados = function(){
 }
 
 Firma._firmarTexto = function(texto, certificado){
-	return signPKCS7(certificado.clave, texto);
+	formatoFirmaContentPlatino = "CADES";
+	var firma;
+	signContent(texto,
+		function(resultadoFirma) {console.log("Firmando el texto " + texto);firma = resultadoFirma;},
+		function() {alert("error");},
+		function(){});
+		console.log("Firma: " + firma);
+	return firma;
 }
 
 Firma._firmarUrl = function(url, certificado){

@@ -27,20 +27,22 @@ var certificados2combo = function(combo, certificados){
 	$(combo).html(options);
 }
 
-Firma.firmarTexto = function(elCertificado, elTexto, elFirma, opciones){		
+Firma.firmarTexto = function(elCertificado, elTexto, elFirma, opciones){
 	if(opciones == null) opciones = {};
 	var mensajes = opciones.mensajes != null? opciones.mensajes : new Mensajes();
-	
-	var certificadoSeleccionado = getSelectedCert(elCertificado);
-	if(certificadoSeleccionado == null){
-		mensajes.error('No hay seleccionado ningún certificado');
-	}else{
-		var texto = $(elTexto).val();
-		var $firma = $(elFirma);
-		
-		var firma = Firma._firmarTexto(texto, certificadoSeleccionado);
-		$firma.val(firma);
-	}
+    certificadoSeleccionado = null;
+	if(elCertificado) {
+        var certificadoSeleccionado = getSelectedCert(elCertificado);
+        if(certificadoSeleccionado == null){
+            mensajes.error('No hay seleccionado ningún certificado');
+        }
+    }
+    var texto = $(elTexto).val();
+    var $firma = $(elFirma);
+
+    var firma = Firma._firmarTexto(texto, certificadoSeleccionado);
+    $firma.val(firma);
+
 	return firma;
 }
 	

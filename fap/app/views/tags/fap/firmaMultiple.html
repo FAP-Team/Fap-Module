@@ -99,6 +99,9 @@
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
 	
 	def id_cert = id.replace('-', '');
+
+	firmaService = config.InjectorConfig.getInjector().getInstance(services.FirmaService.class)
+    miniApplet = firmaService.getInfoInyeccion().toLowerCase().matches(".*platino.*")
 	
 %}
 
@@ -401,6 +404,18 @@
 		return urlsDocumentos;
 	}
 
+	function getIdByObjectUrls(url, urls) {
+		var idDocumento = -1;
+		$.each(Object.keys(urls), function(i,elemento) {
+			if (urls[elemento] === url) {
+				idDocumento = elemento;
+				delete urls[elemento];
+				return;
+			}
+		});
+		return idDocumento;
+	}
+
     var boton_firmar = new Ext.Button({
     	text: "Firmar",
     	disabled:true,
@@ -409,10 +424,7 @@
 			var i;
     		var selected = sm${id}.getSelection();
     		var idDocumento;
-    		var firmadoDocumento;
-    		var urlDocumento;
     		var urlsDocumentos;
-    		var firma;
     		var resultado;
     		var errores = {};
 
@@ -421,40 +433,47 @@
     			mensajes.error('No hay documentos seleccionados para firmar.');
     		} else {		    			
 	    		urlsDocumentos = obtenerUrlsDocumentos(selected);
-	    		console.log("Urls Documentos: " + urlsDocumentos);
-	    		console.log("Keys: " + Object.keys(urlsDocumentos));
-   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores);
-   				console.log("Firmas: " + firmas);
-    			for (var key in urlsDocumentos) {
+   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores, firmar);
+    	 		for (var key in urlsDocumentos) {
 					if (urlsDocumentos.hasOwnProperty(key)){
-						idDocumento = key;
-						firma = firmas[key];
-						if (firma != null) {
-							//alert("Se ha obtenido la firma del documento: "+j+" | id: "+idDocumento+" | url: "+urlDocumento+" | firma: "+firma);
-							resultado = firmar(idDocumento, firma);
-						}
+					 	$.when(firmas[key]).done(function(resultadoFirma){
+					 		var idDocumento = getIdByObjectUrls(resultadoFirma.url, urlsDocumentos);
+						 	if (resultadoFirma.firma != null) {
+						 		resultado = firmar(idDocumento, resultadoFirma.firma);
+						 	} else if (resultadoFirma.error != null) {
+						 		errores[idDocumento] = resultadoFirma.error;
+						 	}
+						 });
 
+					 	$.when(firmas[key]).fail(function(resultadoFirma){
+							var idDocumento = getIdByObjectUrls(resultadoFirma.url, urlsDocumentos);
+					 		errores[idDocumento] = resultadoFirma.error;
+					 	});
+
+		     		}
+	     		}
+
+	     		$.when.apply($, firmas).always(function() {
+		    		if (Object.keys(errores).length == 0) {
+		    			mensajes.ok("Documentos firmados correctamente");
+		    		} else {
+			    		for (var k in errores) {
+							if (errores.hasOwnProperty(k)){
+		    					mensajes.error(errores[k]);
+			    			}
+			    		}
+			    	}
+		    		if(grid.getSelectionModel().hasSelection()) {
+		    			grid.getSelectionModel().deselectAll();
 		    		}
-	    		}
-	    		if (Object.keys(errores).length == 0) {
-	    			mensajes.ok("Documentos firmados correctamente");
-	    		} else {
-		    		for (var k in errores) {
-						if (errores.hasOwnProperty(k)){
-	    					mensajes.error(errores[k]);
-		    			}
-		    		}
-		    	}
+		    		// Se actualiza contenido de la tabla
+		    		popupWait_close();
+					grid.body.mask("Cargando....");
+		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+		    		peticionJSON${id}();
+			    }); 
 	    		
     		}
-    		if(grid.getSelectionModel().hasSelection()) {
-    			grid.getSelectionModel().deselectAll();
-    		}
-    		// Se actualiza contenido de la tabla
-    		popupWait_close();
-			grid.body.mask("Cargando....");
-    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-    		peticionJSON${id}();
 	   	}
     });
     
@@ -805,20 +824,24 @@
 	#{fap.platinojs /}
 #{/set}
 
+#{if !miniApplet}
 #{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
 <select id="${id_cert}certificado" name="certificado" class="certificado">
 	<option disabled="disabled">--Certificados--</option>
 </select>
 #{/fap.formrow}
+#{/if}
 
 <div id="cert-msg"></div>
 
 <script>
 	initFirma();
+	#{if !miniApplet}
 	$(function(){
 		var form = $('#${id}').parents('form');
 		Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
 	});
+	#{/if}
 
 </script>
 	

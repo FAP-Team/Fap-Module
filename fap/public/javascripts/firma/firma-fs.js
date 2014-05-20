@@ -27,10 +27,16 @@ Firma._firmarDocumento = function(url, certificado){
 function initFirma() {}
 
 Firma._firmarVariosDocumentos = function(urls, certificado){
-	var firmas = {};
+	if(certificado == null){
+		mensajes.error('No hay seleccionado ningún certificado');
+		return null;
+	}
+	var firmas = [];
 	for (var k in urls) {
 		if (urls.hasOwnProperty(k)){
-			firmas[k] = Firma._firmarDocumento(k, certificado);
+			var objFirma = {url: urls[k], firma:Firma._firmarDocumento(k, certificado)};
+			//var objFirma = {url: urls[k], firma:null, error:"Prueba de error"};
+			firmas[k] = objFirma;
 		}
 	}
 	return firmas;

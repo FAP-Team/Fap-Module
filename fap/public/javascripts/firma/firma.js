@@ -75,7 +75,7 @@ Firma.firmarDocumento = function(elCertificado, url, elFirma, opciones){
 
     firma = Firma._firmarDocumento(url, certificadoSeleccionado);
     $.when(firma).done(function(valorFirma){
-        $firma.val(valorFirma);
+        $firma.val(valorFirma.firma);
         $firma.change()
     });
 	return firma;
@@ -86,13 +86,7 @@ Firma.firmarVariosDocumentos = function(elCertificado, urls, elFirma, opciones, 
 	if(opciones == null) opciones = {};
 	if (errores == null) errores = {};
 	var mensajes = opciones.mensajes != null? opciones.mensajes : new Mensajes();
-	
 	var certificadoSeleccionado = getSelectedCert(elCertificado);
-	
-	if(certificadoSeleccionado == null){
-		mensajes.error('No hay seleccionado ningún certificado');
-	} else {
-		firmas = Firma._firmarVariosDocumentos(urls, certificadoSeleccionado, errores);
-	}
+	firmas = Firma._firmarVariosDocumentos(urls, certificadoSeleccionado, errores);
 	return firmas;
 }

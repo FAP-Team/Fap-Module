@@ -1,31 +1,15 @@
 Firma._getCertificados = function(){
-		try {			
-			//initPlatinoWebSigner();
-
-			arrCAs = getArrayCAs();
-			arrRestrictions = getArrayRestrictions();
-			
-			var arrValidCertificates = getTrustedCertificates('PLATINO', 'firma', 'PLATINO');
-
-			var certificados = [];
-			for ( var i = 0; i < arrValidCertificates.length; i++) {
-				var cert = arrValidCertificates[i];
-				certificados.push(new Certificado(cert[0], cert[1]));
-			}
-			return certificados;
-		} catch (err) {
-			return null;
-		}			
+	var certificados = {};
+	return certificados;
 }
 
 Firma._firmarTexto = function(texto, certificado){
 	formatoFirmaContentPlatino = "CADES";
 	var firma;
 	signContent(texto,
-		function(resultadoFirma) {console.log("Firmando el texto " + texto);firma = resultadoFirma;},
-		function() {alert("error");},
+		function(resultadoFirma) {firma = resultadoFirma;},
+		function() {alert("Error durante la firma");},
 		function(){});
-		console.log("Firma: " + firma);
 	return firma;
 }
 
@@ -45,10 +29,10 @@ function peticionFirma(url) {
     var deferred = $.Deferred();
 	signFile(url,
         function (firma) {
-            deferred.resolve(firma);
+            deferred.resolve({url: url, firma: firma});
         },
         function(tipo, desc) {
-        	deferred.reject("Error firmando: " + desc);
+        	deferred.reject({url: url, firma:null, error:desc});
         },
         function(){});
 
@@ -57,36 +41,14 @@ function peticionFirma(url) {
 
 
 Firma._firmarVariosDocumentos = function(urls, certificado, errores){
-	//alert("Método: _firmarDocumento (firma-platino.js) | url: "+url+" | certificado: "+certificado.clave);
-	var firmas = {};
-	
-	clienteFirma.setSelectedCertificateAlias(certificado.clave);
-	clienteFirma.setSignatureAlgorithm("SHA1withRSA");
-	clienteFirma.setSignatureFormat("XADES");
-	clienteFirma.setSignatureMode("implicit");
-	clienteFirma.addExtraParam("includeOnlySignningCertificate", "true");
-	clienteFirma.setOriginalFormat("false");
-	//Inactivo de momento en Platino
-	//clienteFirma.setPolicy(
-	//		'urn:oid:2.16.724.1.3.1.1.2.1.8',
-	//		'Politica de firma electronica para la Administracion General del Estado'
-	//		,'http://administracionelectronica.gob.es/es/ctt/politicafirma/politica_firma_AGE_v1_8.pdf',
-	//		'V8lVVNGDCPen6VELRD1Ja8HARFk=');
-
-	clienteFirma.initMassiveSignature();
-	for (var k in urls) {
-		if (urls.hasOwnProperty(k)){
-			var firmaAux = clienteFirma.massiveSignatureFile(urls[k]);
-			firmas[k] = clienteFirma.getTextFromBase64(firmaAux, "iso-8859-1");
-			var mensaje = clienteFirma.getMassiveSignatureCurrentLog(); 
-			if (mensaje.toLowerCase().indexOf("correcta") == -1) {
-				errores[k] = mensaje;
-			}
-		}
-	}
-
-	clienteFirma.endMassiveSignature();
-	return firmas;
+	var firmasDeferred = [];
+	MiniApplet.setStickySignatory(true);
+	$.each(urls, function(url) {
+		var firma = Firma._firmarDocumento(urls[url], null);
+		firmasDeferred[url] = firma.promise();
+	});
+	MiniApplet.setStickySignatory(false);
+	return firmasDeferred;
 }
 
 var Platino = {

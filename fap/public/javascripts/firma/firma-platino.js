@@ -17,11 +17,12 @@ Firma._firmarUrl = function(url, certificado){
 	return signFile(certificado.clave, url);
 }
 
-Firma._firmarDocumento = function(url, certificado){
+Firma._firmarDocumento = function(documento, certificado){
 	//alert("Método: _firmarDocumento (firma-platino.js) | url: "+url+" | certificado: "+certificado.clave);
 	formatoFirmaPlatino = "CAdES";
 	var firma;
-    firma = peticionFirma(url);
+	var url = documento.url || documento;
+	firma = documento.firma ? peticionContraFirma(documento) : peticionFirma(url);
     return firma;
 }
 
@@ -39,12 +40,27 @@ function peticionFirma(url) {
     return deferred.promise();
 }
 
+function peticionContraFirma(documento) {
+	var deferred = $.Deferred();
+	signSequential(documento.firma,
+		function(firma) {
+			deferred.resolve({url: documento.url, firma: firma})
+			console.log("Contrafirmado con firma: " + firma);
+		},
+		function(tipo, desc) {
+			deferred.reject({url: documento.url, firma: null, error:desc})
+		},
+		function(){}
+		);
+	return deferred.promise();
+}
+
 
 Firma._firmarVariosDocumentos = function(listaDocs, certificado, errores){
 	var firmasDeferred = [];
 	MiniApplet.setStickySignatory(true);
 	$.each(listaDocs, function(i, doc) {
-		var firma = Firma._firmarDocumento(listaDocs[i].url, null);
+		var firma = Firma._firmarDocumento(listaDocs[i], null);
 		firmasDeferred[i] = firma.promise();
 	});
 	MiniApplet.setStickySignatory(false);

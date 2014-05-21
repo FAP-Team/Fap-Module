@@ -26,16 +26,16 @@ Firma._firmarDocumento = function(url, certificado){
 
 function initFirma() {}
 
-Firma._firmarVariosDocumentos = function(urls, certificado){
+Firma._firmarVariosDocumentos = function(listaDocumentos, certificado){
 	if(certificado == null){
 		mensajes.error('No hay seleccionado ningún certificado');
 		return null;
 	}
 	var firmas = [];
-	for (var k in urls) {
-		if (urls.hasOwnProperty(k)){
-			var objFirma = {url: urls[k].url, firma:Firma._firmarDocumento(k, certificado)};
-			//var objFirma = {url: urls[k], firma:null, error:"Prueba de error"};
+	for (var k in listaDocumentos) {
+		if (listaDocumentos.hasOwnProperty(k)){
+			var objFirma = {url: listaDocumentos[k].url, firma:Firma._firmarDocumento(k, certificado)};
+			//var objFirma = {url: listaDocumentos[k], firma:null, error:"Prueba de error"};
 			firmas[k] = objFirma;
 		}
 	}

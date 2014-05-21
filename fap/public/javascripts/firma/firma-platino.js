@@ -40,12 +40,12 @@ function peticionFirma(url) {
 }
 
 
-Firma._firmarVariosDocumentos = function(urls, certificado, errores){
+Firma._firmarVariosDocumentos = function(listaDocs, certificado, errores){
 	var firmasDeferred = [];
 	MiniApplet.setStickySignatory(true);
-	$.each(urls, function(url) {
-		var firma = Firma._firmarDocumento(urls[url].url, null);
-		firmasDeferred[url] = firma.promise();
+	$.each(listaDocs, function(i, doc) {
+		var firma = Firma._firmarDocumento(listaDocs[i].url, null);
+		firmasDeferred[i] = firma.promise();
 	});
 	MiniApplet.setStickySignatory(false);
 	return firmasDeferred;

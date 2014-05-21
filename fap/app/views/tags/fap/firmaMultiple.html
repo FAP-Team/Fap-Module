@@ -379,7 +379,7 @@
 		var idDocumento;
 		var firmadoDocumento;
 		var urlDocumento;
-		var urlsDocumentos = {};
+		var listaDocumentos = {};
 		var firma;
 		for (i in selected) {
 			resultado = "false";
@@ -391,7 +391,7 @@
 				if (firmadoDocumento.firmado === false) {
 					//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
 					if (firmadoDocumento.url != null) {
-						urlsDocumentos[selected[i].data.id] = firmadoDocumento;
+						listaDocumentos[selected[i].data.id] = firmadoDocumento;
 					} else {
 						//alert("Error al obtener urlDocumento");
 						break;
@@ -405,7 +405,7 @@
 				break;
 			}
 		} // for
-		return urlsDocumentos;
+		return listaDocumentos;
 	}
 
 	function getIdByObjectUrls(url, urls) {
@@ -420,6 +420,42 @@
 		return idDocumento;
 	}
 
+	var firmaRealizada = function(resultadoFirma, listaDocumentos, errores) {
+		var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
+		if (resultadoFirma.firma != null) {
+			resultado = convertirAJSON(firmar(idDocumento, resultadoFirma.firma));
+			if (resultado.errores) {
+				$.each(resultado.errores , function(i, elem) {
+					errores["error-firma" + i] = elem;
+				});
+				
+			}
+
+		} else if (resultadoFirma.error != null) {
+			errores[idDocumento] = resultadoFirma.error;
+		}
+	}
+
+	var todasFirmasRealizadas = function(errores) {
+		if (Object.keys(errores).length == 0) {
+			mensajes.ok("Documentos firmados correctamente");
+		} else {
+			for (var k in errores) {
+				if (errores.hasOwnProperty(k)){
+					mensajes.error(errores[k]);
+				}
+			}
+		}
+		if(grid.getSelectionModel().hasSelection()) {
+			grid.getSelectionModel().deselectAll();
+		}
+		// Se actualiza contenido de la tabla
+		popupWait_close();
+		grid.body.mask("Cargando....");
+		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+		peticionJSON${id}();
+	}
+
     var boton_firmar = new Ext.Button({
     	text: "Firmar",
     	disabled:true,
@@ -428,7 +464,7 @@
 			var i;
     		var selected = sm${id}.getSelection();
     		var idDocumento;
-    		var urlsDocumentos;
+    		var listaDocumentos;
     		var resultado;
     		var errores = {};
 
@@ -436,28 +472,16 @@
     		if (selected.length == 0) {
     			mensajes.error('No hay documentos seleccionados para firmar.');
     		} else {		    			
-	    		urlsDocumentos = obtenerUrlsDocumentos(selected);
-   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores);
-    	 		for (var key in urlsDocumentos) {
-					if (urlsDocumentos.hasOwnProperty(key)){
+	    		listaDocumentos = obtenerUrlsDocumentos(selected);
+   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);
+    	 		for (var key in listaDocumentos) {
+					if (listaDocumentos.hasOwnProperty(key)){
 					 	$.when(firmas[key]).done(function(resultadoFirma){
-					 		var idDocumento = getIdByObjectUrls(resultadoFirma.url, urlsDocumentos);
-						 	if (resultadoFirma.firma != null) {
-						 		resultado = convertirAJSON(firmar(idDocumento, resultadoFirma.firma));
-						 		if (resultado.errores) {
-						 			$.each(resultado.errores , function(i, elem) {
-						 				errores["error-firma" + i] = elem;
-						 			});
-						 			
-						 		}
-
-						 	} else if (resultadoFirma.error != null) {
-						 		errores[idDocumento] = resultadoFirma.error;
-						 	}
+					 		firmaRealizada(resultadoFirma, listaDocumentos, errores);
 						 });
 
 					 	$.when(firmas[key]).fail(function(resultadoFirma){
-							var idDocumento = getIdByObjectUrls(resultadoFirma.url, urlsDocumentos);
+							var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
 					 		errores[idDocumento] = resultadoFirma.error;
 					 	});
 
@@ -465,24 +489,8 @@
 	     		}
 
 	     		$.when.apply($, firmas).always(function() {
-		    		if (Object.keys(errores).length == 0) {
-		    			mensajes.ok("Documentos firmados correctamente");
-		    		} else {
-			    		for (var k in errores) {
-							if (errores.hasOwnProperty(k)){
-		    					mensajes.error(errores[k]);
-			    			}
-			    		}
-			    	}
-		    		if(grid.getSelectionModel().hasSelection()) {
-		    			grid.getSelectionModel().deselectAll();
-		    		}
-		    		// Se actualiza contenido de la tabla
-		    		popupWait_close();
-					grid.body.mask("Cargando....");
-		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-		    		peticionJSON${id}();
-			    }); 
+	     			todasFirmasRealizadas(errores); 
+	     		});
 	    		
     		}
 	   	}

@@ -370,6 +370,10 @@
 // FIRMA
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+	function convertirAJSON(json) {
+		return JSON && JSON.parse(json) || $.parseJSON(json);
+	}
+
 	function obtenerUrlsDocumentos(selected) {
 		var resultado;
 		var idDocumento;
@@ -382,7 +386,7 @@
 			firma = null;
 			idDocumento = selected[i].data.id;
 			var firmadoDocumentoJSON =  obtenerFirmadoDocumento(idDocumento);
-			firmadoDocumento = JSON && JSON.parse(firmadoDocumentoJSON) || $.parseJSON(firmadoDocumentoJSON);
+			firmadoDocumento = convertirAJSON(firmadoDocumentoJSON);
 			if ((idDocumento != null) && (firmadoDocumento != null)) {
 				if (firmadoDocumento.firmado === false) {
 					//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
@@ -439,7 +443,14 @@
 					 	$.when(firmas[key]).done(function(resultadoFirma){
 					 		var idDocumento = getIdByObjectUrls(resultadoFirma.url, urlsDocumentos);
 						 	if (resultadoFirma.firma != null) {
-						 		resultado = firmar(idDocumento, resultadoFirma.firma);
+						 		resultado = convertirAJSON(firmar(idDocumento, resultadoFirma.firma));
+						 		if (resultado.errores) {
+						 			$.each(resultado.errores , function(i, elem) {
+						 				errores["error-firma" + i] = elem;
+						 			});
+						 			
+						 		}
+
 						 	} else if (resultadoFirma.error != null) {
 						 		errores[idDocumento] = resultadoFirma.error;
 						 	}

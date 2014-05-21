@@ -413,12 +413,16 @@ public class GFirmaMultiple extends GElement{
 	public static boolean firmar${id()}(Long idDocumento, String firma) {
 
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+        Map<String, Object> json = new HashMap<String, Object>();
+        List<String> errores = new ArrayList<String>();
 		
 		if (documento != null) {
 			play.Logger.info("Firmando documento " + documento.uri);
 	
 			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 			Map<String, Object> vars = new HashMap<String, Object>();
+            json.put("idDocumento", idDocumento);
+            json.put("firmado", false);
 			if (secure.checkAcceso("editarFirmaDocumento", "editar", ids, vars)) {
 				if (documento.firmantes == null) {
 					documento.firmantes = new Firmantes();
@@ -433,17 +437,28 @@ public class GFirmaMultiple extends GElement{
 			} else {
 				//ERROR
 				Messages.error("No tiene permisos suficientes para realizar la acción++");
+                Messages.error(error);
+                errores.add(error);
 			}
 	
 			if (!Messages.hasErrors()) {
 				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
-				return true;
+                json.put("firmado", true);
+                return new Gson().toJson(json);
 			}
-			play.Logger.info("Firma de documento " + documento.uri + " sin éxito");
+            String error = "Firma de documento " + documento.uri + " sin éxito";
+            play.Logger.info(error);
+            errores.add(error);
 		} else {
-			play.Logger.info("Error al obtener el documento "+idDocumento);
+            String error = "Error al obtener el documento " + idDocumento;
+			play.Logger.info(error);
+            errores.add(error);
 		}
-		return false;
+        for(String mensaje : Messages.messages(MessageType.ERROR)) {
+            errores.add(mensaje);
+        }
+        json.put("errores", errores );
+        return new Gson().toJson(json);
 	}
 	
 	public static List<Firmante> calcularFirmantes${id()}(Long idSolicitud) {

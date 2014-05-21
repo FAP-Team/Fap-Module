@@ -368,14 +368,42 @@ public class GFirmaMultiple extends GElement{
 		return FirmaUtils.obtenerUrlDocumento(idDocumento);
 	}
 
+	@javax.inject.Inject
+    static GestorDocumentalService gestorDocumentalService;
+
 	public static String obtenerFirmadoDocumento${id()}(Long idDocumento) {
+        if (!permiso("leer")) {
+            HashMap error = new HashMap();
+            error.put("error", "No tiene permisos suficientes");
+            return new Gson().toJson(error);
+        }
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
+            HashMap json = new HashMap();
 			if (documento.firmado != null && documento.firmado == true) {
-				return "true";
-			}
-			return "false";
+                json.put("firmado", true);
+                return new Gson().toJson(json);
+            } else {
+                List<String> firmantes = new ArrayList<String>();
+                for(Firmante firmante : documento.firmantes.todos) {
+                    firmantes.add(firmante.idvalor);
+                }
+                Firma firma = null;
+                try {
+                    firma = gestorDocumentalService.getFirma(documento);
+                } catch (GestorDocumentalServiceException e) {
+                    e.printStackTrace();
+                }
+                json.put("id", documento.id);
+                json.put("firmado", false);
+                if (firma != null) {
+                    json.put("firma", firma.getContenido());
+                }
+                json.put("firmantes", firmantes);
+                json.put("url", FirmaUtils.obtenerUrlDocumento(documento.id));
+                return new Gson().toJson(json);
+            }
 		}
 		play.Logger.info("Error al obtener el documento "+idDocumento);
 		return null;

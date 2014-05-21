@@ -381,13 +381,13 @@
 			resultado = "false";
 			firma = null;
 			idDocumento = selected[i].data.id;
-			firmadoDocumento = obtenerFirmadoDocumento(idDocumento);
+			var firmadoDocumentoJSON =  obtenerFirmadoDocumento(idDocumento);
+			firmadoDocumento = JSON && JSON.parse(firmadoDocumentoJSON) || $.parseJSON(firmadoDocumentoJSON);
 			if ((idDocumento != null) && (firmadoDocumento != null)) {
-				if (firmadoDocumento == "false") {
+				if (firmadoDocumento.firmado === false) {
 					//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
-					urlDocumento = obtenerUrlDocumento(idDocumento);
-					if (urlDocumento != null) {
-						urlsDocumentos[selected[i].data.id] = urlDocumento;
+					if (firmadoDocumento.url != null) {
+						urlsDocumentos[selected[i].data.id] = firmadoDocumento;
 					} else {
 						//alert("Error al obtener urlDocumento");
 						break;
@@ -407,7 +407,7 @@
 	function getIdByObjectUrls(url, urls) {
 		var idDocumento = -1;
 		$.each(Object.keys(urls), function(i,elemento) {
-			if (urls[elemento] === url) {
+			if (urls[elemento].url === url) {
 				idDocumento = elemento;
 				delete urls[elemento];
 				return;
@@ -433,7 +433,7 @@
     			mensajes.error('No hay documentos seleccionados para firmar.');
     		} else {		    			
 	    		urlsDocumentos = obtenerUrlsDocumentos(selected);
-   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores, firmar);
+   				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', urlsDocumentos, "", {mensajes: mensajes}, errores);
     	 		for (var key in urlsDocumentos) {
 					if (urlsDocumentos.hasOwnProperty(key)){
 					 	$.when(firmas[key]).done(function(resultadoFirma){
@@ -772,7 +772,7 @@
 	function obtenerUrlDocumento(id) {
 		var url;
 		$.ajax({
-			type: "POST",
+			type: "GET",
 			url: "${urlObtenerUrlDocumento}",
 				data: {
 					idDocumento: id
@@ -788,7 +788,7 @@
 	function obtenerFirmadoDocumento(id) {
 		var firmado;
 		$.ajax({
-			type: "POST",
+			type: "GET",
 			url: "${urlObtenerFirmadoDocumento}",
 				data: {
 					idDocumento: id

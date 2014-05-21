@@ -179,6 +179,8 @@ import es.mityc.facturae32.Facturae;
 import com.google.gson.Gson;
 
 import services.FirmaService;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import com.google.inject.Inject;
 import utils.PeticionModificacion;
 import controllers.fap.AgenteController;

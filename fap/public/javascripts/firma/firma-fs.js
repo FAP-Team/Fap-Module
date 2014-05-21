@@ -34,7 +34,7 @@ Firma._firmarVariosDocumentos = function(urls, certificado){
 	var firmas = [];
 	for (var k in urls) {
 		if (urls.hasOwnProperty(k)){
-			var objFirma = {url: urls[k], firma:Firma._firmarDocumento(k, certificado)};
+			var objFirma = {url: urls[k].url, firma:Firma._firmarDocumento(k, certificado)};
 			//var objFirma = {url: urls[k], firma:null, error:"Prueba de error"};
 			firmas[k] = objFirma;
 		}

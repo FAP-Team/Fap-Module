@@ -44,7 +44,7 @@ Firma._firmarVariosDocumentos = function(urls, certificado, errores){
 	var firmasDeferred = [];
 	MiniApplet.setStickySignatory(true);
 	$.each(urls, function(url) {
-		var firma = Firma._firmarDocumento(urls[url], null);
+		var firma = Firma._firmarDocumento(urls[url].url, null);
 		firmasDeferred[url] = firma.promise();
 	});
 	MiniApplet.setStickySignatory(false);

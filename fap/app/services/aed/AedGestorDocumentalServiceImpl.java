@@ -1023,23 +1023,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     protected Firma firmaSimple(String nueva){
         Firma firma = new Firma();
         firma.setContenido(nueva);
-        firma.setTipoMime("text/xml");
+        firma.setTipoMime("text/plain");
         return firma;
     }
     
     protected Firma firmaParalela(Firma actual, String nueva){
-        Firma firma = actual;
-        // No es la primera construimos firma paralela
-        String firmaParalela = "<SignatureList>";
-        String firmaOld = new String(firma.getContenido().getBytes());
-        firmaOld = firmaOld.replaceFirst("<\\?.*\\?>", "");
-        firmaOld = firmaOld.replaceFirst("<SignatureList>", "");
-        firmaOld = firmaOld.replaceFirst("</SignatureList>", "");
-        firmaParalela += firmaOld;
-        firmaParalela += nueva.replaceFirst("<\\?.*\\?>", "");
-        firmaParalela += "</SignatureList>";
-        firma.setContenido(firmaParalela); 
-        firma.setTipoMime("text/xml");
+        Firma firma = new Firma();
+        firma.setContenido(nueva);
+        firma.setTipoMime("text/plain");
         return firma;
     }
 	

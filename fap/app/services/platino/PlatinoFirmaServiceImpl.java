@@ -255,7 +255,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		try {
 			//"Extrayendo el certificado de la firma 
             FirmaInfoResult firmaInfoResult = firmaPort.getSignInfo(firma.getBytes());
-            return firmaInfoResult.getNodosFirma().getNodoFirma().get(0).getCertificado().get(0);
+            List<NodoInfoResult> nodosFirma = firmaInfoResult.getNodosFirma().getNodoFirma();
+            return nodosFirma.get(nodosFirma.size()-1).getCertificado().get(0);
 		} catch (Exception e) {
 			System.out.println("Exception extraer: "+e.getMessage());
 			throw new FirmaServiceException("Error al extraer el certificado de la firma", e);

@@ -109,6 +109,11 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     }
     
     @Override
+    public List<Firmante> getFirmantes(String firma) {
+        return null;
+    }
+
+    @Override
 	public Firmante getFirmante(String firma, Documento documento){
 		if(firma == null || firma.isEmpty()){
 			Messages.error("La firma llegó vacía");

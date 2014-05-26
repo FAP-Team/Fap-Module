@@ -302,6 +302,29 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		}
 		return firmante;
 	}
+
+    @Override
+    public List<Firmante> getFirmantes(String firma) {
+        List<Firmante> firmantes = new ArrayList<Firmante>();
+        long inicio = System.nanoTime();
+        try {
+            FirmaInfoResult signInfo = firmaPort.getSignInfo(firma.getBytes());
+            List<NodoInfoResult> nodosFirma = signInfo.getNodosFirma().getNodoFirma();
+
+            for (NodoInfoResult nodoInfoResult : nodosFirma) {
+                try {
+                    InfoCert certData = getInformacion(nodoInfoResult.getCertificado().get(0));
+                    firmantes.add(firmanteFromCertInfo(certData));
+                } catch (FirmaServiceException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SignatureServiceException_Exception e) {
+            e.printStackTrace();
+        }
+        play.Logger.info("Tiempo: " + (System.nanoTime() - inicio));
+        return firmantes;
+    }
 	
 	@Override
 	public Firmante getFirmante(String firma, Documento documento, List<Firmante> todosFirmantes){
@@ -497,6 +520,13 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		return firma;
 	}
 
+    private Firmante firmanteFromCertInfo(InfoCert infoCert) {
+        Firmante firmante = new Firmante();
+        firmante.idtipo = infoCert.getIdTipo();
+        firmante.idvalor = infoCert.getId();
+        firmante.nombre = infoCert.getNombreCompleto();
+        return firmante;
+    }
 	/*
 	@Override
 	public HashMap<String,String> extraerInfoFromFirma(String firma) {

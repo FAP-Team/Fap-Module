@@ -46,6 +46,7 @@ import play.libs.MimeTypes;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.FirmaService;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.filesystem.TipoDocumentoEnTramite;
@@ -97,6 +98,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
     protected final TiposDocumentosService tiposDocumentos;
 	
+    @Inject
+    protected FirmaService firmaService;
+
     @Inject
 	public AedGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder){
 		play.Logger.info("gestorDocumentalServiceImpl constructor");
@@ -924,7 +928,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             		documento.uri = uri;
     				documento.save();
             	}
-    		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())){
+    		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())) {
+                if (!contieneTodosFirmantes(firmaActual.getContenido(), firma.getContenido())){
+                    throw new GestorDocumentalServiceException("La firma no contiene a los firmantes anteriores");
+                }
     			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
             	
             	propiedadesAdministrativas.setFirma(firmaNueva);
@@ -943,6 +950,18 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
         }
+    }
+
+    private boolean contieneTodosFirmantes(String firmaActual, String firmaNueva) {
+        List<models.Firmante> firmantesActual = firmaService.getFirmantes(firmaActual);
+        List<models.Firmante> firmantesNueva = firmaService.getFirmantes(firmaNueva);
+        for(models.Firmante firmante : firmantesActual) {
+            if (!firmantesNueva.contains(firmante)) {
+                return false;
+            }
+        }
+
+        return true;
     }
     
 

@@ -32,6 +32,8 @@ public interface FirmaService {
     
     public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException;
     
+    public List<Firmante> getFirmantes(String firma);
+
     public Firmante getFirmante(String firma, Documento documento);
     
     public Firmante getFirmante(String firma, Documento documento, List<Firmante> todosFirmantes);

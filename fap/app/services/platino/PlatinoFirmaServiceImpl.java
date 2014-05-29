@@ -322,7 +322,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         } catch (SignatureServiceException_Exception e) {
             e.printStackTrace();
         }
-        play.Logger.info("Tiempo: " + (System.nanoTime() - inicio));
         return firmantes;
     }
 	

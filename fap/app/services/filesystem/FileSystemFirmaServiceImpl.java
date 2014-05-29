@@ -110,7 +110,7 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     
     @Override
     public List<Firmante> getFirmantes(String firma) {
-        return null;
+        return new ArrayList<Firmante>();
     }
 
     @Override

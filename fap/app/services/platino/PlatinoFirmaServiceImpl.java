@@ -80,14 +80,25 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	
 	@Inject
 	public PlatinoFirmaServiceImpl(PropertyPlaceholder propertyPlaceholder){
+        this(propertyPlaceholder, null);
+
+    }
+
+	public PlatinoFirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, PlatinoSignatureServerBean signPort){
 		this.propertyPlaceholder = propertyPlaceholder;
-		
-        URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma.wsdl");
-        firmaPort = new FirmaService(wsdlURL).getFirmaService();
-        WSUtils.configureEndPoint(firmaPort, getEndPoint());
-        WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
-        PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
-        
+
+        if (signPort == null) {
+            URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma.wsdl");
+            firmaPort = new FirmaService(wsdlURL).getFirmaService();
+            WSUtils.configureEndPoint(firmaPort, getEndPoint());
+            WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
+            PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
+        } else {
+            firmaPort = signPort;
+        }
+
+
+
         //Properties
         INVOKING_APP = propertyPlaceholder.get("fap.platino.firma.invokingApp");
         ALIAS = propertyPlaceholder.get("fap.platino.firma.alias");
@@ -190,6 +201,9 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         try {
             firma = firmaPort.signPKCS7(texto, INVOKING_APP, ALIAS);
             log.info("[firmarTexto] Texto firmado correctamente"); 
+        } catch (NullPointerException e) {
+            log.error("NullPointerException. Posiblemente recibido null como texto a firmar");
+            throw e;
         }catch (Exception e) {
         	log.error("[firmarDatosRegistro] Error en firmaPort.signPKCS7()");
             throw newFirmaServiceException("Error al realizar firma pkcs7", e);
@@ -201,6 +215,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         boolean result = false;
         try {
             result = firmaPort.verifyContentSignature(texto, firma.getBytes(), INVOKING_APP);
+        } catch (NullPointerException e) {
+            throw e;
         } catch (Exception e) {
             throw newFirmaServiceException("Error al validar la firma en el texto", e);
         }
@@ -251,7 +267,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		return getInformacion(certificado);
 	}
     
-	private String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
+	protected String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
 		try {
 			//"Extrayendo el certificado de la firma 
             FirmaInfoResult firmaInfoResult = firmaPort.getSignInfo(firma.getBytes());
@@ -272,7 +288,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		}
 	}
 		
-	private InfoCert getInformacion(String certificado) throws FirmaServiceException{
+	protected InfoCert getInformacion(String certificado) throws FirmaServiceException{
 		try {
 			List<StringArray> certInfo = firmaPort.getCertInfo(certificado, INVOKING_APP);
 			InfoCert infoCert = new InfoCert(certInfo);

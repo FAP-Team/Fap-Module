@@ -21,6 +21,7 @@ import models.SolicitudGenerica;
 import org.joda.time.DateTime;
 
 import com.google.inject.Inject;
+import com.sun.media.sound.ModelSource;
 
 import platino.FirmaUtils;
 import play.db.jpa.JPA;
@@ -718,6 +719,38 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "registro.oficial.enlaceDescargaFirmado", "registro.justificante.enlaceDescarga"));
 		}
 		
+	}
+	
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void volverExpedientes(Long idResolucionFAP, String btnVolverExpedientes) {
+		checkAuthenticity();
+		if (!permisoVolverExpedientes("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.volverExpedientesValidateRules();
+		}
+		Agente logAgente = AgenteController.getAgente();
+		if (!Messages.hasErrors()) {
+			// Obtenemos la resolucion que estamos editando
+			ResolucionFAP resolucionFAP = getResolucionFAP(idResolucionFAP);
+			// Antes de volver cambiamos el estado de la resolucion a borrador 
+			resolucionFAP.estado = "borrador";
+			// Borramos las lineas de resolucion y guardamos la resolucion en la BBDD
+			resolucionFAP.lineasResolucion.clear();
+			resolucionFAP.save();
+			
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		EditarResolucionController.volverExpedientesRender(idResolucionFAP);
 	}
 	
 }

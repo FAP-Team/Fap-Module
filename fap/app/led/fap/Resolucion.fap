@@ -262,7 +262,8 @@ Formulario Principal {
 		}
 		
     	Grupo gCerrarResolucion titulo="Preparar la Resolución" permiso=prepararResolucion {
-			Wiki { "Si su resolución está lista para firmar, pulse el siguiente botón." }
+			Wiki { "Si su resolución está lista para firmar, pulse el botón \"Preparar Resolución\"." }
+			Wiki { "Si desea seleccionar otro expediente, pulse el botón \"Volver\"." }
 			Tabla lineasResolucionAntesPreparar campo=ResolucionFAP.lineasResolucion titulo="Líneas Resolución" popupEditar=ModificarEstadoExpediente popupLeer=VerExpediente {
 				Columna campo=LineaResolucionFAP.solicitud.expedienteAed.idAed titulo="Expediente" expandir
 				Columna campo=LineaResolucionFAP.solicitud.estado titulo="Estado Solicitud" expandir
@@ -273,6 +274,10 @@ Formulario Principal {
 			Form prepararResolucion {
 				Boton  btnPrepararResolucion titulo="Preparar Resolución" waitPopup
 			}
+			Form volverExpedientes {
+			    Boton btnVolverExpedientes titulo="Volver" 
+			}
+			
 		}
 		
 		Grupo gPrepararSolicitudFirmaPortafirma titulo="Preparar Solicitud de Firma" permiso=solicitudFirmaResolucion {

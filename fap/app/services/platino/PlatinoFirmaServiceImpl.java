@@ -425,12 +425,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				Firmante firmante = null;
 
 				String identificadorFirmante = FirmaController.getIdentificacionFromFirma(firma);
-				for (Firmante firmanteAux: todosFirmantes){
-            		if (firmanteAux.idvalor.equals(identificadorFirmante)){
-            			firmante = firmanteAux;
-            			break;
-            		}
-            	}
+                firmante = buscarFirmanteEnFirmantes(identificadorFirmante, todosFirmantes);
 				if (firmante == null){
 					play.Logger.error("Error en validateXMLSignature, Firmante "+certData.getIdTipo()+" no encontrado: "+identificadorFirmante+" en la lista de firmantes.");
 					Messages.error("Error al recuperar el firmante de tipo "+certData.getIdTipo());
@@ -454,53 +449,60 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){		
 		Firmante firmanteCertificado = getFirmante(firma, documento);
-		
 		if(firmanteCertificado != null){
 			play.Logger.info("Firmante validado");
-			
-			
-			int index = -1;
-			for (Firmante fB : firmantes) {
-				if (fB.idvalor.equals(firmanteCertificado.idvalor)) {
-					index = firmantes.indexOf(fB);
-					break;
-				}
-			}
-			
-			Firmante firmante = null;
-			if(index == -1){
-				Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
-			}else{
-				firmante = firmantes.get(index);
-				if(firmante.fechaFirma != null){
-					Messages.error("Ya ha firmado la solicitud");
-				}
-				
-				play.Logger.info("Firmante encontrado " + firmante.idvalor );
-				play.Logger.info("Esperado " + valorDocumentofirmanteSolicitado);
-				if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
-					Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
-				}
-			}
-			
+            Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado);
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
-				try {
-					play.Logger.info("Guardando firma en el aed");
-					firmante.fechaFirma = new DateTime();
-					gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
-					firmante.save();
-					
-					play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
-				}catch(GestorDocumentalServiceException e){
-					play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
-					Messages.error("Error al guardar la firma");
-				}				
-			}
+                agregarFirmaEnGestorDocumental(documento, firma, firmante);
+            }
 		}else{
 			play.Logger.error("firmanteCertificado == null????");
 		}
 	}
+
+    private void agregarFirmaEnGestorDocumental(Documento documento, String firma, Firmante firmante) {
+        try {
+            play.Logger.info("Guardando firma en el aed");
+            firmante.fechaFirma = new DateTime();
+            gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
+            firmante.save();
+            play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
+        }catch(GestorDocumentalServiceException e){
+            play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
+            Messages.error("Error al guardar la firma");
+        }
+    }
+
+    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado) {
+        Firmante firmante = buscarFirmanteEnFirmantes(firmanteCertificado.idvalor, firmantes);
+        if(firmante == null){
+            Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
+        }else{
+            if(firmante.fechaFirma != null){
+                Messages.error("Ya ha firmado la solicitud");
+            }
+
+            play.Logger.info("Firmante encontrado " + firmante.idvalor );
+            play.Logger.info("Esperado " + valorDocumentofirmanteSolicitado);
+            if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
+                Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
+            }
+        }
+        return firmante;
+    }
+
+    private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
+        int index = -1;
+        Firmante firmante = null;
+        for (Firmante fB : firmantes) {
+            if (fB.idvalor.equals(idValorFirmante)) {
+                firmante = fB;
+                break;
+            }
+        }
+        return firmante;
+    }
 	
 	/**
 	 * Realiza la firma mediante el sello del documento indicado.

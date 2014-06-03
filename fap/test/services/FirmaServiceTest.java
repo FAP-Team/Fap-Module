@@ -1,29 +1,20 @@
 package services;
 
-import static org.junit.Assume.assumeTrue;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
+import messages.Messages;
+import models.*;
 
-import models.Firmante;
-import models.Persona;
-import models.PersonaFisica;
-import models.PersonaJuridica;
-import models.RepresentantePersonaJuridica;
-import models.Solicitante;
-
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import platino.InfoCert;
-import play.modules.guice.InjectSupport;
 import play.test.UnitTest;
+
+import static org.junit.Assume.assumeTrue;
 
 public abstract class FirmaServiceTest extends UnitTest {
 
@@ -34,7 +25,8 @@ public abstract class FirmaServiceTest extends UnitTest {
 
     @Before
     public void before() {
-       // assumeTrue(hasConnection);
+        assumeTrue(hasConnection);
+        Messages.clear();
     }
 
     @Test
@@ -77,7 +69,7 @@ public abstract class FirmaServiceTest extends UnitTest {
 
     @Test
     public void extraerInformacion() throws Exception {
-        //assumeTrue(hasConnection);
+        assumeTrue(hasConnection);
         String texto = "Texto de prueba para firma";
         String firma = firmaService.firmarTexto(texto.getBytes());
         Assert.assertNotNull(firma);
@@ -87,5 +79,81 @@ public abstract class FirmaServiceTest extends UnitTest {
     }
 
     public abstract void asssertValidCertificado(InfoCert certificado);
+
+
+
+    @Test
+    public void firmarFirmanteNoEntreLosFirmantes() {
+        Documento documento = new Documento();
+        Firmante firmante1 = new Firmante();
+        firmante1.idvalor = "111a";
+        Firmante firmante2 = new Firmante();
+        firmante2.idvalor = "222b";
+        List<Firmante> firmantes = Arrays.asList(firmante1, firmante2);
+        String firma = "Firmante No Entre Firmantes";
+        String valorDocumento = "";
+        setMocksImplFirmanteNoEntreFirmantes(firma);
+        firmaService.firmar(documento,firmantes, firma, valorDocumento);
+        assertFirmaFirmanteNoEntreFirmantes();
+    }
+
+    protected abstract void assertFirmaFirmanteNoEntreFirmantes();
+    protected abstract void setMocksImplFirmanteNoEntreFirmantes(String firma);
+
+
+    @Test
+    public void firmarFirmanteYaHaFirmado() {
+        Documento documento = new Documento();
+        Firmante firmante = new Firmante();
+        firmante.idvalor = "111a";
+        List<Firmante> firmantes = Arrays.asList(firmante);
+        String firma = "Firma de firmante que ya ha firmado";
+        String valorDocumento = "";
+        setMocksImplFirmanteYaHaFirmado(firma, firmante);
+        firmaService.firmar(documento, firmantes, firma, valorDocumento);
+        assertFirmanteYaHaFirmado();
+    }
+
+    protected abstract void setMocksImplFirmanteYaHaFirmado(String firma, Firmante firmante);
+    protected abstract void assertFirmanteYaHaFirmado();
+
+
+    @Test
+    public void firmarFirmanteDocumentoNoSolicitado() {
+        Documento documento = new Documento();
+        Firmante firmante = new Firmante();
+        firmante.idvalor = "111a";
+        List<Firmante> firmantes = Arrays.asList(firmante);
+        String firma = "Firma de documento no solicitado";
+        String valorDocumento = "999a";
+        setMocksImplFirmanteDocumentoNoSolicitado(firma, firmante, valorDocumento);
+        firmaService.firmar(documento,firmantes, firma, valorDocumento);
+        assertFirmanteDocumentoNoSolicitado();
+    }
+
+    protected abstract void assertFirmanteDocumentoNoSolicitado();
+    protected abstract void setMocksImplFirmanteDocumentoNoSolicitado(String firma, Firmante firmante, String valorDocumento);
+
+
+
+    @Test
+    public void firmarValido() {
+        Documento documento = new Documento();
+        Firmante firmante = new Firmante();
+        firmante.idvalor = "111a";
+        List<Firmante> firmantes = Arrays.asList(firmante);
+        String firma = "Firma valida";
+        String valorDocumento = firmante.idvalor;
+        setMocksImplFirmarFirmaValida(documento, firma, firmante, valorDocumento);
+        firmaService.firmar(documento, firmantes, firma, valorDocumento);
+        assertFirmarFirmaValida(firma, firmante, documento);
+    }
+
+    protected abstract void assertFirmarFirmaValida(String firma, Firmante firmante, Documento documento);
+    protected abstract void setMocksImplFirmarFirmaValida(Documento documento, String firma, Firmante firmante, String valorDocumento);
+
+
+
+
 
 }

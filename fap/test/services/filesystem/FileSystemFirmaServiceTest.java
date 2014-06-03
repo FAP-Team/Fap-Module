@@ -1,28 +1,42 @@
-package services;
-
-import javax.inject.Inject;
+package services.filesystem;
 
 import models.Documento;
 import models.Firmante;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 import platino.InfoCert;
-import play.modules.guice.InjectSupport;
-import properties.PropertyPlaceholder;
 
+import services.FirmaServiceTest;
+import services.GestorDocumentalService;
+import services.filesystem.FileSystemFirma;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.platino.PlatinoFirmaServiceImpl;
 
-@InjectSupport
-public class PlatinoFirmaServiceTest extends FirmaServiceTest {
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
-    @Inject
-    static PropertyPlaceholder propertyPlaceholder;
-    
+public class FileSystemFirmaServiceTest extends FirmaServiceTest {
+
+    protected static GestorDocumentalService mockGestorDocumental;
+
+
     @BeforeClass
     public static void beforeClass(){
-        //firmaService = new PlatinoFirmaServiceImpl(propertyPlaceholder);
-        //hasConnection = firmaService.isConfigured();
+        firmaService = spy(new FileSystemFirmaServiceImpl());
+        hasConnection = firmaService.isConfigured();
+        mockGestorDocumental = mock(GestorDocumentalService.class);
+        FileSystemFirmaServiceImpl.gestorDocumentalService = mockGestorDocumental;
+        setMockFileSystem();
+    }
+
+    private static void setMockFileSystem() {
+        Firmante firmante = new Firmante();
+        firmante.idvalor = "111a";
+        doReturn(firmante).when(firmaService).getFirmante(anyString(), any(Documento.class));
     }
 
     @Override
@@ -65,9 +79,12 @@ public class PlatinoFirmaServiceTest extends FirmaServiceTest {
 
     }
 
+
+
     @Override
     public void asssertValidCertificado(InfoCert certificado) {
-        // TODO comprobar la información del certificado de la ACIISI
+        assertEquals("APP", certificado.getNombreCompleto());
+        assertEquals("APPNIF", certificado.getId());
     }
     
 }

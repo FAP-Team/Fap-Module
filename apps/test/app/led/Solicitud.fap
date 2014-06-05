@@ -265,7 +265,18 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 			Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
 			Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
 			Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
+		Grupo titulo = "Combos del diablo..."{	
+			Combo tipoCentros titulo="Tipo de Centro"  campo=Solicitud.comboTest.tipoCentros  
+            Combo islasTipoCentroCide titulo="Isla de ubicación/actuación del CIDE" campo=Solicitud.comboTest.islasTipoCentroCide dependeDe=tipoCentros
 		}
+		Grupo titulo = "Combos del diablo 2..."{    
+            Combo provin titulo="Tipo de Centro"  campo=Solicitud.comboTest.provin  
+            Combo islitas titulo="Isla de ubicación/actuación del CIDE" campo=Solicitud.comboTest.islitas dependeDe=provin
+        }
+		}
+		
+
+ 
 		
 		Codigo {
 "Pagina PaginaCombosDependientes campo=Solicitud{

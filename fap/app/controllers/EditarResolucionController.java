@@ -21,6 +21,7 @@ import models.SolicitudGenerica;
 import org.joda.time.DateTime;
 
 import com.google.inject.Inject;
+import com.sun.media.sound.ModelSource;
 
 import platino.FirmaUtils;
 import play.db.jpa.JPA;
@@ -98,7 +99,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientes() {
 		
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		Long idResolucionFAP = ids.get("idResolucionFAP");
@@ -119,7 +119,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientesUnico() {
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
+
+		// Obtenemos el usuario conectado al sistema y el rol activo
+		Agente usuario = AgenteController.getAgente();
+		String rolActivo = usuario.getRolActivo();
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		try {
@@ -127,7 +130,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		} catch (Throwable e) {
 			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
 		}
-		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		
+		java.util.List<SolicitudGenerica> rows;
+		// Listamos los expedientes segun la provincia a la que esta asignado el gestor o todos
+		if(rolActivo.equals("gestorTenerife")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverSC(ids.get("idResolucionFAP"));
+		} else if(rolActivo.equals("gestorLasPalmas")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverLP(ids.get("idResolucionFAP"));
+		}else {
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		}
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -707,6 +719,38 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "registro.oficial.enlaceDescargaFirmado", "registro.justificante.enlaceDescarga"));
 		}
 		
+	}
+	
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void volverExpedientes(Long idResolucionFAP, String btnVolverExpedientes) {
+		checkAuthenticity();
+		if (!permisoVolverExpedientes("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.volverExpedientesValidateRules();
+		}
+		Agente logAgente = AgenteController.getAgente();
+		if (!Messages.hasErrors()) {
+			// Obtenemos la resolucion que estamos editando
+			ResolucionFAP resolucionFAP = getResolucionFAP(idResolucionFAP);
+			// Antes de volver cambiamos el estado de la resolucion a borrador 
+			resolucionFAP.estado = "borrador";
+			// Borramos las lineas de resolucion y guardamos la resolucion en la BBDD
+			resolucionFAP.lineasResolucion.clear();
+			resolucionFAP.save();
+			
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		EditarResolucionController.volverExpedientesRender(idResolucionFAP);
 	}
 	
 }

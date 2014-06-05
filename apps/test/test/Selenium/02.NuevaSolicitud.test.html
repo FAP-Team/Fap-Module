@@ -1,12 +1,16 @@
 %{
         play.mvc.Controller.session.put("username", "admin");
-        controllers.fap.AgenteController.findAgente();
+        
         
         controllers.fap.AgenteController.getAgente().cambiarRolActivo("usuario")
+		controllers.fap.AgenteController.findAgente();
 }%
 
 #{selenium}
     open('Principal/solicitudes')
     waitForPageToLoad()
+	click(//li[@class='dropdown'])
+	click(link=Usuario)
+	waitForElementPresent(//span[text()="Nuevo"])
     clickAndWait(//span[text()="Nuevo"])
 #{/selenium}

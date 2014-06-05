@@ -266,6 +266,12 @@
 					listeners : {
 						select: function(sm, record, index, eOpts) {
 							grid.addSelected(record);
+							// Si estamos en la tabla de seleccion de expedientes
+							if(record.data.expedienteAed_idAed != null) {
+								// Mostramos un alert con el codigo del expediente que hemos marcado
+								// Alternativa: mostrar un mensaje al principio de la pagina
+								alert("Expediente seleccionado: "+ record.data.expedienteAed_idAed);
+							}
 						},
 						deselect: function(sm, record, index, eOpts) {
 							grid.delSelected(record);
@@ -660,7 +666,6 @@
 			        
 			        if (!Ext.isEmpty(newRecordsToSelect) && !Ext.Array.contains(this.selectedRecords, newRecordsToSelect))
 			            this.selectedRecords.push(newRecordsToSelect);
-
 			        this.getView().saveScrollState();
 			    },
 			    delSelected: function(recordToDelete) {
@@ -738,7 +743,7 @@
        				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
        				itemmouseenter: function(grid) {
        					console.log('Mouse over panel');
-       					this.refreshSelection();
+       					//this.refreshSelection();
        					this.getView().focus();
        				}
 				}

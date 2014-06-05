@@ -9,6 +9,7 @@ import play.test.UnitTest;
 import properties.FapProperties;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +28,7 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
 
     @Test
     public void compruebaLasFirmasCorrectas() {
+        assumeTrue(comprobarAnexosActivado());
         Documento doc = nuevoDocumento();
         Firmantes firmantes = mock(Firmantes.class);
         when(firmantes.hanFirmadoTodos()).thenReturn(true);
@@ -34,23 +36,25 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
 
         boolean resultado = VerificarDocumentacionService.comprobarFirma(doc);
 
-        assertThat(comprobarAnexosActivado(), is(equalTo(true)));
         assertThat(resultado, is(equalTo(true)));
     }
 
     @Test
     public void comprobarFirmasDevuelveFalseSiNoFirmado() {
+        assumeTrue(comprobarAnexosActivado());
+
         Documento doc = nuevoDocumento();
         doc.firmantes = null;
 
         boolean resultado = VerificarDocumentacionService.comprobarFirma(doc);
 
-        assertThat(comprobarAnexosActivado(), is(equalTo(true)));
         assertThat(resultado, is(equalTo(false)));
     }
 
     @Test
     public void comprobarFirmasDevuelveFalseSiNoTodosHanFirmado(){
+        assumeTrue(comprobarAnexosActivado());
+
         Documento doc = nuevoDocumento();
         Firmantes firmantes = mock(Firmantes.class);
         when(firmantes.hanFirmadoTodos()).thenReturn(false);
@@ -58,7 +62,6 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
 
         boolean resultado = VerificarDocumentacionService.comprobarFirma(doc);
 
-        assertThat(comprobarAnexosActivado(), is(equalTo(true)));
         assertThat(resultado, is(equalTo(false)));
     }
 

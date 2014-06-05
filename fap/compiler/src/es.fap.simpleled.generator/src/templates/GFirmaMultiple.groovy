@@ -410,7 +410,7 @@ public class GFirmaMultiple extends GElement{
 	}
 
 	@Util
-	public static boolean firmar${id()}(Long idDocumento, String firma) {
+	public static String firmar${id()}(Long idDocumento, String firma) {
 
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
         Map<String, Object> json = new HashMap<String, Object>();
@@ -436,7 +436,7 @@ public class GFirmaMultiple extends GElement{
 				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
 			} else {
 				//ERROR
-				Messages.error("No tiene permisos suficientes para realizar la acción++");
+                String error = "No tiene permisos suficientes para realizar la acción";
                 Messages.error(error);
                 errores.add(error);
 			}

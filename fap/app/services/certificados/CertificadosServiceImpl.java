@@ -56,7 +56,6 @@ public class CertificadosServiceImpl implements CertificadosService {
 	
 	private static String usuario = FapProperties.get("fap.certificados.usuario");
 	private static Long idAreaFuncional = FapProperties.getLong("fap.certificados.idAreaFuncional");
-	private static Long idFirma = FapProperties.getLong("fap.certificados.idFirma");
 	
 	static{
 		URL wsdlURL = CertificadosWeb_Service.class.getClassLoader().getResource("wsdl/certificadosWeb.wsdl");
@@ -169,7 +168,7 @@ public class CertificadosServiceImpl implements CertificadosService {
 	}
 	
 	@Override
-	public Firmas getFirma() throws CertificadosServiceException{
+	public Firmas getFirma(Long idFirma) throws CertificadosServiceException{
 		Firmas firma = null;
 		try {
 			FirmaResult response = port.getFirma(usuario, idFirma);

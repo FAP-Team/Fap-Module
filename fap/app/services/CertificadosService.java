@@ -25,7 +25,7 @@ public interface CertificadosService {
 	
 	public List<Firmas> getFirmas() throws CertificadosServiceException;
 	
-	public Firmas getFirma() throws CertificadosServiceException;
+	public Firmas getFirma(Long idFirma) throws CertificadosServiceException;
 	
 	public List<Areas> getAreas() throws CertificadosServiceException;
 	

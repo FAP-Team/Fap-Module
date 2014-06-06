@@ -151,20 +151,18 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
         	host = "https://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
-        	jsclient.add(host + "CAValidas.js");
         }else{
             String baseUrl = FapProperties.get("application.baseUrl");
             if (baseUrl.contains("gobiernodecanarias.org")) {
                 host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
             } else if (baseUrl.contains("sede.gobcan.es")) {
                 host =  "https://sede.gobcan.es/platino/servicios/sfst/js/";
-                jsclient.add("https://sede.gobcan.es/platino/js/CAValidas.js");
             } else {
                 host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
-                jsclient.add("https://www.gobiernodecanarias.org/platino/js/CAValidas.js");
             }
         }
-        
+        jsclient.add(host + "CAValidas.js");
+
         jsclient.add(host + "WS_Full.js"); //Se quita para @firma
         jsclient.add(host + "sfest.utils.js");
         jsclient.add(host + "sfest.base.js");

@@ -170,7 +170,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         	
             // Librerias para @Firma
             jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "miniapplet.js");
+            jsclient.add(host + "miniapplet_1_2.js");
             jsclient.add(host + "constantes.js");
         	
         	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
@@ -181,13 +181,13 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             // Librerias para @Firma
             jsclient.add(host + "common-js/deployJava.js");
             jsclient.add(host + "common-js/instalador.js");
-            jsclient.add(host + "constantes.js");
+            //jsclient.add(host + "constantes.js");
             
             jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
         }
         
 //        jsclient.add(host + "WS_Full.js"); //webSigner
-        jsclient.add(host + "sfest.base.js");
+        jsclient.add(host + "sfest.base_1_2.js");
         
         jsclient.add("/public/javascripts/firma/firma.js");
         jsclient.add("/public/javascripts/firma/firma-platino.js");

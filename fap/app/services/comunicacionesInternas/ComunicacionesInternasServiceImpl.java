@@ -60,11 +60,20 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
 		WSUtils.configureEndPoint(comunicacionesServices, getEndPoint());
         WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder);
+        //El servicio de comunicaciones internas y servicios genéricos no funciona con proxy, entra en conflicto.
+        //Por esto hay que ponerlo a falso, antes de configurar sus políticas.
+        if (FapProperties.getBoolean("fap.proxy.enable")){
+        	FapProperties.setBoolean("fap.proxy.enable", false);
+        }
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
-		
+        
 		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
 		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
 		genericosService.mostrarInfoInyeccion();
+		
+		if (!FapProperties.getBoolean("fap.proxy.enable")){
+			FapProperties.setBoolean("fap.proxy.enable", true);
+		}
 	}
 	
 	public boolean isConfigured(){

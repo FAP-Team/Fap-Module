@@ -415,6 +415,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	 doc = aedPort.obtenerDocumentoNoClasificado(uriDocumento);
         	 response.contenido = doc.getContenido().getFichero();
              response.nombre = doc.getContenido().getNombre();
+             response.propiedades = (PropiedadesAdministrativas)doc.getPropiedades().getPropiedadesAvanzadas();
              obtuveDocumento = true;
         } catch (AedExcepcion e) { ; }
         
@@ -423,6 +424,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	        	doc = aedPort.obtenerDocumento(uriDocumento);	            
 	            response.contenido = doc.getContenido().getFichero();
 	            response.nombre = doc.getContenido().getNombre();
+	            response.propiedades = (PropiedadesAdministrativas)doc.getPropiedades().getPropiedadesAvanzadas();
 	        } catch (AedExcepcion e) {
 	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
 	        }     

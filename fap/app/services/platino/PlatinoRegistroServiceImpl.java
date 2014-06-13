@@ -1,6 +1,7 @@
 package services.platino;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,10 +15,14 @@ import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -174,6 +179,26 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente) throws RegistroServiceException{
 	    return registrarEntrada(solicitante, documento, expediente, null);
 	}
+	
+	private String getUriPlatino (String xml){
+		String resultado = null;
+		try{
+			String nodo = "<Inicio>" + xml + "</Inicio>";
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		    dbf.setNamespaceAware(true);
+		    DocumentBuilder db  = dbf.newDocumentBuilder();
+		    org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(nodo)));
+		    Element uri = (Element) doc.getElementsByTagName("Nombre").item(0);
+		    System.out.println("Obtenida uri de Platino: " +  uri.getTextContent());
+		    play.Logger.info("Obtenida uri de Platino: " +  uri.getTextContent());
+		    resultado = uri.getTextContent();
+		}
+		catch(Exception e){
+			System.out.println("No se ha podido obtener la uri de Platino");
+			play.Logger.error("No se ha podido obtener la uri de Platino");
+		}
+		return resultado;
+	}
 		
 	@Override
 	public models.JustificanteRegistro registrarEntrada(Solicitante solicitante, Documento documento, ExpedientePlatino expediente, String descripcion) throws RegistroServiceException{
@@ -193,6 +218,9 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         		"Agente: "+AgenteController.getAgente().name+
         		"Número de Registro: "+justificante.getNumeroRegistro()+
         		"Fecha: "+justificante.getFechaRegistro());
+        String uriPlatino = getUriPlatino(datos);
+        documento.uriPlatino = uriPlatino;
+        documento.save();
         return justificante;
 	}
 	

@@ -68,6 +68,7 @@ import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 @InjectSupport
 public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
+    public static final String APPLET_FIRMA = "servicios/sfst/js/";
 	private static Logger log = Logger.getLogger(PlatinoFirmaServiceImpl.class);
 	
 	@Inject
@@ -150,15 +151,15 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         List<String> jsclient = new ArrayList<String>();
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
-        	host = "https://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/";
+        	host = "https://www-pre.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
         }else{
             String baseUrl = FapProperties.get("application.baseUrl");
             if (baseUrl.contains("gobiernodecanarias.org")) {
-                host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
+                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
             } else if (baseUrl.contains("sede.gobcan.es")) {
-                host =  "https://sede.gobcan.es/platino/servicios/sfst/js/";
+                host = "https://sede.gobcan.es/platino/" + APPLET_FIRMA;
             } else {
-                host = "https://www.gobiernodecanarias.org/platino/servicios/sfst/js/";
+                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
             }
         }
         jsclient.add(host + "CAValidas.js");

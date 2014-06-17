@@ -66,6 +66,7 @@ import es.gobcan.platino.servicios.sfst.*;
 public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
     public static final String NOMBRE_IMPLEMENTACION = "PlatinoFirmaServiceImpl";
+    public static final String APPLET_FIRMA = "cliente_afirma/mini/js/";
 	private static Logger log = Logger.getLogger(PlatinoFirmaServiceImpl.class);
 	
 	@Inject
@@ -164,31 +165,24 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         List<String> jsclient = new ArrayList<String>();
         String host;
         if("pre".equals(JS_ENTORNO.toLowerCase())){
-//        	host = "http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/"; // webSigner
-//        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/js/"; // @firma
-        	host = "http://www-pre.gobiernodecanarias.org/platino/cliente_afirma/mini/js/"; // @firma Miniapplet
-        	
-            // Librerias para @Firma
+        	host = "https://www-pre.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
+        }else{
+            String baseUrl = FapProperties.get("application.baseUrl");
+            if (baseUrl.contains("gobiernodecanarias.org")) {
+                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
+            } else if (baseUrl.contains("sede.gobcan.es")) {
+                host = "https://sede.gobcan.es/platino/" + APPLET_FIRMA;
+            } else {
+                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
+            }
+        }
+        jsclient.add(host + "CAValidas.js");
+
             jsclient.add(host + "common-js/deployJava.js");
             jsclient.add(host + "miniapplet_1_2.js");
             jsclient.add(host + "constantes.js");
-        	
-        	jsclient.add("http://www-pre.gobiernodecanarias.org/platino/servicios/sfst/js/" + "CAValidas.js");
-        }else{
-//        	host = "http://www.gobiernodecanarias.org/platino/servicios/sfst/js/"; // webSigner
-        	host = "https://www.gobiernodecanarias.org/platino/cliente_afirma/js/"; // @firma
-        	
-            // Librerias para @Firma
-            jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "common-js/instalador.js");
-            //jsclient.add(host + "constantes.js");
-            
-            jsclient.add("http://www.gobiernodecanarias.org/platino/js/CAValidas.js");
-        }
-        
-//        jsclient.add(host + "WS_Full.js"); //webSigner
         jsclient.add(host + "sfest.base_1_2.js");
-        
+
         jsclient.add("/public/javascripts/firma/firma.js");
         jsclient.add("/public/javascripts/firma/firma-platino.js");
         jsclient.add("/public/javascripts/msg.js");

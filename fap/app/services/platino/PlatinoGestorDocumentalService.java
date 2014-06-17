@@ -1,6 +1,9 @@
 package services.platino;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +35,8 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.BinaryResponse;
 import utils.WSUtils;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 import es.gobcan.platino.servicios.registro.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
@@ -212,6 +217,25 @@ public class PlatinoGestorDocumentalService {
     	}
     }
     
+	private static List<DatosFirmante> getDatosFirmantesAED(Firma firmaAed) throws DatatypeConfigurationException {
+		List<DatosFirmante> listFirmantes = new ArrayList<DatosFirmante>(); 
+		for (Firmante firmante : firmaAed.getFirmantes()) {
+			DatosFirmante datFirm = new DatosFirmante();
+			datFirm.setIdFirmante(firmante.getFirmanteNif());
+			datFirm.setDescFirmante(firmante.getFirmanteNombre());
+		
+			GregorianCalendar gregCal = new GregorianCalendar();
+			gregCal.setTime(firmante.getFecha());
+			datFirm.setFechaFirma(DatatypeFactory.newInstance().newXMLGregorianCalendar(gregCal));
+		
+			//TODO: Cambiar cuando se use BD de terceros platino
+			datFirm.setCargoFirmante("Solicitante");
+			datFirm.setUriFirmante("URITest");
+			listFirmantes.add(datFirm);
+		}
+		return listFirmantes;
+	}
+    
 	
 	/**
 	 * 
@@ -244,6 +268,8 @@ public class PlatinoGestorDocumentalService {
 				datos.setFecha(PlatinoPortafirmaServiceImpl.DateTime2XMLGregorianCalendar(DateTime.now())); // TODO: Cambiar el modo de conversion
 				datos.setDescripcion(documento.descripcionVisible);
 				datos.setAdmiteVersionado(true);
+				datos.setFirmaXml(doc.propiedades.getFirma().getContenido());
+				datos.setFirmantes(getDatosFirmantesAED(doc.propiedades.getFirma()));
 				
 				//Subimos el documento al gestor documental de platino
 				documento.uriPlatino = guardarDocumento(uriPlatinoExpediente, datos);

@@ -7,9 +7,12 @@ import java.io.InputStream;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
+
 public class BinaryResponse {
 	public String nombre;
 	public DataHandler contenido;
+	public PropiedadesAdministrativas propiedades;
 
 	public static BinaryResponse fromFile(File file){
 	    BinaryResponse binaryResponse = new BinaryResponse();

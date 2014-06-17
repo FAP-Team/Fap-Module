@@ -58,12 +58,14 @@ function peticionContraFirma(documento) {
 
 Firma._firmarVariosDocumentos = function(listaDocs, certificado, errores){
 	var firmasDeferred = [];
-	MiniApplet.setStickySignatory(true);
+	mantenerSeleccionCertificado(true);
 	$.each(listaDocs, function(i, doc) {
 		var firma = Firma._firmarDocumento(listaDocs[i], null);
 		firmasDeferred[i] = firma.promise();
 	});
-	MiniApplet.setStickySignatory(false);
+	$.when.apply($, firmasDeferred).always(function() {
+		mantenerSeleccionCertificado(false);
+	});
 	return firmasDeferred;
 }
 

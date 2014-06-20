@@ -26,5 +26,9 @@ public class BinaryResponse {
 		byte[] result = StreamUtils.is2byteArray(is);
 		return result;
 	}
+
+    public PropiedadesAdministrativas getPropiedades() {
+        return propiedades;
+    }
 	
 }

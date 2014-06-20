@@ -193,6 +193,7 @@ Entidad DocumentoExterno {
 	String organo
 	String expediente
 	LongText uri
+	String hash
 }
 
 Entidad ObligatoriedadDocumentos extends Singleton {

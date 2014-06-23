@@ -103,7 +103,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         try {
 	        notificacionService = new es.gobcan.aciisi.servicios.enotificacion.notificacion.NotificacionService(wsdlLocation);
         } catch (Exception e) {
-        	play.Logger.error("No se ha podido injectar el servicio de notificaciones: " + e.getMessage());
+        	play.Logger.error("No se ha podido inyectar el servicio de notificaciones: " + e.getMessage());
         	notificacionPort = null;
         	return;
         }

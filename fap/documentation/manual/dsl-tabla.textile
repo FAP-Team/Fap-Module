@@ -14,6 +14,7 @@ h2. Parámetros
 * **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **alto = _[string]_** (opcional) : Permite especificar el alto de la tabla.
 * **seleccionable = _[string]_** (opcional) : Se añade un check a cada elemento de la tabla que permite seleccionarlo, además se añade un botón en la tabla (con el nombre que se le indique en este parámetro) que obtendrá la lista de elementos seleccionados y llamará al método del controlador.
+** **mostrarTablaSeleccionados** (opcional) : Solo posible si la tabla es _seleccionable_. Se muestra debajo de la tabla principal una nueva tabla con la selección realizada.
 * **metodoFilas = _[string]_** (opcional): Al emplear este parámetro se ejecutará el controlador indicado que devolverá la lista de elementos que se mostrarán en la tabla.
 * **popup = _[popup]_** (opcional) : Asigna un popup a la tabla, creando todos los botones disponibles para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupLeer = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Ver para abrirlo. "Ver documentación Popup":dsl-popup.

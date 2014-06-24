@@ -443,7 +443,7 @@ Tabla:
         & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
-		& ('seleccionable' "=" seleccionable=STRING)?
+		& ('seleccionable' "=" seleccionable=STRING & (mostrarTablaSeleccionados?='mostrarTablaSeleccionados')?)?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
 	    & ('popup' '=' popup=[Popup|IDS])?
 	    & ('popupCrear' '=' popupCrear=[Popup|IDS])?

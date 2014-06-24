@@ -227,7 +227,7 @@ Formulario Principal {
 	Pagina EditarResolucion titulo="Resolución" campo=ResolucionFAP perteneceA="Principal" noForm {
 		
 		Grupo titulo="Seleccionar expediente" permiso=seleccionarUnExpediente {
-			Tabla tablaExpedientesUnico campo=SolicitudGenerica seleccionable="Crear Resolucion" {
+			Tabla tablaExpedientesUnico campo=SolicitudGenerica seleccionable="Crear Resolucion" mostrarTablaSeleccionados {
 				Columna titulo = "ID" campo=SolicitudGenerica.id ancho = "40"
 				Columna titulo = "Expediente" campo=SolicitudGenerica.expedienteAed.idAed
 				Columna titulo = "Estado Interno" campo=SolicitudGenerica.estadoValue ancho = "120"

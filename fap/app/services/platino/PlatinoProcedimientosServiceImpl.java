@@ -47,13 +47,6 @@ public class PlatinoProcedimientosServiceImpl {
 	        WSUtils.configureEndPoint(procedimientosPort, getEndPoint());
 	        WSUtils.configureSecurityHeaders(procedimientosPort, propertyPlaceholder);
 	        PlatinoProxy.setProxy(procedimientosPort, propertyPlaceholder);
-	        
-	        Client client = ClientProxy.getClient(procedimientosPort);
-			HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-			httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-			httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-			httpConduit.setClient(httpClientPolicy);	
 	}
 	
 	public boolean isConfigured(){

@@ -1546,6 +1546,16 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.popupBorrar != null && tabla.popupBorrar.name.equals(popup.name))
 				borrar = true;
 		}
+		for (FirmaMultiple firmaMultiple: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMultiple())){
+			if (firmaMultiple.popup != null && firmaMultiple.popup.name.equals(popup.name))
+				crear = borrar = editar = true;
+			if (firmaMultiple.popupCrear != null && firmaMultiple.popupCrear.name.equals(popup.name))
+				crear = true;
+			if (firmaMultiple.popupEditar != null && firmaMultiple.popupEditar.name.equals(popup.name))
+				editar = true;
+			if (firmaMultiple.popupBorrar != null && firmaMultiple.popupBorrar.name.equals(popup.name))
+				borrar = true;
+		}
 	}
 	
 	public Accion getAccion(String accion){

@@ -59,6 +59,9 @@ public class Agente extends FapModel {
 	@Transient
 	public String verificacion;
 
+	@Column(length = 500)
+	public String cargo;
+
 	public Agente() {
 		init();
 	}

@@ -321,7 +321,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			// Comprobamos que esten todos los documentos verificados
 			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 				// Si hay cosas que requerir, la verificación tiene causas subsanables
-				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
+				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty()))
+                        || (dbSolicitud.verificacion.requerimiento.firmante != null)
+                        || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
 					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados (Solicitud "+dbSolicitud.id+")");
 					Requerimiento requerimiento = dbSolicitud.verificacion.requerimiento;
 					if(!Messages.hasErrors()){
@@ -437,18 +439,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
-		PaginaVerificacionController.gRequerirFirmaRequerimientoBindReferences(solicitud);
 
 		if (!Messages.hasErrors()) {
 			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateCopy("editar", dbSolicitud, solicitud);
 		}
 
 		if (!Messages.hasErrors()) {
-			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateRules(dbSolicitud, solicitud);
-			Messages.ok("Se estableció correctamente el firmante del Requerimiento");
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
-			dbSolicitud.save();
-			
 			// Se debe enviar el mail de "solicitarFirmaRequerimiento"
 			envioMailFirmaRequerimiento(dbSolicitud);
 		}
@@ -472,6 +468,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
 			
 			Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
+            Messages.ok("Se envió requerimiento al gestor firmante solicitado.");
+            solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
+            solicitud.save();
 		} catch (Exception e) {
 			play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor+". Error: "+e.getMessage());
 		}
@@ -481,13 +480,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	public static void gRequerirFirmaRequerimientoValidateCopy(String accion, SolicitudGenerica dbSolicitud, SolicitudGenerica solicitud) {
 		CustomValidation.clearValidadas();
 		if (secure.checkGrafico("requerimientoRequerirFirma", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.valid("solicitud.verificacion.requerimiento", solicitud.verificacion.requerimiento);
-			CustomValidation.valid("solicitud.verificacion", solicitud.verificacion);
-			CustomValidation.valid("solicitud", solicitud);
-			CustomValidation.required("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
+			CustomValidation.valid("solicitud.verificacion.requerimiento", dbSolicitud.verificacion.requerimiento);
+			CustomValidation.valid("solicitud.verificacion", dbSolicitud.verificacion);
+			CustomValidation.valid("solicitud", dbSolicitud);
+			CustomValidation.required("solicitud.verificacion.requerimiento.firmante", dbSolicitud.verificacion.requerimiento.firmante);
 			CustomValidation.validValueFromTable("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
-			dbSolicitud.verificacion.requerimiento.firmante = solicitud.verificacion.requerimiento.firmante;
-			
 			dbSolicitud.verificacion.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestorComoFirmante(solicitud.verificacion.requerimiento.firmante);
 			dbSolicitud.verificacion.requerimiento.registro.firmantes.save();
 			dbSolicitud.save();

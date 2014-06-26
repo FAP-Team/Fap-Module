@@ -31,6 +31,7 @@ import services.RegistroService;
 import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
+import utils.ComboUtils;
 import utils.ResolucionUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
@@ -432,5 +433,10 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		}
 		return listaCombo;
 	}
+
+
+    public static List<ComboItem> gestorAFirmar() {
+        return ComboUtils.gestorAFirmar();
+    }
 
 }

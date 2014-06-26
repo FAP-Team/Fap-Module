@@ -176,6 +176,8 @@ Entidad ResolucionFAP {
 	//Solicitante solicitanteJefeServicio transient
 
 	SolicitudFirmaPortafirma solicitudFirmaPortafirma
+	String idSolicitudFirmaOficiosRemision
+
 	String idSolicitudFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.uriSolicitud
 	DateTime fechaTopeFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.plazoMaximo
 	String prioridadFirma									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.prioridad
@@ -184,7 +186,6 @@ Entidad ResolucionFAP {
 	String jefeDeServicio									// YA NO SE UTILIZA. USAR solicitudFirmaPortafirma.idDestinatario
 	
 	SolicitudFirmaPortafirma solicitudFirmaPortafirmaOficioRemision
-	String idSolicitudFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.uriSolicitud
 	DateTime fechaTopeFirmaOficiosRemision					// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.plazoMaximo
 	Agente hacePeticionPortafirmaOficiosRemision noConstruct// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud
 	String destinatarioOficioRemisionPortafirma				// YA NO SE UTILIZA. USAR solicitudFirmaPortafirmaOficioRemision.idDestinatario
@@ -560,6 +561,7 @@ Formulario Principal {
 							AreaTexto textoJustificacionReintegro campo=ResolucionFAP.textoResolucionReintegro titulo="Texto de la Resolución de justificación de reintegro"
 //							//}
 						}
+						Combo gestorAFirmar titulo="Persona que debe firmar" campo=ResolucionFAP.idSolicitudFirmaOficiosRemision ancho="450px" requerido
 						Boton botonGenerarOficioRemision titulo="Generar" waitPopup
 					}
 					

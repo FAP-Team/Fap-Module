@@ -176,12 +176,10 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
                 host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
             }
         }
-        jsclient.add(host + "CAValidas.js");
 
-            jsclient.add(host + "common-js/deployJava.js");
-            jsclient.add(host + "miniapplet_1_2.js");
-            jsclient.add(host + "constantes.js");
-        jsclient.add(host + "sfest.base_1_2.js");
+        jsclient.add(host + "common-js/deployJava.js");
+        jsclient.add(host + "miniapplet.js");
+        jsclient.add(host + "sfest.base.js");
 
         jsclient.add("/public/javascripts/firma/firma.js");
         jsclient.add("/public/javascripts/firma/firma-platino.js");

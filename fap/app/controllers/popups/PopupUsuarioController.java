@@ -133,6 +133,7 @@ public class PopupUsuarioController extends PopupUsuarioControllerGen {
 		dbAgente.roles.addAll(agente.roles);
 		CustomValidation.required("agente.email", agente.email);
 		dbAgente.email = agente.email;
+        dbAgente.cargo = agente.cargo;
 		dbAgente.funcionario = agente.funcionario;
 
 	}

@@ -70,6 +70,16 @@ ul {
 	#{include 'reports/datosSolicitanteBorradorRequerimientoMock.html' /}
 #{/else}
 
+%{
+    def agente = models.Agente.getAgenteByUsername(dbSolicitud.verificacion.requerimiento.firmante);
+}%
+
+<br/>
+<ul style="list-style-type: none">
+    <li>${agente.name}</li>
+    <li>${agente.cargo}</li>
+</ul>
+
 <h2 style="text-align: left; page-break-before: always;">Anexo</h2>
 
 #{if dbSolicitud.verificacion.requerimiento.motivo != null}

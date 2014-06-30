@@ -19,6 +19,7 @@
 				def mes = resolucion.fechaRegistroResolucion.toDate().format('MM')
 				def anio = resolucion.fechaRegistroResolucion.toDate().format('yyyy')
 				def sint = resolucion.sintesis
+                def agente = resolucion.getAgenteSolicitadoFirmaOficiosRemision();
 			}%
 			<p>
 				<b>Asunto:</b> Remisión de la Resolución Nº ${num} de fecha ${dia} de ${mes} de ${anio}
@@ -31,6 +32,11 @@
 			<p>
 				${sint}
 			</p>
+
+            <ul style="list-style-type: none">
+                <li>${agente.name}</li>
+                <li>${agente.cargo}</li>
+            </ul>
 		</div>
 	</body>
 </html>

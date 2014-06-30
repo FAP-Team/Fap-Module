@@ -34,13 +34,6 @@ public class PlatinoBDOrganizacionServiceImpl {
         WSUtils.configureEndPoint(dbOrgPort, getEndPoint());
         WSUtils.configureSecurityHeaders(dbOrgPort, propertyPlaceholder);
         PlatinoProxy.setProxy(dbOrgPort, propertyPlaceholder);
-        
-        Client client = ClientProxy.getClient(dbOrgPort);
-		HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-		HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-		httpClientPolicy.setConnectionTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpClientPolicy.setReceiveTimeout(FapProperties.getLong("fap.servicios.httpTimeout"));
-		httpConduit.setClient(httpClientPolicy);
 	}
 
 	private String getEndPoint() {

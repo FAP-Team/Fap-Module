@@ -162,8 +162,9 @@
 				%{				
 					def clave = entry.key
 					String claveFalsa = clave;
-					if(claveFalsa.startsWith("_"))
+					if((claveFalsa != null) && (claveFalsa.startsWith("_"))) {
 						claveFalsa = claveFalsa.replace("_", "");
+                    }
 					def valor = entry.value
 					def selected = (values.contains(clave) || values.contains(clave.toString().trim()))? 'selected="selected"' : ''
 				}%

@@ -240,6 +240,17 @@ public class ResolucionFAP extends FapModel {
 
 	}
 
+	public Agente getAgenteSolicitadoFirmaOficiosRemision() {
+		Agente agente = null;
+		agente = Agente.find("byUsername", this.idSolicitudFirmaOficiosRemision).first();
+		if (agente == null) {
+            agente = new Agente();
+			agente.username = "";
+            agente.cargo = "";
+		}
+		return agente;
+	}
+
 	// === MANUAL REGION END ===
 
 }

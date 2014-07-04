@@ -320,11 +320,11 @@ public class NotificacionServiceImpl implements NotificacionService {
 		
 			docPuestaADisposicion.save();
 			
-			Documento dbDoc = notificacion.documentoPuestaADisposicion;
+			//Documento dbDoc = notificacion.documentoPuestaADisposicion;
 			notificacion.documentoPuestaADisposicion = null;
 			notificacion.save();
-			dbDoc.delete();
-			dbDoc = null;
+			//dbDoc.delete();
+			//dbDoc = null;
 
 			notificacion.uri = uriNotificacion;
 			notificacion.documentoPuestaADisposicion = docPuestaADisposicion;

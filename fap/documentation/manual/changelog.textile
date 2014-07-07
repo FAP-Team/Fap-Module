@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión 2.5.2
+
+* FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
+
 h3. Versión 2.5.1RC1
 
 * Actualización a versión definitiva de MiniApplet @Firma 1.2

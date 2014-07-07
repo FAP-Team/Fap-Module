@@ -1,5 +1,8 @@
 h2. Changelog
 
+h3. Versión 2.4.1
+* FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
+
 h3. Versión 2.4RC6
 * FixedBug: Se ha corregido el error en combos dependientes cuando tenían valores previos en bbdd.
 	No se pueden declarar listas en las cuales la clave tenga guiones bajos.

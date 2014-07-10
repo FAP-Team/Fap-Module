@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 import org.hibernate.annotations.DiscriminatorOptions;
+import properties.FapProperties;
 
 @DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
@@ -47,6 +48,10 @@ public class Convocatoria extends Singleton {
 	}
 
 	// === MANUAL REGION START ===
+
+    public static String getModalidadConvocatoria() {
+        return FapProperties.get("fap.aed.expediente.modalidad");
+    }
 
 	// === MANUAL REGION END ===
 

@@ -75,7 +75,7 @@ Firma.firmarDocumento = function(elCertificado, url, elFirma, opciones){
 
     firma = Firma._firmarDocumento(url, certificadoSeleccionado);
     $.when(firma).done(function(valorFirma){
-        $firma.val(valorFirma.firma);
+    	$firma.val(valorFirma.firma ? valorFirma.firma : valorFirma);
         $firma.change()
     });
 	return firma;

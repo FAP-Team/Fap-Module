@@ -51,18 +51,23 @@ exports.changeRole = function(casper, role) {
 }
 
 
+exports.nuevaSolicitud = function() {
+    casper.thenOpen("Principal/solicitudes", function() {
+        casper.click(x('//span[text()[contains(.,"Nuevo")]]'));
+    });
+}
+
 exports.abrirUltimaSolicitud = function() {
     casper.thenOpen("Principal/solicitudes", function() {
         casper.capture("img/nueva-solicitud.png");
         if (casper.exists("tr.x-grid-row:last-child")){
             casper.click("tr.x-grid-row:last-child");
+            casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
+                casper.test.assertTitle("Combos");
+            });
         } else {
-            casper.click(x('//span[text()[contains(.,"Nuevo")]]'));
+            nuevaSolicitud();
         }
-    });
-
-    casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
-        casper.test.assertTitle("Combos");
     });
 }
 
@@ -77,4 +82,16 @@ exports.assertPaginaGuardada = function(casper) {
     casper.then(function() {
         casper.test.assertSelectorHasText('div.alert.alert-success','Página editada correctamente');
     });
+}
+
+exports.abrirEnlace = function(enlace, titulo) {
+    casper.then(function() {
+        casper.click(x('//a[text()="'+enlace+'"]'));
+    });
+
+    if (titulo) {
+        casper.then(function() {
+            casper.test.assertTitle(titulo);
+        });
+    }
 }

@@ -6,18 +6,13 @@ var combosPorDefecto = function(test) {
     utiles.abrirUltimaSolicitud();
 
     casper.then(function() {
-        casper.click("select#solicitud_comboTest_list");
-        casper.click(x('//*[@id="solicitud_comboTest_list"]/option[contains(text(),"B")][2]'));
-    });
-    casper.then(function() {
-        casper.click("select#solicitud_comboTest_listNumber");
-        casper.click(x('//*[@id="solicitud_comboTest_listNumber"]/option[contains(text(),"2")]'));
+        casper.fillSelectors("#ComboseditarForm", {
+        "#solicitud_comboTest_list" : "b",
+        "select#solicitud_comboTest_listNumber" : "_2",
+        "select#solicitud_comboTest_listSinDuplicados" : "b"
+        });
     });
 
-    casper.then(function() {
-        casper.click("select#solicitud_comboTest_listSinDuplicados");
-        casper.click(x('//*[@id="solicitud_comboTest_listSinDuplicados"]/option[contains(text(),"B")]'));
-    });
 
     casper.then(function() {
         casper.click("ul.chzn-choices li.search-field");

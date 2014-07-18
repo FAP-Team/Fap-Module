@@ -5,10 +5,6 @@ var nuevaSolicitud = function(test) {
     utiles.changeRole(casper, "Usuario");
 
     casper.then(function() {
-        casper.capture("img/nueva-solicitud.png");
-    });
-
-    casper.then(function() {
         this.click(x('//span[text()[contains(.,"Nuevo")]]'));
     });
 

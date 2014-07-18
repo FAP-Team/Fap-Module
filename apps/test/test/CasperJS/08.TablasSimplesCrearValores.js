@@ -13,16 +13,15 @@ var tablasSimples = function(test) {
     casper.then(function() {
         casper.waitForSelector("#tablaDeNombres_nombre");
         casper.waitForSelector("#tablaDeNombres_apellido");
+        casper.waitForSelector("a#Guardar_id_popupNombre_popup");
     });
     casper.then(function(){
         casper.fillSelectors("#popupNombrecrearForm", {
             "#tablaDeNombres_nombre" : "NombreFAP",
             "#tablaDeNombres_apellido" : "ApellidoFAP"
-        });
+        }, true);
     });
 
-    utiles.clickEnGuardar(casper);
-    utiles.assertPaginaGuardada(casper);
 }
 
 utiles.casperBegin("Tablas Simples:", tablasSimples);

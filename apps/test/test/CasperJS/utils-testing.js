@@ -40,33 +40,34 @@ exports.changeRole = function(casper, role) {
         if(!casper.exists(x("//li[@class='dropdown']/*[text()[contains(.,'"+role+"')]]"))) {
             casper.click("a.dropdown-toggle");
             casper.waitForSelector("ul.dropdown-menu li form")
-            casper.captureSelector("img/menu.png","ul.dropdown-menu li form");
             casper.click(x("//a[text()[contains(.,'" + role + "')]]"));
         }
     });
     casper.then(function() {
        casper.capture("img/cambio-de-rol-a-"+role+".png");
        casper.test.assertSelectorHasText('li.dropdown a.dropdown-toggle',role);
+       casper.echo("Usando rol " + role + ".");
     });
 }
 
 
 exports.nuevaSolicitud = function() {
     casper.thenOpen("Principal/solicitudes", function() {
+        casper.echo("Creando nueva solicitud...");
         casper.click(x('//span[text()[contains(.,"Nuevo")]]'));
     });
 }
 
 exports.abrirUltimaSolicitud = function() {
     casper.thenOpen("Principal/solicitudes", function() {
-        casper.capture("img/nueva-solicitud.png");
         if (casper.exists("tr.x-grid-row:last-child")){
             casper.click("tr.x-grid-row:last-child");
+            casper.echo("Abriendo última solicitud...")
             casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
                 casper.test.assertTitle("Combos");
             });
         } else {
-            nuevaSolicitud();
+            exports.nuevaSolicitud();
         }
     });
 }
@@ -94,4 +95,13 @@ exports.abrirEnlace = function(enlace, titulo) {
             casper.test.assertTitle(titulo);
         });
     }
+}
+
+
+exports.captura = function (nombreImagen) {
+    var ruta = "img/";
+    var extension = ".png";
+    casper.then(function() {
+        casper.capture(ruta + nombreImagen + extension);
+    });
 }

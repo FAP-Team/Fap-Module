@@ -14,29 +14,18 @@ var combosSobreescritos = function(test) {
     });
 
     casper.then(function() {
-        casper.click("select#lista");
-        casper.click(x('//*[@id="lista"]/option[contains(text(),"C")]'));
+        casper.fillSelectors("#CombosOverwriteeditarForm", {
+            "#lista" : "c",
+            "#listaLong" : "3",
+            "#listaMultiple" : ["a","b","c"],
+            "#listaMultipleLong" : ["1","3"],
+            "#wsjson" : "2",
+            "#wsxml" : "1"
+        });
     });
-
-    casper.then(function() {
-        casper.click("select#listaLong");
-        casper.click(x('//*[@id="listaLong"]/option[.="Tres"]'));
-    });
-
-    casper.then(function() {
-        casper.click("select#listaMultiple");
-        casper.click(x('//*[@id="listaMultiple"]/option[.="Dos"]'));
-        casper.click(x('//*[@id="listaMultiple"]/option[.="Uno"]'));
-        casper.click(x('//*[@id="listaMultiple"]/option[.="Tres"]'));
-    });
-
 
     utiles.clickEnGuardar(casper);
     utiles.assertPaginaGuardada(casper);
-
-    casper.then(function() {
-        casper.capture("img/combos-sobreescritos-despues-test.png");
-    });
 }
 
 

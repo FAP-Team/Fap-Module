@@ -249,16 +249,17 @@ public class Documento extends FapModel {
 
 	public String getFirmadoVisible() {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+        String firma = "";
 		try {
-			String firma = gestorDocumentalService.getDocumentoFirmaByUri(uri);
-			if (firma != null && !firma.isEmpty()) {
-				play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
-				return "Sí";
-			}
+            firma = gestorDocumentalService.getFirma(this).getContenido();
+            play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
+        } catch (NullPointerException e) {
+            play.Logger.info("El documento " + descripcionVisible + " no tiene firma");
 		} catch (Exception e) {
 			play.Logger.error("Error al obtener el documento " + descripcionVisible + " firmado");
+            firma = "";
 		}
-		return "No";
+		return firma.isEmpty() ? "No" : "Sí";
 	}
 
 	public String getFirmadoVisibleLocal() {

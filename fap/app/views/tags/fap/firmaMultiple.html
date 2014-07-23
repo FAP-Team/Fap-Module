@@ -50,7 +50,10 @@
 	String nombreBotonCrear = _nombreBotonCrear ?: 'Nuevo';
 	
     boolean botonCrear = urlCrear;
-	
+    if (_permisoCrear != null)
+        botonCrear = config.InjectorConfig.getInjector().getInstance(security.Secure.class).checkAcceso("$_permisoCrear", "crear", tags.TagMapStack.top("idParams"), null);
+
+    boolean botonFirmar = botonCrear;
 
 	def modelName = id + "_model";
 	Set<String> campos = new HashSet<String>();
@@ -556,6 +559,7 @@
 		peticionJSON${id}();
 	}
 
+    #{if botonFirmar}
     var boton_firmar = new Ext.Button({
     	text: "Firmar",
     	disabled:true,
@@ -595,6 +599,7 @@
     		}
 	   	}
     });
+    #{/if}
     
 //---- Inicio botón crear
             #{if botonCrear}
@@ -714,7 +719,9 @@
 			            this.selectedRecords.push(newRecordsToSelect);
 
 			        this.getView().saveScrollState();
+                    #{if botonFirmar}
 			        boton_firmar.setDisabled(false);
+                    #{/if}
 			        boton_editar.setDisabled(false);
 			        boton_borrar.setDisabled(false);
 			    },
@@ -746,7 +753,9 @@
 			           	#{if urlLeer}
 				        	boton_leer,
 				        #{/if}
-                        boton_firmar,
+                        #{if botonFirmar}
+                            boton_firmar,
+                        #{/if}
                         #{if botonCrear }
                             boton_crear,
                         #{/if}
@@ -867,7 +876,9 @@
                     #{if urlBorrar}
                     boton_borrar.setDisabled(true);
                     #{/if}
+                    #{if botonFirmar}
 			    	boton_firmar.setDisabled(true);
+                    #{/if}
 		    	}
 		    });
 
@@ -943,7 +954,7 @@
 		});
 		return firmado;
 	}
-
+#{if botonFirmar}
 	function firmar(id, firma) {
 		var resultado;
 		$.ajax({
@@ -960,34 +971,35 @@
 		});
 		return resultado;
 	}
-
-</script>
-
-#{set 'moreScripts'}
-	#{fap.platinojs /}
-#{/set}
-
-#{if !miniApplet}
-#{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
-<select id="${id_cert}certificado" name="certificado" class="certificado">
-	<option disabled="disabled">--Certificados--</option>
-</select>
-#{/fap.formrow}
 #{/if}
 
-<div id="cert-msg"></div>
-
-<script>
-	initFirma();
-	#{if !miniApplet}
-	$(function(){
-		var form = $('#${id}').parents('form');
-		Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
-	});
-	#{/if}
-
 </script>
-	
+#{if botonFirmar}
+    #{set 'moreScripts'}
+        #{fap.platinojs /}
+    #{/set}
+
+    #{if !miniApplet}
+    #{fap.formrow id:id_row, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, anchoBloque:anchoBloque}
+    <select id="${id_cert}certificado" name="certificado" class="certificado">
+        <option disabled="disabled">--Certificados--</option>
+    </select>
+    #{/fap.formrow}
+    #{/if}
+
+    <div id="cert-msg"></div>
+
+    <script>
+        initFirma();
+        #{if !miniApplet}
+        $(function(){
+            var form = $('#${id}').parents('form');
+            Firma.listarCertificados("#${id_cert}certificado", {mensajes: mensajes});
+        });
+        #{/if}
+
+    </script>
+#{/if}
 
 %{
 	// Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 

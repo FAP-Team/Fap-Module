@@ -24,12 +24,14 @@ public class GFirmaSimple extends GElement{
 	
 	public String view(){
 		CampoUtils documentoUri = CampoUtils.create(firmaSimple.documento.campo, "uri");
+		CampoUtils documentoFirma = CampoUtils.create(firmaSimple.documento.campo);
 		TagParameters params = new TagParameters();
 		if (firmaSimple.titulo)
 			params.putStr("titulo", firmaSimple.titulo);
 		params.putStr("id", firmaSimple.name);
 		params.putStr("firma", "firma");
 		params.put("uri", '"${' + documentoUri.firstLower() + '}"');
+        params.put("firmaActual", '"${' + documentoFirma.firstLower() + '.getFirma()' + '}"')
 		return """
 			#{fap.firma ${params.lista()} /}
 		""";

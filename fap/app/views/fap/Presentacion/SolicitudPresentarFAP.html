@@ -134,7 +134,7 @@
 		
 #{/fap.tabla}
 
-			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar', uri:"${solicitud.registro.oficial.uri}" /}
+			#{fap.firma firma:'firma', id:'firmarRepresentante', titulo:'Firmar', uri:"${solicitud.registro.oficial.uri}", firmaActual:"${solicitud.registro.oficial.getFirma()}" /}
 		
 				#{/form}
 			

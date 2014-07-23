@@ -157,6 +157,22 @@ public class Documento extends FapModel {
 		return "";
 	}
 
+    public String getFirma() {
+        String stringFirma = "";
+		GestorDocumentalService gestorDocumental =
+            InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+        try {
+            Firma firma = gestorDocumental.getFirma(this);
+            stringFirma = firma.getContenido();
+        } catch (GestorDocumentalServiceException e) {
+            Logger.info("Documento.getFirma(...): Excepción obteniendo la firma del documento %s", this.id);
+            stringFirma = "";
+        } catch (NullPointerException e) {
+            stringFirma = "";
+        }
+        return stringFirma;
+    }
+
 	public boolean isObligatorio() {
 		return (tipo != null && DocumentosUtils.esTipoObligatorio(tipo));
 	}

@@ -5,8 +5,6 @@ import java.util.List;
 
 import properties.FapProperties;
 
-import com.jamonapi.utils.Logger;
-
 import messages.Messages;
 import verificacion.ObligatoriedadDocumentosFap;
 import models.DocumentoExterno;
@@ -80,7 +78,7 @@ public class VerificarDocumentacionService {
 		excluirObligatoriosCondicionadosAutomaticosAportados(lstObligatoriosCondicionadosAutomatico);
 		// Se comprueba los tipos de obligatoriedad documentos que el usuario ya ha aportado, para quedarse con los que NO ha aportado
 		for (Documento doc : lstDocumentosSubidos) {
-			comprobarFirma(doc);
+			comprobarFirmas(doc);
 			if (doc.tipo != null) {
 				String tipo = eliminarVersionUri(doc.tipo);
 				// Si recorriendo todos los documentos que el usuario ha aportado
@@ -192,18 +190,39 @@ public class VerificarDocumentacionService {
 		return uri.substring(0,uri.length()-4);
 	}
 	
-	static boolean comprobarFirma(Documento doc) {
-		play.Logger.info("Comprobando firmantes de %s", doc);
-        if (properties.FapProperties.getBoolean("fap.documentacion.comprobarAnexosFirmados") == false) {
-            return true;
+    public boolean comprobarFirmasDocumentos() {
+        List<Documento> docs = lstDocumentosSubidos;
+        return comprobarFirmasDocumentos(docs);
+    }
+
+
+    static public boolean comprobarFirmasDocumentos(List<Documento> docs) {
+        for (Documento doc : docs) {
+            if(!comprobarFirmas(doc)) {
+                return false;
+            };
         }
-		if ((doc.firmantes == null) || (!doc.firmantes.hanFirmadoTodos())) {
+        return true;
+    }
+
+    public static boolean comprobarFirmas(Documento doc) {
+		play.Logger.info("Comprobando firmantes de %s", doc);
+        boolean salida = true;
+        if (propertyAnexosFirmadosActiva() && !documentoFirmadoPorTodos(doc)) {
 			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
 			Messages.error(String.format("El documento %s no ha sido firmado o faltan firmas.", descripcion));
-			return false;
+			salida = false;
 		}
-		
-		return true;
+
+		return salida;
 	}
+
+    private static boolean documentoFirmadoPorTodos(Documento doc) {
+        return (doc.firmantes != null) && (doc.firmantes.hanFirmadoTodos());
+    }
+
+    private static Boolean propertyAnexosFirmadosActiva() {
+        return FapProperties.getBoolean("fap.documentacion.comprobarAnexosFirmados");
+    }
 }
 

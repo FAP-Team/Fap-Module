@@ -20,6 +20,7 @@ import services.FirmaService;
 import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
 import services.platino.PlatinoGestorDocumentalService;
+import services.VerificarDocumentacionService;
 import messages.Messages;
 import models.Alegacion;
 import models.Aportacion;
@@ -157,7 +158,17 @@ public class TramiteAportacion extends TramiteBase {
 		// TODO Auto-generated method stub
 		return new ArrayList<DocumentoExterno>();
 	}
-	
+
+    @Override
+    public void validar() {
+        validarDocumentacion();
+    }
+
+    protected void validarDocumentacion() {
+        VerificarDocumentacionService.comprobarFirmasDocumentos(this.getDocumentos());
+    }
+
+
 	@Override
 	public void firmar(String firma){
         if(registro.fasesRegistro.borrador && !registro.fasesRegistro.firmada){

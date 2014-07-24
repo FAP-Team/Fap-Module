@@ -1,5 +1,6 @@
 h2. Changelog
 
+
 h3. Versión 2.5.2
 
 * FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
@@ -35,6 +36,11 @@ h3. Versión 2.4.1RC1
 * Arreglado fallo a la hora de seleccionar un expediente en la resolución simple
 * Arreglado fallo al notificar una resolución
 * Añadida documentacion de properties que no estaban incluidas
+
+
+h3. Versión 2.4.1
+* FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
+
 
 h3. Versión 2.4RC6
 

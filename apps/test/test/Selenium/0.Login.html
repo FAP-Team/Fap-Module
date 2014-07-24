@@ -1,0 +1,23 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    // Open the home page, and check that no error occured
+    open('login')
+    waitForPageToLoad()
+    %{
+        firmaService = config.InjectorConfig.getInjector().getInstance(services.FirmaService.class)
+        miniApplet = firmaService.getInfoInyeccion().toLowerCase().matches(".*platino.*")
+     %}
+
+    waitForElementPresent(//input['login-username'])
+    #{if !miniApplet}
+    waitForElementPresent('css=select#certificado')
+    #{/if}
+    #{else}
+    assertElementNotPresent('css=select#certificado')
+    #{/else}
+    type('id=login-username','admin')
+    type('id=login-password','a')
+    clickAndWait('signin')
+    waitForElementPresent('//a[contains(@href, \'/logout\')]')
+#{/selenium}

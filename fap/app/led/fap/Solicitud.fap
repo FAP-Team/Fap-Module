@@ -487,6 +487,13 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				Boton botonAnularVerificacion titulo="Anular la Verificación" type=danger
 			}
 		}
+
+		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=requerimientoRequerirFirma{
+			Wiki {"Puede modificar la resolución si necesita cambiar el motivo de requerimiento o gestor que debe firmar."}
+			Form reabrirVerificacion permiso=requerimientoRequerirFirma {
+				Boton botonReabrirVerificacion titulo="Modificar la Verificación" type=warning
+            }
+		}
 		
 		Grupo datosVerificacion titulo="Datos generales de la verificación" permiso=noEditable{
 			Texto expediente titulo="Expediente" campo=Verificacion.expediente

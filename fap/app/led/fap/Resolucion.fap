@@ -200,10 +200,11 @@ Formulario Principal {
 		Tabla listaResoluciones titulo="Resoluciones" campo=ResolucionFAP paginaCrear=NuevaResolucion paginaEditar=EditarResolucion
 		{
 			Columna campo=ResolucionFAP.id titulo="ID" ancho="40"
-			Columna campo=ResolucionFAP.tituloInterno titulo="Título"
-			Columna campo=ResolucionFAP.tipo titulo="Tipo" ancho="100"
-			Columna campo=ResolucionFAP.estado titulo="Estado"
-			Columna campo=ResolucionFAP.fechaIncioPreparacion titulo="Fecha"
+			Columna campo=ResolucionFAP.tituloInterno titulo="Resolución" expandir
+			Columna campo=ResolucionFAP.tipo titulo="Tipo" ancho="80"
+			Columna campo=ResolucionFAP.estado titulo="Estado" ancho="80"
+			Columna campo=ResolucionFAP.numero titulo="Número" ancho="60"
+			Columna campo=ResolucionFAP.fechaIncioPreparacion titulo="Fecha" ancho="80"
 		}
 	}
 	

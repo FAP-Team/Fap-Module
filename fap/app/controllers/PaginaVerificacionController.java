@@ -712,6 +712,31 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.anularVerificacionRender(idSolicitud, idVerificacion);
 	}
+
+    @Util
+    public static void reabrirVerificacion(Long idSolicitud, Long idVerificacion, String botonReabrirVerificacion) {
+        checkAuthenticity();
+        if (!permisoReabrirVerificacion("editar")) {
+            Messages.error("No tiene permisos suficientes para realizar la acción");
+        }
+
+        if(!Messages.hasErrors()) {
+            Verificacion verificacion = Verificacion.findById(idVerificacion);
+            if (verificacion != null) {
+                verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+                verificacion.save();
+                Messages.ok("Ahora puede modificar la verificación");
+            }
+        }
+
+        Agente logAgente = AgenteController.getAgente();
+        if (!Messages.hasErrors()) {
+            log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+        } else
+            log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+        PaginaVerificacionController.reabrirVerificacionRender(idSolicitud, idVerificacion);
+    }
+
 	
 	@Util
 	public static void obtenerNoProcede(Long idSolicitud, Long idVerificacion){

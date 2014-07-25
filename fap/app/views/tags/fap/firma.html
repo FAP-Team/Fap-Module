@@ -56,47 +56,46 @@
 #{fap.boton idFijo:id_boton, titulo:titulo, waitPopup:true/}
 
 <script>
-		// @firma
-		//alert("desactivar vpn gobcan");
-		initFirma();
-		//alert("activar vpn gobcan");
-		var firma;
+        // @firma
+        //alert("desactivar vpn gobcan");
+        initFirma();
+        //alert("activar vpn gobcan");
+        var firma;
 
-		$(function(){
-			var mensajes = new Mensajes("#cert-msg");
-			var form = $('#${id}').parents('form');
-			var elCertificado = null;
-			#{if !miniApplet}
-			elCertificado = "#${id_cert}certificado";
-			Firma.listarCertificados(elCertificado, {mensajes: mensajes});
+        $(function(){
+            var mensajes = new Mensajes("#cert-msg");
+            var form = $('#${id}').parents('form');
+            var elCertificado = null;
+            #{if !miniApplet}
+            elCertificado = "#${id_cert}certificado";
+            Firma.listarCertificados(elCertificado, {mensajes: mensajes});
             #{/if}
 
-			$firma = $("input:hidden#${id_firma}")
-						
-			$('#${id_boton}').click(function(e){
-			    e.stopPropagation();
-			    e.preventDefault();
-			    $firma.siblings("input:submit").submit();
-				mensajes.clear();
+            $firma = $("input:hidden#${id_firma}")
+
+            $('#${id_boton}').click(function(e){
+                e.stopPropagation();
+                e.preventDefault(); 
+                $firma.siblings("input:submit").submit();
+                mensajes.clear();
                 var documento = {
                     "url" : "${url}",
                     "firma" : "${firmaActual}"
-                };
-				var firma = Firma.firmarDocumento(elCertificado, documento, '#${id_firma}', {mensajes: mensajes});
-				input = $("<input>").attr("type", "hidden").attr("name", "${id_boton}").val("${id_boton}");
-				form.append($(input));
-				if(firma == null){
-					//$(this).parent('form').submit();
-					return false;
-				}
-			});
+                }; 
+                input = $("<input>").attr("type", "hidden").attr("name", "${id_boton}").val("${id_boton}");
+                form.append($(input));
+                var firma = Firma.firmarDocumento(elCertificado, documento, '#${id_firma}', {mensajes: mensajes});
+                if(firma == null){
+                    //$(this).parent('form').submit();
+                    return false;
+                }
+            });
 
-			$($firma.change(function() {
-				$firma.parents("form").submit();
-			}))
-		});
+            $($firma.change(function() {
+                $firma.parents("form").submit();
+            }))
+        });
 </script>
-
 
 %{
         // Comprobamos si servicios como Platino, GestorDocumental, etc, responden. 

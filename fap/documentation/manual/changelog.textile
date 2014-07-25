@@ -1,5 +1,18 @@
 h2. Changelog
 
+h3. Versión 2.5.3
+
+* Definición de contanstes para el uso de properties en el futuro.
+* Id Expediente contiene el año automáticamente.
+* Actualización de properties para que su valor pueda ser modificado en tiempo de ejecución.
+* Se permite la modificación de una verificación finalizada.
+* Cambio de títulos en la tabla de resoluciones.
+* Creación de tests en CasperJS
+* Correción a la hora de comprobar los firmantes necesarios.
+* Firma secuencial en los representes.
+* Correción de las tablas de documentación y de aportación de documentación.
+* Añadida la posibilidad de finalizar la verificación sin haber guardado previamente el motivo de requerimiento.
+* FixedMinorBug: Arreglado problema a la hora de firmar y registrar de salida una verificación.
 
 h3. Versión 2.5.2
 

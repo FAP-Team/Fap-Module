@@ -311,7 +311,51 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {
+	public static void guardarMotivoRequerimientoGeneral(Long idSolicitud, Long idVerificacion, SolicitudGenerica solicitud, String guardarRequerimientoMotivoRequerimientoGeneralbtn, String btnFinalizarVerificacion) {
+		checkAuthenticity();
+		if (!permisoGuardarMotivoRequerimientoGeneral("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
+
+		PaginaVerificacionController.guardarMotivoRequerimientoGeneralBindReferences(solicitud);
+
+		PaginaVerificacionController.guardarRequerimientoMotivoRequerimientoGeneralbtnGuardarMotivoRequerimientoGeneral(idSolicitud, idVerificacion, solicitud);
+		if (!Messages.hasErrors()) {
+
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralValidateCopy("editar", dbSolicitud, solicitud);
+
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralValidateRules(dbSolicitud, solicitud);
+		}
+		
+		Agente logAgente = AgenteController.getAgente();
+		
+		if (!Messages.hasErrors()) {
+			dbSolicitud.save();
+		}
+		if (guardarRequerimientoMotivoRequerimientoGeneralbtn != null) {
+				PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+		}
+
+		if (btnFinalizarVerificacion != null) {
+			PaginaVerificacionController.btnFinalizarVerificacionGuardarMotivoRequerimientoGeneral(idSolicitud, idVerificacion, solicitud);
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+		}
+
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void btnFinalizarVerificacionGuardarMotivoRequerimientoGeneral(Long idSolicitud, Long idVerificacion, SolicitudGenerica solicitud) {
+	//public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {	
 		checkAuthenticity();
 		if (!permisoFinalizarVerificacion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -339,8 +383,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							}						
 
 							//Genera el documento oficial
-							SolicitudGenerica solicitud = dbSolicitud;
-							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
+							SolicitudGenerica solicitudb = dbSolicitud;
+							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").registroSize().renderTmpFile(solicitudb);
 							requerimiento.oficial = new Documento();
 							requerimiento.oficial.tipo = tipoDocumentoRequerimiento;
 							requerimiento.oficial.descripcion = "Requerimiento";

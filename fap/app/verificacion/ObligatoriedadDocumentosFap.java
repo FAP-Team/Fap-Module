@@ -49,7 +49,7 @@ public class ObligatoriedadDocumentosFap{
 		// Guardamos localmente, el trámite sobre el que trabajará la instancia de la clase.
 		// Este tramite lo calcularemos a partir de su nombre, que es el que nos pasan por parametro, mediante una
 		// consulta a la base de datos
-		this.tramite=Tramite.find("select tramite from Tramite tramite where nombre='" + strTramite + "'").first();
+        this.tramite=Tramite.find("byNombreIlike",strTramite).first();
 		// Se calculan los documentos obligatorios de dicho trámite
 		this.initObligatoriedad();
 	}

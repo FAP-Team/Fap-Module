@@ -452,7 +452,29 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.finalizarVerificacionRender(idSolicitud, idVerificacion);
 	}
-	
+
+    @Util
+    public static boolean permisoFinalizarVerificacion(String accion) {
+        //Sobreescribir para incorporar permisos a mano
+        return true;
+    }
+
+    @Util
+    public static void finalizarVerificacionValidateRules() {
+        //Sobreescribir para validar las reglas de negocio
+    }
+
+    @Util
+    public static void finalizarVerificacionRender(Long idSolicitud, Long idVerificacion) {
+        if (!Messages.hasMessages()) {
+            Messages.ok("Página editada correctamente");
+            Messages.keep();
+            redirect("PaginaVerificacionController.index", "editar", idSolicitud, idVerificacion);
+        }
+        Messages.keep();
+        redirect("PaginaVerificacionController.index", "editar", idSolicitud, idVerificacion);
+    }
+
 	/**
 	 * Lista los gestores que pueden firmar el requerimiento
 	 * @return

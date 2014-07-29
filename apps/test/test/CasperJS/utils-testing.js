@@ -3,6 +3,10 @@ var x = require('casper').selectXPath;
 
 
 exports.login = function(casper, test) {
+    test = test || casper.test
+    casper.then(function() {
+            casper.open('http://localhost:9009/login');
+        });
     casper.then(function() {
         casper.fillSelectors('form#authen-form', {
             'input#login-username' : 'admin',
@@ -73,15 +77,21 @@ exports.abrirUltimaSolicitud = function() {
 }
 
 
-exports.clickEnGuardar = function(casper) {
+exports.clickEnGuardar = function(casperRecibido) {
+    casper = casperRecibido || casper;
     casper.then(function() {
         casper.click("input.btn[value='Guardar']");
     });
 }
 
-exports.assertPaginaGuardada = function(casper) {
+exports.assertPaginaGuardada = function(casperRecibido) {
+    var selector = 'div.alert.alert-success';
+    casper = casperRecibido || casper;
     casper.then(function() {
-        casper.test.assertSelectorHasText('div.alert.alert-success','Página editada correctamente');
+        casper.waitForSelector(selector);
+    })
+    casper.then(function() {
+        casper.test.assertSelectorHasText(selector,'Página editada correctamente');
     });
 }
 
@@ -104,4 +114,151 @@ exports.captura = function (nombreImagen) {
     casper.then(function() {
         casper.capture(ruta + nombreImagen + extension);
     });
+}
+
+
+exports.rellenarNuevaSolicitud = function() {
+    exports.login(casper);
+    exports.changeRole(casper,"Usuario");
+    exports.nuevaSolicitud();
+    exports.rellenarFormularioSolicitud();
+    exports.subirDocumentacionSolicitud();
+    exports.guardarPCEconomicos();
+};
+
+
+exports.prepararParaFirmarSolicitudActual = function () {
+    exports.echo("Preparando para firmar...");
+    exports.abrirEnlace("Presentacion","Presentación de la Solicitud");
+    var selector = "input[type='submit'][value='Preparar para firmar']";
+    casper.then(function() {
+        casper.test.assertExists(selector);
+    });
+    casper.then(function() {
+        casper.click(selector);
+    });
+    casper.then(function() {
+        if (casper.exists(x("//div[contains(@class,'alert-error')]//li[contains(text(),'No se pudo preparar para Firmar')]"))) {
+            exports.configurarGestorDocumental();
+        }
+    });
+    casper.then(function() {
+        casper.test.assertExists("input.btn[type='submit'][value='Presentar solicitud']");
+    })
+};
+
+
+exports.subirDocumentacionSolicitud = function() {
+
+};
+
+exports.rellenarFormularioSolicitud = function() {
+    exports.echo("Rellenando formulario de solicitud...");
+    exports.abrirEnlace("S. Normal", "Solicitante");
+    exports.rellenaCombo("#personaSolicitante2Combo", "fisica");
+    exports.rellenaCombo("#personaSolicitante2Fisica_nip_tipo", "nif");
+    exports.rellenaFormulario("#SolicitanteeditarForm", {
+       "#personaSolicitante2Fisica_nip_valor" : "11111111H",
+       "#personaSolicitante2Fisica_nombre" : "NombreFAP",
+       "#personaSolicitante2Fisica_primerApellido" : "ApellidoFAP"
+    });
+    exports.rellenaCombo("#personaSolicitante2Direccion_tipo", "canaria");
+    exports.rellenaCombo("#personaSolicitante2Direccion_provinciaIsla", "_38");
+    exports.rellenaCombo("#personaSolicitante2Direccion_isla", "_384", "#personaSolicitante2Direccion_isla option[value='_381']");
+    exports.rellenaCombo("#personaSolicitante2Direccion_municipioIsla", "_380393", "#personaSolicitante2Direccion_municipioIsla option[value='_380393']");
+    exports.rellenaFormulario("#SolicitanteeditarForm", {
+        "#personaSolicitante2Direccion_codigoPostal" : "12345",
+        "#personaSolicitante2Direccion_calle" : "Avenida FAP",
+        "#personaSolicitante2Direccion_numero" : "5"
+    });
+    exports.clickEnGuardar(casper);
+    exports.assertPaginaGuardada(casper);
+
+};
+
+exports.guardarPCEconomicos = function() {
+    exports.echo("Guardando PCEconomicos...");
+    exports.abrirEnlace("PCEconómicos", "Conceptos económicos");
+    casper.then(function() {
+        if(existeMensajeErrorBaremacion()) {
+            exports.echo("La baremación está desactivada")
+            exports.activarBaremacion();
+        } else {
+            exports.echo("La baremación esta activada");
+        }
+    });
+    exports.clickEnGuardar();
+    exports.assertPaginaGuardada();
+};
+
+
+exports.activarBaremacion = function() {
+    casper.then(function() {
+        exports.echo("Activando Baremación...")
+        var usuarioActual = exports.getUsuarioActual();
+        exports.changeRole(casper, "Administrador");
+        exports.abrirUrl("http://localhost:9009/Administracion/activarbaremacion", function () {
+            casper.click("input[type='submit'][value='Cargar Tipo Evaluación']");
+        });
+        exports.changeRole(casper, usuarioActual);
+    });
+};
+
+exports.configurarGestorDocumental = function() {
+    casper.then(function() {
+        var usuarioActual = exports.getUsuarioActual();
+        exports.changeRole(casper, "Administrador");
+        casper.then(function () {
+            casper.open("http://localhost:9009/Administracion/aed");
+        });
+        casper.then(function () {
+            casper.click("input[type='submit'][value='Configurar gestor documental']");
+        });
+        casper.then(function () {
+            casper.click("input[type='submit'][value='Actualizar trámites']");
+        });
+        exports.changeRole(casper, usuarioActual);
+    });
+};
+
+
+exports.rellenaFormulario = function(selector, campos) {
+    casper.then(function() {
+        casper.fillSelectors(selector, campos);
+    })
+}
+
+
+exports.abrirUrl = function(url, callback) {
+    casper.thenOpen(url, callback)
+}
+
+exports.rellenaCombo = function (sel, val, esperarPorElemento) {
+    if (esperarPorElemento) {
+        casper.waitForSelector(esperarPorElemento);
+    }
+    casper.then(function() {
+        casper.evaluate(function(selector, valor) {
+            $(selector).val(valor).change();
+        },sel,val)
+    })
+};
+
+exports.echo = function(mensaje) {
+    casper.then(function() {
+        casper.echo(mensaje);
+    })
+};
+
+exports.getUsuarioActual = function() {
+    var usuario;
+    usuario = casper.evaluate(function() {
+        return $("li.dropdown a.dropdown-toggle").text().trim();
+    });
+    return usuario;
+}
+
+function existeMensajeErrorBaremacion() {
+    var selector = x("//div[contains(@class,'alert-error')]//li[contains(text(),'no están disponibles')]");
+    return casper.exists(selector);
 }

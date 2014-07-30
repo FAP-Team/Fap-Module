@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 2.4.1
 * FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
+* Actualización de la librería platino pre. Reciente actualización del cliente del servicio de registro.
 
 h3. Versión 2.4RC6
 * FixedBug: Se ha corregido el error en combos dependientes cuando tenían valores previos en bbdd.

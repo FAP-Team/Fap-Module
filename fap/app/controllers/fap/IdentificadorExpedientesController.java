@@ -40,7 +40,7 @@ public class IdentificadorExpedientesController extends InvokeClassController {
     private static String getNumeroSecuencial() {
         SemillaExpediente semilla = new SemillaExpediente();
         semilla.save();
-        Long id = (Long) semilla.id;
+        Long id = (Long) semilla.getValorSemilla();
         java.text.NumberFormat formatter = new java.text.DecimalFormat("0000");
         return formatter.format(id);
     }

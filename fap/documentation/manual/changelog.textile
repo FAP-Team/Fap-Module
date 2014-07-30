@@ -13,6 +13,7 @@ h3. Versión 2.5.3
 * Correción de las tablas de documentación y de aportación de documentación.
 * Añadida la posibilidad de finalizar la verificación sin haber guardado previamente el motivo de requerimiento.
 * FixedMinorBug: Arreglado problema a la hora de firmar y registrar de salida una verificación.
+* Actualización de la librería platino pre. Reciente actualización del cliente del servicio de registro.
 
 h3. Versión 2.5.2
 

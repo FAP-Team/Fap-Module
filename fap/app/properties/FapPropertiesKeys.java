@@ -138,9 +138,11 @@ public class FapPropertiesKeys {
 
     //Prefijo que va a llevar el nombre del expediente en el AED
     public static final String AED_EXPEDIENTE_PREFIJO="fap.aed.expediente.prefijo";
+    public static final String AED_EXPEDIENTE_PREFIJO_REINICIAR_ANUALMENTE="fap.aed.expediente.prefijo.reiniciarAnualmente";
 
     //Nombre del expediente en el AED de la convocatoria
     public static final String AED_EXPEDIENTE_CONVOCATORIA="fap.aed.expediente.convocatoria";
+    public static final String AED_EXPEDIENTE_MODALIDAD="fap.aed.expediente.modalidad";
     public static final String AED_EXPEDIENTE_CONVOCATORIA_INTERESADO_NOMBRE="fap.aed.expediente.convocatoria.interesado.nombre";
     public static final String AED_EXPEDIENTE_CONVOCATORIA_INTERESADO_NIP="fap.aed.expediente.convocatoria.interesado.nip";
 

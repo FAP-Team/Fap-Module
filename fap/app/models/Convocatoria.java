@@ -49,9 +49,9 @@ public class Convocatoria extends Singleton {
 
 	// === MANUAL REGION START ===
 
-    public static String getModalidadConvocatoria() {
-        return FapProperties.get("fap.aed.expediente.modalidad");
-    }
+	public static String getModalidadConvocatoria() {
+		return FapProperties.get("fap.aed.expediente.modalidad");
+	}
 
 	// === MANUAL REGION END ===
 

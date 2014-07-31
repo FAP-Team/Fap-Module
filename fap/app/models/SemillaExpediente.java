@@ -1,14 +1,13 @@
 package models;
 
-import play.db.jpa.JPABase;
-import play.exceptions.JPAException;
-import properties.FapProperties;
-import properties.FapPropertiesKeys;
-
 import java.util.*;
 import javax.persistence.*;
 
 // === IMPORT REGION START ===
+import play.db.jpa.JPABase;
+import play.exceptions.JPAException;
+import properties.FapProperties;
+import properties.FapPropertiesKeys;
 
 // === IMPORT REGION END ===
 
@@ -31,7 +30,7 @@ public class SemillaExpediente extends Singleton {
     @Override
     public synchronized  <T extends JPABase> T save() {
         super.save(); //para obtener inicialmente el id
-        this.anyo = getAnyoActual();
+		this.anyo = this.anyo != null ? this.anyo : getAnyoActual();
         this.semilla = this.semilla != null ? this.semilla : crearNuevaSemilla();
         return super.save();
     }
@@ -51,7 +50,7 @@ public class SemillaExpediente extends Singleton {
         if(Convocatoria.esAnual()
                 && hayQueReiniciarNumeracionCadaAnyo()
                 && !this.mismoAnyoQueSemilla(semillaAnterior)) {
-            valorUltimaSemilla = VALOR_INICIAL_EXPEDIENTE - 1;
+            valorUltimaSemilla = semillaInicial().getValorSemilla();
         } else {
             valorUltimaSemilla = semillaAnterior.getValorSemilla();
         }
@@ -85,7 +84,7 @@ public class SemillaExpediente extends Singleton {
     }
 
     private boolean mismoAnyoQueSemilla(SemillaExpediente semillaExpediente) {
-        return semillaExpediente.anyo == this.anyo;
+		return semillaExpediente.anyo.intValue() == this.anyo.intValue();
     }
 
     private boolean hayQueReiniciarNumeracionCadaAnyo() {

@@ -20,6 +20,7 @@ public class SemillaExpedienteTest extends UnitTest {
 
     public static final Long VALOR_SEMILLA = (long)23;
     private static final long VALOR_INICIAL_EXPEDIENTE = 0;
+    private static final int ANYO_DIFERENTE = 2013;
 
     @Before
     public void borrarSemillas() {
@@ -49,6 +50,7 @@ public class SemillaExpedienteTest extends UnitTest {
     public void semillaSumaConsecutivaEnNoAnual() {
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, "convocatoria");
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,2014);
+        s1.save();
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
         assertThat(s2.semilla, is(equalTo(s1.semilla + 1)));
@@ -67,7 +69,7 @@ public class SemillaExpedienteTest extends UnitTest {
     public void semillaSumaConsecutivaDistintoAnyoYPropertyNoActiva() {
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, Convocatoria.ANUAL);
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_PREFIJO_REINICIAR_ANUALMENTE, "false");
-        SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA, 1900);
+        SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA, ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
         assertThat(s2.semilla, is(equalTo(s1.semilla + 1)));
@@ -77,7 +79,7 @@ public class SemillaExpedienteTest extends UnitTest {
     public void semillaReiniciaSiDistintoAnyoYPorpertyActiva() {
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, Convocatoria.ANUAL);
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_PREFIJO_REINICIAR_ANUALMENTE, "true");
-        SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,getAnyo());
+        SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
         assertThat(s2.semilla, is(equalTo(VALOR_INICIAL_EXPEDIENTE + 1)));

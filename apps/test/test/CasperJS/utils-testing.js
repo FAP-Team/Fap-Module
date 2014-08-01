@@ -80,7 +80,9 @@ exports.abrirUltimaSolicitud = function() {
 exports.clickEnGuardar = function(casperRecibido) {
     casper = casperRecibido || casper;
     casper.then(function() {
-        casper.click("input.btn[value='Guardar']");
+        casper.waitForSelector("input.btn[value='Guardar']", function() {
+            casper.click("input.btn[value='Guardar']");
+        });
     });
 }
 
@@ -182,7 +184,7 @@ exports.guardarPCEconomicos = function() {
     casper.then(function() {
         if(existeMensajeErrorBaremacion()) {
             exports.echo("La baremación está desactivada")
-            exports.activarBaremacion();
+            exports.activarBaremacion(casper.getCurrentUrl());
         } else {
             exports.echo("La baremación esta activada");
         }
@@ -192,7 +194,7 @@ exports.guardarPCEconomicos = function() {
 };
 
 
-exports.activarBaremacion = function() {
+exports.activarBaremacion = function(paginaPrevia) {
     casper.then(function() {
         exports.echo("Activando Baremación...")
         var usuarioActual = exports.getUsuarioActual();
@@ -200,6 +202,9 @@ exports.activarBaremacion = function() {
         exports.abrirUrl("http://localhost:9009/Administracion/activarbaremacion", function () {
             casper.click("input[type='submit'][value='Cargar Tipo Evaluación']");
         });
+        if (paginaPrevia) {
+            exports.abrirUrl(paginaPrevia);
+        }
         exports.changeRole(casper, usuarioActual);
     });
 };

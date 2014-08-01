@@ -76,6 +76,7 @@ public class SemillaExpediente extends Singleton {
         SemillaExpediente ultimaSemilla;
         ultimaSemilla = new SemillaExpediente();
         ultimaSemilla.semilla = VALOR_INICIAL_EXPEDIENTE - 1;
+        ultimaSemilla.anyo = getAnyoActual();
         return ultimaSemilla;
     }
 

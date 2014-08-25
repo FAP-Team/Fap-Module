@@ -446,7 +446,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado);
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
-                agregarFirmaEnGestorDocumental(documento, firma, firmante);
+                agregarFirmaEnGestorDocumental(documento, firma, firmanteCertificado);
             }
 		}else{
 			play.Logger.error("firmanteCertificado == null????");

@@ -1038,11 +1038,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return firma;
     }
     
-    protected Firma firmaParalela(Firma actual, String nueva){
-        Firma firma = new Firma();
-        firma.setContenido(nueva);
-        firma.setTipoMime("text/plain");
-        return firma;
+    protected Firma firmaParalela(Firma firmaActual, String contenidoNueva){
+        firmaActual.setContenido(contenidoNueva);
+        firmaActual.setTipoMime("text/plain");
+        return firmaActual;
     }
 	
     protected void asignarFirmante(Firma firma, models.Firmante firmante){

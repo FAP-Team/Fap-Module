@@ -1460,20 +1460,37 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
 	
 
+	public String getDocumentoFirmaByUri(String uriDocumento, boolean clasificado) throws GestorDocumentalServiceException {
+        String response = null;
+        try{
+            PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(uriDocumento, clasificado);
+            PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
+            Firma firmaActual = propiedadesAdministrativas.getFirma();
+            response = firmaActual.getContenido();
+        }
+        catch (AedExcepcion e) {
+            play.Logger.error("Excepción obteniendo firma documento: " + e.getFaultInfo().getDescripcion(), e);
+        }
+        return response;
+    }
+
 	public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
-		String response = null;
-    	try{
-    		Firma firma = aedPort.obtenerDocumentoFirma(uriDocumento);
-    		if (firma != null)
-    			response = firma.getContenido();
-    	}
-    	catch (AedExcepcion e) {
-    		play.Logger.error("Excepción: " + e.getMessage(), e);
-			// TODO: handle exception
-		}
-    	
-    	return response;
+        return getDocumentoFirmaByUri(uriDocumento, true);
 	}
+
+    private Documento obtenerDocumento(String uri) {
+        Documento doc = null;
+        try {
+            doc = aedPort.obtenerDocumento(uri);
+        } catch (AedExcepcion aedExcepcion) {
+            aedExcepcion.printStackTrace();
+        }
+
+        if (doc == null) {
+            doc = new Documento();
+        }
+        return doc;
+    }
 	
 	/**
 	 * Copiamos el documento en cada uno de los expedientes que se le pasen

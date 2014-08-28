@@ -701,6 +701,14 @@
 		    	}
 		    });
 
+            function cambiarEstadoActivoBotonBorrar(numeroSeleccionados, permiso) {
+                if (numeroSeleccionados == 1) {
+                    boton_borrar.setDisabled(permiso || false);
+                } else {
+                    boton_borrar.setDisabled(true);
+                }
+            }
+
 		   	var grid = new Ext.grid.GridPanel({
 		   		id: '${id}GridID',
 				selectedRecords: [],
@@ -723,7 +731,7 @@
 			        boton_firmar.setDisabled(false);
                     #{/if}
 			        boton_editar.setDisabled(false);
-			        boton_borrar.setDisabled(false);
+                    cambiarEstadoActivoBotonBorrar(this.selectedRecords.length);
 			    },
 			    delSelected: function(recordToDelete) {
 			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
@@ -854,15 +862,15 @@
 		    			boton_leer.setDisabled(true);
 		    		}
 			    	#{/if}
+                    #{if urlBorrar}
+                        cambiarEstadoActivoBotonBorrar(grid.getSelectionModel().getSelection().length, !registro.get("permisoBorrar"))
+                    #{/if}
                     #{if urlEditar}
                     if (grid.getSelectionModel().getSelection().length == 1) {
                         boton_editar.setDisabled(!registro.get("permisoEditar"));
                     } else {
                         boton_editar.setDisabled(true);
                     }
-                    #{/if}
-                    #{if urlBorrar}
-                    boton_borrar.setDisabled(!registro.get("permisoBorrar"));
                     #{/if}
 			    	boton_firmar.setDisabled(false);
 		    	}

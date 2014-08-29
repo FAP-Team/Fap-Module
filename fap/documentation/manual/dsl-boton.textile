@@ -17,6 +17,7 @@ h2. Parámetros
 * **type** : Tipo de botón.
 * **ayuda** : Ayuda asociada al botón.
 * **claveIdFijo** (opcional): Identificador del elemento sin hexadecimal autogenerado. Coincide con el nombre que se le da al crearlo.
+* **noSubmit** (opcional): Indica que el botón no será de tipo submit sino botón básico. Por defecto todo botón es de tipo submit.
 
 h2. Definición
 
@@ -32,6 +33,7 @@ bc. Boton:
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& (claveIdFijo?="claveIdFijo")?
+		& (noSubmit?="noSubmit")?
 	)
 ;
 
@@ -40,3 +42,5 @@ h2. Ejemplo de uso
 bc. Boton subirDocumento titulo="Añadir documentación"
 
 bc. Boton irPresentacion titulo="Ir a Presentación" pagina=Presentacion
+
+bc. Boton reset titulo="Reset" noSubmit

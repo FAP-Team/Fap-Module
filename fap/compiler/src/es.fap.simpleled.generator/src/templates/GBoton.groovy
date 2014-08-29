@@ -55,6 +55,8 @@ public class GBoton extends GElement{
 			else
 				params.put "ayuda", "tags.TagAyuda.texto('${boton.ayuda}')";
 		}
+		if (boton.claveIdFijo)
+			params.put "claveIdFijo", true
 		return """
 			#{fap.boton ${params.lista()} /}
 		""";

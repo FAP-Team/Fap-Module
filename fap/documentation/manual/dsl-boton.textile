@@ -16,6 +16,7 @@ h2. Parámetros
 * **refrescar** (opcional) : Deshabilita el botón mientras se refresca la página.
 * **type** : Tipo de botón.
 * **ayuda** : Ayuda asociada al botón.
+* **claveIdFijo** (opcional): Identificador del elemento sin hexadecimal autogenerado. Coincide con el nombre que se le da al crearlo.
 
 h2. Definición
 
@@ -30,6 +31,7 @@ bc. Boton:
 		& (refrescar?="refrescar")?
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (claveIdFijo?="claveIdFijo")?
 	)
 ;
 

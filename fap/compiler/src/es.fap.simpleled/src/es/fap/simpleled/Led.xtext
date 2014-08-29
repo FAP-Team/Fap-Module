@@ -370,6 +370,7 @@ Boton:
 		& (refrescar?="refrescar")?	
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (claveIdFijo?="claveIdFijo")?	
 	)
 ;
 

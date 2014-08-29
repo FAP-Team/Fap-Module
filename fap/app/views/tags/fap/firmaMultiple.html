@@ -788,8 +788,6 @@
        				},
        				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
        				itemmouseenter: function(grid) {
-       					console.log('Mouse over panel');
-       					this.refreshSelection();
        					this.getView().focus();
        				}
 				}
@@ -853,6 +851,13 @@
 		    });
 		    
 		    grid.addListener("selectionchange", function(){
+
+
+                //Por si al eliminar un documento se queda la referencia en la selección
+                if (!grid.getSelectionModel().getLastSelected()) {
+                    grid.getSelectionModel().deselectAll(false)
+                }
+
 		    	if (grid.getSelectionModel().hasSelection()){
 		    		var registro = store${id}.getAt(store${id}.find("id", grid.getSelectionModel().getSelection()[0].data.id));
 		    		#{if urlLeer}

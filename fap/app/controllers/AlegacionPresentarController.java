@@ -83,7 +83,7 @@ public class AlegacionPresentarController extends AlegacionPresentarControllerGe
 	
 	@Util
 	public static void formFirmaPFRender(Long idSolicitud) {
-		if (!Messages.hasMessages()) {
+		if (!Messages.hasErrors()) {
 			Messages.ok("Página editada correctamente");
 			Messages.keep();
 			redirect("AlegacionesController.index", "editar", idSolicitud);

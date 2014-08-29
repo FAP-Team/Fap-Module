@@ -187,7 +187,7 @@
 		
 				#{form play.mvc.Router.reverse('SolicitudPresentarFAPController.frmRegistrar' , ['idSolicitud':solicitud?.id, 'idRegistro':solicitud?.registro?.id]) , class:"form-horizontal", id:"frmRegistrar"}
 					
-			#{fap.boton id:'botonRegistrar', titulo:'Registrar' /}
+			#{fap.boton id:'botonRegistrar', titulo:'Registrar', waitPopup:true /}
 		
 				#{/form}
 			

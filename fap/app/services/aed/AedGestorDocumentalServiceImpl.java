@@ -219,7 +219,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
 		}
         Interesados interesados = getInteresados(solicitud);
-        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+        String convocatoria = Convocatoria.getIdentificadorConvocatoria(this.propertyPlaceholder);
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(expedienteIdExterno);
@@ -1266,7 +1266,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 		
 		Interesados interesados = getInteresadosPorDefecto();
-        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+        String convocatoria = Convocatoria.getIdentificadorConvocatoria(this.propertyPlaceholder);
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(expedienteIdExterno);
@@ -1298,7 +1298,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         Interesados interesados = getInteresados(solicitud);
         String numeroExpediente = expedienteAed.idAed;
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
-        String convocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+        String convocatoria = Convocatoria.getIdentificadorConvocatoria(propertyPlaceholder);
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(numeroExpediente);
@@ -1438,7 +1438,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			play.Logger.error("Error al buscar los expedientes en el AED: "+e);
 		}
 
-        String strConvocatoria = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".convocatoria");
+        String strConvocatoria = Convocatoria.getIdentificadorConvocatoria(propertyPlaceholder);
 
         Expediente expediente = new Expediente();
         expediente.setIdExterno(expedienteIdExterno);

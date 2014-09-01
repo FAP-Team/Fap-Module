@@ -415,6 +415,7 @@ Entidad Incidencia {
 
 Entidad SemillaExpediente extends Singleton{
 	Long semilla
+	Integer anyo
 }
 
 // Plantillas de mails automáticos a enviar

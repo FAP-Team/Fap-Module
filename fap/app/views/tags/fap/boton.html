@@ -28,7 +28,11 @@
 	def fondo = _fondo
 	def noSubmit = _noSubmit
 	def idSolo = id;
-	id = id+Long.toHexString(new Random().nextLong());
+	
+	def claveIdFijo = _claveIdFijo
+	if (!claveIdFijo) {
+		id = id+Long.toHexString(new Random().nextLong()); 
+	}
 	
 	// Por si es llamado desde un elemento firma
 	if (idFijo) {

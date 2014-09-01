@@ -32,6 +32,7 @@ function crearReferencia(nombreReferencia) {
 }
 
 var combosPorDefecto = function(test) {
+    var nReferencias = 3;
     utiles.changeRole(casper,"Usuario");
     utiles.abrirUltimaSolicitud();
 
@@ -48,22 +49,33 @@ var combosPorDefecto = function(test) {
         casper.click("ul.chzn-choices li.search-field");
         casper.click(x('//li[contains(text(),"D")][3]'));
     });
-
+    utiles.captura("despues rellenar combos");
+    utiles.clickEnGuardar(casper);
+    utiles.assertPaginaGuardada(casper);
+    
     utiles.changeRole(casper, "Administrador");
 
-    crearReferencia("Referencia1");
-    crearReferencia("Referencia2");
-    crearReferencia("Referencia3");
+    for(var i = 0; i < nReferencias; i++ ) {
+        crearReferencia("Referencia" + i);
+    }
 
-    casper.thenClick(x("//div[@id='comboTestRef']//button/span[contains(.,'Nuevo')]"));
+    var selectorFila = "div#comboTestRef tr.x-grid-row";
+    casper.then(function() {
+        casper.waitFor(function() {
+            return casper.evaluate(function(selector, nRefs) {
+                return $(selector).length >= nRefs;
+            }, selectorFila, nReferencias)
+        })
+    })
 
     casper.then(function(){
-        casper.test.assertElementCount(x('//div[@id="comboTestRef"]//tr[contains(@class,"x-grid-row")]'),3);
+        casper.test.assertElementCount(selectorFila,nReferencias);
     })
 
     utiles.changeRole(casper, "Usuario");
     utiles.clickEnGuardar(casper);
     utiles.assertPaginaGuardada(casper);
+    utiles.captura("Despues de guardar")
 }
 
 utiles.casperBegin("combosPorDefecto", combosPorDefecto);

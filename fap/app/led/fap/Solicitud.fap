@@ -1286,7 +1286,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
         		Grupo gpreparar titulo="Paso 1. Preparar la solicitud"  {
             		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }
               		Form prepararFirmar {
-                    	Boton botonPrepararFirmar titulo="Preparar para firmar"
+                    	Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
               		}
         		}
         	} // Fin Grupo para controlar prepararAlegacion

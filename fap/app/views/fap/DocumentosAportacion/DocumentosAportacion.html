@@ -1,0 +1,26 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'multipart/form-data', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     waitPopup:true,
+     mensajeFinal:false, 
+     pagina:'DocumentosAportacion', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Aportar Nuevo Documento', 
+     urlBorrar:play.mvc.Router.reverse('DocumentosAportacionController.borrar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id]), 
+     urlCrear:play.mvc.Router.reverse('DocumentosAportacionController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('DocumentosAportacionController.editar' , ['idSolicitud':solicitud?.id, 'idDocumento':documento?.id])
+}
+	
+			#{fap.grupo titulo:'Aportar Documento'}
+				#{fap.documento accept:'', aportadoPor:'CIUDADANO', campo:'documento', id:'fileAportacion', listarDocumentosSubidos:true, requerido:true, tipo:'tipoCiudadano' /}	
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

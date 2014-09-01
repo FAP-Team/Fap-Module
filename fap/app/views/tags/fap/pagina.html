@@ -10,6 +10,10 @@
 	   titulo = properties.FapProperties.get("fap.pagina.titulo." + pagina);
 	String encType = com.google.common.base.Preconditions.checkNotNull(_encType, "encType");
 	boolean hayForm = com.google.common.base.Preconditions.checkNotNull(_hayForm, "hayForm");
+	
+	//Indica si el botón de acciones lleva un waitPopup
+	def waitPopup = _waitPopup;
+	
 	String botonEditar = com.google.common.base.Preconditions.checkNotNull(_botonEditar, "botonEditar");
 	String botonCrear = com.google.common.base.Preconditions.checkNotNull(_botonCrear, "botonCrear");
 	String botonBorrar = com.google.common.base.Preconditions.checkNotNull(_botonBorrar, "botonBorrar");
@@ -70,7 +74,13 @@
 			%{  if (accion == "borrar") tags.TagMapStack.pop("editable");  }%
 
 				<div class="button_container">
-					#{fap.boton id:"${accion}Button", titulo:boton, type:"default", fondo:"true" /}
+					#{if waitPopup}
+						#{fap.boton id:"${accion}Button", titulo:boton, type:"default", fondo:"true", waitPopup:true /}
+				 	#{/if}
+				    #{else}
+				    	#{fap.boton id:"${accion}Button", titulo:boton, type:"default", fondo:"true" /}
+				    #{/else}
+					
 				</div>
 
 		#{/form} 

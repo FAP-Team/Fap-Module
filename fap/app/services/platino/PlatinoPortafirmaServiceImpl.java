@@ -67,19 +67,19 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	
 	//private String userID;
 	
+    @Inject
 	private GestorDocumentalService gestorDocumentalPort;
+    @Inject
 	private PlatinoGestorDocumentalService platinoGestorDocumentalPort;
+    @Inject
 	private PlatinoProcedimientosServiceImpl platinoProcedimientosPort;
+    @Inject
 	private PlatinoBDOrganizacionServiceImpl platinoDBOrgPort;
 
 	@Inject
 	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder) {
 		
 		this.propertyPlaceholder = propertyPlaceholder;
-		gestorDocumentalPort = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-		platinoProcedimientosPort = InjectorConfig.getInjector().getInstance(PlatinoProcedimientosServiceImpl.class);
-		platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-		platinoGestorDocumentalPort = new PlatinoGestorDocumentalService(propertyPlaceholder);
 		
 		URL wsdlURL = PlatinoPortafirmaServiceImpl.class.getClassLoader().getResource("wsdl/portafirmas/solicitudfirma.wsdl");
 		portafirmaPort = new SolicitudFirma(wsdlURL).getSolicitudFirmaSoapHttp();

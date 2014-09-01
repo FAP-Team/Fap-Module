@@ -477,7 +477,7 @@
 		return JSON && JSON.parse(json) || $.parseJSON(json);
 	}
 
-	function obtenerUrlsDocumentos(selected) {
+	function obtenerUrlsDocumentos(selected, errores) {
 		var resultado;
 		var idDocumento;
 		var firmadoDocumento;
@@ -499,8 +499,9 @@
 						//alert("Error al obtener urlDocumento");
 						break;
 					}
-				} else if (firmadoDocumento == "true") {
+				} else if (firmadoDocumento.firmado || firmadoDocumento) {
 					resultado = "true";
+                    errores["DOC_YA_FIRMADO"] = "El documento ya había sido firmado";
 					//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
 				}
 			} else {
@@ -576,7 +577,7 @@
     		if (selected.length == 0) {
     			mensajes.error('No hay documentos seleccionados para firmar.');
     		} else {		    			
-	    		listaDocumentos = obtenerUrlsDocumentos(selected);
+	    		listaDocumentos = obtenerUrlsDocumentos(selected, errores);
    				var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);
     	 		for (var key in listaDocumentos) {
 					if (listaDocumentos.hasOwnProperty(key)){

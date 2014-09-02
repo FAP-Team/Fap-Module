@@ -78,16 +78,22 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 
 	@Inject
 	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder) {
+        this(propertyPlaceholder, null);
+    }
 		
+	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, SolicitudFirmaInterface portafirmaPortRecibido) {
 		this.propertyPlaceholder = propertyPlaceholder;
+        if (portafirmaPortRecibido != null) {
+            portafirmaPort = portafirmaPortRecibido;
+        } else {
+            URL wsdlURL = PlatinoPortafirmaServiceImpl.class.getClassLoader().getResource("wsdl/portafirmas/solicitudfirma.wsdl");
+            portafirmaPort = new SolicitudFirma(wsdlURL).getSolicitudFirmaSoapHttp();
 		
-		URL wsdlURL = PlatinoPortafirmaServiceImpl.class.getClassLoader().getResource("wsdl/portafirmas/solicitudfirma.wsdl");
-		portafirmaPort = new SolicitudFirma(wsdlURL).getSolicitudFirmaSoapHttp();
+            WSUtils.configureEndPoint(portafirmaPort, getEndPoint());
+            WSUtils.configureSecurityHeaders(portafirmaPort, propertyPlaceholder);
 		
-		WSUtils.configureEndPoint(portafirmaPort, getEndPoint());
-		WSUtils.configureSecurityHeaders(portafirmaPort, propertyPlaceholder);
-		
-		PlatinoProxy.setProxy(portafirmaPort, propertyPlaceholder);
+            PlatinoProxy.setProxy(portafirmaPort, propertyPlaceholder);
+        }
 	}
 	
 	//---------CONFIGURACION SERVICIO----------
@@ -355,6 +361,19 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	}
 
 	@Override
+    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+        boolean resultado = false;
+        try {
+            portafirmaPort.entregarSolicitudFirma(idSolicitud, comentario);
+            resultado = true;
+        } catch (SolicitudFirmaExcepcion e) {
+            String razon = e.getFaultInfo() != null ? e.getFaultInfo().getDescripcion() : e.getMessage();
+            log.error("Error entregando la solicitud de firma en el portafirma: " + razon);
+        }
+        return resultado;
+    }
+
+    @Override
 	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		setupSecurityHeadersWithUser(solicitudFirmaPortafirma.idSolicitante);
 		try {

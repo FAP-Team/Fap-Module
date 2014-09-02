@@ -220,6 +220,11 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		return response;
 	}
 	
+    @Override
+    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+        return true;
+    }
+
 	private static XMLGregorianCalendar DateTime2XMLGregorianCalendar(DateTime fecha) throws DatatypeConfigurationException {
 		if (fecha == null)
 			return null;

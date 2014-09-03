@@ -64,6 +64,9 @@ public class Documento extends FapModel {
 	@Transient
 	public String enlaceDescargaFirmado;
 
+	@Transient
+	public String enlaceDescargaFirmadoLocal;
+
 	public Boolean verificado;
 
 	public Boolean refAed;
@@ -75,6 +78,9 @@ public class Documento extends FapModel {
 
 	@Transient
 	public String firmadoVisible;
+
+	@Transient
+	public String firmadoVisibleLocal;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Firmantes firmantes;
@@ -138,6 +144,16 @@ public class Documento extends FapModel {
 			} catch (Exception e) {
 				play.Logger.error("Error al recuperar el documento con uri: " + uri + " del Gestor Documental con Informe de Firma");
 			}
+		}
+		return "";
+	}
+
+	public String getEnlaceDescargaFirmadoLocal() {
+		if (uri != null && firmado != null && firmado == true) {
+			String ret = "<a href=\"";
+			ret += AedUtils.crearUrlConInformeDeFirma(uri);
+			ret += "\" target=\"_blank\">Descargar Firmado</a>";
+			return ret;
 		}
 		return "";
 	}
@@ -244,6 +260,13 @@ public class Documento extends FapModel {
 			firma = "";
 		}
 		return firma.isEmpty() ? "No" : "Sí";
+	}
+
+	public String getFirmadoVisibleLocal() {
+		if (firmado == null || firmado == false) {
+			return "No";
+		}
+		return "Sí";
 	}
 
 	/*

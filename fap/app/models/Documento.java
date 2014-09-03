@@ -64,9 +64,6 @@ public class Documento extends FapModel {
 	@Transient
 	public String enlaceDescargaFirmado;
 
-	@Transient
-	public String enlaceDescargaFirmadoLocal;
-
 	public Boolean verificado;
 
 	public Boolean refAed;
@@ -78,9 +75,6 @@ public class Documento extends FapModel {
 
 	@Transient
 	public String firmadoVisible;
-
-	@Transient
-	public String firmadoVisibleLocal;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Firmantes firmantes;
@@ -148,31 +142,20 @@ public class Documento extends FapModel {
 		return "";
 	}
 
-	public String getEnlaceDescargaFirmadoLocal() {
-		if (uri != null && firmado != null && firmado == true) {
-			String ret = "<a href=\"";
-			ret += AedUtils.crearUrlConInformeDeFirma(uri);
-			ret += "\" target=\"_blank\">Descargar Firmado</a>";
-			return ret;
+	public String getFirma() {
+		String stringFirma = "";
+		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		try {
+			Firma firma = gestorDocumental.getFirma(this);
+			stringFirma = firma.getContenido();
+		} catch (GestorDocumentalServiceException e) {
+			Logger.info("Documento.getFirma(...): Excepción obteniendo la firma del documento %s", this.id);
+			stringFirma = "";
+		} catch (NullPointerException e) {
+			stringFirma = "";
 		}
-		return "";
+		return stringFirma;
 	}
-
-    public String getFirma() {
-        String stringFirma = "";
-		GestorDocumentalService gestorDocumental =
-            InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-        try {
-            Firma firma = gestorDocumental.getFirma(this);
-            stringFirma = firma.getContenido();
-        } catch (GestorDocumentalServiceException e) {
-            Logger.info("Documento.getFirma(...): Excepción obteniendo la firma del documento %s", this.id);
-            stringFirma = "";
-        } catch (NullPointerException e) {
-            stringFirma = "";
-        }
-        return stringFirma;
-    }
 
 	public boolean isObligatorio() {
 		return (tipo != null && DocumentosUtils.esTipoObligatorio(tipo));
@@ -250,24 +233,17 @@ public class Documento extends FapModel {
 
 	public String getFirmadoVisible() {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-        String firma = "";
+		String firma = "";
 		try {
-            firma = gestorDocumentalService.getFirma(this).getContenido();
-            play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
-        } catch (NullPointerException e) {
-            play.Logger.info("El documento " + descripcionVisible + " no tiene firma");
+			firma = gestorDocumentalService.getFirma(this).getContenido();
+			play.Logger.info("El documento " + descripcionVisible + " tiene la firma (" + firma + ")");
+		} catch (NullPointerException e) {
+			play.Logger.info("El documento " + descripcionVisible + " no tiene firma");
 		} catch (Exception e) {
 			play.Logger.error("Error al obtener el documento " + descripcionVisible + " firmado");
-            firma = "";
+			firma = "";
 		}
 		return firma.isEmpty() ? "No" : "Sí";
-	}
-
-	public String getFirmadoVisibleLocal() {
-		if (firmado == null || firmado == false) {
-			return "No";
-		}
-		return "Sí";
 	}
 
 	/*

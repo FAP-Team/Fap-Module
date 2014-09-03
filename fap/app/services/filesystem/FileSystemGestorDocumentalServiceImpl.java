@@ -426,13 +426,22 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
      */
     @Override
     public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException {
-        //No se están guardando las firmas de los documentos
+        //Se indica que el documento ha sido firmado al agregar la firma
+		documento.firmado = true;
     }
 
     @Override
     public Firma getFirma(Documento documento) throws GestorDocumentalServiceException {
       //No se están guardando las firmas de los documentos
-        return null;
+      //Se crea una firma simulada
+    	if (documento.firmado) {
+	    	Firmante firmante = new Firmante();
+	    	firmante.nombre = "Firma simulada FileSystem";
+	    	String contenido = "contenido FileSystem";
+	        return new Firma(contenido, firmante);
+    	}
+    	
+    	return new Firma("", new Firmante());
     }
 
     @Override
@@ -850,9 +859,7 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 
 	@Override
 	public void agregarFirma(Documento documento, String firmaStr)
-			throws GestorDocumentalServiceException {
-		// TODO Auto-generated method stub
-		
+			throws GestorDocumentalServiceException {	
 	}
 
 
@@ -912,9 +919,10 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     @Override
     public String getDocumentoFirmaByUri(String uriDocumento, boolean clasificado) throws GestorDocumentalServiceException {
 		BinaryResponse br = getDocumentoByUri(uriDocumento);
-		if (br == null)
-			return null;
-		//return br.toString();
+		Documento doc = Documento.findByUri(uriDocumento);
+		if (br != null)
+			if (doc.firmado)
+				return br.toString();
 		return null;
 	}
 

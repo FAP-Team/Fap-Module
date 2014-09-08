@@ -15,7 +15,7 @@ Hemos visto previamente elementos que se pueden usar en una aplicación FAP como
 # "Enlace":dsl-enlace
 # "Entidad automática":dsl-entidadAutomatica
 # "Fecha":dsl-fecha
-# "Firma de múltiples documentos":dsl-firmaMultiplesDocumentos
+# "Firma de varios documentos":dsl-firmaMultiplesDocumentos
 # "Firma simple":dsl-firmaPlatinoSimple
 # "Form":dsl-form
 # "Formulario":dsl-formulario

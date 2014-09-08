@@ -16,19 +16,19 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 
 import generator.utils.CampoUtils;
 
-public class GFirmaMultiple extends GElement{
+public class GFirmaMasiva extends GElement{
 
-	FirmaMultiple firmaMultiple;
+	FirmaMasiva firmaMasiva;
 	GElement gPaginaPopup;
 	Controller controller;
 	CampoUtils campo;
 	String stringParamsAdded;
 	Set<Entity> globalSetEntityParent;
 	
-	public GFirmaMultiple(FirmaMultiple firmaMultiple, GElement container){
-		super(firmaMultiple, container);
-		this.firmaMultiple = firmaMultiple;
-		campo = CampoUtils.create(firmaMultiple.documentos.campo);
+	public GFirmaMasiva(FirmaMasiva firmaMasiva, GElement container){
+		super(firmaMasiva, container);
+		this.firmaMasiva = firmaMasiva;
+		campo = CampoUtils.create(firmaMasiva.documentos.campo);
 		gPaginaPopup = getPaginaOrPopupContainer();
 		//stringParamsAdded = new ArrayList<String>();
 	}
@@ -50,24 +50,24 @@ public class GFirmaMultiple extends GElement{
 				finalStrParams = StringUtils.params(globalSetEntityParent.collect{if (!entidad.id.equals(it.id)) if ((it.id) != null) it.id});
 				// Debemos eliminar los que no empiezan por id y los que ya están en params
 				if (finalStrParams.trim().length() > 0)
-					params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id}, "+finalStrParams+")";
+					params.put 'urlFirmaMasiva', "@${controllerName}.${controllerMethodName()}(${entidad.id}, "+finalStrParams+")";
 				else
-					params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+					params.put 'urlFirmaMasiva', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
 			} else {
-				params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
+				params.put 'urlFirmaMasiva', "@${controllerName}.${controllerMethodName()}(${entidad.id})";
 			}
 		}
 		else
-			params.put 'urlFirmaMultiple', "@${controllerName}.${controllerMethodName()}(${StringUtils.params(globalSetEntityParent.collect{it.id})})";
-        if (firmaMultiple.titulo)
-			params.putStr 'titulo', firmaMultiple.titulo;
+			params.put 'urlFirmaMasiva', "@${controllerName}.${controllerMethodName()}(${StringUtils.params(globalSetEntityParent.collect{it.id})})";
+        if (firmaMasiva.titulo)
+			params.putStr 'titulo', firmaMasiva.titulo;
 		params.putStr 'campo', campo.str;
-		if (firmaMultiple.alto)
-			params.putStr 'alto', firmaMultiple.alto;
+		if (firmaMasiva.alto)
+			params.putStr 'alto', firmaMasiva.alto;
 
 		botonesPopup(params);
 		botonesPagina(params);
-		if (firmaMultiple.recargarPagina)
+		if (firmaMasiva.recargarPagina)
 			params.put("recargarPagina", true)
 
 		if (gPaginaPopup instanceof GPopup)
@@ -78,45 +78,45 @@ public class GFirmaMultiple extends GElement{
 	
 		controller = Controller.create(getPaginaOrPopupContainer());
 		
-		if (firmaMultiple.documentos.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (firmaMultiple.paginaCrear || firmaMultiple.popupCrear) && !controller.entidad.isSingleton()){
+		if (firmaMasiva.documentos.campo.entidad.name.equals(controller.campo?.ultimaEntidad?.name) && (firmaMasiva.paginaCrear || firmaMasiva.popupCrear) && !controller.entidad.isSingleton()){
 			params.put 'crearEntidad', "accion == 'crear'";
 			params.putStr 'nameContainer', gPaginaPopup.name;
 			params.putStr 'idContainer', controller.entidad.id;
 			params.put 'urlContainerCrear', controller.getRouteIndex("crear", false, false);
 			params.put 'urlContainerEditar', controller.getRouteIndex("editar", false, true);
-			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForfirmaMultiples");
+			params.put 'urlCrearEntidad', controller.getRouteAccion("crearForfirmaMasivas");
 		}
 		
 		//Nombre de los botones (opcional)
-		if(firmaMultiple.nombreBotonVer != null){
-			params.putStr 'nombreBotonVer', firmaMultiple.nombreBotonVer;
+		if(firmaMasiva.nombreBotonVer != null){
+			params.putStr 'nombreBotonVer', firmaMasiva.nombreBotonVer;
 		}
 		
-		if (firmaMultiple.popupCrear){
+		if (firmaMasiva.popupCrear){
 			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
 		
-		if (firmaMultiple.paginaCrear){
+		if (firmaMasiva.paginaCrear){
 			params.put 'urlBeforeOpenPageTable', controller.getRouteBeforeOpenPageTable("editar");
 		}
-		if (firmaMultiple.paginaCrear != null) {
-			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.paginaCrear, null)).getRouteIndex("crear", true, true);
-			if (firmaMultiple.paginaCrear.permiso)
-				params.putStr 'permisoCrear', firmaMultiple.paginaCrear.permiso.name;
+		if (firmaMasiva.paginaCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMasiva.paginaCrear, null)).getRouteIndex("crear", true, true);
+			if (firmaMasiva.paginaCrear.permiso)
+				params.putStr 'permisoCrear', firmaMasiva.paginaCrear.permiso.name;
 		}
 		
-		if (firmaMultiple.popup || firmaMultiple.popupCrear){
+		if (firmaMasiva.popup || firmaMasiva.popupCrear){
 			params.put 'urlRedirigir', controller.getRouteIndex("editar", false, true);
 		}
 		
 		StringBuffer columnasView = new StringBuffer();
 
-		if(firmaMultiple.columnas.isEmpty()){
+		if(firmaMasiva.columnas.isEmpty()){
 			Columna c = LedFactory.eINSTANCE.createColumna();
-			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMultiple.documentos.campo).name}.id").campo;
-			firmaMultiple.columnas.add(c);
+			c.campo = CampoUtils.create("${LedCampoUtils.getUltimaEntidad(firmaMasiva.documentos.campo).name}.id").campo;
+			firmaMasiva.columnas.add(c);
 		}
-		for(Columna c : firmaMultiple.columnas)
+		for(Columna c : firmaMasiva.columnas)
 			columnasView.append (columnaView(c));
 
 		if (controller.algoQueGuardar())
@@ -125,60 +125,60 @@ public class GFirmaMultiple extends GElement{
 			params.put("saveEntity", false);
 
 		String view = """
-#{fap.firmaMultiple ${params.lista(true)}
+#{fap.firmaMasiva ${params.lista(true)}
 }
 	${columnasView}
-#{/fap.firmaMultiple}
+#{/fap.firmaMasiva}
 """
 		return view;
 	}
 	
 	private String id(){
-		return firmaMultiple.name ?: campo.str.replace(".", "_");
+		return firmaMasiva.name ?: campo.str.replace(".", "_");
 	}
 	
 	private void botonesPopup(TagParameters params){
-		if (firmaMultiple.popup != null) {
-			Controller popupUtil = Controller.create(GElement.getInstance(firmaMultiple.popup, null));
+		if (firmaMasiva.popup != null) {
+			Controller popupUtil = Controller.create(GElement.getInstance(firmaMasiva.popup, null));
 			params.put 'urlLeer', popupUtil.getRouteIndex("leer", true, true);
-			params.putStr 'popupLeer', firmaMultiple.popup.name;
+			params.putStr 'popupLeer', firmaMasiva.popup.name;
 			params.put 'urlCrear', popupUtil.getRouteIndex("crear", true, true);
-			params.putStr 'popupCrear', firmaMultiple.popup.name;
+			params.putStr 'popupCrear', firmaMasiva.popup.name;
 			params.put 'urlEditar', popupUtil.getRouteIndex("editar", true, true);
-			params.putStr 'popupEditar', firmaMultiple.popup.name;
+			params.putStr 'popupEditar', firmaMasiva.popup.name;
 			params.put 'urlBorrar', popupUtil.getRouteIndex("borrar", true, true);
-			params.putStr 'popupBorrar', firmaMultiple.popup.name;
-			if (firmaMultiple.popup.permiso)
-				params.putStr 'permisoCrear', firmaMultiple.popup.permiso.name;
+			params.putStr 'popupBorrar', firmaMasiva.popup.name;
+			if (firmaMasiva.popup.permiso)
+				params.putStr 'permisoCrear', firmaMasiva.popup.permiso.name;
 		}
-		if (firmaMultiple.popupLeer != null) {
-			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.popupLeer, null)).getRouteIndex("leer", true, true);
-			params.putStr 'popupLeer', firmaMultiple.popupLeer.name;
+		if (firmaMasiva.popupLeer != null) {
+			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMasiva.popupLeer, null)).getRouteIndex("leer", true, true);
+			params.putStr 'popupLeer', firmaMasiva.popupLeer.name;
 		}
-		if (firmaMultiple.popupCrear != null) {
-			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.popupCrear, null)).getRouteIndex("crear", true, true);
-			params.putStr 'popupCrear', firmaMultiple.popupCrear.name;
-			if (firmaMultiple.popupCrear.permiso)
-				params.putStr 'permisoCrear', firmaMultiple.popupCrear.permiso.name;
+		if (firmaMasiva.popupCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMasiva.popupCrear, null)).getRouteIndex("crear", true, true);
+			params.putStr 'popupCrear', firmaMasiva.popupCrear.name;
+			if (firmaMasiva.popupCrear.permiso)
+				params.putStr 'permisoCrear', firmaMasiva.popupCrear.permiso.name;
 		}
-		if (firmaMultiple.popupEditar != null) {
-			params.put 'urlEditar', Controller.create(GElement.getInstance(firmaMultiple.popupEditar, null)).getRouteIndex("editar", true, true);
-			params.putStr 'popupEditar', firmaMultiple.popupEditar.name;
+		if (firmaMasiva.popupEditar != null) {
+			params.put 'urlEditar', Controller.create(GElement.getInstance(firmaMasiva.popupEditar, null)).getRouteIndex("editar", true, true);
+			params.putStr 'popupEditar', firmaMasiva.popupEditar.name;
 		}
-		if (firmaMultiple.popupBorrar != null) {
-			params.put 'urlBorrar', Controller.create(GElement.getInstance(firmaMultiple.popupBorrar, null)).getRouteIndex("borrar", true, true);
-			params.putStr 'popupBorrar', firmaMultiple.popupBorrar.name;
+		if (firmaMasiva.popupBorrar != null) {
+			params.put 'urlBorrar', Controller.create(GElement.getInstance(firmaMasiva.popupBorrar, null)).getRouteIndex("borrar", true, true);
+			params.putStr 'popupBorrar', firmaMasiva.popupBorrar.name;
 		}
 	}
 	
 	private void botonesPagina(TagParameters params){
-		if (firmaMultiple.paginaLeer != null) {
-			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMultiple.paginaLeer, null)).getRouteIndex("leer", true, true);
+		if (firmaMasiva.paginaLeer != null) {
+			params.put 'urlLeer', Controller.create(GElement.getInstance(firmaMasiva.paginaLeer, null)).getRouteIndex("leer", true, true);
 		}
-		if (firmaMultiple.paginaCrear != null) {
-			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMultiple.paginaCrear, null)).getRouteIndex("crear", true, true);
-			if (firmaMultiple.paginaCrear.permiso)
-				params.putStr 'permisoCrear', firmaMultiple.paginaCrear.permiso.name;
+		if (firmaMasiva.paginaCrear != null) {
+			params.put 'urlCrear', Controller.create(GElement.getInstance(firmaMasiva.paginaCrear, null)).getRouteIndex("crear", true, true);
+			if (firmaMasiva.paginaCrear.permiso)
+				params.putStr 'permisoCrear', firmaMasiva.paginaCrear.permiso.name;
 		}
 	}
 	
@@ -194,7 +194,7 @@ public class GFirmaMultiple extends GElement{
 	}
 	
 	private String columnaView(Columna c){
-		List<CampoUtils> campos = GFirmaMultiple.camposDeColumna(c);
+		List<CampoUtils> campos = GFirmaMasiva.camposDeColumna(c);
 		c.titulo = c.titulo ?: campos.collect{it.str}.join(', ');
 		c.ancho  = c.ancho ?: "200";
 				
@@ -293,9 +293,9 @@ public class GFirmaMultiple extends GElement{
 			return  "return '" + (strFuncion.replaceAll(/\$\{(.*?)\}/, '\' + record[\'$1\'] + \'')) + "';"
 	}
 	
-	public List<CampoUtils> uniqueCamposFirmaMultiple(FirmaMultiple firmaMultiple){
+	public List<CampoUtils> uniqueCamposFirmaMasiva(FirmaMasiva firmaMasiva){
 		List<CampoUtils> campos = new ArrayList<CampoUtils>();
-		for(Columna c : firmaMultiple.columnas){
+		for(Columna c : firmaMasiva.columnas){
 			campos.addAll(camposDeColumna(c));
 		}
 		//Añade el ID de la entidad
@@ -311,7 +311,7 @@ public class GFirmaMultiple extends GElement{
 	}
 	
 	public String controller(){
-		List<CampoUtils> campos = uniqueCamposFirmaMultiple(firmaMultiple);
+		List<CampoUtils> campos = uniqueCamposFirmaMasiva(firmaMasiva);
 				
 		// Si tiene permiso definido la tabla
 		String renderCode = "";
@@ -328,8 +328,8 @@ public class GFirmaMultiple extends GElement{
 		String param = "";
 		String idSingleton = "";
 		
-		if (firmaMultiple.metodoFilas)
-			query = """${firmaMultiple.metodoFilas}""";
+		if (firmaMasiva.metodoFilas)
+			query = """${firmaMasiva.metodoFilas}""";
 		else if (!campo.getCampo().getAtributos()) //Lista todas las entidades de ese tipo
 			query = """${entidad.clase}.find("select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable}").fetch()""";
 		else{ //Acceso a los campos de una entidad
@@ -469,7 +469,7 @@ public class GFirmaMultiple extends GElement{
 	 * @return
 	 */
 	private String getCodePermiso(Entidad entidad) {
-		if(firmaMultiple.permiso == null){
+		if(firmaMasiva.permiso == null){
 			return """
 				Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 				List<${entidad.clase}> rowsFiltered = rows; //Tabla sin permisos, no filtra
@@ -481,7 +481,7 @@ public class GFirmaMultiple extends GElement{
 			for(${entidad.clase} ${entidad.variable}: rows){
 				Map<String, Object> vars = new HashMap<String, Object>();
 				vars.put("${entidad.variable}", ${entidad.variable});
-				if (secure.checkAcceso("${firmaMultiple.permiso.name}", "leer", ids, vars)) {
+				if (secure.checkAcceso("${firmaMasiva.permiso.name}", "leer", ids, vars)) {
 					rowsFiltered.add(${entidad.variable});
 				}
 			}
@@ -493,16 +493,16 @@ public class GFirmaMultiple extends GElement{
 		String paramsPermiso="";
 		String paramsNombrePermiso="";
 	
-		if(firmaMultiple.popup != null){
-			Popup popUp = (Popup)firmaMultiple.popup;
+		if(firmaMasiva.popup != null){
+			Popup popUp = (Popup)firmaMasiva.popup;
 			if (popUp.permiso != null){
 				paramsPermiso+="true, true, true, \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", \"${popUp.permiso.name}\", getAccion(), ids";
 			} else {
 				paramsPermiso+="false, false, false, \"\", \"\", \"\", getAccion(), ids";
 			} 
 		} else {
-				if(firmaMultiple.popupEditar != null){
-					Popup popUp = (Popup)firmaMultiple.popupEditar;
+				if(firmaMasiva.popupEditar != null){
+					Popup popUp = (Popup)firmaMasiva.popupEditar;
 					if (popUp.permiso != null){
 						paramsPermiso+="true, ";
 						paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
@@ -515,8 +515,8 @@ public class GFirmaMultiple extends GElement{
 					paramsNombrePermiso+="\"\", ";
 				}
 				
-				if(firmaMultiple.popupBorrar != null){
-					Popup popUp = (Popup)firmaMultiple.popupBorrar;
+				if(firmaMasiva.popupBorrar != null){
+					Popup popUp = (Popup)firmaMasiva.popupBorrar;
 					if (popUp.permiso != null){
 						paramsPermiso+="true, ";
 						paramsNombrePermiso+="\"${popUp.permiso.name}\", ";
@@ -529,8 +529,8 @@ public class GFirmaMultiple extends GElement{
 					paramsNombrePermiso+="\"\", ";
 				}
 				
-				if(firmaMultiple.popupLeer != null){
-					Popup popUp = (Popup)firmaMultiple.popupLeer;
+				if(firmaMasiva.popupLeer != null){
+					Popup popUp = (Popup)firmaMasiva.popupLeer;
 					if (popUp.permiso != null){
 						paramsPermiso+="true, ";
 						paramsNombrePermiso+="\"${popUp.permiso.name}\"";
@@ -552,7 +552,7 @@ public class GFirmaMultiple extends GElement{
 	}
 	
 	private controllerMethodName(){
-		return "firmaMultiple" + id();
+		return "firmaMasiva" + id();
 	}
 	
 	public String routes(){

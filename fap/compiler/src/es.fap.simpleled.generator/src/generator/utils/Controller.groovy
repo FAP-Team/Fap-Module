@@ -21,7 +21,7 @@ import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
-import es.fap.simpleled.led.FirmaMultiple
+import es.fap.simpleled.led.FirmaMasiva
 import es.fap.simpleled.led.impl.FormImpl;
 import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.LedPackage;
@@ -1488,14 +1488,14 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
 		}
-		for (FirmaMultiple firmaMultiple: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMultiple())){
-//			if (firmaMultiple.pagina != null && firmaMultiple.pagina.name.equals(pagina.name))
+		for (FirmaMasiva firmaMasiva: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMasiva())){
+//			if (firmaMasiva.pagina != null && firmaMasiva.pagina.name.equals(pagina.name))
 //				crear = borrar = editar = true;
-			if (firmaMultiple.paginaCrear != null && firmaMultiple.paginaCrear.name.equals(pagina.name))
+			if (firmaMasiva.paginaCrear != null && firmaMasiva.paginaCrear.name.equals(pagina.name))
 				crear = true;
-//			if (firmaMultiple.paginaEditar != null && firmaMultiple.paginaEditar.name.equals(pagina.name))
+//			if (firmaMasiva.paginaEditar != null && firmaMasiva.paginaEditar.name.equals(pagina.name))
 //				editar = true;
-//			if (firmaMultiple.paginaBorrar != null && firmaMultiple.paginaBorrar.name.equals(pagina.name))
+//			if (firmaMasiva.paginaBorrar != null && firmaMasiva.paginaBorrar.name.equals(pagina.name))
 //				borrar = true;
 		}
 		for (Form form: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getForm())){
@@ -1546,14 +1546,14 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.popupBorrar != null && tabla.popupBorrar.name.equals(popup.name))
 				borrar = true;
 		}
-		for (FirmaMultiple firmaMultiple: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMultiple())){
-			if (firmaMultiple.popup != null && firmaMultiple.popup.name.equals(popup.name))
+		for (FirmaMasiva firmaMasiva: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMasiva())){
+			if (firmaMasiva.popup != null && firmaMasiva.popup.name.equals(popup.name))
 				crear = borrar = editar = true;
-			if (firmaMultiple.popupCrear != null && firmaMultiple.popupCrear.name.equals(popup.name))
+			if (firmaMasiva.popupCrear != null && firmaMasiva.popupCrear.name.equals(popup.name))
 				crear = true;
-			if (firmaMultiple.popupEditar != null && firmaMultiple.popupEditar.name.equals(popup.name))
+			if (firmaMasiva.popupEditar != null && firmaMasiva.popupEditar.name.equals(popup.name))
 				editar = true;
-			if (firmaMultiple.popupBorrar != null && firmaMultiple.popupBorrar.name.equals(popup.name))
+			if (firmaMasiva.popupBorrar != null && firmaMasiva.popupBorrar.name.equals(popup.name))
 				borrar = true;
 		}
 	}

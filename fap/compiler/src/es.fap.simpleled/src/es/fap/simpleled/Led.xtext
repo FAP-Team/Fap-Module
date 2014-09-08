@@ -230,7 +230,7 @@ Elemento:
 	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | BarraDeslizante |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMultiple |
+	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMasiva |
 	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto |
 	GrupoRadioButtons
 ;
@@ -414,8 +414,8 @@ Form:
 	'}'
 ;	
 
-FirmaMultiple:
-	elemento='FirmaMultiple' name=ID
+FirmaMasiva:
+	elemento='FirmaMasiva' name=ID
 	(
 		(documentos=FirmaDocumentos)
 		& ('titulo' '=' titulo=STRING)?

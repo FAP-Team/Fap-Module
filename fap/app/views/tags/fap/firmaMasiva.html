@@ -10,7 +10,7 @@
 
 	// ---------- ---------- ---------- ---------- TABLA ---------- ---------- ---------- ----------
 	
-	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMultiple, "urlFirmaMultiple");
+	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMasiva, "urlFirmaMasiva");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
 	String tipoContainer  = com.google.common.base.Preconditions.checkNotNull(_tipoContainer, "tipoContainer");
@@ -87,9 +87,9 @@
 			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
 	} catch (java.lang.Exception e) {
 		//e.printStackTrace();
-		play.Logger.error("firmaMultiple.html e-> "+e.getMessage());
+		play.Logger.error("firmaMasiva.html e-> "+e.getMessage());
 	} catch (java.lang.Throwable t) {
-		play.Logger.error("firmaMultiple.html t-> "+t.getMessage());
+		play.Logger.error("firmaMasiva.html t-> "+t.getMessage());
 	}
 
 	// ---------- ---------- ---------- ---------- FIRMA ---------- ---------- ---------- ----------
@@ -326,13 +326,13 @@
 				return filas;				
 			}
 
-			var urlFirmaMultiple = "${actionDef.url.raw()}";
+			var urlFirmaMasiva = "${actionDef.url.raw()}";
 			
 
 			function peticionJSON${id}(){
 				crearMensajes${id}();
 				ocultarMensajes${id}();
-				$.ajax(urlFirmaMultiple).done(function (data){
+				$.ajax(urlFirmaMasiva).done(function (data){
 					// Para los mensajes
 				 	loadMessages${id}(data);
 		        	writeAllMessages${id}(); 

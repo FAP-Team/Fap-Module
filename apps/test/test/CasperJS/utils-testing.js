@@ -48,7 +48,6 @@ exports.changeRole = function(casper, role) {
         }
     });
     casper.then(function() {
-       casper.capture("img/cambio-de-rol-a-"+role+".png");
        casper.test.assertSelectorHasText('li.dropdown a.dropdown-toggle',role);
        casper.echo("Usando rol " + role + ".");
     });
@@ -151,9 +150,29 @@ exports.prepararParaFirmarSolicitudActual = function () {
     })
 };
 
+exports.presentarSolicitudActual = function () {
+    exports.echo("Presentando la solicitud...");
+    var selectorTextoFirmar = x('//p[text()[contains(.,"Firmar y Registrar")]][1]');
+    exports.abrirEnlace("Presentacion","Presentación de la Solicitud");
+    casper.then(function() {
+        if (!casper.exists(selectorTextoFirmar)) {
+           exports.prepararParaFirmarSolicitudActual();
+        }
+    });
+    exports.clickEnSelector("input[type=submit][value='Presentar solicitud'].btn");
+    exports.esperarPorSelector(selectorTextoFirmar);
+    exports.clickEnSelector("input[type=submit][value='Firmar y registrar'].btn");
+    exports.esperarPorSelector(x('//p[text()[contains(.,"Descargar el recibo")]]'));
+};
+
 
 exports.subirDocumentacionSolicitud = function() {
-
+    exports.echo("Subiendo documentos ...");
+    exports.abrirEnlace("Documentación FAP", "Documentación");
+    exports.rellenarFormularioNuevoDocumento(
+        "fs://aportacionsolicitud/v01",
+        "La Descripción del documento",
+        "res/pdf-file.pdf");
 };
 
 exports.rellenarFormularioSolicitud = function() {
@@ -178,6 +197,20 @@ exports.rellenarFormularioSolicitud = function() {
     exports.clickEnGuardar(casper);
     exports.assertPaginaGuardada(casper);
 
+};
+
+exports.rellenarFormularioNuevoDocumento = function(tipo, descripcion, fichero) {
+    var _tipo = tipo || "fs://aportacionsolicitud/v01";
+    var _desc = descripcion || "Descripción del documento";
+    var _file = fichero || "res/pdf-file.pdf";
+    exports.echo("Rellenando documento " + _tipo + ": \""+ _desc + "\" con fichero " + _file );
+    exports.clickEnSelector(x('//span[text()[contains(.,"Nuevo")]]'));
+    exports.rellenaCombo("select#documento_tipo.combo", _tipo);
+    exports.rellenaFormulario("#DocumentosFAPcrearForm", {
+        "#fileAportacion_descripcion" : _desc,
+        "#fileAportacion" : _file
+    });
+    exports.clickEnGuardar();
 };
 
 exports.guardarPCEconomicos = function() {
@@ -269,3 +302,13 @@ function existeMensajeErrorBaremacion() {
     var selector = x("//div[contains(@class,'alert-error')]//li[contains(text(),'no están disponibles')]");
     return casper.exists(selector);
 }
+
+exports.clickEnSelector = function(selector) {
+    casper.then(function() {
+        casper.click(selector);
+    });
+};
+
+exports.esperarPorSelector = function(selector) {
+    casper.waitForSelector(selector);
+};

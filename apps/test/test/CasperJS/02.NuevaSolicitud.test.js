@@ -9,6 +9,10 @@ var nuevaSolicitud = function(test) {
     });
 
     casper.then(function() {
+        casper.waitForSelector(x('//title[text()[contains(.,"Combos")]][1]'))
+    })
+
+    casper.then(function() {
         test.assertTitle("Combos");
     });
 }

@@ -125,7 +125,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
 			Form presentarSinRegistrar redirigir=AportacionRecibos {
 				Fecha fechaAportacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.aportaciones.actual.fechaAportacionSinRegistro requerido
-				Boton aportarSinRegistrar titulo="Incorporar"
+				Boton aportarSinRegistrar titulo="Incorporar" waitPopup
 			}
 		}
 		
@@ -1476,7 +1476,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		Grupo titulo="Incorporar Documentos sin Registro de Entrada" permiso=adminGestorRevisor {
 			Form presentarSinRegistrar redirigir=JustificacionRecibos {
 				Fecha fechaJustificacionSinRegistrar titulo="Fecha Incorporación" campo=SolicitudGenerica.justificaciones.actual.fechaJustificacionSinRegistro requerido
-				Boton justificarSinRegistrar titulo="Incorporar"
+				Boton justificarSinRegistrar titulo="Incorporar" waitPopup
 			}
 		}
 		

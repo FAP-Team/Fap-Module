@@ -68,7 +68,9 @@ exports.abrirUltimaSolicitud = function() {
             casper.click("tr.x-grid-row:last-child");
             casper.echo("Abriendo última solicitud...")
             casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
-                casper.test.assertTitle("Combos");
+                casper.then(function() {
+                    casper.test.assertTitle("Combos");
+                });
             });
         } else {
             exports.nuevaSolicitud();

@@ -137,16 +137,15 @@ exports.prepararParaFirmarSolicitudActual = function () {
     casper.then(function() {
         casper.test.assertExists(selector);
     });
-    casper.then(function() {
-        casper.click(selector);
-    });
+    exports.clickEnSelector(selector);
     casper.then(function() {
         if (casper.exists(x("//div[contains(@class,'alert-error')]//li[contains(text(),'No se pudo preparar para Firmar')]"))) {
             exports.configurarGestorDocumental();
+            exports.clickEnSelector(selector);
         }
     });
     casper.then(function() {
-        casper.test.assertExists("input.btn[type='submit'][value='Presentar solicitud']");
+        casper.test.assertExists("input[type=submit][value='Presentar solicitud'].btn");
     })
 };
 
@@ -168,11 +167,15 @@ exports.presentarSolicitudActual = function () {
 
 exports.subirDocumentacionSolicitud = function() {
     exports.echo("Subiendo documentos ...");
+    var pwd = require('system').env['PWD'];
+    exports.echo("PWD = " + pwd);
+    var file = "res/pdf-file.pdf";
+    var rutaJenkins = (pwd && (pwd.indexOf("jenkins") != -1)) ? pwd + "/test/CasperJS" : "";
     exports.abrirEnlace("Documentación FAP", "Documentación");
     exports.rellenarFormularioNuevoDocumento(
         "fs://aportacionsolicitud/v01",
         "La Descripción del documento",
-        "res/pdf-file.pdf");
+        rutaJenkins + file);
 };
 
 exports.rellenarFormularioSolicitud = function() {
@@ -245,8 +248,13 @@ exports.activarBaremacion = function(paginaPrevia) {
 };
 
 exports.configurarGestorDocumental = function() {
+    exports.echo("Configurando el Gestor Documental...");
     casper.then(function() {
+        var urlActual;
         var usuarioActual = exports.getUsuarioActual();
+        casper.then(function() {
+            urlActual =  casper.getCurrentUrl();
+        });
         exports.changeRole(casper, "Administrador");
         casper.then(function () {
             casper.open("http://localhost:9009/Administracion/aed");
@@ -258,7 +266,11 @@ exports.configurarGestorDocumental = function() {
             casper.click("input[type='submit'][value='Actualizar trámites']");
         });
         exports.changeRole(casper, usuarioActual);
+        casper.then(function() {
+            casper.open(urlActual);
+        });
     });
+    exports.echo("Gestor documental configurado.")
 };
 
 

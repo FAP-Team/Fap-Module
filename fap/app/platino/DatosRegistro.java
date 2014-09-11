@@ -2,8 +2,11 @@ package platino;
 
 import java.io.InputStream;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import ws63use.libs.javax.mail.util.ByteArrayDataSource;
 
 import es.gobcan.platino.servicios.registro.Asunto;
 import es.gobcan.platino.servicios.registro.Documento;
@@ -79,11 +82,14 @@ public class DatosRegistro {
 	public static Documento documentoSGRDEToRegistro(DataSource dataSource,
 			String uriDocumentoPlatino) throws Exception {
 		Documento documento = new Documento();
+		InputStream inputStream = dataSource.getInputStream();
+		byte[] arrayByte = PlatinoSecurityUtils.obtenerHash(inputStream); 	
 		// URN
 		documento.setNombre(uriDocumentoPlatino);
 		// Hash
-		InputStream inputStream = dataSource.getInputStream();
-		documento.setHash(PlatinoSecurityUtils.obtenerHash(inputStream));
+		dataSource = new javax.mail.util.ByteArrayDataSource(arrayByte, "xml"); 
+		DataHandler dataHandler = new DataHandler(dataSource); 					
+		documento.setHash(dataHandler);
 		// documentosGestorDocumental.getDocumento().add(documento);
 		return documento;
 	}

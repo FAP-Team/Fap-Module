@@ -1,5 +1,26 @@
 h2. Changelog
 
+h3. Versión 2.5.4
+
+* Actualización de la librería platino pre. Arreglo del módulo para el funcionamiento de la nueva librería.
+* FixedBug: Añadido estado en la aportación.
+* Refactor de firmaMultiple a firmaMasiva.
+* Encriptado de contraseña LDAP.
+* Envío de la firma en el portafirmas de Gobierno.
+* FixedMinorBug: Eliminación de NullPointer al usar el módulo en producción.
+* Añadidos múltiples waitPopups en botones donde el usuario tiene que esperar una cantidad considerable de tiempo.
+* Añadido aviso cuando un documento ha sido firmado y se vuelve a intentar firmar.
+* FixedMinorBug: Corregido fallo en redirección al registrar una alegación.
+* Eliminación de la variable datosSolicitante en la vista alegación.html debido a que no se usa.
+* FixedMinorBug: Corrección para poder usar el atributo noSubmit de un botón.
+* FixedMinorBug: Arreglado el funcionamiento de los botones de la tabla documentación después de haber borrado uno anteriormente.
+* Solo se permite borrar un fichero simultáneamente.
+* Se permite descargar un documento desde que tenga firma, no es necesario que esté clasificado.
+* Generación automática del identificador de la convocatoria en caso de que sea anual.
+* Reinicio del número de expediente al cambiar el año.
+
+
+
 h3. Versión 2.5.3
 
 * Definición de contanstes para el uso de properties en el futuro.

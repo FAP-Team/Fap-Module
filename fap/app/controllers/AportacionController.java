@@ -49,7 +49,7 @@ public class AportacionController extends AportacionControllerGen {
 		}
 		if(solicitud != null){
     		Aportacion aportacion = solicitud.aportaciones.actual;
-    		if(StringUtils.in(aportacion.estado, "borrador", "firmada", "registrada", "clasificada")){
+    		if(StringUtils.in(aportacion.estado, "preparada", "firmada", "registrada", "clasificada")){ //&& (!Messages.hasErrors())){
     			Messages.warning("Tiene una aportación pendiente de registro");
     			Messages.keep();
     			redirect("AportacionPresentarController.index", accion, idSolicitud);
@@ -66,9 +66,10 @@ public class AportacionController extends AportacionControllerGen {
 		}
 		SolicitudGenerica dbSolicitud = SolicitudGenerica.findById(idSolicitud);
 		solicitud = dbSolicitud;
+		Aportacion aportacion = solicitud.aportaciones.actual;
 		if (!Messages.hasErrors()) {
 			
-			Aportacion aportacion = solicitud.aportaciones.actual;
+			//Aportacion aportacion = solicitud.aportaciones.actual;
 
 			if(aportacion.documentos.isEmpty()){
 				Messages.error("Debe aportar al menos un documento");
@@ -107,6 +108,8 @@ public class AportacionController extends AportacionControllerGen {
 			}
 		}
 		if(!Messages.hasErrors()){
+			aportacion.estado = "preparada";
+			aportacion.save();
 			Messages.ok("La solicitud de aportación se preparó correctamente");		
 		}
 		

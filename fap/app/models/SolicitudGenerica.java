@@ -371,7 +371,7 @@ public class SolicitudGenerica extends FapModel {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
-		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
+		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=? and participacion.tipo=?", user, this.id, TiposParticipacionEnum.representante.name()).first();
 		if (p == null) {
 			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
 

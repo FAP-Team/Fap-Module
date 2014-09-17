@@ -58,6 +58,9 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		busqueda(idSolicitud,  autorizacionesFAP.numeroIdentificacion, dbAutorizacionesFAP);
 		if (!Messages.hasErrors()) {
 			PopUpAutorizarFAPController.PopUpAutorizarFAPValidateCopy("crear", dbAutorizacionesFAP, autorizacionesFAP);
+		}
+		
+        if (!Messages.hasErrors()) {
 			AsignarAgente(idSolicitud, autorizacionesFAP);
 		}
 

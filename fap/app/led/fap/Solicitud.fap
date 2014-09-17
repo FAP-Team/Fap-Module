@@ -1016,7 +1016,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				
 					Grupo mensajeIntermedioFirmar permiso=mensajeIntermedioAceptarRenunciarFirmar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
 						Wiki estilo ="alert alert-error" {
-							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Firmar' para intentar finalizar el proceso."
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar' para intentar finalizar el proceso."
 						}
 					}
 					
@@ -1042,7 +1042,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				
 					Grupo mensajeIntermedioRegistrar permiso=mensajeIntermedioAceptarRenunciarRegistrar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
 						Wiki estilo ="alert alert-error" {
-							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Registrar' para intentar finalizar el proceso."
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Registrar' para intentar finalizar el proceso."
 						}
 					}
 				

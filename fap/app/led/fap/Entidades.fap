@@ -737,6 +737,7 @@ Entidad BusquedaLogs nonPersist {
 
 Entidad AutorizacionesFAP{
 	String numeroIdentificacion
+	String nombreAutorizado
 }
 
 Entidad AdministracionFapJobs extends Singleton{

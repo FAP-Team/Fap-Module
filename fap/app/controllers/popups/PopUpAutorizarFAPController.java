@@ -104,6 +104,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 			}
 			if (!Messages.hasErrors()){
 				dbAutorizacionesFAP.numeroIdentificacion = autorizacionesFAP.numeroIdentificacion;
+                dbAutorizacionesFAP.nombreAutorizado = autorizacionesFAP.nombreAutorizado;
 			}
 		}
 	}

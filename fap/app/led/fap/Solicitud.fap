@@ -1268,13 +1268,15 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		Grupo gAutorizaciones titulo="Usuarios Autorizados" permiso=autorizadoNoAutoriza{
 			Tabla nipsAutorizados titulo="Autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
 			{
-				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF" expandir
+				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF"
+				Columna campo=AutorizacionesFAP.nombreAutorizado titulo="Nombre autorizado" expandir
 			}
 		}
 	}
 	
 	Popup PopUpAutorizarFAP titulo="Autorizar" campo=SolicitudGenerica.autorizacion permiso=autorizadoNoAutoriza{
 		Texto id campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF / CIF" requerido
+		Texto nombre campo=AutorizacionesFAP.nombreAutorizado titulo="Nombre autorizado"
 	} 
 
 	/*

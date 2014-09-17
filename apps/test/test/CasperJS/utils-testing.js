@@ -48,7 +48,6 @@ exports.changeRole = function(casper, role) {
         }
     });
     casper.then(function() {
-       casper.capture("img/cambio-de-rol-a-"+role+".png");
        casper.test.assertSelectorHasText('li.dropdown a.dropdown-toggle',role);
        casper.echo("Usando rol " + role + ".");
     });
@@ -68,7 +67,9 @@ exports.abrirUltimaSolicitud = function() {
             casper.click("tr.x-grid-row:last-child");
             casper.echo("Abriendo última solicitud...")
             casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
-                casper.test.assertTitle("Combos");
+                casper.then(function() {
+                    casper.test.assertTitle("Combos");
+                });
             });
         } else {
             exports.nuevaSolicitud();
@@ -136,22 +137,45 @@ exports.prepararParaFirmarSolicitudActual = function () {
     casper.then(function() {
         casper.test.assertExists(selector);
     });
-    casper.then(function() {
-        casper.click(selector);
-    });
+    exports.clickEnSelector(selector);
     casper.then(function() {
         if (casper.exists(x("//div[contains(@class,'alert-error')]//li[contains(text(),'No se pudo preparar para Firmar')]"))) {
             exports.configurarGestorDocumental();
+            exports.clickEnSelector(selector);
         }
     });
     casper.then(function() {
-        casper.test.assertExists("input.btn[type='submit'][value='Presentar solicitud']");
+        casper.test.assertExists("input[type=submit][value='Presentar solicitud'].btn");
     })
+};
+
+exports.presentarSolicitudActual = function () {
+    exports.echo("Presentando la solicitud...");
+    var selectorTextoFirmar = x('//p[text()[contains(.,"Firmar y Registrar")]][1]');
+    exports.abrirEnlace("Presentacion","Presentación de la Solicitud");
+    casper.then(function() {
+        if (!casper.exists(selectorTextoFirmar)) {
+           exports.prepararParaFirmarSolicitudActual();
+        }
+    });
+    exports.clickEnSelector("input[type=submit][value='Presentar solicitud'].btn");
+    exports.esperarPorSelector(selectorTextoFirmar);
+    exports.clickEnSelector("input[type=submit][value='Firmar y registrar'].btn");
+    exports.esperarPorSelector(x('//p[text()[contains(.,"Descargar el recibo")]]'));
 };
 
 
 exports.subirDocumentacionSolicitud = function() {
-
+    exports.echo("Subiendo documentos ...");
+    var pwd = require('system').env['PWD'];
+    exports.echo("PWD = " + pwd);
+    var file = "res/pdf-file.pdf";
+    var rutaJenkins = (pwd && (pwd.indexOf("jenkins") != -1)) ? pwd + "/test/CasperJS/" : "";
+    exports.abrirEnlace("Documentación FAP", "Documentación");
+    exports.rellenarFormularioNuevoDocumento(
+        "fs://aportacionsolicitud/v01",
+        "La Descripción del documento",
+        rutaJenkins + file);
 };
 
 exports.rellenarFormularioSolicitud = function() {
@@ -176,6 +200,20 @@ exports.rellenarFormularioSolicitud = function() {
     exports.clickEnGuardar(casper);
     exports.assertPaginaGuardada(casper);
 
+};
+
+exports.rellenarFormularioNuevoDocumento = function(tipo, descripcion, fichero) {
+    var _tipo = tipo || "fs://aportacionsolicitud/v01";
+    var _desc = descripcion || "Descripción del documento";
+    var _file = fichero || "res/pdf-file.pdf";
+    exports.echo("Rellenando documento " + _tipo + ": \""+ _desc + "\" con fichero " + _file );
+    exports.clickEnSelector(x('//span[text()[contains(.,"Nuevo")]]'));
+    exports.rellenaCombo("select#documento_tipo.combo", _tipo);
+    exports.rellenaFormulario("#DocumentosFAPcrearForm", {
+        "#fileAportacion_descripcion" : _desc,
+        "#fileAportacion" : _file
+    });
+    exports.clickEnGuardar();
 };
 
 exports.guardarPCEconomicos = function() {
@@ -210,8 +248,13 @@ exports.activarBaremacion = function(paginaPrevia) {
 };
 
 exports.configurarGestorDocumental = function() {
+    exports.echo("Configurando el Gestor Documental...");
     casper.then(function() {
+        var urlActual;
         var usuarioActual = exports.getUsuarioActual();
+        casper.then(function() {
+            urlActual =  casper.getCurrentUrl();
+        });
         exports.changeRole(casper, "Administrador");
         casper.then(function () {
             casper.open("http://localhost:9009/Administracion/aed");
@@ -223,7 +266,11 @@ exports.configurarGestorDocumental = function() {
             casper.click("input[type='submit'][value='Actualizar trámites']");
         });
         exports.changeRole(casper, usuarioActual);
+        casper.then(function() {
+            casper.open(urlActual);
+        });
     });
+    exports.echo("Gestor documental configurado.")
 };
 
 
@@ -267,3 +314,13 @@ function existeMensajeErrorBaremacion() {
     var selector = x("//div[contains(@class,'alert-error')]//li[contains(text(),'no están disponibles')]");
     return casper.exists(selector);
 }
+
+exports.clickEnSelector = function(selector) {
+    casper.then(function() {
+        casper.click(selector);
+    });
+};
+
+exports.esperarPorSelector = function(selector) {
+    casper.waitForSelector(selector);
+};

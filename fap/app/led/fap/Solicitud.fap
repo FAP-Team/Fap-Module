@@ -1015,7 +1015,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				
 					Grupo mensajeIntermedioFirmar permiso=mensajeIntermedioAceptarRenunciarFirmar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
 						Wiki estilo ="alert alert-error" {
-							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Firmar' para intentar finalizar el proceso."
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar' para intentar finalizar el proceso."
 						}
 					}
 					
@@ -1041,7 +1041,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 				
 					Grupo mensajeIntermedioRegistrar permiso=mensajeIntermedioAceptarRenunciarRegistrar mostrarSiCampo SolicitudGenerica.solicitante.tipo="juridica" borde=false {
 						Wiki estilo ="alert alert-error" {
-							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botÃ³n 'Registrar' para intentar finalizar el proceso."
+							"Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Registrar' para intentar finalizar el proceso."
 						}
 					}
 				
@@ -1267,13 +1267,15 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		Grupo gAutorizaciones titulo="Usuarios Autorizados" permiso=autorizadoNoAutoriza{
 			Tabla nipsAutorizados titulo="Autorizados" campo=SolicitudGenerica.autorizacion popup=PopUpAutorizarFAP
 			{
-				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF" expandir
+				Columna campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF/CIF"
+				Columna campo=AutorizacionesFAP.nombreAutorizado titulo="Nombre autorizado" expandir
 			}
 		}
 	}
 	
 	Popup PopUpAutorizarFAP titulo="Autorizar" campo=SolicitudGenerica.autorizacion permiso=autorizadoNoAutoriza{
 		Texto id campo=AutorizacionesFAP.numeroIdentificacion titulo="NIF / CIF" requerido
+		Texto nombre campo=AutorizacionesFAP.nombreAutorizado titulo="Nombre autorizado"
 	} 
 
 	/*

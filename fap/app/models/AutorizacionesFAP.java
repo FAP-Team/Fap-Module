@@ -24,6 +24,8 @@ public class AutorizacionesFAP extends FapModel {
 
 	public String numeroIdentificacion;
 
+	public String nombreAutorizado;
+
 	public void init() {
 
 		postInit();

@@ -446,7 +446,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado);
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
-                agregarFirmaEnGestorDocumental(documento, firma, firmanteCertificado);
+                firmante.nombre = firmanteCertificado.nombre;
+                agregarFirmaEnGestorDocumental(documento, firma, firmante);
             }
 		}else{
 			play.Logger.error("firmanteCertificado == null????");
@@ -459,7 +460,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             firmante.fechaFirma = new DateTime();
             gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
             firmante.save();
-            play.Logger.info("Firma del documento " + documento.uri + " guardada en el AED");
+            play.Logger.info("Firma del documento " + documento.uri + ", con fecha " + firmante.fechaFirma + " guardada en el AED");
         }catch(GestorDocumentalServiceException e){
             play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
             Messages.error("Error al guardar la firma");

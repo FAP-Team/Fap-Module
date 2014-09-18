@@ -12,9 +12,13 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class VerificarDocumentacionServiceTest extends UnitTest {
+
+    public static final String FIRMA_DOCUMENTO_FIRMADO = "DOCUMENTO FIRMADO";
+    public static final String FIRMA_DOCUMENTO_NO_FIRMADO = "";
 
     private Documento nuevoDocumento() {
         Documento doc = new Documento();
@@ -23,19 +27,19 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
         return doc;
     }
 
+    private Documento nuevoDocumentoSpy() {
+        return spy(nuevoDocumento());
+    }
+
     private Documento nuevoDocumentoFirmado() {
-        Documento doc = nuevoDocumento();
-        Firmantes firmantes = mock(Firmantes.class);
-        when(firmantes.hanFirmadoTodos()).thenReturn(true);
-        doc.firmantes = firmantes;
+        Documento doc = nuevoDocumentoSpy();
+        when(doc.getFirma()).thenReturn(FIRMA_DOCUMENTO_FIRMADO);
         return doc;
     }
 
     private Documento nuevoDocumentoNoFirmado() {
-        Documento doc = nuevoDocumento();
-        Firmantes firmantes = mock(Firmantes.class);
-        when(firmantes.hanFirmadoTodos()).thenReturn(false);
-        doc.firmantes = firmantes;
+        Documento doc = nuevoDocumentoSpy();
+        when(doc.getFirma()).thenReturn(FIRMA_DOCUMENTO_NO_FIRMADO);
         return doc;
     }
 
@@ -46,10 +50,7 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
     @Test
     public void compruebaLasFirmasCorrectas() {
         assumeTrue(comprobarAnexosActivado());
-        Documento doc = nuevoDocumento();
-        Firmantes firmantes = mock(Firmantes.class);
-        when(firmantes.hanFirmadoTodos()).thenReturn(true);
-        doc.firmantes = firmantes;
+        Documento doc = nuevoDocumentoFirmado();
 
         boolean resultado = VerificarDocumentacionService.comprobarFirmas(doc);
 
@@ -60,8 +61,7 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
     public void comprobarFirmasDevuelveFalseSiNoFirmado() {
         assumeTrue(comprobarAnexosActivado());
 
-        Documento doc = nuevoDocumento();
-        doc.firmantes = null;
+        Documento doc = nuevoDocumentoNoFirmado();
 
         boolean resultado = VerificarDocumentacionService.comprobarFirmas(doc);
 
@@ -69,17 +69,17 @@ public class VerificarDocumentacionServiceTest extends UnitTest {
     }
 
     @Test
-    public void comprobarFirmasDevuelveFalseSiNoTodosHanFirmado(){
+    public void comprobarFirmasDevuelveTrueSiNoTodosHanFirmado(){
         assumeTrue(comprobarAnexosActivado());
 
-        Documento doc = nuevoDocumento();
+        Documento doc = nuevoDocumentoFirmado();
         Firmantes firmantes = mock(Firmantes.class);
         when(firmantes.hanFirmadoTodos()).thenReturn(false);
         doc.firmantes = firmantes;
 
         boolean resultado = VerificarDocumentacionService.comprobarFirmas(doc);
 
-        assertThat(resultado, is(equalTo(false)));
+        assertThat(resultado, is(equalTo(true)));
     }
 
     @Test

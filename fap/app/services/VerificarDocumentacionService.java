@@ -208,7 +208,7 @@ public class VerificarDocumentacionService {
     public static boolean comprobarFirmas(Documento doc) {
 		play.Logger.info("Comprobando firmantes de %s", doc);
         boolean salida = true;
-        if (propertyAnexosFirmadosActiva() && !documentoFirmadoPorTodos(doc)) {
+        if (propertyAnexosFirmadosActiva() && !firmaEsValida(doc)) {
 			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
 			Messages.error(String.format("El documento %s no ha sido firmado o faltan firmas.", descripcion));
 			salida = false;
@@ -216,6 +216,10 @@ public class VerificarDocumentacionService {
 
 		return salida;
 	}
+
+    private static boolean firmaEsValida(Documento doc) {
+        return !doc.getFirma().isEmpty();
+    }
 
     private static boolean documentoFirmadoPorTodos(Documento doc) {
         return (doc.firmantes != null) && (doc.firmantes.hanFirmadoTodos());

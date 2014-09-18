@@ -796,6 +796,15 @@
 			});
 		   	
 
+			//Listener para seleccionar filas con doble click
+		    grid.on('itemdblclick', function(gridView, record) {
+				var selectionModel = gridView.getSelectionModel();
+				if (selectionModel.isSelected(record)) {
+                    selectionModel.deselect(record, true);
+                } else {
+                    selectionModel.select(record, true);
+				}
+            });
 		   	
 		    // Creamos el tooltip de la celda
 		    grid.getView().on('render', function(gridView) {

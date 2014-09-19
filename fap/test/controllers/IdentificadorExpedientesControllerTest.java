@@ -1,9 +1,11 @@
 package controllers;
 
 import controllers.fap.IdentificadorExpedientesController;
+import models.Convocatoria;
 import org.junit.Test;
 import play.test.UnitTest;
 import properties.FapProperties;
+import properties.FapPropertiesKeys;
 
 import java.util.Calendar;
 
@@ -17,8 +19,7 @@ public class IdentificadorExpedientesControllerTest extends UnitTest {
 
     @Test
     public void devuelveIdentificadorConAnyo() {
-        FapProperties.updateProperty(FAP_AED_EXPEDIENTE_MODALIDAD,"anual");
-        FapProperties.updateProperty(FAP_AED_EXPEDIENTE_PREFIJO, PREFIJO_EXP);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, Convocatoria.PREFIJO_CONVOCATORIA_ANUAL);
         String anyo = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
         String idExp = IdentificadorExpedientesController.getNuevoIdExpediente("");
@@ -29,7 +30,7 @@ public class IdentificadorExpedientesControllerTest extends UnitTest {
 
     @Test
     public void devuelveIdentificadorSinAnyo() {
-        FapProperties.updateProperty(FAP_AED_EXPEDIENTE_MODALIDAD,"convocatoria");
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "convocatoria");
         FapProperties.updateProperty(FAP_AED_EXPEDIENTE_PREFIJO, PREFIJO_EXP);
         String anyo = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 

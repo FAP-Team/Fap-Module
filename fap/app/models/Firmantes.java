@@ -48,39 +48,42 @@ public class Firmantes extends FapModel {
 		if ((todos == null) || (todos.isEmpty())) {
 			return false;
 		}
-        boolean firmado = true;
-        boolean multiple = false;
-        for (Firmante f : todos) {
-            // Firmante único que ya ha firmado
-            if (f.cardinalidad.equals("unico") && f.fechaFirma != null)
-                return true;
+		boolean firmado = true;
+		boolean multiple = false;
+		for (Firmante f : todos) {
+			// Firmante único que ya ha firmado
+			if (f.cardinalidad.equals("unico") && f.fechaFirma != null)
+				return true;
 
-            // Uno de los firmantes multiples no ha firmado
-            if (f.cardinalidad.equals("multiple")) {
-                multiple = true;
-                if (f.fechaFirma == null) {
-                    firmado = false;
-                }
-            }
-        }
+			// Uno de los firmantes multiples no ha firmado
+			if (f.cardinalidad.equals("multiple")) {
+				multiple = true;
+				if (f.fechaFirma == null) {
+					firmado = false;
+				}
+			}
+		}
 
-        // En el caso de que no haya firmado ningún único
-        // Se devuelve true si todos los múltiples han firmado
-        return multiple && firmado;
+		// En el caso de que no haya firmado ningún único
+		// Se devuelve true si todos los múltiples han firmado
+		return multiple && firmado;
 	}
 
 	/**
 	 * Borra una lista de firmantes, borrando cada uno de los firmantes y
-	 * vaciando la lista
+	 * vaciando la lista. Elimina los registros de firmantes_todos correspondientes
 	 * 
 	 * @param firmantes
 	 */
-	public void borrarFirmantes(List<Firmante> firmantes) {
+	public void borrarFirmantes(List<Firmante> firmantes, Long firmantes_id) {
 		List<Firmante> firmantesBack = new ArrayList<Firmante>(firmantes);
 		firmantes.clear();
 
-		for (Firmante f : firmantesBack)
+		for (Firmante f : firmantesBack) {
+			this.todos.remove(f.id);
+			this.save();
 			f.delete();
+		}
 	}
 
 	public static Firmantes calcularFirmanteFromSolicitante(Solicitante solicitante) {

@@ -289,6 +289,18 @@ public class Documento extends FapModel {
 		firmantes = doc.firmantes;
 	}
 
+	/**
+	 * Antes de eliminar un documento se eliminan los firmantes
+	 */
+	@PreRemove
+	public void borrarFirmantesDocumento() {
+		try {
+			this.firmantes.borrarFirmantes(this.firmantes.todos, this.firmantes.id);
+		} catch (Exception e) {
+			play.Logger.error("Error borrando los firmantes del documento " + e.getMessage());
+		}
+	}
+
 	// === MANUAL REGION END ===
 
 }

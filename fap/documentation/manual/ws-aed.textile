@@ -66,6 +66,24 @@ fap.aed.documentonoclasificado.interesado.nif=123456789a
 fap.aed.tiposdocumentos.aportacion.solicitud=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
 fap.aed.tiposdocumentos.aportacion.registro=eadmon://gobcan.es/tiposDocumentos/TDC000000000000000002/v01
 
+h2. Configuración de los números de expediente y convocatoria
+
+Los números de expediente de una solicitud se genera automáticamente en función del tipo de convocatoria y la configuración.
+Una convocatoria puede ser anual o no. Para indicar que es anual se utiliza la property que identifica la convocatoria, dándole el valor *A*. Con cualquier otro valor se considera la convocatoria como no anual.
+
+La generación del número de expediente depende del prefijo asignado en la configuración, de si la convocatoria es anual o no y del número secuencial propio de la solicitud. Si la convocatoria no es anual no se usará el año, tan solo el prefijo configurado.
+Por ejemplo, un número de registro que sea _EXP20140023_ se divide en el prefijo (EXP), el año (2014), y el número secuencial (0023).
+
+p. Ejemplo de configuración para generar expedientes anuales con prefijo EXP, como _EXP201400023_
+
+bc.. fap.aed.convocatoria=A #Se añadirá automáticamente el año al identificador de la convocatoria
+fap.aed.expediente.prefijo=EXP
+
+p. Ejemplo de configuración para generar expediente no anuales con prefijo EXP1415, como _EXP141500023_
+
+bc.. fap.aed.convocatoria=EXP1415 #Cualquier valor distinto de A, para identificar la convocatoria
+fap.aed.expediente.prefijo=EXP1415
+
 h2. Tipos de documentos 
 
 Los tipos de documentos estan asociados a un tramite y se organizan en función de quien debe aportarlo 

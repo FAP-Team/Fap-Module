@@ -1068,7 +1068,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	}
             uriToRet = propiedades.getUri();
         }
-        if (documento.uri != uriToRet) {
+        if (documento.uri.compareTo(uriToRet) != 0) {
             play.Logger.info("Se actualiza la uri del documento "+documento.uri+ " -> "+uriToRet);
             documento.uri = uriToRet;
             documento.save();

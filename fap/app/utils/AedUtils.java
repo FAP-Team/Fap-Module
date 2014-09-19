@@ -1,11 +1,21 @@
 package utils;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import models.Documento;
+import models.Firmante;
+import models.Persona;
 
 import play.libs.Crypto;
 import play.mvc.Router;
@@ -89,5 +99,30 @@ public class AedUtils {
         return urlCompleta;                
 	}
 	
+	/**
+	 * 
+	 * Añade los firmantes de un documento de platino a un documento FAP.
+	 * 
+	 * @param documento Documento FAP
+	 * @param documentoPlatino Documento de platino
+	 */
+	public static void docPlatinotoDocumentoFirmantes(Documento documento, es.gobcan.platino.servicios.sgrde.Documento documentoPlatino){
+		
+		DateTimeFormatter formateoFecha = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+		
+		for (int i = 0; i < documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().size(); i++) {
+
+			Firmante firmante = new Firmante();
+			firmante.idvalor = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getIdFirmante();
+			firmante.nombre = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getDescFirmante();
+			
+			String fechaHora = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getFechaFirma().toXMLFormat();
+			String dateToken = fechaHora.substring(0, fechaHora.indexOf('T'));
+			String hourToken = fechaHora.substring(fechaHora.indexOf('T')+1, fechaHora.indexOf('+'));
+			firmante.fechaFirma = formateoFecha.parseDateTime(dateToken + " " + hourToken);
+
+			documento.firmantes.todos.add(firmante);
+		}		
+	}
 	
 }

@@ -12,6 +12,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 import messages.Messages;
 import models.Agente;
 import models.Documento;
+import models.Firma;
 import models.LineaResolucionFAP;
 import models.Registro;
 import models.ResolucionFAP;
@@ -39,8 +40,10 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
 import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.platino.PlatinoGestorDocumentalService;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
+import utils.AedUtils;
 import utils.ResolucionUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
@@ -598,6 +601,25 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				} catch (GestorDocumentalServiceException e) {
 					play.Logger.error("Error al clasificar el documento de la resolución.", e);
 					Messages.error("Error al clasificar el documento de la resolución.");
+				}
+				tx.commit();
+			}
+		}
+		
+		//Agregar Firma Platino al documento de resolucion en el AED ACIISI
+		if (!Messages.hasErrors()) {
+			PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+				
+		    es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(dbResolucionFAP.registro.oficial.uri);
+			if (documentoPlatino != null){
+				tx.begin();
+				try {
+					AedUtils.docPlatinotoDocumentoFirmantes(dbResolucionFAP.registro.oficial, documentoPlatino);
+					gestorDocumentalService.agregarFirma(dbResolucionFAP.registro.oficial, 
+							new Firma(documentoPlatino.getMetaInformacion().getFirmasElectronicas().getFirma(), dbResolucionFAP.registro.oficial.firmantes.todos));
+						
+				} catch (GestorDocumentalServiceException e) {
+					play.Logger.error("Error. No se ha podido agregar la firma al documento de resolución en el AED.", e);
 				}
 				tx.commit();
 			}

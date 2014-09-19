@@ -1,5 +1,6 @@
 package services.platino;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -29,12 +30,17 @@ import platino.DatosDocumento;
 import platino.DatosFirmante;
 import platino.DatosRegistro;
 import platino.PlatinoProxy;
+import play.libs.IO;
+import play.mvc.Http.Response;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.BinaryResponse;
 import utils.WSUtils;
+import es.gobcan.eadmon.aed.ws.AedExcepcion;
+import es.gobcan.eadmon.aed.ws.AedPortType;
+import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
@@ -42,13 +48,16 @@ import es.gobcan.platino.servicios.registro.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
+import es.gobcan.platino.servicios.sgrde.ElementoNoEncontradoException;
 import es.gobcan.platino.servicios.sgrde.ErrorInternoException;
 import es.gobcan.platino.servicios.sgrde.Expediente;
 import es.gobcan.platino.servicios.sgrde.FirmasElectronicas;
+import es.gobcan.platino.servicios.sgrde.IdDocumentoItem;
 import es.gobcan.platino.servicios.sgrde.InformacionFirmaElectronica;
 import es.gobcan.platino.servicios.sgrde.MetaInformacionException;
 import es.gobcan.platino.servicios.sgrde.SGRDEServicePortType;
 import es.gobcan.platino.servicios.sgrde.SGRDEServiceProxy;
+import es.gobcan.platino.servicios.sgrde.UsuarioNoValidoException;
 
 /**
  * GestorDocumentalServiceImpl
@@ -301,5 +310,53 @@ public class PlatinoGestorDocumentalService {
 			e.printStackTrace();
 		}
 		return null;	
+	}
+	
+	/**
+	 * Obtiene un documento con firma de platino
+	 * 
+	 * @param IdDocumentoItem Identificador del documento. Este identificador puede hacer 
+     *        referencia tanto a un documento por URI o por NDE
+	 * @param reducible Indica si se fuerza a que el documento de solicitud se reduzca
+	 * @param plantilla Identificador de la plantilla de la caja de firma. Los valores 
+     *         actuales posibles son: 1 ,2, 3 y 4. 
+     * @return documento de platino
+	 */
+	//TODO Este método debe ir en la implementación del GestorDocumental de Platino
+	public static es.gobcan.platino.servicios.sgrde.Documento obtenerDocumentoConCaja(IdDocumentoItem uriPlatino, boolean reducible, int plantilla) throws ElementoNoEncontradoException, UsuarioNoValidoException, ErrorInternoException {
+			return gestorDocumentalPort.obtenerDocumentoConCaja(uriPlatino, reducible, plantilla);
+	}
+	
+	/**
+	 * Obtiene el documento firmado y sube el documento a platino si no estuviera. 
+	 * 
+	 * @param uri Uri de un documento
+     * @return documento de platino
+	 */
+	//TODO Este método debe ir en la implementación del GestorDocumental de Platino
+	public static es.gobcan.platino.servicios.sgrde.Documento descargarFirmado(String uri){
+		String uriPlatino = obtenerURIPlatino(uri, PlatinoGestorDocumentalService.class);
+		
+		if (uriPlatino != null){
+			IdDocumentoItem idDocumento = new IdDocumentoItem();
+			idDocumento.setUri(uriPlatino);
+		
+			try {
+				
+				return obtenerDocumentoConCaja(idDocumento, false, 1);
+
+			} catch (ElementoNoEncontradoException e) {
+				play.Logger.error("Se produjo un error recuperando el documento del AED-Platino: " + e);
+			} catch (UsuarioNoValidoException e) {
+				play.Logger.error("No tiene permisos para acceder a este documento");
+			} catch (ErrorInternoException e) {
+				play.Logger.error("Se produjo un error inesperado: " + e);
+			}
+				
+		}else {
+			play.Logger.error("No existe o no se encuentra el documento referenciado");
+		}
+		
+		return null;
 	}
 }

@@ -15,6 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+import play.Play;
+import play.db.jpa.JPABase;
+import play.libs.Crypto;
+import properties.FapPropertiesKeys;
+import play.exceptions.UnexpectedException;
+import org.apache.commons.lang.StringUtils;
 
 // === IMPORT REGION END ===
 
@@ -132,6 +138,49 @@ public class SolicitudFirmaPortafirma extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+
+	@Override
+	public <T extends JPABase> T save() {
+		encriptarPassword(passwordSolicitante);
+		return super.save();
+	}
+
+	public boolean encriptarPassword() {
+		return encriptarPassword(passwordSolicitante);
+	}
+
+	public boolean encriptarPassword(String password) {
+		String secret = getSecretoEncriptacion();
+		return encriptarPassword(password, secret);
+	}
+
+	public boolean encriptarPassword(String password, String secret) {
+		password = Crypto.encryptAES(password, secret);
+		passwordSolicitante = password;
+		return true;
+	}
+
+	public String desencriptarPassword() {
+		String secret = getSecretoEncriptacion();
+		return desencriptarPassword(secret);
+	}
+
+	public String desencriptarPassword(String secret) {
+		String password;
+		try {
+			password = Crypto.decryptAES(this.passwordSolicitante, secret.substring(0, 16));
+		} catch (UnexpectedException e) {
+			Logger.info("SolicitudFirmaPortafirma.desencriptarPassword(...): Error al desencriptar password");
+			password = "";
+		}
+		return password;
+	}
+
+	protected String getSecretoEncriptacion() {
+		String secret = Play.configuration.getProperty(FapPropertiesKeys.PORTAFIRMA_SECRET_KEY);
+		secret = StringUtils.rightPad(secret, 16, secret).substring(0, 16);
+		return secret;
+	}
 
 	// === MANUAL REGION END ===
 

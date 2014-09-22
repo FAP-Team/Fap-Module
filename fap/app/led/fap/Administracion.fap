@@ -224,6 +224,7 @@ Formulario Administracion permiso=administrador{
 			Columna campo=Agente.name titulo="Nombre completo" expandir
 			Columna campo=Agente.roles titulo="Roles" expandir
 			Columna campo=Agente.email titulo="Email" ancho="150"
+			Columna campo=Agente.cargo titulo="Cargo" expandir
 			Columna campo=Agente.funcionario titulo="Funcionario" ancho="80"
 		}
 	}
@@ -237,6 +238,7 @@ Formulario Administracion permiso=administrador{
 		}
 		Combo campo=Agente.roles titulo="Roles" busqueda requerido 
 		Texto campo=Agente.email titulo="Email" requerido
+		Texto campo=Agente.cargo titulo="Cargo"
 		Check campo=Agente.funcionario titulo="Funcionario habilitado"
 	}
 		

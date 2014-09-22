@@ -120,6 +120,12 @@ Entidad ComboTest {
 	Lista comunidadesAutonomas comunidades
 	Lista paises paises
 	Lista municipios municipios
+	
+	Lista provin provin
+    Lista islitas islitas
+	
+	Lista tipoCentros tipoCentros
+	Lista islasTipoCentroCide islasTipoCentroCide
 
 	Lista ComboTestList list
 	Lista Numeritos listNumber 

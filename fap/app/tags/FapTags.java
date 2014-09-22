@@ -370,7 +370,7 @@ R
 	 *    expandir
 	 */
 	public static void _columna(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-		if( (!TagContext.hasParentTag("fap.tabla")) && (!TagContext.hasParentTag("fap.tablaSiCombo")) && (!TagContext.hasParentTag("fap.firmaMultiple"))) {
+		if( (!TagContext.hasParentTag("fap.tabla")) && (!TagContext.hasParentTag("fap.tablaSiCombo")) && (!TagContext.hasParentTag("fap.firmaMasiva"))) {
 			String msg = "El tag fap.columna puede aparecer únicamente dentro de un tag fap.tabla o tag.tablaSiCombo";
 			throw new TemplateExecutionException(template.template, fromLine, msg, new TagInternalException(msg));
 		}
@@ -498,9 +498,9 @@ R
 				camposTabla = (Set<String>)TagContext.parent("fap.tablaSiCombo").data.get("campos");
 				columnasTabla = (List<String>)TagContext.parent("fap.tablaSiCombo").data.get("columnas");
 			}
-			else if (TagContext.hasParentTag("fap.firmaMultiple")){
-				camposTabla = (Set<String>)TagContext.parent("fap.firmaMultiple").data.get("campos");
-				columnasTabla = (List<String>)TagContext.parent("fap.firmaMultiple").data.get("columnas");
+			else if (TagContext.hasParentTag("fap.firmaMasiva")){
+				camposTabla = (Set<String>)TagContext.parent("fap.firmaMasiva").data.get("campos");
+				columnasTabla = (List<String>)TagContext.parent("fap.firmaMasiva").data.get("columnas");
 			}
 			//Set<String> camposTabla = (Set<String>)TagContext.parent("fap.tabla").data.get("campos");
 			camposTabla.addAll(campos);

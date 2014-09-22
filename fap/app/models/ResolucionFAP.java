@@ -125,6 +125,8 @@ public class ResolucionFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudFirmaPortafirma solicitudFirmaPortafirma;
 
+	public String idSolicitudFirmaOficiosRemision;
+
 	public String idSolicitudFirma;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaTopeFirma"), @Column(name = "fechaTopeFirmaTZ") })
@@ -144,8 +146,6 @@ public class ResolucionFAP extends FapModel {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public SolicitudFirmaPortafirma solicitudFirmaPortafirmaOficioRemision;
-
-	public String idSolicitudFirmaOficiosRemision;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaTopeFirmaOficiosRemision"), @Column(name = "fechaTopeFirmaOficiosRemisionTZ") })
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
@@ -238,6 +238,17 @@ public class ResolucionFAP extends FapModel {
 
 		return listaInteresados;
 
+	}
+
+	public Agente getAgenteSolicitadoFirmaOficiosRemision() {
+		Agente agente = null;
+		agente = Agente.find("byUsername", this.idSolicitudFirmaOficiosRemision).first();
+		if (agente == null) {
+			agente = new Agente();
+			agente.username = "";
+			agente.cargo = "";
+		}
+		return agente;
 	}
 
 	// === MANUAL REGION END ===

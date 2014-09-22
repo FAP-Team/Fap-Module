@@ -21,6 +21,7 @@ import es.fap.simpleled.led.PermisoWhen
 import es.fap.simpleled.led.Popup
 import es.fap.simpleled.led.PopupAccion
 import es.fap.simpleled.led.Tabla
+import es.fap.simpleled.led.FirmaMasiva
 import es.fap.simpleled.led.impl.FormImpl;
 import es.fap.simpleled.led.util.ModelUtils
 import es.fap.simpleled.led.LedPackage;
@@ -198,6 +199,8 @@ ${metodoCrearLogica()}
 ${metodoBorrar()}
 
 ${metodoValidateCopy()}
+
+${metodoIfCreandoValidateCopy()}
 
 ${metodoValidateCopyBeforeOpenPageTable()}
 
@@ -1029,22 +1032,18 @@ public class ${controllerName} extends ${controllerGenName} {
 						creando = true;
 						}
 						""";
-			List<String> atributos =  new ArrayList<String>();
-			codigoCrear = """if (creando) {"""
-			campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
-				atributos.addAll(item.name);
-				if ((!item.name.startsWith("id")) && (!item.isTransient))
-					codigoCrear += """
-					if (${lista.get(1)}.${item.name} != null){
-						valoresNuevos = new ArrayList<String>();
-						valoresNuevos.add(${lista.get(1)}.${item.name}.toString());
-						peticionModificacion.setValorCreado("${lista.get(1)}.${item.name}", new ArrayList<String>(), valoresNuevos);
-						hayModificaciones = true;
-						db${lista.get(0)}.${item.name} = ${lista.get(1)}.${item.name};
-					}
+
+			if (saveEntities.size() == 0 || (!editar && !crear)) {
+				codigoCrear = "";
+			} else {
+				codigoCrear = """
+						if (creando) {
+							ifCreandoValidateCopy(peticionModificacion, valoresAntiguos, valoresNuevos, hayModificaciones,  
+							${StringUtils.params(saveDbEntities.collect{if (saveEntities.contains(it)) return "${it.variableDb}, ${it.variable}";
+						else return "${it.typeDb}";})});
+						}
 					"""
 			}
-			codigoCrear += "}";
 		}
 		
 		return """
@@ -1065,6 +1064,43 @@ public class ${controllerName} extends ${controllerGenName} {
 				${gElement.saveCode()}
 			}
 		"""
+	}
+	
+	public String metodoIfCreandoValidateCopy(){
+		if (saveEntities.size() == 0 || (!editar && !crear)) return "";
+		String codigoCrear = ""
+		if ((copia) && (!saveEntities.collect{ it.variableDb }.contains("dbSolicitud"))) {
+		
+			List<String> lista = saveEntities.collect{"${it.typeVariable}"}.join(" ").toString().split(" ");
+			codigoCrear = """
+	@Util
+	private static void ifCreandoValidateCopy(PeticionModificacion peticionModificacion,
+							List<String> valoresAntiguos,
+							List<String> valoresNuevos, 
+							boolean hayModificaciones, ${StringUtils.params(
+					saveDbEntities.collect{
+						if (saveEntities.contains(it)) return "${it.typeDb}, ${it.typeVariable}";
+						else return "${it.typeDb}";})}) {
+			"""
+				List<String> atributos =  new ArrayList<String>();
+				campo.ultimaEntidad.attributes.eachWithIndex { item, i ->
+					atributos.addAll(item.name);
+					if ((!item.name.startsWith("id")) && (!item.isTransient))
+						codigoCrear += """
+					if (${lista.get(1)}.${item.name} != null){
+						valoresNuevos = new ArrayList<String>();
+						valoresNuevos.add(${lista.get(1)}.${item.name}.toString());
+						peticionModificacion.setValorCreado("${lista.get(1)}.${item.name}", new ArrayList<String>(), valoresNuevos);
+						hayModificaciones = true;
+						db${lista.get(0)}.${item.name} = ${lista.get(1)}.${item.name};
+					}
+					"""
+				}
+				codigoCrear += """
+				
+			}""";
+		}
+		return codigoCrear;
 	}
 	
 	public boolean algoQueGuardar(){
@@ -1450,6 +1486,16 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.paginaBorrar != null && tabla.paginaBorrar.name.equals(pagina.name))
 				borrar = true;
 		}
+		for (FirmaMasiva firmaMasiva: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMasiva())){
+//			if (firmaMasiva.pagina != null && firmaMasiva.pagina.name.equals(pagina.name))
+//				crear = borrar = editar = true;
+			if (firmaMasiva.paginaCrear != null && firmaMasiva.paginaCrear.name.equals(pagina.name))
+				crear = true;
+//			if (firmaMasiva.paginaEditar != null && firmaMasiva.paginaEditar.name.equals(pagina.name))
+//				editar = true;
+//			if (firmaMasiva.paginaBorrar != null && firmaMasiva.paginaBorrar.name.equals(pagina.name))
+//				borrar = true;
+		}
 		for (Form form: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getForm())){
 			if (form.redirigir != null && form.redirigir.pagina.name.equals(pagina.name))
 				checkReferencia(form.redirigir);
@@ -1496,6 +1542,16 @@ public class ${controllerName} extends ${controllerGenName} {
 			if (tabla.popupEditar != null && tabla.popupEditar.name.equals(popup.name))
 				editar = true;
 			if (tabla.popupBorrar != null && tabla.popupBorrar.name.equals(popup.name))
+				borrar = true;
+		}
+		for (FirmaMasiva firmaMasiva: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFirmaMasiva())){
+			if (firmaMasiva.popup != null && firmaMasiva.popup.name.equals(popup.name))
+				crear = borrar = editar = true;
+			if (firmaMasiva.popupCrear != null && firmaMasiva.popupCrear.name.equals(popup.name))
+				crear = true;
+			if (firmaMasiva.popupEditar != null && firmaMasiva.popupEditar.name.equals(popup.name))
+				editar = true;
+			if (firmaMasiva.popupBorrar != null && firmaMasiva.popupBorrar.name.equals(popup.name))
 				borrar = true;
 		}
 	}

@@ -1,5 +1,16 @@
 h2. Changelog
 
+h3. Versión 2.4.1
+* FixedBug: Se ha corregido NullPointer a la hora de enviar las notificaciones de requerimientos en cualquier trámite.
+* Actualización de la librería platino pre. Reciente actualización del cliente del servicio de registro.
+
+h3. Versión 2.4RC6
+* FixedBug: Se ha corregido el error en combos dependientes cuando tenían valores previos en bbdd.
+	No se pueden declarar listas en las cuales la clave tenga guiones bajos.
+* Se comprueba que el documento tenga uri de Platino para usar el método "guardar resolución con URI"
+* Actualización de librerías de certificados y resoluciones. 
+* Modificado gitignore para IntelliJ
+
 h3. Versión 2.4RC5
 
 * FixedBug: Se ha corregido el método encriptarPassword
@@ -11,6 +22,12 @@ h3. Versión 2.4RC5
 * Reestructuración de las implementaciones del servicio de Portafirma (Portafirma Gobcan, Portafirma ACIISI) (Pendiente de corregir detalles).
 * Incorporación de la librería de certificados
 * Actualización de la librería de notificaciones (se ha cambiado el nombre del paquete de esta librería)
+* Properties de proxy añadidas con valores por defecto
+* Se pone a true el campo clasificado de los documentos de notificación "ACUSE_RECIBO" y "MARCADA_RESPONDIDA".
+* Se comprueba que el documento oficio de remisión esté creado en la línea de resolución y se modifican permisos de oficios de remisión.
+* Arreglado fallo a la hora de seleccionar un expediente en la resolución simple.
+* Añadida documentacion de properties que no estaban incluidas
+* Arreglado fallo al notificar una resolución
 
 h3. Versión 2.4RC4
 

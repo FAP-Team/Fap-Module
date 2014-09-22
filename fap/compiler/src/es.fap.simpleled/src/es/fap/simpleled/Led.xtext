@@ -230,7 +230,7 @@ Elemento:
 	Texto | Fecha | Combo | Tabla | Boton | Check | AgrupaBotones | RadioBooleano | BarraDeslizante |
 	Nip | Solicitante | PersonaFisica | PersonaJuridica | Persona  | Direccion | DireccionMapa | Wiki |
 	AreaTexto | Enlace | Form |
-	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMultiple |
+	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMasiva |
 	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto |
 	GrupoRadioButtons
 ;
@@ -370,6 +370,8 @@ Boton:
 		& (refrescar?="refrescar")?	
 		& ('type' '=' type=('primary' | 'info' | 'success' | 'danger' | 'warning' | 'inverse'))?
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
+		& (claveIdFijo?="claveIdFijo")?	
+		& (noSubmit?="noSubmit")?
 	)
 ;
 
@@ -412,8 +414,8 @@ Form:
 	'}'
 ;	
 
-FirmaMultiple:
-	elemento='FirmaMultiple' name=ID
+FirmaMasiva:
+	elemento='FirmaMasiva' name=ID
 	(
 		(documentos=FirmaDocumentos)
 		& ('titulo' '=' titulo=STRING)?
@@ -421,9 +423,14 @@ FirmaMultiple:
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
-	   	& ('popupLeer' '=' popupLeer=[Popup|IDS])?
 	   	& ('paginaLeer' '=' paginaLeer=[Pagina|IDS])?
 	   	& ('nombreBotonVer' '=' nombreBotonVer=STRING)?
+	   	& ('paginaCrear' '=' paginaCrear=[Pagina|IDS])?
+   	    & ('popup' '=' popup=[Popup|IDS])?
+   	    & ('popupLeer' '=' popupLeer=[Popup|IDS])?    
+	   	& ('popupCrear' '=' popupCrear=[Popup|IDS])?
+	   	& ('popupEditar' '=' popupEditar=[Popup|IDS])?
+	   	& ('popupBorrar' '=' popupBorrar=[Popup|IDS])?
 	)
 	'{'
 		columnas += Columna*
@@ -443,7 +450,7 @@ Tabla:
         & (columnasAutomaticas?="columnasAutomaticas" (('exclude' '=' exclude=ListaAtributos) | ('include' '=' include=ListaAtributos))?)?
         & ("permisoFilas" "=" permiso=[Permiso])?
 		& (recargarPagina?="recargarPagina")?
-		& ('seleccionable' "=" seleccionable=STRING)?
+		& ('seleccionable' "=" seleccionable=STRING & (mostrarTablaSeleccionados?='mostrarTablaSeleccionados')?)?
 		& ('metodoFilas' "=" metodoFilas=STRING)?
 	    & ('popup' '=' popup=[Popup|IDS])?
 	    & ('popupCrear' '=' popupCrear=[Popup|IDS])?

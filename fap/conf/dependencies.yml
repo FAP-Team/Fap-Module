@@ -1,6 +1,6 @@
 # Application dependencies
 
-self: play -> fap 2.4RC5
+self: play -> fap 2.4.1
 
 
 
@@ -73,7 +73,7 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre v20131226:
+    - es.gobcan.platino -> platino.pre v20140729:
         transitive: false   
     - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
        transitive: false
@@ -83,9 +83,9 @@ require:
         transitive: false
     - es.gobcan.eadmon -> gestordocumental v20130607:
         transitive: false
-    - es.gobcan -> certificados v20140220:
+    - es.gobcan -> certificados v20140512:
         transitive: false
-    - es.gobcan -> resoluciones v20140107:
+    - es.gobcan -> resoluciones v20140512:
         transitive: false
    #- platinowssinterceptor -> platinowssinterceptor 2
     - platinosecurityheader -> platinosecurityheader 1.201302.0

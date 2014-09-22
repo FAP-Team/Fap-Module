@@ -38,6 +38,8 @@ public class DocumentoExterno extends FapModel {
 	@Column(columnDefinition = "LONGTEXT")
 	public String uri;
 
+	public String hash;
+
 	public void init() {
 
 		postInit();

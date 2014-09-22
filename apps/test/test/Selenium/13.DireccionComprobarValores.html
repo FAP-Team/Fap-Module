@@ -11,6 +11,7 @@
 	waitForPageToLoad()
 	waitForElementPresent(//div[text()='Borrador'])
 	
+	setTimeout(60000)
     open('/Solicitud/direcciones?idSolicitud=${s.id}&accion=editar')
     waitForPageToLoad()
     assertSelectedLabel('solicitud_direccionTest_direccion_municipioIsla', 'Santa Úrsula')

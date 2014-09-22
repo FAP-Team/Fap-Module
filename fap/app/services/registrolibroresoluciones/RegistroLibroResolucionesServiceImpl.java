@@ -247,15 +247,24 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 //					usuario, 
 //					urlExterna);
 			
-			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-			BinaryResponse br = gestorDocumentalService.getDocumentoConInformeDeFirmaByUri(resolucionFAP.registro.oficial.uri);
-			if (br == null)
-				play.Logger.error("El documento no tiene contenido");
-			response = port.saveResolucionWithDocumento(usuario,
-					resolucion,
-					usuario,
-					br.getBytes(),
-					resolucionFAP.tituloInterno);
+			if (resolucionFAP.registro.oficial.uriPlatino != null) {
+				response = port.saveResolucionWithUrl(usuario,
+						resolucion,
+						usuario,
+						resolucionFAP.registro.oficial.uriPlatino);
+			}
+			else {
+				GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+				BinaryResponse br = gestorDocumentalService.getDocumentoConInformeDeFirmaByUri(resolucionFAP.registro.oficial.uri);
+				if (br == null)
+					play.Logger.error("El documento no tiene contenido");
+				
+				response = port.saveResolucionWithDocumento(usuario,
+						resolucion,
+						usuario,
+						br.getBytes(),
+						resolucionFAP.tituloInterno);
+			}
 			/*
 			InputStream istream = 
 					getDocumentoConInformeDeFirma(resolucionFAP.registro.oficial);

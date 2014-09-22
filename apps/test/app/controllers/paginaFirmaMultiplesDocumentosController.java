@@ -1,7 +1,0 @@
-package controllers;
-
-import controllers.gen.paginaFirmaMultiplesDocumentosControllerGen;
-
-public class paginaFirmaMultiplesDocumentosController extends paginaFirmaMultiplesDocumentosControllerGen {
-
-}

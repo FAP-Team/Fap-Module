@@ -103,6 +103,7 @@ Entidad Agente inheritance=joined auditable {
 	Lista accesoAgente acceso
 	Boolean funcionario
 	String verificacion transient		// campo auxiliar para el cambio de password
+	String cargo length=500
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
@@ -193,6 +194,7 @@ Entidad DocumentoExterno {
 	String organo
 	String expediente
 	LongText uri
+	String hash
 }
 
 Entidad ObligatoriedadDocumentos extends Singleton {
@@ -413,6 +415,7 @@ Entidad Incidencia {
 
 Entidad SemillaExpediente extends Singleton{
 	Long semilla
+	Integer anyo
 }
 
 // Plantillas de mails automáticos a enviar
@@ -734,6 +737,7 @@ Entidad BusquedaLogs nonPersist {
 
 Entidad AutorizacionesFAP{
 	String numeroIdentificacion
+	String nombreAutorizado
 }
 
 Entidad AdministracionFapJobs extends Singleton{

@@ -39,6 +39,7 @@
 	def idP = _idP;
 			
 	def recargarPagina = _recargarPagina;
+	def mostrarTablaSeleccion = _mostrarTablaSeleccionados;
 	
 	String popupCrear = _popupCrear;
 	String popupEditar = _popupEditar;
@@ -134,7 +135,6 @@
 	
 
 	<script>
-	
 		// Ocultamos primero todos los DIV de mensajes de error, y despues
 		// dependiendo de lo que nos llegue por Ajax, mostraremos los pertinentes
 		function ocultarMensajes${id}(){
@@ -194,6 +194,14 @@
 		            }
 		        }
 		    });
+
+			#{if mostrarTablaSeleccion}
+		    var store${id}Selected = Ext.create('Ext.data.Store', {
+				model: '${modelName}',
+		        data: [],
+
+		    });
+		    #{/if}
 			
 			var error=[];
 			var warning=[];
@@ -266,12 +274,25 @@
 					listeners : {
 						select: function(sm, record, index, eOpts) {
 							grid.addSelected(record);
+							#{if mostrarTablaSeleccion}
+							mostrarDetallesSeleccion(sm, eOpts);
+							#{/if}
 						},
 						deselect: function(sm, record, index, eOpts) {
 							grid.delSelected(record);
+							#{if mostrarTablaSeleccion}
+							mostrarDetallesSeleccion(sm, eOpts);
+							#{/if}
 						}
 					}
 				});
+
+				#{if mostrarTablaSeleccion}
+				function mostrarDetallesSeleccion(sm, eOpts) {
+					store${id}Selected.loadRecords(sm.getSelection())
+				}
+				#{/if}
+
 			#{/if}	
 		
 			function loadMessages${id}(data){
@@ -650,7 +671,9 @@
 				selModel: sm${id},
 	            #{/if}
 				columns : #{verbatim}${columnas}#{/verbatim},
+				#{if !mostrarTablaSeleccion}
 				renderTo: '${id}',
+				#{/if}
 				id: '${id}-grid',
 				height: ${alto},
 				title: '${titulo}',
@@ -660,7 +683,6 @@
 			        
 			        if (!Ext.isEmpty(newRecordsToSelect) && !Ext.Array.contains(this.selectedRecords, newRecordsToSelect))
 			            this.selectedRecords.push(newRecordsToSelect);
-
 			        this.getView().saveScrollState();
 			    },
 			    delSelected: function(recordToDelete) {
@@ -738,13 +760,33 @@
        				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
        				itemmouseenter: function(grid) {
        					console.log('Mouse over panel');
-       					this.refreshSelection();
+       					//this.refreshSelection();
        					this.getView().focus();
        				}
 				}
 
 			});
-		   	
+
+			#{if mostrarTablaSeleccion}
+            gridSelected = new Ext.grid.GridPanel({
+                id: '${id}GridIDselectedPanel',
+                title:'Selección',
+                height:${Integer.parseInt(alto)/2},
+                columns : #{verbatim}${columnas}#{/verbatim},
+                store : store${id}Selected
+
+            });
+
+	        Ext.create('Ext.Panel', {
+	            renderTo: '${id}',
+	            frame: false,
+	            title: 'Panel principal',
+	            height: ${Integer.parseInt(alto)+Integer.parseInt(alto)/2+30},
+	            items: [
+	                grid, gridSelected]
+	        });
+			#{/if}
+
 
 		   	
 		    // Creamos el tooltip de la celda

@@ -53,7 +53,7 @@ public class FileSystemCertificadosImpl implements CertificadosService {
 	}
 
 	@Override
-	public Firmas getFirma() throws CertificadosServiceException {
+	public Firmas getFirma(Long idFirma) throws CertificadosServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

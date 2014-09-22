@@ -58,6 +58,9 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		busqueda(idSolicitud,  autorizacionesFAP.numeroIdentificacion, dbAutorizacionesFAP);
 		if (!Messages.hasErrors()) {
 			PopUpAutorizarFAPController.PopUpAutorizarFAPValidateCopy("crear", dbAutorizacionesFAP, autorizacionesFAP);
+		}
+		
+        if (!Messages.hasErrors()) {
 			AsignarAgente(idSolicitud, autorizacionesFAP);
 		}
 
@@ -101,6 +104,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 			}
 			if (!Messages.hasErrors()){
 				dbAutorizacionesFAP.numeroIdentificacion = autorizacionesFAP.numeroIdentificacion;
+                dbAutorizacionesFAP.nombreAutorizado = autorizacionesFAP.nombreAutorizado;
 			}
 		}
 	}

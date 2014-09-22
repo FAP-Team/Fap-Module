@@ -7,13 +7,13 @@ Permiso administrador{
 
 Permiso adminOrGestor{
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 	return all
 }
 
 Permiso adminOrGestorOrRevisor{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 	return all
 }
 
@@ -52,12 +52,12 @@ Permiso presentacionPrepararParaFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.registro.fasesRegistro.borrador = false
 	return editable
 	
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor")
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas")
 	return visible
 }
 
@@ -76,7 +76,7 @@ Permiso presentacionObtenerBorrador{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.registro.fasesRegistro.borrador = true
 	return editable
 }
@@ -85,13 +85,13 @@ Permiso presentacionFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and 
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and 
 		solicitud?.registro.fasesRegistro.borrador = true and
 		solicitud.registro.fasesRegistro.firmada = false
 	return editable
 	
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.registro.fasesRegistro.borrador = true
 	return visible
 }
@@ -106,7 +106,7 @@ Permiso presentacionRegistrar{
 			solicitud.registro.fasesRegistro.registro = false
 		) or
 		(
-			agente.rolActivo in ("administrador", "gestor") and
+			agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas") and
 			solicitud.registro.fasesRegistro.clasificarAed = false
 		)
 	return editable
@@ -120,7 +120,7 @@ Permiso presentacionRecibo{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.registro.fasesRegistro.registro = true
 	return editable	
 }	
@@ -137,13 +137,13 @@ Permiso solicitudPreparadaFirmarYPresentar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.estado = "borrador" and
 		solicitud.registro.fasesRegistro.borrador = true
 	return all
 	
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor")
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas")
 	return leer
 }
 
@@ -159,14 +159,14 @@ Permiso solicitudPreparadaFirmar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.estado = "borrador"  and
 		solicitud.registro.fasesRegistro.borrador != null and
 		solicitud.registro.fasesRegistro.borrador = true
 	return all
 	
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor")
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas")
 	return leer
 }
 
@@ -174,7 +174,7 @@ Permiso solicitudPreparadaPresentar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.estado = "borrador" and
 		solicitud.registro.fasesRegistro.borrador != null and
 		solicitud.registro.fasesRegistro.borrador = true and
@@ -182,7 +182,7 @@ Permiso solicitudPreparadaPresentar{
 	return all
 
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor")
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas")
 	return leer
 }
 
@@ -193,7 +193,7 @@ Permiso solicitudes{
 		SolicitudGenerica solicitud
 		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 		or
 		participacion != null 			
 	return all
@@ -207,13 +207,13 @@ Permiso solicitudes{
 
 Permiso adminGestorRevisor{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 	return editable
 }
 
 Permiso adminGestorRevisorEvaluador{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor", "evaluador")
 	return editable
 }
 
@@ -221,7 +221,7 @@ Permiso aportacion{
 	vars
 		SolicitudGenerica solicitud
 	when 
-		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.estado != "borrador"
 	return all
 }
@@ -230,7 +230,7 @@ Permiso aportacionDocumentos{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.estado not in ("borrador")
 	return editable
 }
@@ -239,7 +239,7 @@ Permiso justificacionDocumentos{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "usuario", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.estado not in ("borrador")
 	return editable
 }
@@ -248,7 +248,7 @@ Permiso incorporarDocumentos {
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		solicitud?.estado not in ("borrador")
 	return
 		all
@@ -385,7 +385,6 @@ Permiso editarFirmaAceptarRenunciar {
 	when
 		!usuario is visible
 		or (
-			(participacion.tipo != "autorizado") and
 	 		(agente.rolActivo = "usuario" and
 	 		solicitud?.aceptarRenunciar?.registro?.fasesRegistro?.firmada = false
 			)
@@ -395,8 +394,6 @@ Permiso editarFirmaAceptarRenunciar {
 		!usuario is visible
 		or (
 	 		agente.rolActivo = "usuario"
-		) or (
-			participacion.tipo = "autorizado"
 		)
 	return [leer]
 }
@@ -568,7 +565,7 @@ Permiso mensajeVerificacion{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.estado = "requerida plazo vencido"
 	return leer
 }
@@ -577,7 +574,7 @@ Permiso iniciarVerificacion{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.verificacion?.estado = "iniciada" and
 		(solicitud?.estado in (/*"iniciada", "verificado",*/ "enVerificacion"))
 		
@@ -589,7 +586,7 @@ Permiso verificarDocumentos{
 		SolicitudGenerica solicitud
 		Verificacion verificacion
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and
 		(
 			(_accion in (leer, editar))
 			and (solicitud?.estado in ("enVerificacion", "excluido", "modificacion"))
@@ -605,7 +602,7 @@ Permiso verificarObtenerNoProcede{
 	vars
 		Verificacion verificacion
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and
 		(
 			(_accion in (leer, editar))
 			and verificacion?.estado in ("obtenerNoProcede")
@@ -640,13 +637,13 @@ Permiso nuevaSolicitud{
 //Baremación	
 Permiso listaEvaluaciones{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
+		agente.rolActivo in ("administrador", "gestor","gestorTenerife", "gestorLasPalmas", "revisor", "evaluador")
 	return editable
 }
 
 Permiso evaluacion{
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor", "evaluador")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor", "evaluador")
 	return all
 }
 
@@ -656,7 +653,7 @@ Permiso accesoEvaluacion {
 	when
 		( 
 			_accion = editar and
-		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    agente?.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor", "evaluador") and
 		    (evaluacion?.estado in ("enTramite"))
 		)
 	return
@@ -665,7 +662,7 @@ Permiso accesoEvaluacion {
 	when 
 		(
            	_accion = leer and
-           	 agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+           	 agente?.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor", "evaluador") and
 		    (evaluacion?.estado in ("enTramite", "evaluada", "rechazada"))
 		)
 	return
@@ -678,7 +675,7 @@ Permiso guardarEvaluacion {
 	when
 		( 
 			_accion = editar and
-		    agente?.rolActivo in ("administrador", "gestor", "revisor", "evaluador") and
+		    agente?.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor", "evaluador") and
 		    (evaluacion?.estado in ("enTramite"))
 		)
 	return
@@ -719,7 +716,7 @@ Permiso noHayverificacion{
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa", "enRequerimiento"))))
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and ((verificacion = null) or ((verificacion.estado=null) or (verificacion.estado in ("enRequerido", "plazoVencido", "verificacionPositiva", "verificacionNegativa", "enRequerimiento"))))
 	return
 		all
 }
@@ -729,7 +726,7 @@ Permiso hayverificacion{
 		SolicitudGenerica solicitud
 		Verificacion verificacion : sql("select verificacion from SolicitudGenerica s where s.id=?", solicitud.id)
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "obtenerNoProcede", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and ((verificacion != null) and (verificacion.estado!=null) and (verificacion.estado in ("iniciada", "verificandoTipos", "obtenerNoProcede", "enVerificacion", "enVerificacionNuevosDoc", "enRequerimiento", "enRequerimientoFirmaSolicitada")))
 	return
     	all
 }
@@ -751,7 +748,7 @@ Permiso verificarTiposDocumentos{
 		Verificacion verificacion
 	when
 		(_accion in (leer, editar)) and 
-		(agente.rolActivo in ("administrador", "gestor", "revisor")) and
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and
 		(solicitud?.estado = "enVerificacion") and
 		(verificacion != null and verificacion.estado != null and verificacion.estado in ("verificandoTipos"))
 	return
@@ -764,7 +761,7 @@ Permiso anularVerificacion{
 		Verificacion verificacion
 	when
 		(_accion = editar) and 
-		(agente.rolActivo in ("administrador", "gestor")) and
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")) and
 		((solicitud?.estado = "enVerificacion") or (solicitud?.estado = "modificacion")) and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.registro != "true") and
 		(verificacion?.requerimiento?.registro?.fasesRegistro?.firmada != "true") and
@@ -777,7 +774,7 @@ Permiso verificacionConNuevosDoc{
 	vars
 		SolicitudGenerica solicitud
 	when
-		(agente.rolActivo in ("administrador", "gestor", "revisor"))
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor"))
 		and (solicitud?.verificacion?.estado != null) and (solicitud?.verificacion?.estado = "enVerificacionNuevosDoc") 
 	return
     	all
@@ -787,7 +784,7 @@ Permiso accederSiSolicituNoBorrador{
 	vars
 		SolicitudGenerica solicitud
 	when 
-		(agente.rolActivo in ("administrador", "usuario", "gestor", "revisor")) and
+		(agente.rolActivo in ("administrador", "usuario", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")) and
 		(solicitud?.estado != "borrador")
 	return 
 		all
@@ -1496,7 +1493,7 @@ Permiso autorizadoNoAutoriza{
 	   SolicitudGenerica solicitud
 	   Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=? AND p.tipo<>'autorizado'", agente, solicitud)
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 		or ( agente.rolActivo in ("usuario")
 			and participacion != null
 		)
@@ -1524,12 +1521,12 @@ Permiso ultimaEditable{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado != "asignada")
 	return 
 		editable
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado = "asignada")
 	return 
 		leer
@@ -1543,7 +1540,7 @@ Permiso permisoTipo{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.tipo != null)
 	return
 		all
@@ -1553,11 +1550,11 @@ Permiso permisoTipoElegido{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.tipo = null)
 	return
 		all
-	when agente.rolActivo in ("administrador", "gestor")
+	when agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.tipo != null)
 	return
 	  visible
@@ -1567,7 +1564,7 @@ Permiso responderPeticion{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado = "creada")
 	return
 		all
@@ -1577,7 +1574,7 @@ Permiso aplicarCambios{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado = "respondida")
 	return
 		all
@@ -1587,7 +1584,7 @@ Permiso tipoAsignado{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado = "sinTipo")
 	return
 		all 
@@ -1597,7 +1594,7 @@ Permiso cesionTerminada{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and (peticionCesiones.estado = "asignada")
 	return
 		visible 
@@ -1607,7 +1604,7 @@ Permiso verPeticionCesion{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and ((peticionCesiones.estado = "creada") or (peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
 	return
 		all
@@ -1617,7 +1614,7 @@ Permiso verRespuestaCesion{
 	vars
 		PeticionCesiones peticionCesiones
 	when
-		agente.rolActivo in ("administrador", "gestor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")
 		and ((peticionCesiones.estado = "respondida") or peticionCesiones.estado = "asignada")
 	return
 		all
@@ -1628,7 +1625,7 @@ Permiso evaluacionFinalizada{
 	    Evaluacion evaluacion : sql("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", solicitud.id)
 	when
 	    (evaluacion?.tipo?.estado = "evaluada") and
-	    (agente.rolActivo in ("administrador", "gestor"))
+	    (agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas"))
 	return all	  
 }
 
@@ -1636,7 +1633,7 @@ Permiso habilitarModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud?.estado != "borrador"
 	return
 	    all
@@ -1646,7 +1643,7 @@ Permiso crearModificacionSolicitud{
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 		solicitud.activoModificacion = "false"
 	return
 	    all
@@ -1657,7 +1654,7 @@ Permiso editarModificacionSolicitud{
 		RegistroModificacion registroModificacion
 	when
 		_accion = editar and
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 	    registroModificacion.estado in ("enCurso", "expirada")
 	return
 		all
@@ -1668,13 +1665,13 @@ Permiso filaTablaModificaciones {
 		RegistroModificacion registroModificacion
 	when
 		_accion = leer and
-		agente.rolActivo in ("administrador", "gestor", "revisor") and
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor") and
 	    registroModificacion.estado in ("enCurso", "expirada")
 	return
 		all
 	when
 		_accion = leer and
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 	return
 		leer
 		
@@ -1686,7 +1683,7 @@ Permiso modificacionTrasPresentacionDeSolicitud {
 		SolicitudGenerica solicitud
 		Registro registro
 	when
-		agente.rolActivo in ("administrador", "gestor", "revisor")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "revisor")
 	return
 		all
 	when
@@ -1736,7 +1733,7 @@ Permiso obtenerNoProcede{
 		Verificacion verificacion
 	when
 		((verificacion.estado = "obtenerNoProcede") and
-		(agente.rolActivo in ("administrador", "gestor")))
+		(agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas")))
 	return all
 		
 }
@@ -1753,7 +1750,7 @@ Permiso convocatoriaTieneExpediente {
 
 Permiso adminGestorJefeServicio {
 	when
-		agente.rolActivo in ("administrador", "gestor", "jefeServicio")
+		agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas", "jefeServicio")
 	return all
 
 }
@@ -1763,7 +1760,7 @@ Permiso menuConModificacion {
 	vars
 		SolicitudGenerica solicitud
 	when
-		agente.rolActivo in ("administrador", "revisor", "gestor") and
+		agente.rolActivo in ("administrador", "revisor", "gestor", "gestorTenerife", "gestorLasPalmas") and
 		(solicitud.estado = "modificacion")
 	return
 		all

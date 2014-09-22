@@ -1,0 +1,29 @@
+h1. Servicio de Ticketing
+
+h2. Descripción
+
+El servicio de Ticketing es un servicio que permite el acceso a las aplicaciones mediante un ticket recibidido desde un servidor remoto
+
+* Realizar la petición al servidor
+
+h2. Servicios disponibles
+
+En FAP tenemos 2 posibles servicios a utilizar:
+
+* **TicketingServiceImpl**: Utiliza el servicio web creado por la ACIISI.
+* **FilesystemTicketingServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
+
+h2. Configuración en FAP
+
+bc. 
+# -----------------------------------------------------------------------------------------
+# Configuración de Ticketing
+# -----------------------------------------------------------------------------------------
+# Login mediante ticketing
+fap.login.type.ticketing=true
+# Asunto acordado entre la aplicación y la sede para recibir el ticket
+fap.login.ticketing.sede.asunto=asunto
+# URL del sistema de ticketing
+fap.login.ticketing.url=http://example.com
+fap.login.mock.ticketing.url=http://localhost:9009/mock/ticketing
+

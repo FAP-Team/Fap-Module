@@ -91,6 +91,16 @@ public class FapProperties extends PlayPlugin {
 		}
 	}
 
+    public static void updateProperties(java.util.Properties properties) {
+        configuration.load(properties, true);
+    }
+
+    public static void updateProperty(String key, String value) {
+        java.util.Properties properties = new java.util.Properties();
+        properties.put(key,value);
+        updateProperties(properties);
+    }
+
 	private static File getModuleConfFile() {
 		String moduleConfPath = Play.modules.get("fap").getRealFile() + "/conf/application.conf";
 		File moduleConfFile = new File(moduleConfPath);

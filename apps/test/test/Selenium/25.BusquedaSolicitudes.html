@@ -1,0 +1,17 @@
+%{    
+    play.mvc.Controller.session.put("username", "admin");
+    controllers.fap.AgenteController.getAgente().cambiarRolActivo("administrador")
+	controllers.fap.AgenteController.findAgente();
+}%
+
+#{selenium}
+    open('/')
+    waitForPageToLoad()
+	click(//li[@class='dropdown'])
+	click(link=Administrador)
+	waitForElementPresent(//input[@value='Buscar'])
+    type(//input[@class='default'], 'Borrador')
+    click(//input[@value='Buscar'])
+    pause(7000)
+   //mouseOver(//div[text()='borrador']/parent::td/parent::tr)
+#{/selenium}

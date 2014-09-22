@@ -25,7 +25,9 @@
      seleccionable:'Crear Resolucion', 
      tipoContainer:'pagina', 
      urlSeleccionable:'EditarResolucionController.crearResolucion', 
-     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico()
+     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico(),
+     idP:resolucionFAP?.id,
+     mostrarTablaSeleccionados:true
 }
 	
 	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
@@ -100,9 +102,14 @@
 			#{fap.grupo permiso:'prepararResolucion', titulo:'Preparar la Resolución'}
 				
 			<div class="wiki ">
-<p>Si su resolución está lista para firmar, pulse el siguiente botón.</p>
+<p>Si su resolución está lista para firmar, pulse el botón &#8220;Preparar Resolución&#8221;.</p>
 
 			</div>
+			
+			<div class="wiki ">
+<p>Si desea seleccionar otro expediente, pulse el botón &quot;Volver&quot;.</p>
+
+            </div>
 		
 #{fap.tabla 
      campo:'ResolucionFAP.lineasResolucion', 
@@ -137,7 +144,13 @@
 			#{fap.boton id:'btnPrepararResolucion', titulo:'Preparar Resolución', waitPopup:true /}
 		
 				#{/form}
-			
+				        
+	        #{form play.mvc.Router.reverse('EditarResolucionController.volverExpedientes' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"volverExpedientes"}
+                    
+            #{fap.boton id:'btnVolverExpedientes', titulo:'Volver' /}
+        
+                #{/form}
+                	
 			#{/fap.grupo}
 		
 			#{fap.grupo permiso:'solicitudFirmaResolucion', titulo:'Preparar Solicitud de Firma'}

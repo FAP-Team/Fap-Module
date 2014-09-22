@@ -29,6 +29,7 @@ import properties.FapProperties;
 
 import tags.ComboItem;
 import utils.CalcularFirmantes;
+import utils.ComboUtils;
 import utils.NotificacionUtils;
 import validation.CustomValidation;
 import verificacion.VerificacionUtils;
@@ -310,7 +311,51 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {
+	public static void guardarMotivoRequerimientoGeneral(Long idSolicitud, Long idVerificacion, SolicitudGenerica solicitud, String guardarRequerimientoMotivoRequerimientoGeneralbtn, String btnFinalizarVerificacion) {
+		checkAuthenticity();
+		if (!permisoGuardarMotivoRequerimientoGeneral("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
+
+		PaginaVerificacionController.guardarMotivoRequerimientoGeneralBindReferences(solicitud);
+
+		PaginaVerificacionController.guardarRequerimientoMotivoRequerimientoGeneralbtnGuardarMotivoRequerimientoGeneral(idSolicitud, idVerificacion, solicitud);
+		if (!Messages.hasErrors()) {
+
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralValidateCopy("editar", dbSolicitud, solicitud);
+
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralValidateRules(dbSolicitud, solicitud);
+		}
+		
+		Agente logAgente = AgenteController.getAgente();
+		
+		if (!Messages.hasErrors()) {
+			dbSolicitud.save();
+		}
+		if (guardarRequerimientoMotivoRequerimientoGeneralbtn != null) {
+				PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+		}
+
+		if (btnFinalizarVerificacion != null) {
+			PaginaVerificacionController.btnFinalizarVerificacionGuardarMotivoRequerimientoGeneral(idSolicitud, idVerificacion, solicitud);
+			PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+		}
+
+		if (!Messages.hasErrors()) {
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		PaginaVerificacionController.guardarMotivoRequerimientoGeneralRender(idSolicitud, idVerificacion);
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void btnFinalizarVerificacionGuardarMotivoRequerimientoGeneral(Long idSolicitud, Long idVerificacion, SolicitudGenerica solicitud) {
+	//public static void finalizarVerificacion(Long idSolicitud, Long idVerificacion, String btnFinalizarVerificacion) {	
 		checkAuthenticity();
 		if (!permisoFinalizarVerificacion("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
@@ -321,8 +366,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			// Comprobamos que esten todos los documentos verificados
 			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 				// Si hay cosas que requerir, la verificación tiene causas subsanables
-				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty())) || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
+				System.out.println(dbSolicitud.verificacion.requerimiento.firmante.toString());
+				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty()))
+                        || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
 					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados (Solicitud "+dbSolicitud.id+")");
+					CustomValidation.required("solicitud.verificacion.requerimiento.firmante", dbSolicitud.verificacion.requerimiento.firmante);
 					Requerimiento requerimiento = dbSolicitud.verificacion.requerimiento;
 					if(!Messages.hasErrors()){
 						try {
@@ -336,8 +384,8 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 							}						
 
 							//Genera el documento oficial
-							SolicitudGenerica solicitud = dbSolicitud;
-							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").registroSize().renderTmpFile(solicitud);
+							SolicitudGenerica solicitudb = dbSolicitud;
+							File oficial =  new Report("reports/requerimiento.html").header("reports/header.html").registroSize().renderTmpFile(solicitudb);
 							requerimiento.oficial = new Documento();
 							requerimiento.oficial.tipo = tipoDocumentoRequerimiento;
 							requerimiento.oficial.descripcion = "Requerimiento";
@@ -365,8 +413,10 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 					
 					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
 					VerificacionUtils.setVerificadoDocumentos(dbSolicitud.verificacion.documentos, dbSolicitud.documentacion.documentos);
-					if ((dbSolicitud.registro.oficial != null) && (!dbSolicitud.registro.oficial.uri.isEmpty()) && ((dbSolicitud.registro.oficial.verificado == null) || (!dbSolicitud.registro.oficial.verificado)))
-						VerificacionUtils.setVerificadoDocumento(dbSolicitud.verificacion.documentos, dbSolicitud.registro.oficial);
+					if (dbSolicitud.verificacion.tramiteNombre.nombre.equalsIgnoreCase("Solicitud")){
+						if ((dbSolicitud.registro.oficial != null) && (!dbSolicitud.registro.oficial.uri.isEmpty()) && ((dbSolicitud.registro.oficial.verificado == null) || (!dbSolicitud.registro.oficial.verificado)))
+							VerificacionUtils.setVerificadoDocumento(dbSolicitud.verificacion.documentos, dbSolicitud.registro.oficial);
+					}
 					// Actualizamos los datos de la verificacion para verificaciones posteriores, en este caso el estado.
 					dbSolicitud.verificacion.estado = EstadosVerificacionEnum.verificacionPositiva.name();
 					
@@ -403,27 +453,35 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.finalizarVerificacionRender(idSolicitud, idVerificacion);
 	}
-	
+
+    @Util
+    public static boolean permisoFinalizarVerificacion(String accion) {
+        //Sobreescribir para incorporar permisos a mano
+        return true;
+    }
+
+    @Util
+    public static void finalizarVerificacionValidateRules() {
+        //Sobreescribir para validar las reglas de negocio
+    }
+
+    @Util
+    public static void finalizarVerificacionRender(Long idSolicitud, Long idVerificacion) {
+        if (!Messages.hasMessages()) {
+            Messages.ok("Página editada correctamente");
+            Messages.keep();
+            redirect("PaginaVerificacionController.index", "editar", idSolicitud, idVerificacion);
+        }
+        Messages.keep();
+        redirect("PaginaVerificacionController.index", "editar", idSolicitud, idVerificacion);
+    }
+
 	/**
 	 * Lista los gestores que pueden firmar el requerimiento
 	 * @return
 	 */
 	public static List<ComboItem> gestorAFirmar() {
-		List<ComboItem> result = new ArrayList<ComboItem>();
-		List<Agente> listaAgentes = Agente.findAll();
-		if (listaAgentes != null){
-			for (Agente ag : listaAgentes) {
-				List<String> roles = ag.getSortRoles();
-				if (roles != null){
-					for(String rol : roles){
-						if ((rol != null) && (rol.equals("gestor"))){
-							result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
-						}
-					}
-				}
-			}
-		}
-		return result;
+		return ComboUtils.gestorAFirmar();
 	}
 
 	
@@ -435,18 +493,12 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		SolicitudGenerica dbSolicitud = PaginaVerificacionController.getSolicitudGenerica(idSolicitud);
-		PaginaVerificacionController.gRequerirFirmaRequerimientoBindReferences(solicitud);
 
 		if (!Messages.hasErrors()) {
 			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateCopy("editar", dbSolicitud, solicitud);
 		}
 
 		if (!Messages.hasErrors()) {
-			PaginaVerificacionController.gRequerirFirmaRequerimientoValidateRules(dbSolicitud, solicitud);
-			Messages.ok("Se estableció correctamente el firmante del Requerimiento");
-			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
-			dbSolicitud.save();
-			
 			// Se debe enviar el mail de "solicitarFirmaRequerimiento"
 			envioMailFirmaRequerimiento(dbSolicitud);
 		}
@@ -470,6 +522,9 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("mailRevisor", mailRevisor);
 			
 			Mails.enviar("solicitarFirmaRequerimiento", solicitud, mailGestor, mailRevisor);
+            Messages.ok("Se envió requerimiento al gestor firmante solicitado.");
+            solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerimientoFirmaSolicitada.name();
+            solicitud.save();
 		} catch (Exception e) {
 			play.Logger.error("No se pudo enviar el mail solicitarFirmaRequerimiento a los mails: "+mailGestor+", "+mailRevisor+". Error: "+e.getMessage());
 		}
@@ -479,13 +534,11 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 	public static void gRequerirFirmaRequerimientoValidateCopy(String accion, SolicitudGenerica dbSolicitud, SolicitudGenerica solicitud) {
 		CustomValidation.clearValidadas();
 		if (secure.checkGrafico("requerimientoRequerirFirma", "editable", accion, (Map<String, Long>) tags.TagMapStack.top("idParams"), null)) {
-			CustomValidation.valid("solicitud.verificacion.requerimiento", solicitud.verificacion.requerimiento);
-			CustomValidation.valid("solicitud.verificacion", solicitud.verificacion);
-			CustomValidation.valid("solicitud", solicitud);
-			CustomValidation.required("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
+			CustomValidation.valid("solicitud.verificacion.requerimiento", dbSolicitud.verificacion.requerimiento);
+			CustomValidation.valid("solicitud.verificacion", dbSolicitud.verificacion);
+			CustomValidation.valid("solicitud", dbSolicitud);
+			CustomValidation.required("solicitud.verificacion.requerimiento.firmante", dbSolicitud.verificacion.requerimiento.firmante);
 			CustomValidation.validValueFromTable("solicitud.verificacion.requerimiento.firmante", solicitud.verificacion.requerimiento.firmante);
-			dbSolicitud.verificacion.requerimiento.firmante = solicitud.verificacion.requerimiento.firmante;
-			
 			dbSolicitud.verificacion.requerimiento.registro.firmantes.todos = CalcularFirmantes.getGestorComoFirmante(solicitud.verificacion.requerimiento.firmante);
 			dbSolicitud.verificacion.requerimiento.registro.firmantes.save();
 			dbSolicitud.save();
@@ -710,6 +763,7 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			solicitud.save();
 			idVerificacionActualyMal = solicitud.verificacion.id;
 			solicitud.verificacion = null;
+			solicitud.estado = solicitud.estadoAntesVerificacion;
 		}
 
 		if (!Messages.hasErrors()) {
@@ -725,6 +779,31 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.anularVerificacionRender(idSolicitud, idVerificacion);
 	}
+
+    @Util
+    public static void reabrirVerificacion(Long idSolicitud, Long idVerificacion, String botonReabrirVerificacion) {
+        checkAuthenticity();
+        if (!permisoReabrirVerificacion("editar")) {
+            Messages.error("No tiene permisos suficientes para realizar la acción");
+        }
+
+        if(!Messages.hasErrors()) {
+            Verificacion verificacion = Verificacion.findById(idVerificacion);
+            if (verificacion != null) {
+                verificacion.estado = EstadosVerificacionEnum.enVerificacion.name();
+                verificacion.save();
+                Messages.ok("Ahora puede modificar la verificación");
+            }
+        }
+
+        Agente logAgente = AgenteController.getAgente();
+        if (!Messages.hasErrors()) {
+            log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+        } else
+            log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+        PaginaVerificacionController.reabrirVerificacionRender(idSolicitud, idVerificacion);
+    }
+
 	
 	@Util
 	public static void obtenerNoProcede(Long idSolicitud, Long idVerificacion){

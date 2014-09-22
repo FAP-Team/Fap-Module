@@ -10,7 +10,7 @@
 
 	// ---------- ---------- ---------- ---------- TABLA ---------- ---------- ---------- ----------
 	
-	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMultiple, "urlFirmaMultiple");
+	play.mvc.Router.ActionDefinition actionDef = com.google.common.base.Preconditions.checkNotNull((play.mvc.Router.ActionDefinition)_urlFirmaMasiva, "urlFirmaMasiva");
 	String id  = com.google.common.base.Preconditions.checkNotNull(_id, "id");
 	String campo  = com.google.common.base.Preconditions.checkNotNull(_campo, "campo");
 	String tipoContainer  = com.google.common.base.Preconditions.checkNotNull(_tipoContainer, "tipoContainer");
@@ -31,10 +31,26 @@
 	def saveBefore = properties.FapProperties.getBoolean("fap.tablas.validacion.antesRedirigirPaginas") ?: false;
 			
 	def recargarPagina = _recargarPagina;
+	
+	String popupEditar = _popupEditar;
+	String urlEditar = _urlEditar;
+	String nombreBotonEditar = _nombreBotonEditar ?: 'Editar';
+   
+    String popupBorrar = _popupBorrar;
+    String urlBorrar = _urlBorrar;
+    String nombreBotonBorrar = _nombreBotonBorrar ?: 'Borrar';
 
 	String popupLeer = _popupLeer;
 	String urlLeer = _urlLeer;
 	String nombreBotonVer = _nombreBotonVer ?: 'Ver';
+	
+	String popupCrear = _popupCrear;
+	String paginaCrear = _paginaCrear;
+	String urlCrear = _urlCrear;
+	String nombreBotonCrear = _nombreBotonCrear ?: 'Nuevo';
+	
+    boolean botonCrear = urlCrear;
+	
 
 	def modelName = id + "_model";
 	Set<String> campos = new HashSet<String>();
@@ -68,9 +84,9 @@
 			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
 	} catch (java.lang.Exception e) {
 		//e.printStackTrace();
-		play.Logger.error("firmaMultiple.html e-> "+e.getMessage());
+		play.Logger.error("firmaMasiva.html e-> "+e.getMessage());
 	} catch (java.lang.Throwable t) {
-		play.Logger.error("firmaMultiple.html t-> "+t.getMessage());
+		play.Logger.error("firmaMasiva.html t-> "+t.getMessage());
 	}
 
 	// ---------- ---------- ---------- ---------- FIRMA ---------- ---------- ---------- ----------
@@ -168,7 +184,9 @@
 			    			    #{/if}
 			    			},
 			    		#{/list}
-			    		{name: 'permisoLeer', mapping: 'permisoLeer'}
+			    		{name: 'permisoLeer', mapping: 'permisoLeer'},
+			    		{name: 'permisoEditar', mapping: 'permisoEditar'},
+                        {name: 'permisoBorrar', mapping: 'permisoBorrar'}
 					]
 		    	});
 			}
@@ -294,19 +312,21 @@
 				 	}
 				 	#{/list}
 				 	aux['permisoLeer']=data[i].permisoLeer;
+				 	aux['permisoEditar']=data[i].permisoEditar;
+                    aux['permisoBorrar']=data[i].permisoBorrar;
 				 	
 				 	filas[i] = aux;
 				}
 				return filas;				
 			}
 
-			var urlFirmaMultiple = "${actionDef.url.raw()}";
+			var urlFirmaMasiva = "${actionDef.url.raw()}";
 			
 
 			function peticionJSON${id}(){
 				crearMensajes${id}();
 				ocultarMensajes${id}();
-				$.ajax(urlFirmaMultiple).done(function (data){
+				$.ajax(urlFirmaMasiva).done(function (data){
 					// Para los mensajes
 				 	loadMessages${id}(data);
 		        	writeAllMessages${id}(); 
@@ -354,6 +374,94 @@
 		    });
 
 		    #{/if}
+		    
+		    
+            #{if urlEditar}
+            var boton_editar = new Ext.Button({
+                text: '${nombreBotonEditar}',
+                icon: '@{'/public/images/table-editar.png'}',
+                disabled:true,
+                handler : function(){
+                    var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+                    #{if popupEditar}
+                        popup_open(
+                            "${popupEditar}_popup",
+                            replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
+                            reload
+                        );
+                    #{/if}
+                    #{else}
+                        #{if saveBefore && saveEntity}
+                            console.log("${urlEditar}");
+                            var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+                            $('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+                        #{/if}
+                        #{else}
+                            window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+                        #{/else}
+                    #{/else}
+                }
+            });
+            
+            
+            
+            var editRow = new Ext.create('Ext.grid.plugin.Editing', {
+                clicksToEdit: 2,
+                startEdit: function(record, columnHeader) {
+                    var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+                    var registro = store${id}.getAt(store${id}.find("id", selected_id));
+                    if (registro.get("permisoEditar")){
+                    #{if popupEditar}
+                        popup_open(
+                            "${popupEditar}_popup",
+                            replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
+                            reload
+                        );
+
+                    #{/if}
+                    #{else}
+                        #{if saveBefore && saveEntity}
+                            var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+                            $('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
+                        #{/if}
+                        #{else}
+                            window.location.href = replaceId("${urlEditar}", "_${_idEntidad}_", selected_id);
+                        #{/else}
+                    #{/else}
+                    }
+                }
+            });
+            #{/if}
+            
+            
+            
+           #{if urlBorrar}
+            var boton_borrar = new Ext.Button({
+                text: '${nombreBotonBorrar}',
+                icon: '@{'/public/images/table-borrar.png'}',
+                disabled:true,
+                handler : function(){
+                    var selected_id = grid.getSelectionModel().getSelection()[0].data.id;
+                    #{if popupBorrar}
+                        popup_open(
+                            "${popupBorrar}_popup",
+                            replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id),
+                            reload
+                        );
+                    #{/if}
+                    #{else}
+                        #{if saveBefore && saveEntity}
+                            var urlBeforeOpenPageTableBorrar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
+                            $('#${id}').closest('form').attr("action",urlBeforeOpenPageTableBorrar).submit();
+                        #{/if}
+                        #{else}
+                            window.location.href = replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id);
+                        #{/else}
+                    #{/else}
+                }
+            });
+            #{/if}
+            
 
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 // FIRMA
@@ -420,16 +528,111 @@
 			    			mensajes.error('No se han firmado todos los documentos seleccionados.');
 		    			}
 		    		}
-		    		if(grid.getSelectionModel().hasSelection()) {
-		    			grid.getSelectionModel().deselectAll();
+	    		}
+	    		if (Object.keys(errores).length == 0) {
+	    			mensajes.ok("Documentos firmados correctamente");
+	    		} else {
+		    		for (var k in errores) {
+						if (errores.hasOwnProperty(k)){
+	    					mensajes.error(errores[k]);
+		    			}
 		    		}
-		    		// Se actualiza contenido de la tabla
-		    		popupWait_close();
-					grid.body.mask("Cargando....");
-		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
-		    		peticionJSON${id}();
-			   	}
-		    });
+		    	}
+	    		
+    		}
+    		if(grid.getSelectionModel().hasSelection()) {
+    			grid.getSelectionModel().deselectAll();
+    		}
+    		// Se actualiza contenido de la tabla
+    		popupWait_close();
+			grid.body.mask("Cargando....");
+    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
+    		peticionJSON${id}();
+	   	}
+    });
+    
+//---- Inicio botón crear
+            #{if botonCrear}
+            var boton_crear = new Ext.Button({
+                text: '${nombreBotonCrear}',
+                disabled:false,
+                handler : function(){
+                    var urlCrear = replaceAmpersand("${urlCrear}");
+                    var urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                    var funcionCrear = function(){
+                        #{if popupCrear}
+                            var urlCrearRedirigir;
+                            if ("${urlRedirigir}" !== "")
+                                urlCrearRedirigir = urlCrear+"&urlRedirigir="+replaceAmpersand("${urlRedirigir}").split("&")[0];
+                            else
+                                urlCrearRedirigir = urlCrear;
+                            popup_open(
+                                "${popupCrear}_popup",
+                                urlCrearRedirigir,
+                                reload
+                            );
+                        #{/if}
+                        #{else}
+                            #{if saveBefore && saveEntity}
+                                $('#${id}').closest('form').attr("action",urlBeforeOpenPageTableCrear).submit();
+                            #{/if}
+                            #{else}
+                                window.location.href = urlCrear;
+                            #{/else}
+                        #{/else}
+                    }   
+
+                    #{if _crearEntidad}
+                    
+                        if ($('#${_idEntidad}').length == 0){
+                            var data = $('#${_nameContainer}crearForm').serialize();
+                            $.post(replaceAmpersand("${_urlCrearEntidad}"), data, function(data){
+                                if (data.id == "none"){
+                                    #{if tipoContainer == "popup"}
+                                        $.get(replaceAmpersand('${_urlContainerCrear}'), function(data){
+                                            $('#${_nameContainer}_popup').html(data);
+                                        });
+                                    #{/if}
+                                    #{else} 
+                                        window.location.href = replaceAmpersand('${_urlContainerCrear}');
+                                    #{/else}
+                                    return;
+                                }
+                            
+                                urlCrear = replaceId(urlCrear, "_${_idContainer}_", data.id);
+                                var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", data.id);
+                                urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+                            
+                                urlTabla += "?${_idContainer}=" + data.id;
+                                var input = document.createElement("input");
+                                input.setAttribute("type", "hidden");
+                                input.setAttribute("name", "${_idContainer}");
+                                input.setAttribute("id", "${_idEntidad}");
+                                input.setAttribute("value", data.id);
+                                $('#${_nameContainer}crearForm').append(input);
+                                
+                                urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                                funcionCrear();
+                            });
+                        }
+                        else{
+                            var dataId = $('#${_idEntidad}').get(0).value;
+                            urlCrear = replaceId(urlCrear, "_${_idContainer}_", dataId);
+                            var urlContainerEditar = replaceId("${_urlContainerEditar}", "_${_idContainer}_", dataId);
+                            urlCrear = replaceRedirigirAnterior(urlCrear, escape(urlContainerEditar));
+                            urlBeforeOpenPageTableCrear = replaceAmpersand("${mUrlBeforeOpenPageTable}")+urlCrear.replace(/&/g, "@");
+                            funcionCrear();
+                        }
+                        
+                    #{/if}
+                    
+                    #{else}
+                        funcionCrear();
+                    #{/else}
+                }
+            });
+            #{/if}
+//---- Fin botón crear    
 
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -467,6 +670,8 @@
 
 			        this.getView().saveScrollState();
 			        boton_firmar.setDisabled(false);
+			        boton_editar.setDisabled(false);
+			        boton_borrar.setDisabled(false);
 			    },
 			    delSelected: function(recordToDelete) {
 			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
@@ -497,6 +702,15 @@
 				        	boton_leer,
 				        #{/if}
                         boton_firmar,
+                        #{if botonCrear }
+                            boton_crear,
+                        #{/if}
+                        #{if urlEditar}
+                            boton_editar,
+                        #{/if}
+                        #{if urlBorrar}
+                            boton_borrar,
+                        #{/if}
 			            boton_actualizar
         				]
     				}
@@ -586,12 +800,28 @@
 		    			boton_leer.setDisabled(true);
 		    		}
 			    	#{/if}
+                    #{if urlEditar}
+                    if (grid.getSelectionModel().getSelection().length == 1) {
+                        boton_editar.setDisabled(!registro.get("permisoEditar"));
+                    } else {
+                        boton_editar.setDisabled(true);
+                    }
+                    #{/if}
+                    #{if urlBorrar}
+                    boton_borrar.setDisabled(!registro.get("permisoBorrar"));
+                    #{/if}
 			    	boton_firmar.setDisabled(false);
 		    	}
 		    	else{
 		    		#{if urlLeer}
 		    		boton_leer.setDisabled(true);
 			    	#{/if}
+                    #{if urlEditar}
+                    boton_editar.setDisabled(true);
+                    #{/if}
+                    #{if urlBorrar}
+                    boton_borrar.setDisabled(true);
+                    #{/if}
 			    	boton_firmar.setDisabled(true);
 		    	}
 		    });

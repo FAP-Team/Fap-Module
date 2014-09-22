@@ -5,15 +5,12 @@ import org.junit.Test;
 import play.test.UnitTest;
 import properties.PropertyPlaceholder;
 import security.Secure;
-import services.GestorDocumentalService;
-import services.FirmaService;
-import services.RegistroService;
+import services.*;
 import services.aed.ProcedimientosService;
 import services.aed.TiposDocumentosService;
 
 import com.google.inject.Injector;
-
-import es.gobcan.platino.servicios.edmyce.mensajes.MensajeService;
+import services.ticketing.TicketingService;
 
 public class InjectorConfigTest extends UnitTest {
 
@@ -25,6 +22,14 @@ public class InjectorConfigTest extends UnitTest {
 		assertInjectedSingleton(FirmaService.class);
 		assertInjectedSingleton(RegistroService.class);
 		assertInjectedSingleton(MensajeService.class);
+        assertInjectedSingleton(NotificacionService.class);
+        assertInjectedSingleton(PortafirmaFapService.class);
+        assertInjectedSingleton(PublicarService.class);
+        assertInjectedSingleton(RegistroLibroResolucionesService.class);
+        assertInjectedSingleton(TercerosService.class);
+        assertInjectedSingleton(TicketingService.class);
+        assertInjectedSingleton(ComunicacionesInternasService.class);
+        assertInjectedSingleton(VerificarDatosService.class);
 	}
 		
 	private void assertInjectedSingleton(Class clazz){

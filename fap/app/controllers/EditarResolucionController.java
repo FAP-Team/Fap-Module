@@ -13,6 +13,7 @@ import messages.Messages;
 import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
+import models.Registro;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 import models.SolicitudGenerica;
@@ -97,7 +98,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientes() {
 		
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		Long idResolucionFAP = ids.get("idResolucionFAP");
@@ -118,7 +118,10 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	public static void tablatablaExpedientesUnico() {
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
+
+		// Obtenemos el usuario conectado al sistema y el rol activo
+		Agente usuario = AgenteController.getAgente();
+		String rolActivo = usuario.getRolActivo();
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
 		try {
@@ -126,7 +129,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		} catch (Throwable e) {
 			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
 		}
-		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		
+		java.util.List<SolicitudGenerica> rows;
+		// Listamos los expedientes segun la provincia a la que esta asignado el gestor o todos
+		if(rolActivo.equals("gestorTenerife")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverSC(ids.get("idResolucionFAP"));
+		} else if(rolActivo.equals("gestorLasPalmas")){
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverLP(ids.get("idResolucionFAP"));
+		}else {
+			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+		}
 		
 		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
 		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -219,28 +231,32 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		EditarResolucionController.frmCrearResolucionRender(idResolucionFAP);
 	}
 	
-	public static void crearResolucion(List<Long> idsSeleccionados) {
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+	/**
+	 * 
+	 * @param id				Identificador de la resolución actual (idResolucionFAP)
+	 * @param idsSeleccionados	Identificador del expediente seleccionado para su resolución
+	 */
+	public static void crearResolucion(Long id, List<Long> idsSeleccionados) {
 		if (idsSeleccionados == null) {
 			play.Logger.error("Se debe seleccionar un expediente");
-			Messages.error("Se debe  un expediente");
+			Messages.error("Se debe seleccionar un expediente");
 			Messages.keep();
 		} else if (idsSeleccionados.size() > 1) {
-			play.Logger.error("Se debe seleccionar solo un expediente");
-			Messages.error("Se debe seleccionar solo un expediente");
+			play.Logger.error("Se debe seleccionar sólo un expediente");
+			Messages.error("Se debe seleccionar sólo un expediente");
 			Messages.keep();
 		} else {
 			ResolucionBase resolBase = null;
 			try {
-				resolBase = getResolucionObject(ids.get("idResolucionFAP"));
+				resolBase = getResolucionObject(id);
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.setLineasDeResolucion(ids.get("idResolucionFAP"), idsSeleccionados);
-			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(ids.get("idResolucionFAP"));
+			resolBase.setLineasDeResolucion(id, idsSeleccionados);
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(id);
 			resolBase.avanzarFase_Borrador(resolucion);
 		}
-		index("editar", ids.get("idResolucionFAP"));
+		index("editar", id);
 	}
 	
 	public static List<ComboItem> selectJefeServicio() {
@@ -299,6 +315,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = AgenteController.getAgente();
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
+                portafirmaService.entregarSolicitudFirma(response.getIdSolicitud(), response.getComentarios());
 				dbResolucionFAP.solicitudFirmaPortafirma.uriSolicitud = response.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirma.solicitudEstadoComentario = response.getComentarios();
 				dbResolucionFAP.save();
@@ -618,27 +635,29 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		EditarResolucionController.enviarRegistrarResolucionRender(idResolucionFAP);
 	}
-	
+
+	/**
+	 * 
+	 * @param id				Identificador de la resolución actual (idResolucionFAP)
+	 * @param idsSeleccionados	Identificadores de los expedientes seleccionados para su resolución
+	 */
 	public static void seleccionar(Long id, List<Long> idsSeleccionados) {
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-		
-		Long idResolucionFAP = id;
 		if (idsSeleccionados == null) {
-			play.Logger.error("Se debe seleccionar un expediente");
-			Messages.error("Se debe seleccionar un expediente");
+			play.Logger.error("Se debe seleccionar al menos un expediente");
+			Messages.error("Se debe seleccionar al menos un expediente");
 			Messages.keep();
 		} else {
 			ResolucionBase resolBase = null;
 			try {
-				resolBase = getResolucionObject(idResolucionFAP);
+				resolBase = getResolucionObject(id);
 			} catch (Throwable e) {
 				new Exception ("No se ha podido obtener el objeto resolución", e);
 			}
-			resolBase.setLineasDeResolucion(idResolucionFAP, idsSeleccionados);
-			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(idResolucionFAP);
+			resolBase.setLineasDeResolucion(id, idsSeleccionados);
+			ResolucionFAP resolucion = EditarResolucionController.getResolucionFAP(id);
 			resolBase.avanzarFase_Borrador(resolucion);
 		}
-		index("editar", idResolucionFAP);
+		index("editar", id);
 	}
 
 	@Util
@@ -684,11 +703,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		tables.TableRenderResponse<LineaResolucionFAP> response = new tables.TableRenderResponse<LineaResolucionFAP>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 		
 		for (LineaResolucionFAP row:rows) {
+			if (row.registro == null) {
+				row.registro = new Registro();
+				row.save();
+			}
 			if ((row.registro.oficial.uri == null) || (row.registro.fasesRegistro.firmada == null) || (row.registro.fasesRegistro.firmada == false)){
 				flag = false;
 				break;
 			}
-		}	
+		}
 		if (!flag) {
 			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado"));
 		}
@@ -696,6 +719,38 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			renderJSON(response.toJSON("id", "solicitud.expedienteAed.idAed", "solicitud.estado", "solicitud.solicitante.numeroId", "solicitud.solicitante.nombreCompleto", "estado", "registro.oficial.enlaceDescargaFirmado", "registro.justificante.enlaceDescarga"));
 		}
 		
+	}
+	
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void volverExpedientes(Long idResolucionFAP, String btnVolverExpedientes) {
+		checkAuthenticity();
+		if (!permisoVolverExpedientes("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+
+		}
+
+		if (!Messages.hasErrors()) {
+			EditarResolucionController.volverExpedientesValidateRules();
+		}
+		Agente logAgente = AgenteController.getAgente();
+		if (!Messages.hasErrors()) {
+			// Obtenemos la resolucion que estamos editando
+			ResolucionFAP resolucionFAP = getResolucionFAP(idResolucionFAP);
+			// Antes de volver cambiamos el estado de la resolucion a borrador 
+			resolucionFAP.estado = "borrador";
+			// Borramos las lineas de resolucion y guardamos la resolucion en la BBDD
+			resolucionFAP.lineasResolucion.clear();
+			resolucionFAP.save();
+			
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/EditarResolucion/EditarResolucion.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		EditarResolucionController.volverExpedientesRender(idResolucionFAP);
 	}
 	
 }

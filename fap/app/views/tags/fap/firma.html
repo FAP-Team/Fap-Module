@@ -59,9 +59,9 @@
 						
 			$('#${id_boton}').click(function(e){
 				mensajes.clear();
-				var firma = Firma.firmarDocumento('#${id_cert}certificado','${url}', '#${id_firma}', {mensajes: mensajes});
 				input = $("<input>").attr("type", "hidden").attr("name", "${id_boton}").val("${id_boton}");
 				form.append($(input));
+				var firma = Firma.firmarDocumento('#${id_cert}certificado','${url}', '#${id_firma}', {mensajes: mensajes});
 				if(firma == null){
 					//$(this).parent('form').submit();
 					return false;

@@ -42,6 +42,11 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
+    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+        return true;
+    }
+
+    @Override
 	public void eliminarSolicitudFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		// TODO Auto-generated method stub
 

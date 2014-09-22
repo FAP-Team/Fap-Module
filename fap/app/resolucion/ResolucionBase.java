@@ -188,6 +188,24 @@ public class ResolucionBase {
 	}
 	
 	/**
+	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará) pertenecientes a la provincia de Santa Cruz de Tenerife
+	 * @return
+	 */
+	public java.util.List<?> getSolicitudesAResolverSC (Long idResolucion) {
+		// TODO: filtrar la consulta para que devulve las solicitudes cuyo solicitante es de SC
+		return SolicitudGenerica.find("select solicitud from  SolicitudGenerica solicitud where solicitud.estado not in ('borrador') and solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_38')").fetch();
+	}
+	
+	/**
+	 * Devuelve las solicitudes "posibles" a resolver (lista desde donde se seleccionará) pertenecientes a la provincia de Las Palmas de Gran Canaria
+	 * @return
+	 */
+	public java.util.List<?> getSolicitudesAResolverLP (Long idResolucion) {
+		// TODO: filtrar la consulta para que devulve las solicitudes cuyo solicitante es de SC
+		return SolicitudGenerica.find("select solicitud from  SolicitudGenerica solicitud where solicitud.estado not in ('borrador') and solicitud.solicitante in (select solicitante.id from Solicitante solicitante where solicitante.domicilio.provincia = '_35')").fetch();
+	}
+	
+	/**
 	 * Establece las líneas de resolución a una resolución, en caso de que no existan.
 	 * @param idResolucion
 	 */
@@ -460,14 +478,14 @@ public class ResolucionBase {
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
 		}catch (Throwable e) {
-			// TODO: handle exception
+			new Exception ("No se ha podido obtener el objeto resolución", e);
 		}
 
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		
-		boolean correcto = true;
+		boolean notificacionCorrecta = true;
 		
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 
@@ -477,10 +495,10 @@ public class ResolucionBase {
 				// Se crea la notificación y se añade a la solicitud correspondiente
 				
 				Notificacion notificacion = new Notificacion();
-				DocumentoNotificacion docANotificar = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-				DocumentoNotificacion docANotificar2 = new DocumentoNotificacion(linea.registro.justificante.uri);
-				notificacion.documentosANotificar.add(docANotificar2);
-				notificacion.documentosANotificar.add(docANotificar);
+				DocumentoNotificacion documentoResolucion = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+				DocumentoNotificacion documentoJustificanteRegistroSalidaOficioRemisión = new DocumentoNotificacion(linea.registro.justificante.uri);
+				notificacion.documentosANotificar.add(documentoJustificanteRegistroSalidaOficioRemisión);
+				notificacion.documentosANotificar.add(documentoResolucion);
 				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
 				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
 				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
@@ -505,19 +523,18 @@ public class ResolucionBase {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					correcto = false;
+					notificacionCorrecta = false;
 					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
 					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
-					
-				//NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			}
 		}
 		
-		if (correcto) {
+		if (notificacionCorrecta) {
 			EntityTransaction tx = JPA.em().getTransaction();
 			tx.commit();
 			tx.begin();
+			resolucion.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
 			if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
 				resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
 			else
@@ -525,7 +542,7 @@ public class ResolucionBase {
 			tx.commit();
 			tx.begin();
 		}
-		return correcto;
+		return notificacionCorrecta;
 	}
 	 
 	public void publicarGenerarDocumentoBaremacionEnResolucion (long idResolucion) {}
@@ -1145,13 +1162,12 @@ public class ResolucionBase {
 		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 
 		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
-
 			if (!linea.generadoOficio){
-			
-				try  {
-					
-					// Se genera el documento oficio de remisión
+				try {
 					File fileOficioRemision = generarDocumentoOficioRemision(linea);
+					if (linea.registro == null) {
+						linea.registro = new Registro();
+					}
 					gestorDocumentalService.saveDocumentoTemporal(linea.registro.oficial, fileOficioRemision);
 					linea.generadoOficio = true;
 					linea.save();

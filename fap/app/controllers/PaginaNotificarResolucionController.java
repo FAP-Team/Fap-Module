@@ -31,6 +31,7 @@ import services.RegistroService;
 import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
+import utils.ComboUtils;
 import utils.ResolucionUtils;
 import validation.CustomValidation;
 import config.InjectorConfig;
@@ -115,42 +116,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaNotificarResolucionController.formGenerarOficioRemisionRender(idResolucionFAP);
 	}
-	
-//	@Util
-//	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-//	public static void formGenerarOficioRemision(Long idResolucionFAP, String botonGenerarOficioRemision) {
-//		checkAuthenticity();
-//		if (!permisoFormGenerarOficioRemision("editar")) {
-//			Messages.error("No tiene permisos suficientes para realizar la acción");
-//		}
-//
-//		if (!Messages.hasErrors()) {
-//
-//		}
-//
-//		if (!Messages.hasErrors()) {
-//			PaginaNotificarResolucionController.formGenerarOficioRemisionValidateRules(dbResolucionFAP, resolucionFAP);//formGenerarOficioRemisionValidateRules();
-//		}
-//		
-//		ResolucionBase resolBase = null;
-//		if (!Messages.hasErrors()) {
-//			try {
-//				resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
-//				resolBase.generarOficioRemision(idResolucionFAP);
-//			} catch (Throwable e) {
-//				new Exception ("No se ha podido obtener el objeto resolución", e);
-//			}
-//		} else {
-//			play.Logger.info("No se genero el documento de oficio de remision para la resolucion "+idResolucionFAP);
-//		}
-//
-//		if (!Messages.hasErrors()) {
-//
-//			log.info("Acción Editar de página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito");
-//		} else
-//			log.info("Acción Editar de página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
-//		PaginaNotificarResolucionController.formGenerarOficioRemisionRender(idResolucionFAP);
-//	}
 
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
@@ -161,8 +126,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		try {
 			resolBase = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucionFAP);
 			notificada = resolBase.notificarCopiarEnExpedientes(idResolucionFAP, fapNotificacionPlazoacceso, fapNotificacionFrecuenciarecordatorioacceso, fapNotificacionPlazorespuesta, fapNotificacionFrecuenciarecordatoriorespuesta);
-			resolBase.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
-			resolBase.resolucion.save();
 		} catch (Throwable e) {
 			new Exception ("No se ha podido obtener el objeto resolución", e);
 		}
@@ -251,6 +214,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = portafirmaService.crearSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision);
+                portafirmaService.entregarSolicitudFirma(portafirmaCrearSolicitudResponse.getIdSolicitud(), portafirmaCrearSolicitudResponse.getComentarios());
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud = portafirmaCrearSolicitudResponse.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.solicitudEstadoComentario = portafirmaCrearSolicitudResponse.getComentarios();
 				dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionPendientesPortafirma.name();
@@ -470,5 +434,10 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		}
 		return listaCombo;
 	}
+
+
+    public static List<ComboItem> gestorAFirmar() {
+        return ComboUtils.gestorAFirmar();
+    }
 
 }

@@ -83,7 +83,7 @@ Formulario Solicitud permiso=solicitudes{
 			Grupo "Páginas Especiales" {
 				Enlace "Firma" pagina=PaginaFirma
 				Enlace "Firma en Servidor" pagina=CrearDocYFirma
-				Enlace "Firma de múltiples documentos" pagina=paginaFirmaMultiplesDocumentos
+				Enlace "Firma de múltiples documentos" pagina=paginaFirmaVariosDocumentos
 			}
 			
 			Grupo "Anotación Inject"{
@@ -265,7 +265,18 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 			Combo comunidades campo=Solicitud.comboTest.comunidades titulo="Comunidades Autónomas" dependeDe=paises
 			Combo provincias campo=Solicitud.comboTest.provincias titulo="Provincias" dependeDe=comunidades
 			Combo municipios campo=Solicitud.comboTest.municipios titulo="Municipios" dependeDe=provincias
+		Grupo titulo = "Combos del diablo..."{	
+			Combo tipoCentros titulo="Tipo de Centro"  campo=Solicitud.comboTest.tipoCentros  
+            Combo islasTipoCentroCide titulo="Isla de ubicación/actuación del CIDE" campo=Solicitud.comboTest.islasTipoCentroCide dependeDe=tipoCentros
 		}
+		Grupo titulo = "Combos del diablo 2..."{    
+            Combo provin titulo="Tipo de Centro"  campo=Solicitud.comboTest.provin  
+            Combo islitas titulo="Isla de ubicación/actuación del CIDE" campo=Solicitud.comboTest.islitas dependeDe=provin
+        }
+		}
+		
+
+ 
 		
 		Codigo {
 "Pagina PaginaCombosDependientes campo=Solicitud{
@@ -1013,9 +1024,9 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 		}
     }
 
-	Pagina paginaFirmaMultiplesDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
+	Pagina paginaFirmaVariosDocumentos titulo = "Firma de múltiples documentos" campo=Solicitud noForm perteneceA ="Documentacion" {
 
-		Grupo grupoFirmaMultiple titulo="Firma de múltiples documentos" {
+		Grupo grupoFirmaMasiva titulo="Firma de múltiples documentos" {
 			Tabla tablaDocumentos titulo="Documentos" campo=Solicitud.documentacion.documentos paginaCrear=paginaSubirDocumento {
 				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
 	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
@@ -1024,7 +1035,7 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 				Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
 			}
 	
-			FirmaMultiple pruebaFirmaMultiplesDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos popupLeer=PopupDetallesDocumento {
+			FirmaMasiva pruebaFirmaVariosDocumentos titulo="Documentos a firmar" campo=Solicitud.documentacion.documentos popupLeer=PopupDetallesDocumento {
 				Columna campo=Documento.fechaSubida titulo="Fecha Subida" expandir
 	            Columna campo=Documento.fechaRegistro titulo="Fecha Registro" expandir
 				Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
@@ -1055,14 +1066,14 @@ Popup PopUpConceptos campo=Solicitud.misConceptos {
 	}
 
 	Pagina paginaSubirDocumento titulo="Nuevo Documento" campo=Solicitud.documentacion.documentos permiso=editarSolicitud perteneceA ="Documentacion"{
-		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Accion crear redirigir=paginaFirmaVariosDocumentos
 		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
 			SubirArchivo fileAportacion campo=Documento requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}
 	}
 
 	Pagina paginaSubirDocumentoDos titulo="Nuevo Documento" campo=Solicitud.registro permiso=editarSolicitud perteneceA ="Documentacion"{
-		Accion crear redirigir=paginaFirmaMultiplesDocumentos
+		Accion crear redirigir=paginaFirmaVariosDocumentos
 		Grupo grupoSubirDocumento titulo="Adjuntar Documento"{
 			SubirArchivo fileAportacion campo=Registro.oficial requerido aportadoPor="CIUDADANO" extensiones="pdf", "png" listarDocumentosSubidos
 		}

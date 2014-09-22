@@ -1,0 +1,29 @@
+h1. Servicio de Verificación de Datos
+
+h2. Descripción
+
+El servicio de Verificación de Datos es un servicio que realizar la verificación de los datos de identidad de los usuarios.
+
+* Realizar petición síncrona al servicio remoto.
+* Realizar petición asíncrona al servicio remoto.
+* Obtener la respuesta del servicio.
+* ...
+
+h2. Servicios disponibles
+
+En FAP tenemos 2 posibles servicios a utilizar:
+
+* **PlatinoVerificarDatosServiceImpl**: Utiliza el servicio web creado por la ACIISI.
+* **FileSystemVerificarDatosServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
+
+h2. Configuración en FAP
+
+bc. 
+# -----------------------------------------------------------------------------------------
+# Configuración de Verificacion de Datos
+# -----------------------------------------------------------------------------------------
+fap.verificacion.locationURI=undefined
+fap.verificacion.procedimientoURI=undefined
+fap.verificacion.tramiteURI=undefined
+
+

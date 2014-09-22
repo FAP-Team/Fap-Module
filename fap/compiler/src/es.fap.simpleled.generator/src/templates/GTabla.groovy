@@ -96,6 +96,9 @@ public class GTabla extends GElement{
 		if (tabla.seleccionable) {
 			params.putStr("seleccionable", tabla.seleccionable)
 			params.putStr("urlSeleccionable", "${controllerName}.${seleccionableMethodName()}")
+            if (tabla.mostrarTablaSeleccionados) {
+                params.put("mostrarTablaSeleccionados", true)
+            }
 		}
 		if (gPaginaPopup instanceof GPopup)
 			params.putStr 'tipoContainer', "popup";

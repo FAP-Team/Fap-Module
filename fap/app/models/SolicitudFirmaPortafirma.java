@@ -68,6 +68,7 @@ public class SolicitudFirmaPortafirma extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Documento documento;
 
+	@Column(length = 2048)
 	public String passwordSolicitante;
 
 	public String uriFuncionarioSolicitante;
@@ -141,7 +142,7 @@ public class SolicitudFirmaPortafirma extends FapModel {
 
 	@Override
 	public <T extends JPABase> T save() {
-		encriptarPassword(passwordSolicitante);
+		//encriptarPassword(passwordSolicitante);
 		return super.save();
 	}
 

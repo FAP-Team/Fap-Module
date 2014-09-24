@@ -1093,7 +1093,7 @@ Entidad SolicitudFirmaPortafirma {
 	String flujoSolicitud
 	Documento documento						// El tipo es ListaDocumentosType pero en realidad es sólo un DocumentoType
 	// -------------------- Portafirma Platino --------------------
-	String passwordSolicitante				// Contraseña del usuario (LDAP)
+	String passwordSolicitante	length=2048				// Contraseña del usuario (LDAP)
 	String uriFuncionarioSolicitante		// URI del funcionario que actúa como solicitante de la solicitud de firma. Requerido.
 	String uriFuncionarioDestinatario		// URI del funcionario que actúa como destinatario de la solicitud de firma. Requerido.
 	String uriSolicitud						// URI de la solicitud de firma.

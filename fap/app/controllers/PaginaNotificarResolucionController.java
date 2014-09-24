@@ -252,8 +252,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
 				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante;
-				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante);
-				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante;
+//				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante);
+//				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante;
 			}
 			else {
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = FapProperties.get("portafirma.usuario");

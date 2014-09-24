@@ -203,14 +203,14 @@ public class FirmaUtils {
 		
 		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
-		if (!Messages.hasMessages()) {
-			if(hanFirmadoTodos(listaFirmantes)){
+		//Si no había firmado nadie antes, se indica que el documento se ha firmado
+		if (!Messages.hasErrors()) {
+			if(documento.getFirma() != null && !documento.firmado){
 				documento.firmado = true;
 				documento.save();
-			}
+			}	
 		}
-		
-		Messages.keep();	
+		Messages.keep();
 	}
 	
 }

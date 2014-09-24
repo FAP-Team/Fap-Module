@@ -10,11 +10,15 @@ import com.google.gson.Gson;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Documento;
+import models.Firma;
+import models.Firmante;
 import models.Firmantes;
 import models.SolicitudGenerica;
 import platino.FirmaUtils;
 import play.mvc.Util;
 import reports.Report;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import controllers.gen.DocumentacionFAPControllerGen;
 
 public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
@@ -111,9 +115,13 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 
 			if (!Messages.hasErrors()) {
 				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
-				json.put("firmado", true);
+				if (documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos))
+					json.put("firmado", true);
+				else
+					json.put("firmado", false);
 				return new Gson().toJson(json);
 			}
+			
 			String error = "Firma de documento " + documento.uri + " sin éxito";
 			play.Logger.info(error);
 			errores.add(error);
@@ -128,5 +136,47 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		json.put("errores", errores);
 		return new Gson().toJson(json);
 	}
+	
+	@javax.inject.Inject
+	static GestorDocumentalService gestorDocumentalService;
+
+	public static String obtenerFirmadoDocumentodocumentos(Long idDocumento) {
+		if (!permiso("leer")) {
+			HashMap error = new HashMap();
+			error.put("error", "No tiene permisos suficientes");
+			return new Gson().toJson(error);
+		}
+		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+		if (documento != null) {
+			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
+			HashMap json = new HashMap();
+			if (documento.firmado != null && documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
+				json.put("firmado", true);
+				return new Gson().toJson(json);
+			} else {
+				List<String> firmantes = new ArrayList<String>();
+				for (Firmante firmante : documento.firmantes.todos) {
+					firmantes.add(firmante.idvalor);
+				}
+				Firma firma = null;
+				try {
+					firma = gestorDocumentalService.getFirma(documento);
+				} catch (GestorDocumentalServiceException e) {
+					e.printStackTrace();
+				}
+				json.put("id", documento.id);
+				json.put("firmado", false);
+				if (firma != null) {
+					json.put("firma", firma.getContenido());
+				}
+				json.put("firmantes", firmantes);
+				json.put("url", FirmaUtils.obtenerUrlDocumento(documento.id));
+				return new Gson().toJson(json);
+			}
+		}
+		play.Logger.info("Error al obtener el documento " + idDocumento);
+		return null;
+	}
+
 
 }

@@ -170,7 +170,7 @@
 				
 			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante', requerido:true, titulo:'Usuario LDAP' /}		
 		
-			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante', password:true, requerido:true, titulo:'Contraseña LDAP' /}		
+			*{ #{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante', password:true, requerido:false, titulo:'Contraseña LDAP' /} }*
 		
 			#{/fap.grupo}
 

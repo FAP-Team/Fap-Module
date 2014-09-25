@@ -88,10 +88,12 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
+
+import services.CertificadosService;
+import services.CertificadosServiceException;
+
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
-//import services.CertificadosService;
-//import services.CertificadosServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -268,8 +270,8 @@ public class Start extends Job {
 		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 		verificarDatosService.mostrarInfoInyeccion();
 			
-//		CertificadosService certificadosService = InjectorConfig.getInjector().getInstance(CertificadosService.class);
-//		certificadosService.mostrarInfoInyeccion();
+		CertificadosService certificadosService = InjectorConfig.getInjector().getInstance(CertificadosService.class);
+		certificadosService.mostrarInfoInyeccion();
 		
 
 		List<Class> assignableClasses = Play.classloader.getAssignableClasses(SolicitudGenerica.class);

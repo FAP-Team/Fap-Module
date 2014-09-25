@@ -19,6 +19,8 @@ import org.hibernate.annotations.DiscriminatorOptions;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import utils.FechaUtils;
+import properties.FapPropertiesKeys;
+
 
 @DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
@@ -51,24 +53,19 @@ public class Convocatoria extends Singleton {
 
 	// === MANUAL REGION START ===
 
-	public static final String ANUAL = "anual";
 	public static final String PREFIJO_CONVOCATORIA_ANUAL = "A";
 
-	public static String getModalidadConvocatoria() {
-		return FapProperties.get("fap.aed.expediente.modalidad");
-	}
-
 	public static String getIdentificadorConvocatoria(PropertyPlaceholder propertyPlaceholder) {
-		String prefijo = propertyPlaceholder.get("fap." + propertyPlaceholder.get("fap.defaultAED") + ".convocatoria");
-		if (PREFIJO_CONVOCATORIA_ANUAL.equals(prefijo)) {
-			return PREFIJO_CONVOCATORIA_ANUAL + FechaUtils.getAnyoActual();
-		} else {
+		if (esAnual()) {
+            return PREFIJO_CONVOCATORIA_ANUAL + FechaUtils.getAnyoActual();
+        } else {
+            String prefijo = propertyPlaceholder.get("fap." + propertyPlaceholder.get("fap.defaultAED") + ".convocatoria");
 			return prefijo;
 		}
 	}
 
 	public static boolean esAnual() {
-		return ANUAL.equals(getModalidadConvocatoria());
+		return PREFIJO_CONVOCATORIA_ANUAL.equals(FapProperties.get(FapPropertiesKeys.AED_CONVOCATORIA));
 	}
 
 	// === MANUAL REGION END ===

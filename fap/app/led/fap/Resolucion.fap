@@ -316,7 +316,7 @@ Formulario Principal {
 
 					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
 						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.idSolicitante titulo="Usuario LDAP" requerido
-						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante titulo="Contraseña LDAP" password requerido
+						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante titulo="Contraseña LDAP" password //requerido
 					}
 
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
@@ -601,7 +601,7 @@ Formulario Principal {
 								Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha tope firma" requerido
 								Grupo loginPortafirmasPlatinoOficiosRemision borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
 									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante titulo="Usuario LDAP" requerido
-									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante titulo="Contraseña LDAP" password requerido
+									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante titulo="Contraseña LDAP" password //requerido
 								}
 								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}

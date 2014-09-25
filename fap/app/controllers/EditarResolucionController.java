@@ -366,8 +366,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
 			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.idSolicitante", resolucionFAP.solicitudFirmaPortafirma.idSolicitante);
 			dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante = resolucionFAP.solicitudFirmaPortafirma.idSolicitante;
-			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante);
-			dbResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante;
+//			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante);
+//			dbResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante;
 		}
 		else {
 			dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");

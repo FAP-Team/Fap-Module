@@ -62,6 +62,7 @@ public class RegistroLibroResolucionesServiceImpl implements RegistroLibroResolu
 	private static String usuario = FapProperties.get("fap.resoluciones.usuario");
 	private static Long idAreaFuncional = FapProperties.getLong("fap.resoluciones.idAreaFuncional");
 	
+	
 	static {
 		URL wsdlURL = ResolucionesWeb_Service.class.getClassLoader().getResource("wsdl/resolucionesWeb.wsdl");
 		ss = new ResolucionesWeb_Service(wsdlURL);

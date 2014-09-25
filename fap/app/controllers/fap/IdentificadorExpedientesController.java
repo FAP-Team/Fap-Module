@@ -47,8 +47,7 @@ public class IdentificadorExpedientesController extends InvokeClassController {
 
     private static String getPrefijoAnyo() {
         String prefijoAnyo = "";
-        String modalidadConvocatoria = Convocatoria.getModalidadConvocatoria();
-        if(ANUAL.equals(modalidadConvocatoria)) {
+        if(Convocatoria.esAnual()) {
             prefijoAnyo = getAnyo();
         }
         return prefijoAnyo;

@@ -58,7 +58,7 @@ public class SemillaExpedienteTest extends UnitTest {
 
     @Test
     public void semillaSumaConsecutivaMismoAnyo() {
-        FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, Convocatoria.ANUAL);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, Convocatoria.PREFIJO_CONVOCATORIA_ANUAL);
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,getAnyo());
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
@@ -67,7 +67,7 @@ public class SemillaExpedienteTest extends UnitTest {
 
     @Test
     public void semillaSumaConsecutivaDistintoAnyoYPropertyNoActiva() {
-        FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, Convocatoria.ANUAL);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, Convocatoria.PREFIJO_CONVOCATORIA_ANUAL);
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_PREFIJO_REINICIAR_ANUALMENTE, "false");
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA, ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();
@@ -77,7 +77,7 @@ public class SemillaExpedienteTest extends UnitTest {
 
     @Test
     public void semillaReiniciaSiDistintoAnyoYPorpertyActiva() {
-        FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_MODALIDAD, Convocatoria.ANUAL);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, Convocatoria.PREFIJO_CONVOCATORIA_ANUAL);
         FapProperties.updateProperty(FapPropertiesKeys.AED_EXPEDIENTE_PREFIJO_REINICIAR_ANUALMENTE, "true");
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();

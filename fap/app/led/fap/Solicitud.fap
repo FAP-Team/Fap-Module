@@ -582,7 +582,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				
 				Form guardarMotivoRequerimientoGeneral {
 					AreaTexto motivoGeneralRequerimiento titulo="Motivo General de Requerimiento" campo=SolicitudGenerica.verificacion.requerimiento.motivo ancho="500px"
-					Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" requerido
+					Combo gestorAFirmar titulo="Persona que debe firmar" campo=SolicitudGenerica.verificacion.requerimiento.firmante ancho="450px" 
 					Boton guardarRequerimientoMotivoRequerimientoGeneralbtn titulo="Guardar Requerimiento"
 				    Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
 				}		

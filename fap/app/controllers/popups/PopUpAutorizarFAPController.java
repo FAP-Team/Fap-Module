@@ -2,6 +2,7 @@ package controllers.popups;
 
 import java.util.List;
 import java.util.Map;
+import utils.ParticipacionRepresentantesUtils;
 
 import messages.Messages;
 import models.Agente;
@@ -163,7 +164,7 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 			PopUpAutorizarFAPController.borrarValidateRules(dbAutorizacionesFAP);
 		}
 		if (!Messages.hasErrors()) {
-			BorrarParticipacion(idSolicitud, dbAutorizacionesFAP);
+			ParticipacionRepresentantesUtils.BorrarParticipacion(dbSolicitud, dbAutorizacionesFAP.numeroIdentificacion.toUpperCase());
 			dbSolicitud.autorizacion.remove(dbAutorizacionesFAP);
 			dbSolicitud.save();
 			dbAutorizacionesFAP.delete();
@@ -173,22 +174,6 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 			log.info("Acción Borrar de página: " + "gen/popups/PopUpAutorizarFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		}
 		PopUpAutorizarFAPController.borrarRender(idSolicitud, idAutorizacionesFAP);
-	}
-	
-	@Util
-	public static void BorrarParticipacion(Long idSolicitud, AutorizacionesFAP autorizacion) {
-		List<Participacion> participaciones = Participacion.findAll();
-		for (Participacion participacion: participaciones){
-			if ((participacion.agente.username.toUpperCase().equals(autorizacion.numeroIdentificacion.toUpperCase())) &&
-				(participacion.solicitud.equals(getSolicitudGenerica(idSolicitud))) &&
-				(participacion.tipo.equals(TiposParticipacionEnum.autorizado.name()))
-			   ){
-				participacion.agente=null;
-				participacion.solicitud=null;
-				participacion.delete();
-				break;
-			}
-		}
 	}
 	
 }

@@ -909,7 +909,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					}
 					
 					Grupo titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
-						Tabla documentos titulo="Documentación Aceptación" 
+						FirmaMasiva documentos titulo="Documentación Aceptación"
 				    	campo=SolicitudGenerica.aceptarRenunciar.documentos
 						popupBorrar=PopUpDocAceptacionRenuncia
 						popupEditar=PopUpDocAceptacionRenuncia
@@ -1080,7 +1080,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 						Boton btoGuardar titulo="Guardar trámite"
 					}
 
-					Tabla documentos titulo="Documentos asociados a la alegación" 
+					FirmaMasiva documentos titulo="Documentos asociados a la alegación"
 			    	campo=SolicitudGenerica.alegaciones.actual.documentos
 					popupBorrar=PopUpDocAlegacionEnProceso
 					popupEditar=PopUpDocAlegacionEnProceso  

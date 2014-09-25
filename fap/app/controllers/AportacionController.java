@@ -286,9 +286,6 @@ public class AportacionController extends AportacionControllerGen {
 				return new Gson().toJson(json);
 			}
 			
-			String error = "Firma de documento " + documento.uri + " sin éxito";
-			play.Logger.info(error);
-			errores.add(error);
 		} else {
 			String error = "Error al obtener el documento " + idDocumento;
 			play.Logger.info(error);

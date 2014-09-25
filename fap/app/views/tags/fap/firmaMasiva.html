@@ -530,7 +530,7 @@
 			resultado = convertirAJSON(firmar(idDocumento, resultadoFirma.firma));
 			if (resultado.errores) {
 				$.each(resultado.errores , function(i, elem) {
-					errores["error-firma" + i] = elem;
+					errores["error-firma" + Object.keys(errores).length] = elem;
 				});
 				
 			}

@@ -443,7 +443,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		Firmante firmanteCertificado = getFirmante(firma, documento);
 		if(firmanteCertificado != null){
 			play.Logger.info("Firmante validado");
-            Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado);
+            Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado, documento);
 			if(!Messages.hasErrors()){
 				// Guarda la firma en el AED
                 firmante.nombre = firmanteCertificado.nombre;
@@ -467,13 +467,13 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         }
     }
 
-    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado) {
+    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado, Documento documento) {
         Firmante firmante = buscarFirmanteEnFirmantes(firmanteCertificado.idvalor, firmantes);
         if(firmante == null){
             Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
         }else{
             if(firmante.fechaFirma != null){
-                Messages.error("Ya ha firmado la solicitud");
+            	Messages.error("Este certificado ya ha firmado el documento " + documento.uri);
             }
 
             play.Logger.info("Firmante encontrado " + firmante.idvalor );

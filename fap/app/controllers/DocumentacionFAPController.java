@@ -23,6 +23,8 @@ import controllers.gen.DocumentacionFAPControllerGen;
 
 public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 	
+//	private static List<String> errores = new ArrayList<String>();
+	
 	public static void index(String accion, Long idSolicitud) {
 		if (accion == null)
 			accion = getAccion();
@@ -83,7 +85,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		Map<String, Object> json = new HashMap<String, Object>();
-		List<String> errores = new ArrayList<String>();
+		ArrayList<String> errores = new ArrayList<>();
 
 		if (documento != null) {
 			
@@ -122,17 +124,16 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 				return new Gson().toJson(json);
 			}
 			
-			String error = "Firma de documento " + documento.uri + " sin éxito";
-			play.Logger.info(error);
-			errores.add(error);
 		} else {
 			String error = "Error al obtener el documento " + idDocumento;
 			play.Logger.info(error);
 			errores.add(error);
 		}
+		
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
 			errores.add(mensaje);
 		}
+		
 		json.put("errores", errores);
 		return new Gson().toJson(json);
 	}
@@ -150,7 +151,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
 			HashMap json = new HashMap();
-			if (documento.firmado != null && documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
+			if (documento.firmado != null && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
 				json.put("firmado", true);
 				return new Gson().toJson(json);
 			} else {

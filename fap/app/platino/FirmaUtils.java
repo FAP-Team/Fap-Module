@@ -164,6 +164,8 @@ public class FirmaUtils {
 				multiple = false;
 		}
 		
+		if (firmantes.isEmpty())
+			return false;
 		//En el caso de que no haya firmado ningún único
 		//Se devuelve true si todos los múltiples han firmado
 		return multiple;
@@ -210,7 +212,7 @@ public class FirmaUtils {
 				documento.save();
 			}	
 		}
-		Messages.keep();
+
 	}
 	
 }

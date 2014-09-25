@@ -79,7 +79,7 @@ public class Persona extends FapModel {
 	}
 
 	public String getNumeroId() {
-		if (isPersonaFisica())
+		if ((isPersonaFisica()) && (fisica.nip != null))
 			return fisica.nip.valor;
 		else if (isPersonaJuridica())
 			return juridica.cif;
@@ -87,7 +87,7 @@ public class Persona extends FapModel {
 	}
 
 	public String getTipoDocumento() {
-		if (isPersonaFisica()) {
+		if ((isPersonaFisica()) && (fisica.nip != null)) {
 			return fisica.nip.tipo;
 		} else if (isPersonaJuridica()) {
 			return "cif";

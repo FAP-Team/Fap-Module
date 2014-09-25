@@ -10,6 +10,7 @@ import properties.FapProperties;
 import reports.Report;
 import services.GestorDocumentalServiceException;
 import services.RegistroServiceException;
+import services.VerificarDocumentacionService;
 import services.platino.PlatinoGestorDocumentalService;
 import messages.Messages;
 import models.Alegacion;
@@ -184,4 +185,13 @@ public class TramiteAlegacion extends TramiteBase {
 		return registro.firmantes.hanFirmadoTodos();
 	}
 
+    @Override
+    public void validar() {
+        super.validar();
+        comprobarDocumentosAnexos();
+    }
+
+    private void comprobarDocumentosAnexos() {
+        VerificarDocumentacionService.comprobarFirmasDocumentos(this.getDocumentos());
+    }
 }

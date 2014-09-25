@@ -236,5 +236,13 @@ public class TramiteAceptacionRenuncia extends TramiteBase {
 		return registro.firmantes.hanFirmadoTodos();
 	}
 	
+    @Override
+    public void validar() {
+        super.validar();
+        comprobarDocumentosAnexos();
+    }
 
+    private void comprobarDocumentosAnexos() {
+        VerificarDocumentacionService.comprobarFirmasDocumentos(this.getDocumentos());
+    }
 }

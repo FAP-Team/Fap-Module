@@ -157,11 +157,19 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 	
 	@Override
 	public void firmar(Documento documento, List<Firmante> firmantes, String firma, String valorDocumentofirmanteSolicitado){
-//		int i = 0;
-//		Firmante firmante = firmantes.get(i);
-//		play.Logger.info("Archivo: FileSystemFirmaServiceImpl.java | Método: firmar | Nota: No se está firmando. Sólo se cambia la fecha de firma del firmante "+i+": "+firmante.idvalor);
-//		firmante.fechaFirma = new DateTime();
-//		firmante.save();
+		Firmante firmanteCertificado = getFirmante(firma, documento);
+		if(firmanteCertificado != null){
+			play.Logger.info("Firmante validado");
+            Firmante firmante = comprobarFirmanteValido(firmantes, valorDocumentofirmanteSolicitado, firmanteCertificado, documento);
+        	if (!Messages.hasErrors()) {
+            	firmante.fechaFirma = new DateTime();
+            	firmante.save();
+            	play.Logger.info("Firma del documento " + documento.uri + ", con fecha " + firmante.fechaFirma + " guardada en FileSystem");
+        	}
+            	
+		}else{
+			play.Logger.error("firmanteCertificado == null????");
+		}	
 	}
 
 	@Override
@@ -214,4 +222,32 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 		return "FileSystemFirmaService";
 	}
  
+    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado, Documento documento) {
+        Firmante firmante = buscarFirmanteEnFirmantes(firmanteCertificado.idvalor, firmantes);
+        if(firmante == null){
+            Messages.error("El certificado no se corresponde con uno que debe firmar la solicitud.");
+        } else {
+            if(firmante.fechaFirma != null){
+                Messages.error("Este certificado ya ha firmado el documento " + documento.uri);
+            }
+
+            play.Logger.info("Firmante encontrado " + firmante.idvalor );
+            play.Logger.info("Esperado " + valorDocumentofirmanteSolicitado);
+            if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
+                Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
+            }
+        }
+        return firmante;
+    }
+
+    private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
+        Firmante firmante = null;
+        for (Firmante fB : firmantes) {
+            if (fB.idvalor.equals(idValorFirmante)) {
+                firmante = fB;
+                break;
+            }
+        }
+        return firmante;
+    }
 }

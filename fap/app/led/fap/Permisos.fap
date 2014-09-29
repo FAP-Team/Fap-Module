@@ -381,7 +381,7 @@ Permiso editarFirmaDocumento {
 Permiso editarFirmaAceptarRenunciar {
 	vars
 		SolicitudGenerica solicitud
-		Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
+		//Participacion participacion : sql("select p from Participacion p where p.agente=? AND p.solicitud=?", agente, solicitud)
 	when
 		!usuario is visible
 		or (

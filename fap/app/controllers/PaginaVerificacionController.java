@@ -366,7 +366,6 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			// Comprobamos que esten todos los documentos verificados
 			if (!VerificacionUtils.existsDocumentoNoVerificado(dbSolicitud.verificacion)){
 				// Si hay cosas que requerir, la verificación tiene causas subsanables
-				System.out.println(dbSolicitud.verificacion.requerimiento.firmante.toString());
 				if (((dbSolicitud.verificacion.requerimiento.motivo != null) && (!dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty()))
                         || (VerificacionUtils.documentosIncorrectos(dbSolicitud.verificacion))){
 					log.info("Hay que requerir y notificar, existe un motivo general de requerimiento o documentos en estado noValidos o noPresentados (Solicitud "+dbSolicitud.id+")");

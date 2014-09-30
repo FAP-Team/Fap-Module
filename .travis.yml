@@ -5,13 +5,13 @@ jdk:
 
 env:
 - PLAY_VERSION=1.2.4
+- FAPSDK=${TRAVIS_BUILD_DIR}
 
 before_script:
-- wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
+- wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
 
 script:
-- export FAPSDK=$WORKSPACE
 - echo $FAPSDK
 - cd fap
 - ant -f compiler.xml

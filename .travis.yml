@@ -21,10 +21,10 @@ script:
 - cd fap
 - ant -f compiler.xml
 - cd ${FAPSDK}/fap
-- ${PLAY} deps --sync -Dfapsdk=${FAPSDK} --clearcache
+- ${PLAY} deps --sync -Dfapsdk=${FAPSDK} --clearcache > /dev/null
 - python generate.py
 - cd ${FAPSDK}/apps/test
-- ${PLAY} dependencies  --sync -Dfapsdk=${FAPSDK}
+- ${PLAY} dependencies  --sync -Dfapsdk=${FAPSDK} > /dev/null
 - ${PLAY} fap:generate
 - ${PLAY} auto-test -XX:MaxPermSize=1024m 
 

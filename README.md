@@ -9,7 +9,7 @@
                                           \/_/ 
 
 
-Software Factory Fap
+# Software Factory Fap
 
 [![Build Status](https://travis-ci.org/FAP-Team/Fap-Module.svg?branch=platino2.0)](https://travis-ci.org/FAP-Team/Fap-Module)
 
@@ -17,7 +17,7 @@ La documentación está http://fap-devel.etsii.ull.es/home/documentacion/home
 
 Puede ver un ejemplo de las cosas que hace FAP en http://fap-devel.etsii.ull.es/test
 
-¿Quiénes somos?
+### ¿Quiénes somos?
 
    Somos estudiantes recien titulados o a falta de muy poquito para titularnos en Ingeniería Informática de la ETSII en la Universidad de La Laguna.
 

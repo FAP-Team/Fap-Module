@@ -16,3 +16,8 @@ script:
 - echo FAPSDK=${FAPSDK}
 - cd fap
 - ant -f compiler.xml
+
+script:
+- cd ${FAPSDK}/fap
+- ${FAPSDK}/play-${PLAY_VERSION}/play deps --sync -Dfapsdk=${FAPSDK} --clearcache
+- python generate.py

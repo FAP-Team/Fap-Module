@@ -4,14 +4,15 @@ jdk:
 - oraclejdk7
 
 env:
-- PLAY_VERSION=1.2.4
-- FAPSDK=${TRAVIS_BUILD_DIR}
+  global:
+    - PLAY_VERSION=1.2.4
+    - FAPSDK=${TRAVIS_BUILD_DIR}
 
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
 
 script:
-- echo $FAPSDK
+- echo FAPSDK=${FAPSDK}
 - cd fap
 - ant -f compiler.xml

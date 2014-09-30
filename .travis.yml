@@ -10,6 +10,7 @@ env:
   global:
     - PLAY_VERSION=1.2.4
     - FAPSDK=${TRAVIS_BUILD_DIR}
+    - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
 
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
@@ -20,5 +21,10 @@ script:
 - cd fap
 - ant -f compiler.xml
 - cd ${FAPSDK}/fap
-- ${FAPSDK}/play-${PLAY_VERSION}/play deps --sync -Dfapsdk=${FAPSDK} --clearcache
+- ${PLAY} deps --sync -Dfapsdk=${FAPSDK} --clearcache
 - python generate.py
+- cd ${FAPSDK}/apps/test
+- ${PLAY} dependencies  --sync -Dfapsdk=${FAPSDK}
+- ${PLAY} fap:generate
+- ${PLAY} auto-test -XX:MaxPermSize=1024m 
+

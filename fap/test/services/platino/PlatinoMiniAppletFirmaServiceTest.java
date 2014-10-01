@@ -120,9 +120,14 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
 
     @Override
     protected void assertFirmanteYaHaFirmado() {
-        assertTrue(Messages.messages(Messages.MessageType.ERROR)
-                .contains("Ya ha firmado la solicitud"));
-
+    	boolean contieneElError = false;
+        for(String mensaje : Messages.messages(Messages.MessageType.ERROR)) {
+            if (mensaje.matches("Este certificado ya ha firmado el documento .*")) {
+                contieneElError = true;
+                break;
+            }
+        }
+        assertTrue(contieneElError);
     }
 
     @Override

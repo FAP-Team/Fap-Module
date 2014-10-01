@@ -1,6 +1,6 @@
 # Application dependencies
 
-self: play -> fap 2.5.4
+self: play -> fap 2.5.5RC1
 
 
 

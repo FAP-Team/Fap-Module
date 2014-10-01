@@ -1,5 +1,28 @@
 h2. Changelog
 
+h3. Versión 2.5.5RC1
+
+* Modificación del permiso editarFirmaAceptacionRenuncia. Ahora no depende de la participación.
+* Se corrige que no sea requerido obligatoriamente un firmante para una verificación. Solo será obligatorio en el caso de que haya motivo de requerimiento o documentos no validos o no presentados. En caso contrario no será obligado.
+* Corrección en generación del número de expediente anual.
+* Documentación de la generación de número de expediente.
+* Eliminado el uso de la property idFirma en el método getFirma. Ahora se pasa como parámetro.
+* Se oculta el campo password LDAP en Solicitud Firma Portafirma.
+* FixedMinorBug: Fallaba la actualización de la fecha de firma en firmante.
+* Selección de documentos anexos con doble click.
+* Anexo se considera firmado con solo una firma válida.
+* Mostrar documento de resolución con firma de Platino.
+* Permitir borrar anexos.
+* Permitir firmar documentos de Resolución ya firmados por otros. No dejar firmar un documento por la misma persona.
+* Firma de documentos anexos por uno o varios certificados.
+* Se permite firmar anexos en aceptación y alegación.
+* Comprobación de firmas de los anexos en trámites de aceptación y alegación.
+* FixedBug: Comprobaciones de null en el modelo Persona.
+* Creación de utils para manejar representantes y sus participaciones (ParticipacionRepresentantesUtils)
+* Firma de documentos anexos en FileSystem.
+* FixedMinorBug: Se corrigen mensajes de error en la firma de documentos.
+
+
 h3. Versión 2.5.4
 
 * Actualización de la librería platino pre. Arreglo del módulo para el funcionamiento de la nueva librería.

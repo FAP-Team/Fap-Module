@@ -609,10 +609,12 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		//Agregar Firma Platino al documento de resolucion en el AED ACIISI
 		if (!Messages.hasErrors()) {
 			PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
-				
+			
+			tx.begin();
+			
 		    es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(dbResolucionFAP.registro.oficial.uri);
 			if (documentoPlatino != null){
-				tx.begin();
+				
 				try {
 					AedUtils.docPlatinotoDocumentoFirmantes(dbResolucionFAP.registro.oficial, documentoPlatino);
 					gestorDocumentalService.agregarFirma(dbResolucionFAP.registro.oficial, 
@@ -621,8 +623,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				} catch (GestorDocumentalServiceException e) {
 					play.Logger.error("Error. No se ha podido agregar la firma al documento de resolución en el AED.", e);
 				}
-				tx.commit();
 			}
+			
+			tx.commit();
 		}
 		
 		if (!Messages.hasErrors()) {

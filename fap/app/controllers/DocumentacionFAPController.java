@@ -23,8 +23,6 @@ import controllers.gen.DocumentacionFAPControllerGen;
 
 public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 	
-//	private static List<String> errores = new ArrayList<String>();
-	
 	public static void index(String accion, Long idSolicitud) {
 		if (accion == null)
 			accion = getAccion();
@@ -85,7 +83,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		Map<String, Object> json = new HashMap<String, Object>();
-		ArrayList<String> errores = new ArrayList<>();
+		ArrayList<String> errores = new ArrayList<String>();
 
 		if (documento != null) {
 			

@@ -20,6 +20,7 @@ public class IdentificadorExpedientesControllerTest extends UnitTest {
     @Test
     public void devuelveIdentificadorConAnyo() {
         FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, Convocatoria.PREFIJO_CONVOCATORIA_ANUAL);
+        FapProperties.updateProperty(FAP_AED_EXPEDIENTE_PREFIJO, PREFIJO_EXP);
         String anyo = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
         String idExp = IdentificadorExpedientesController.getNuevoIdExpediente("");

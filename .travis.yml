@@ -11,7 +11,8 @@ env:
     - PLAY_VERSION=1.2.4
     - FAPSDK=${TRAVIS_BUILD_DIR}
     - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
-    - CASPERJS=${FAPSDK}/CasperJS
+    - DIR_CASPERJS=${FAPSDK}/CasperJS
+    - CASPERJS=${DIR_CASPERJS}/bin/casperjs
 
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
@@ -31,6 +32,6 @@ script:
 - ${PLAY} auto-test -XX:MaxPermSize=1024m
 - ${PLAY} test & casper_pid=$!
 - sleep 30
-- ${CASPERJS}/casperjs test `pwd`/test/CasperJS/*.test.js
-- kill casper_pid
+- ${CASPERJS} test `pwd`/test/CasperJS/*.test.js
+- kill $casper_pid
 

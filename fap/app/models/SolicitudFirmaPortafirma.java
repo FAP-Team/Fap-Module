@@ -142,7 +142,7 @@ public class SolicitudFirmaPortafirma extends FapModel {
 
 	@Override
 	public <T extends JPABase> T save() {
-		//encriptarPassword(passwordSolicitante);
+		encriptarPassword(passwordSolicitante);
 		return super.save();
 	}
 

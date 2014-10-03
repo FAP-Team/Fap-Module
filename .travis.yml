@@ -11,7 +11,7 @@ env:
     - PLAY_VERSION=1.2.4
     - FAPSDK=${TRAVIS_BUILD_DIR}
     - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
-    - CASPERJS=${FAPSDK}
+    - CASPERJS=${FAPSDK}/CasperJS
 
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip

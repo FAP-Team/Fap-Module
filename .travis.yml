@@ -17,7 +17,7 @@ env:
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
-- git clone git://github.com/n1k0/casperjs.git ${CASPERJS}
+- git clone git://github.com/n1k0/casperjs.git ${DIR_CASPERJS}
 
 script:
 - echo FAPSDK=${FAPSDK}

@@ -151,8 +151,11 @@ public class SolicitudFirmaPortafirma extends FapModel {
 	}
 
 	public boolean encriptarPassword(String password) {
-		String secret = getSecretoEncriptacion();
-		return encriptarPassword(password, secret);
+		if (password != null) {
+			String secret = getSecretoEncriptacion();
+			return encriptarPassword(password, secret);
+		} else
+			return false;
 	}
 
 	public boolean encriptarPassword(String password, String secret) {

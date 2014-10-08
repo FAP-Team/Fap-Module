@@ -927,7 +927,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 					Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de aceptación/renuncia" permiso=generarBorradorAceptarRenunciar/*permiso=presentacionPrepararParaFirmar*/ {
                 		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
                   		Form prepararFirmar {
-                           Boton botonPrepararFirmar titulo="Preparar para firmar"
+                           Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
                  		}
             		}
 				}
@@ -1097,7 +1097,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             		Grupo gpreparar titulo="Paso 1. Preparar la alegación" permiso=generarBorradorAlegacion {
                 		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
                   		Form prepararFirmar {
-                        	Boton botonPrepararFirmar titulo="Preparar para firmar"
+                        	Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
                   		}
             		}
             	}

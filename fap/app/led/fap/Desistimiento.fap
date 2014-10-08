@@ -13,7 +13,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
             		Grupo gpreparar titulo="Paso 1. Preparar la solicitud de desistimiento" permiso=generarBorradorDesistimiento { 
                 		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
                   		Form prepararFirmar permiso=generarBorradorDesistimiento {
-                        	Boton botonPrepararFirmar titulo="Preparar para firmar"
+                        	Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
                  		}
             		}
             	}

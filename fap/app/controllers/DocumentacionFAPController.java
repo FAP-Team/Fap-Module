@@ -84,6 +84,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		Map<String, Object> json = new HashMap<String, Object>();
 		ArrayList<String> errores = new ArrayList<String>();
+		ArrayList<String> aciertos = new ArrayList<String>();
 
 		if (documento != null) {
 			
@@ -119,7 +120,6 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 					json.put("firmado", true);
 				else
 					json.put("firmado", false);
-				return new Gson().toJson(json);
 			}
 			
 		} else {
@@ -132,7 +132,12 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 			errores.add(mensaje);
 		}
 		
+		for (String mensaje : Messages.messages(MessageType.OK)) {
+			aciertos.add(mensaje);
+		}
+		
 		json.put("errores", errores);
+		json.put("aciertos", aciertos);
 		return new Gson().toJson(json);
 	}
 	
@@ -149,8 +154,9 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
 			HashMap json = new HashMap();
-			if (documento.firmado != null && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
+			if (FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
 				json.put("firmado", true);
+				json.put("uri", documento.uri);
 				return new Gson().toJson(json);
 			} else {
 				List<String> firmantes = new ArrayList<String>();

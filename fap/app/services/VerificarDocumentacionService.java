@@ -197,12 +197,13 @@ public class VerificarDocumentacionService {
 
 
     static public boolean comprobarFirmasDocumentos(List<Documento> docs) {
+    	boolean firmados = true;
         for (Documento doc : docs) {
             if(!comprobarFirmas(doc)) {
-                return false;
+               firmados = false;
             };
         }
-        return true;
+        return firmados;
     }
 
     public static boolean comprobarFirmas(Documento doc) {
@@ -210,7 +211,7 @@ public class VerificarDocumentacionService {
         boolean salida = true;
         if (propertyAnexosFirmadosActiva() && !firmaEsValida(doc)) {
 			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
-			Messages.error(String.format("El documento %s no ha sido firmado o faltan firmas.", descripcion));
+			Messages.error(String.format("El documento %s no ha sido firmado.", descripcion));
 			salida = false;
 		}
 

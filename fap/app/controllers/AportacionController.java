@@ -247,7 +247,8 @@ public class AportacionController extends AportacionControllerGen {
 
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		Map<String, Object> json = new HashMap<String, Object>();
-		List<String> errores = new ArrayList<String>();
+		ArrayList<String> errores = new ArrayList<String>();
+		ArrayList<String> aciertos = new ArrayList<String>();
 
 		if (documento != null) {
 			
@@ -283,7 +284,6 @@ public class AportacionController extends AportacionControllerGen {
 					json.put("firmado", true);
 				else
 					json.put("firmado", false);
-				return new Gson().toJson(json);
 			}
 			
 		} else {
@@ -291,10 +291,17 @@ public class AportacionController extends AportacionControllerGen {
 			play.Logger.info(error);
 			errores.add(error);
 		}
+		
+		for (String mensaje : Messages.messages(MessageType.OK)) {
+			aciertos.add(mensaje);
+		}
+		
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
 			errores.add(mensaje);
 		}
+		
 		json.put("errores", errores);
+		json.put("aciertos", aciertos);
 		return new Gson().toJson(json);
 	}
 
@@ -308,8 +315,9 @@ public class AportacionController extends AportacionControllerGen {
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
 			HashMap json = new HashMap();
-			if (documento.firmado != null && documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
+			if (FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
 				json.put("firmado", true);
+				json.put("uri", documento.uri);
 				return new Gson().toJson(json);
 			} else {
 				List<String> firmantes = new ArrayList<String>();

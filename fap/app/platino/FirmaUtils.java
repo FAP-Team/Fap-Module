@@ -153,22 +153,22 @@ public class FirmaUtils {
 	}
 	
 	public static boolean hanFirmadoTodos(List<Firmante> firmantes){
-		boolean multiple = true;
+		boolean todos = true;
 		for(Firmante f : firmantes){
 			//Firmante único que ya ha firmado
-			if(f.cardinalidad.equals("unico") && f.fechaFirma != null)
-				return true;
+			if(f.cardinalidad.equals("unico") && f.fechaFirma == null)
+				todos = false;
 			
 			//Uno de los firmantes multiples no ha firmado
 			if(f.cardinalidad.equals("multiple") && f.fechaFirma == null)
-				multiple = false;
+				todos = false;
 		}
 		
 		if (firmantes.isEmpty())
 			return false;
-		//En el caso de que no haya firmado ningún único
-		//Se devuelve true si todos los múltiples han firmado
-		return multiple;
+		//Se devuelve true si han firmado todos los interesado
+		//Se devuelve false en caso contrario
+		return todos;
 	}
 	
 	// --------------------------------------------------------------------------------

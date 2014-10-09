@@ -100,7 +100,7 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
     @Override
     protected void assertFirmaFirmanteNoEntreFirmantes() {
         assertTrue(Messages.messages(Messages.MessageType.ERROR)
-                .contains("El certificado no se corresponde con uno que debe firmar la solicitud."));
+                .contains("El certificado no se corresponde con uno que puede firmar la solicitud."));
 
     }
 

@@ -15,13 +15,11 @@ import org.joda.time.DateTime;
 
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
-
 import models.Agente;
 import models.Documento;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
-
 import enumerado.fap.gen.EstadoPortafirmaEnum;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaException;
 import es.gobcan.aciisi.portafirma.ws.PortafirmaService;
@@ -39,7 +37,6 @@ import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoDocumentoEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.UsuarioType;
-
 import platino.PlatinoProxy;
 import properties.FapProperties;
 import services.PortafirmaFapService;
@@ -221,7 +218,7 @@ public class PortafirmaImpl implements PortafirmaFapService {
 	}
 	
     @Override
-    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+    public boolean entregarSolicitudFirma(String idSolicitante, String idSolicitud, String comentario) {
         return true;
     }
 
@@ -344,5 +341,5 @@ public class PortafirmaImpl implements PortafirmaFapService {
 		}
 		return listaResultados;
 	}
-
+	
 }

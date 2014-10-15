@@ -830,6 +830,19 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		dbDocumento.fechaSubida = new DateTime();
 		dbDocumento.save();
 	}
+	
+	@Override
+	public void duplicarDocumentoSubido(Documento documento,
+			Documento dbDocumento) throws GestorDocumentalServiceException {
+		
+		dbDocumento.refAed = true;
+		dbDocumento.uri = documento.uri;
+		dbDocumento.clasificado = documento.clasificado;
+		dbDocumento.descripcion = documento.descripcion;
+		dbDocumento.fechaSubida = new DateTime();
+		dbDocumento.save();
+		
+	}
 
 	@Override
 	public void clasificarDocumentos(SolicitudGenerica solicitud,
@@ -964,4 +977,5 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
 		Documento documento = Documento.findByUri(uriDocumento);
 		return documento.tipo;
 	}
+
 }

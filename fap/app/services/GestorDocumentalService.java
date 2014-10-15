@@ -95,6 +95,8 @@ public interface GestorDocumentalService {
 	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException;
 	
 	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, Documento dbDocumento) throws GestorDocumentalServiceException;
+	
+	public void duplicarDocumentoSubido(Documento documento, Documento dbDocumento) throws GestorDocumentalServiceException;
     
 	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;

@@ -149,6 +149,16 @@
 	<script>
 	
 		var mensajes = new Mensajes("#cert-msg");
+		
+		// Funcion que oculta todos los mensajes de un tipo determinado por su 
+		// className 
+		function ocultarAllMensajesTipo(tipo){
+		    var allmensajes = document.getElementsByClassName(tipo);
+		    
+		    for (var k in allmensajes) {
+                allmensajes.item(k).style.display = "none";
+            } 
+		}
 	
 		// Ocultamos primero todos los DIV de mensajes de error, y despues
 		// dependiendo de lo que nos llegue por Ajax, mostraremos los pertinentes
@@ -549,9 +559,12 @@
 
 	var todasFirmasRealizadas = function(errores, aciertos) {
 		if (Object.keys(errores).length == 0) {
+		    ocultarAllMensajesTipo("alert-error");
 			mensajes.ok("Documento/s firmado/s correctamente");
 		} else {
 		
+		    ocultarAllMensajesTipo("alert-error");
+		    
 		    //Si en la firma masiva se firmaron documentos correctamente 
 		    //se muestra el siguiente mensaje
 		    if (Object.keys(aciertos).length > 0)

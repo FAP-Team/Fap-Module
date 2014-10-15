@@ -198,8 +198,14 @@ public class FirmaUtils {
 			Messages.keep();
 			return;			
 		}
+		
 		if (firma == null) {
 			Messages.error("La firma es null");
+			return;
+		}
+		
+		if (documento.refAed) {
+			Messages.error("El documento " + documento.uri + " pertenece a otro expediente y no puede ser firmado");
 			return;
 		}
 		

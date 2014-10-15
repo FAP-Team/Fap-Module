@@ -1371,6 +1371,27 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		dbDocumento.fechaSubida = new DateTime();
 		dbDocumento.save();
 	}
+	
+	/**
+	 * Funcion que nos sirve para duplicar ciertos atributos de un documento a otro.
+	 * En concreto con los documentos adjuntador por uri desde un gestor documental.
+	 * 
+	 * @param documento 
+	 * @param dbdocumento
+	 */
+	@Override
+	public void duplicarDocumentoSubido(models.Documento documento,
+			models.Documento dbDocumento)
+			throws GestorDocumentalServiceException {
+		
+		dbDocumento.refAed = true;
+		dbDocumento.uri = documento.uri;
+		dbDocumento.clasificado = documento.clasificado;
+		dbDocumento.descripcion = documento.descripcion;
+		dbDocumento.fechaSubida = new DateTime();
+		dbDocumento.save();
+		
+	}
 
 	@Override
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
@@ -1466,7 +1487,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(uriDocumento, clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
             Firma firmaActual = propiedadesAdministrativas.getFirma();
-            response = firmaActual.getContenido();
+            
+            if (firmaActual != null)
+            	response = firmaActual.getContenido();
         }
         catch (AedExcepcion e) {
             play.Logger.error("Excepción obteniendo firma documento: " + e.getFaultInfo().getDescripcion(), e);
@@ -1603,5 +1626,4 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 		return tipo;
 	}
-
 }

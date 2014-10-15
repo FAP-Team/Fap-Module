@@ -201,7 +201,7 @@ public class VerificarDocumentacionService {
         for (Documento doc : docs) {
             if(!comprobarFirmas(doc)) {
                firmados = false;
-            };
+            }
         }
         return firmados;
     }
@@ -209,7 +209,7 @@ public class VerificarDocumentacionService {
     public static boolean comprobarFirmas(Documento doc) {
 		play.Logger.info("Comprobando firmantes de %s", doc);
         boolean salida = true;
-        if (propertyAnexosFirmadosActiva() && !firmaEsValida(doc)) {
+        if (propertyAnexosFirmadosActiva() && !docOtroExpediente(doc) && !firmaEsValida(doc)) {
 			String descripcion = (doc.descripcionVisible != null) ? "\"" + doc.descripcionVisible + "\"": "aportado";
 			Messages.error(String.format("El documento %s no ha sido firmado.", descripcion));
 			salida = false;
@@ -228,6 +228,10 @@ public class VerificarDocumentacionService {
 
     private static Boolean propertyAnexosFirmadosActiva() {
         return FapProperties.getBoolean("fap.documentacion.comprobarAnexosFirmados");
+    }
+    
+    private static Boolean docOtroExpediente(Documento doc){
+    	return ((doc != null) && (doc.refAed));
     }
 }
 

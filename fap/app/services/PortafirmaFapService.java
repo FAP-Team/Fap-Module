@@ -15,7 +15,7 @@ public interface PortafirmaFapService {
 	public String obtenerVersion () throws PortafirmaFapServiceException; 
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (ResolucionFAP resolucion) throws PortafirmaFapServiceException;
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma (SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException;
-    public boolean entregarSolicitudFirma(String idSolicitud, String comentario);
+    public boolean entregarSolicitudFirma(String idSolicitante, String idSolicitud, String comentario);
 	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException;
 	public void eliminarSolicitudFirma (SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException;
 	public boolean comprobarSiSolicitudFirmada (SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException;

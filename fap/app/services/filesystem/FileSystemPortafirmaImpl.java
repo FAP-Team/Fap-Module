@@ -11,7 +11,6 @@ import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType
 import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudType;
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
-
 import models.Agente;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
@@ -42,7 +41,7 @@ public class FileSystemPortafirmaImpl implements PortafirmaFapService {
 	}
 	
 	@Override
-    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+    public boolean entregarSolicitudFirma(String idSolicitante, String idSolicitud, String comentario) {
         return true;
     }
 

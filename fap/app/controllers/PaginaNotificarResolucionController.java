@@ -214,7 +214,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = portafirmaService.crearSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision);
-                portafirmaService.entregarSolicitudFirma(portafirmaCrearSolicitudResponse.getIdSolicitud(), portafirmaCrearSolicitudResponse.getComentarios());
+                portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, portafirmaCrearSolicitudResponse.getIdSolicitud(), portafirmaCrearSolicitudResponse.getComentarios());
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud = portafirmaCrearSolicitudResponse.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.solicitudEstadoComentario = portafirmaCrearSolicitudResponse.getComentarios();
 				dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionPendientesPortafirma.name();

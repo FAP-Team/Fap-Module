@@ -318,7 +318,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = AgenteController.getAgente();
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
-                portafirmaService.entregarSolicitudFirma(response.getIdSolicitud(), response.getComentarios());
+                portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
 				dbResolucionFAP.solicitudFirmaPortafirma.uriSolicitud = response.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirma.solicitudEstadoComentario = response.getComentarios();
 				dbResolucionFAP.save();

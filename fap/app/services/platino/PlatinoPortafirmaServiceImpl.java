@@ -361,8 +361,11 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	}
 
 	@Override
-    public boolean entregarSolicitudFirma(String idSolicitud, String comentario) {
+    public boolean entregarSolicitudFirma(String idSolicitante, String idSolicitud, String comentario) {
         boolean resultado = false;
+        
+        setupSecurityHeadersWithUser(idSolicitante);
+        
         try {
             portafirmaPort.entregarSolicitudFirma(idSolicitud, comentario);
             resultado = true;
@@ -372,7 +375,7 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
         }
         return resultado;
     }
-
+	
     @Override
 	public String obtenerEstadoFirma(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		setupSecurityHeadersWithUser(solicitudFirmaPortafirma.idSolicitante);

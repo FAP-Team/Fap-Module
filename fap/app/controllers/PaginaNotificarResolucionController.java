@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityTransaction;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -17,20 +18,25 @@ import org.joda.time.DateTime;
 import messages.Messages;
 import models.Agente;
 import models.Documento;
+import models.Firma;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 import models.SolicitudGenerica;
+import play.db.jpa.JPA;
 import play.mvc.Util;
 import properties.FapProperties;
 import resolucion.ResolucionBase;
 import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
 import services.RegistroService;
 import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.platino.PlatinoGestorDocumentalService;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;
+import utils.AedUtils;
 import utils.ComboUtils;
 import utils.ResolucionUtils;
 import validation.CustomValidation;
@@ -298,6 +304,25 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				if (portafirmaService.comprobarSiSolicitudFirmada(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision)) {
+					//Se agrega la firma de los oficios de remisión del portafirma del gobierno al AED de la ACIISI
+					
+					PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+					GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+					
+				    es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(dbResolucionFAP.registro.oficial.uri);
+				    play.Logger.info("uri de documento platino " + documentoPlatino.getMetaInformacion().getURI());
+					if (documentoPlatino != null){
+						
+						try {
+							AedUtils.docPlatinotoDocumentoFirmantes(dbResolucionFAP.registro.oficial, documentoPlatino);
+							gestorDocumentalService.agregarFirma(dbResolucionFAP.registro.oficial, 
+									new Firma(documentoPlatino.getMetaInformacion().getFirmasElectronicas().getFirma(), dbResolucionFAP.registro.oficial.firmantes.todos));
+								
+						} catch (GestorDocumentalServiceException e) {
+							play.Logger.error("Error. No se ha podido agregar la firma al documento de resolución en el AED.", e);
+						}
+					}
+
 					dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionFirmados.name();
 					for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 						if (!linea.registro.fasesRegistro.firmada) {
@@ -375,6 +400,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 						InputStream is = justificanteSalida.getDocumento().contenido.getInputStream();
 						gestorDocumentalService.saveDocumentoTemporal(documento, is, "JustificanteOficioRemision" + ".pdf");
 						play.Logger.info(documento.descripcion+" almacenado en el AED");
+						play.Logger.info(documento.uriPlatino);
 						lineaResolucionFAP.registro.fasesRegistro.registro = true;
 	
 						List<Documento> documentos = new ArrayList<Documento>();

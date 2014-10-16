@@ -1,5 +1,19 @@
 h2. Changelog
 
+h3. Versión 2.5.5RC2
+
+* Revisión de Tests y corrección de errores
+* Solucionado nullPointer cuando no se introduce contraseña en envío a Portafirma
+* Añadidos waitPopups en varios preparar para firmar
+* Se permite seguir firmando anexos a firmantes múltiples después de la firma del firmante único
+* Se corrigen algunos mensajes relacionado con la firma de documentos anexos.
+* Se puede firmar después de intentar firmar con un certificado no permitido
+* Solucionado popup al realizar una segunda firma en un documento.
+* Se cambia la inicialización del MiniApplet al momento de la firma.
+* Se entrega la solicitud de firma al portafirma de forma automática.
+* Solucionado los documentos adjuntos por uri no se deberían poder firmar.
+* Corrección en ver oficios de remisión firmados.
+
 h3. Versión 2.5.5RC1
 
 * Modificación del permiso editarFirmaAceptacionRenuncia. Ahora no depende de la participación.

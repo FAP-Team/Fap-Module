@@ -320,7 +320,6 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    	
 	    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
 	    		models.Documento doc = new models.Documento();
-	    		propiedadesDoc.getIdentificador();
 	    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
 	    		listaDocumentos.add(doc);
 	    		doc.delete();
@@ -899,9 +898,14 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
         // Clasificar documento al expediente
         play.Logger.info("Clasificando el documento "+documento.uri+" en el AED");
-        aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
-        documento.clasificado = true;
-        documento.save();
+        try {
+        	  aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
+              documento.clasificado = true;
+              documento.save();
+        } catch(AedExcepcion e){
+        	play.Logger.info("Error Clasificando el documento "+e.getMessage()+" en el AED");
+        }
+      
         
         log.info("Documento temporal clasificado: Expediente: " + idAed + ", Documento: " + documento.uri);
     }
@@ -1380,15 +1384,22 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 * @param dbdocumento
 	 */
 	@Override
-	public void duplicarDocumentoSubido(models.Documento documento,
-			models.Documento dbDocumento)
+	public void duplicarDocumentoSubido(models.Documento documento, models.Documento dbDocumento)
 			throws GestorDocumentalServiceException {
 		
 		dbDocumento.refAed = true;
 		dbDocumento.uri = documento.uri;
-		dbDocumento.clasificado = documento.clasificado;
 		dbDocumento.descripcion = documento.descripcion;
 		dbDocumento.fechaSubida = new DateTime();
+		
+		Documento docAed = obtenerDocumento(dbDocumento.uri);
+		BinaryResponse response = new BinaryResponse();
+		response.propiedades = (PropiedadesAdministrativas)docAed.getPropiedades().getPropiedadesAvanzadas();
+		if (response.propiedades.getRegistro().getFechaRegistro() != null) {
+			dbDocumento.fechaRegistro = new DateTime(response.propiedades.getRegistro().getFechaRegistro());
+			dbDocumento.clasificado = true;
+		}
+		
 		dbDocumento.save();
 		
 	}

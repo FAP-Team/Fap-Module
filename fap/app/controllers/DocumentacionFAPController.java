@@ -154,9 +154,11 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
 			HashMap json = new HashMap();
+			
 			if (FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
 				json.put("firmado", true);
-				json.put("uri", documento.uri);
+				json.put("descripcion", documento.descripcion);
+				json.put("refAed", documento.refAed);
 				return new Gson().toJson(json);
 			} else {
 				List<String> firmantes = new ArrayList<String>();
@@ -174,6 +176,8 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 				if (firma != null) {
 					json.put("firma", firma.getContenido());
 				}
+				json.put("refAed", documento.refAed);
+				json.put("descripcion", documento.descripcion);
 				json.put("firmantes", firmantes);
 				json.put("url", FirmaUtils.obtenerUrlDocumento(documento.id));
 				return new Gson().toJson(json);

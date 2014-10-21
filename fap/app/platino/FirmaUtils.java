@@ -205,7 +205,7 @@ public class FirmaUtils {
 		}
 		
 		if (documento.refAed) {
-			Messages.error("El documento " + documento.uri + " pertenece a otro expediente y no puede ser firmado");
+			Messages.error("El documento " + documento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo");
 			return;
 		}
 		

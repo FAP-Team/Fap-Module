@@ -501,19 +501,25 @@
 			var firmadoDocumentoJSON =  obtenerFirmadoDocumento(idDocumento);
 			firmadoDocumento = convertirAJSON(firmadoDocumentoJSON);
 			if ((idDocumento != null) && (firmadoDocumento != null)) {
-				if (firmadoDocumento.firmado === false) {
-					//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
-					if (firmadoDocumento.url != null) {
-						listaDocumentos[selected[i].data.id] = firmadoDocumento;
-					} else {
-						//alert("Error al obtener urlDocumento");
-						break;
-					}
-				} else if (firmadoDocumento.firmado) {
-					resultado = "true";
-                    errores["DOC_YA_FIRMADO"] = "El documento " + firmadoDocumento.uri + " ya está firmado por todos los interesados";
-					//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
-				}
+			
+			    if ((firmadoDocumento.refAed == null) || (firmadoDocumento.refAed === false)) {
+					if (firmadoDocumento.firmado === false) {
+						//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
+						if (firmadoDocumento.url != null) {
+							listaDocumentos[selected[i].data.id] = firmadoDocumento;
+						} else {
+							//alert("Error al obtener urlDocumento");
+							break;
+						}
+					} else if (firmadoDocumento.firmado) {
+						resultado = "true";
+	                    errores["DOC_YA_FIRMADO"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido firmado por todos los interesados";
+						//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
+				    }
+				} else {
+                     errores["DOC_REF_AED"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo";
+                }
+                
 			} else {
 				//alert("Error al obtener idDocumento o firmadoDocumento");
 				break;
@@ -550,8 +556,6 @@
 				}
 			}
 			
-			
-
 		} else if (resultadoFirma.error != null) {
 			errores[idDocumento] = resultadoFirma.error;
 		}
@@ -594,19 +598,11 @@
 	}
 	
 	var boton_firmar_handler = function(callback){
-
-        // Se llama a initFirma antes de realizar la firma de forma sincrona
-        // y se comprueba si ya estaba inicializado
-        #{if miniApplet}
-           if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
-              callback();
-           }
-        #{/if}
           
 	    var i;
         var selected = sm${id}.getSelection();
         var idDocumento;
-        var listaDocumentos;
+        var listaDocumentos = {};
         var resultado;
         var errores = {};
         var aciertos = {};
@@ -616,26 +612,47 @@
             mensajes.error('No hay documentos seleccionados para firmar.');
         } else {                        
             listaDocumentos = obtenerUrlsDocumentos(selected, errores);
-            var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);
-                for (var key in listaDocumentos) {
-                    if (listaDocumentos.hasOwnProperty(key)){
-                        $.when(firmas[key]).done(function(resultadoFirma){
-                            firmaRealizada(resultadoFirma, listaDocumentos, errores, aciertos);
-                         });
-
-                        $.when(firmas[key]).fail(function(resultadoFirma){
-                            var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
-                            errores[idDocumento] = resultadoFirma.error;
-                        });
-
-                    }
-                }
-
-                $.when.apply($, firmas).always(function() {
-                    todasFirmasRealizadas(errores, aciertos); 
-                });
+            
+             if (Object.keys(listaDocumentos).length > 0) {
+                // Se llama a initFirma antes de realizar la firma de forma sincrona
+                // y se comprueba si ya estaba inicializado
+                #{if miniApplet}
+                   if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
+                      callback();
+                   }
+                #{/if}
                 
-            }
+	            var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);
+	                for (var key in listaDocumentos) {
+	                    if (listaDocumentos.hasOwnProperty(key)){
+	                        $.when(firmas[key]).done(function(resultadoFirma){
+	                            firmaRealizada(resultadoFirma, listaDocumentos, errores, aciertos);
+	                         });
+	
+	                        $.when(firmas[key]).fail(function(resultadoFirma){
+	                            var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
+	                            errores[idDocumento] = resultadoFirma.error;
+	                        });
+	
+	                    }
+	                }
+	
+	                $.when.apply($, firmas).always(function() {
+                        todasFirmasRealizadas(errores, aciertos); 
+                    });
+               } else {
+                  
+                   if (Object.keys(errores).length > 0) {
+                        for (var k in errores) {
+                            if (errores.hasOwnProperty(k)){
+                                 mensajes.error(errores[k]);
+                            }
+                        }
+                    }
+                    popupWait_close();
+               }
+          
+        } 
 	}
 	
     #{if botonFirmar}

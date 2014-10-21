@@ -448,7 +448,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				// Guarda la firma en el AED
                 firmante.nombre = firmanteCertificado.nombre;
                 agregarFirmaEnGestorDocumental(documento, firma, firmante);
-                Messages.ok("Firma de documento " + documento.uri + " con éxito");
+                Messages.ok("Firma de documento " + documento.descripcion + " con éxito");
             }
 		}else{
 			play.Logger.error("firmanteCertificado == null????");
@@ -474,7 +474,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             Messages.error("El certificado no se corresponde con uno que puede firmar la solicitud.");
         }else{
             if(firmante.fechaFirma != null){
-            	Messages.error("Este certificado ya ha firmado el documento " + documento.uri);
+            	Messages.error("Este certificado ya ha firmado el documento " + documento.descripcion);
             }
 
             play.Logger.info("Firmante encontrado " + firmante.idvalor );
@@ -487,7 +487,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     }
 
     private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
-        int index = -1;
         Firmante firmante = null;
         for (Firmante fB : firmantes) {
             if (fB.idvalor.equals(idValorFirmante)) {

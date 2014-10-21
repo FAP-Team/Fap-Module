@@ -295,19 +295,24 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		
 		EditarResolucionController.formSelectJefeServicioBindReferences(resolucionFAP);
 		
+		Agente agenteActual = AgenteController.getAgente();
+		
 		if (!Messages.hasErrors()) {
+			resolucionFAP.solicitudFirmaPortafirma.idSolicitante = agenteActual.usuarioldap;
 			EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
 			
-			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
-				PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-				try {
-					dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante);
-				} catch (DBOrganizacionException_Exception e) {
-					play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
-					Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+			if (!Messages.hasErrors()) {
+				if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
+					PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+					try {
+						dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante);
+					} catch (DBOrganizacionException_Exception e) {
+						play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
+						Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+					}
+					if ((dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante.isEmpty()))
+						Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 				}
-				if ((dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante.isEmpty()))
-					Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 			}
 		}
 
@@ -315,7 +320,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			EditarResolucionController.formSelectJefeServicioValidateRules(dbResolucionFAP, resolucionFAP);
 
 			try {
-				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = AgenteController.getAgente();
+				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = agenteActual;
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
                 portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
@@ -363,11 +368,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo = resolucionFAP.solicitudFirmaPortafirma.plazoMaximo;
 		CustomValidation.required("resolucionFAP.numero_folios", resolucionFAP.numero_folios);
 		dbResolucionFAP.numero_folios = resolucionFAP.numero_folios;
+		
 		if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
-			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.idSolicitante", resolucionFAP.solicitudFirmaPortafirma.idSolicitante);
-			dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante = resolucionFAP.solicitudFirmaPortafirma.idSolicitante;
-//			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante);
-//			dbResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante;
+			if (resolucionFAP.solicitudFirmaPortafirma.idSolicitante == null){
+				Messages.error("El usuario no tiene asociado un identificador único en el ldap del gobierno.");
+				play.Logger.error("El usuario no tiene asociado un identificador único en el ldap del gobierno.");
+			} else
+				dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante = resolucionFAP.solicitudFirmaPortafirma.idSolicitante;
 		}
 		else {
 			dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");

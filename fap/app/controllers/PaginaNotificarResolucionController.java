@@ -175,22 +175,25 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		
 		PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirmaBindReferences(resolucionFAP);
 
+		Agente agenteActual = AgenteController.getAgente();
+		
 		if (!Messages.hasErrors()) {
-
+			resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = agenteActual.usuarioldap;
 			PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirmaValidateCopy("editar", dbResolucionFAP, resolucionFAP);
 
-			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
-				PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-				try {
-					dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
-				} catch (DBOrganizacionException_Exception e) {
-					play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
-					Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+			if (!Messages.hasErrors()) {
+				if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
+					PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+					try {
+						dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
+					} catch (DBOrganizacionException_Exception e) {
+						play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
+						Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+					}
+					if ((dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante.isEmpty()))
+						Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 				}
-				if ((dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriFuncionarioSolicitante.isEmpty()))
-					Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 			}
-			
 		}
 
 		if (!Messages.hasErrors()) {
@@ -199,8 +202,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		
 		if (!Messages.hasErrors()) {
 			
-			Agente agenteActual = AgenteController.getAgente();
-
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tema = "Oficios de remisión";
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.materia = "Se firmarán los oficios de remisión de la resolución "+idResolucionFAP;
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tipoSolicitud = TipoSolicitudEnumType.OTROS.value();
@@ -255,11 +256,13 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario;
 			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo;
+			
 			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
-				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante);
-				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante;
-//				CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante);
-//				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante;
+				if (resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante == null){
+					Messages.error("El usuario no tiene asociado un identificador único en el ldap del gobierno.");
+					play.Logger.error("El usuario no tiene asociado un identificador único en el ldap del gobierno.");
+				} else
+					dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante;
 			}
 			else {
 				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = FapProperties.get("portafirma.usuario");

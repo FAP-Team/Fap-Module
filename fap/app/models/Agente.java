@@ -62,6 +62,8 @@ public class Agente extends FapModel {
 	@Column(length = 500)
 	public String cargo;
 
+	public String usuarioldap;
+
 	public Agente() {
 		init();
 	}

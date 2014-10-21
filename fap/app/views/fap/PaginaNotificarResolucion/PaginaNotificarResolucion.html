@@ -167,10 +167,6 @@
 			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo', requerido:true, titulo:'Fecha tope firma' /}		
 
 			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.platino.portafirma") == true}
-				
-			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante', requerido:true, titulo:'Usuario LDAP' /}		
-		
-			*{ #{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante', password:true, requerido:false, titulo:'Contraseña LDAP' /} }*
 		
 			#{/fap.grupo}
 

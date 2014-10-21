@@ -1,6 +1,7 @@
 package services.platino;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -10,7 +11,6 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import es.gobcan.platino.servicios.organizacion.*;
-
 import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
@@ -68,7 +68,12 @@ public class PlatinoBDOrganizacionServiceImpl {
 	public String recuperarURIPersona(String uid) throws DBOrganizacionException_Exception {
 		try {
 			
-			return dbOrgPort.recuperarURIPersona(uid, null, true).get(0);
+			List<String> lstURIPersona = dbOrgPort.recuperarURIPersona(uid, null, true);
+			
+			if (!lstURIPersona.isEmpty())
+				return lstURIPersona.get(0);
+			else
+				return null;
 			
 		} catch (DBOrganizacionException_Exception e) {
 			play.Logger.info("Error al recuperar el usuario desde BD Orgaizacion de Platino");

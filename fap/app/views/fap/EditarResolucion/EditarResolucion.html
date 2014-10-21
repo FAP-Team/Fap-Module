@@ -246,10 +246,6 @@
 			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}
 			
 			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.platino.portafirma") == true}
-				
-			#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirma.idSolicitante', requerido:true, titulo:'Usuario LDAP' /}		
-		
-		*{	#{fap.texto campo:'resolucionFAP.solicitudFirmaPortafirma.passwordSolicitante', password:true, requerido:false, titulo:'Contraseña LDAP' /} }*
 		
 			#{/fap.grupo}	
 		

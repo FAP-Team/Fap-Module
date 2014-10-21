@@ -308,19 +308,14 @@ Formulario Principal {
 					Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
 					Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Ver" ancho="80"
 				}
+				
 				Form formSelectJefeServicio {
 					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Destinatario Portafirma" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.solicitudFirmaPortafirma.prioridad titulo="Prioridad Firma" requerido
 					Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirma.plazoMaximo titulo="Fecha Tope Firma" requerido
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
 
-					Grupo loginPortafirmasPlatino borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
-						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.idSolicitante titulo="Usuario LDAP" requerido
-						Texto campo=ResolucionFAP.solicitudFirmaPortafirma.passwordSolicitante titulo="Contraseña LDAP" password //requerido
-					}
-
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
-
 				} 
 			}
 			
@@ -599,10 +594,7 @@ Formulario Principal {
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
 								Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario titulo="Destinatario Portafirma" requerido
 								Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha tope firma" requerido
-								Grupo loginPortafirmasPlatinoOficiosRemision borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.platino.portafirma\") == true" {
-									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante titulo="Usuario LDAP" requerido
-									Texto campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.passwordSolicitante titulo="Contraseña LDAP" password //requerido
-								}
+								
 								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}

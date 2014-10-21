@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.activation.DataSource;
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -53,6 +54,7 @@ import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
+import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
@@ -109,6 +111,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	private final String ALIAS;
 	private final String ASUNTO;
 	private final long UNIDAD_ORGANICA;
+	private final String TIPO_TRANSPORTE;
 	
 	@Inject
 	public PlatinoRegistroServiceImpl(PropertyPlaceholder propertyPlaceholder, FirmaService firmaService, GestorDocumentalService gestorDocumentalService){
@@ -128,6 +131,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         PASSWORD_ENC = encriptarPassword(PASSWORD);
         ASUNTO = FapProperties.get("fap.platino.registro.asunto");
         UNIDAD_ORGANICA = FapProperties.getLong("fap.platino.registro.unidadOrganica");
+        TIPO_TRANSPORTE = FapProperties.get("fap.platino.registro.tipoTransporte");
         
         this.platinoGestorDocumentalService = new PlatinoGestorDocumentalService(propertyPlaceholder);
 	}
@@ -209,7 +213,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    	datosRegistro.setNumeroDocumento("A99999997");
 	    }
 	    log.info("Llamando al getDatosRegistroNormalizados");
-	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro);
+	    String datos = getDatosRegistroNormalizados(expediente, datosRegistro, documento);
 	    log.info("Llamando a firmarDatosRegistro");
 	    String datosFirmados = firmarDatosRegistro(datos);
         JustificanteRegistro justificantePlatino = registroDeEntrada(datos, datosFirmados);
@@ -298,13 +302,13 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
      * @throws RegistroServiceException
      */
 	
-    private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro) throws RegistroServiceException {
+    private String getDatosRegistroNormalizados(ExpedientePlatino expedientePlatino, DatosRegistro datosRegistro, Documento documento) throws RegistroServiceException {
         log.info("[getDatosRegistroNormalizados] Ruta expediente " + datosRegistro.getExpediente().getRuta());
         
         crearExpedienteSiNoExiste(expedientePlatino);
         
         // Documento que se va a registrar
-        es.gobcan.platino.servicios.registro.Documento doc = insertarDocumentoGestorDocumentalPlatino(expedientePlatino, datosRegistro.getDocumento());
+        es.gobcan.platino.servicios.registro.Documento doc = insertarDocumentoGestorDocumentalPlatino(expedientePlatino, datosRegistro.getDocumento(), documento);
         Documentos documentosRegistrar = new Documentos();
         documentosRegistrar.getDocumento().add(doc);
               
@@ -329,13 +333,15 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         if (datosRegistro.getUnidadOrganica() != null)
         	organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
 
+        //El valor de este campo se toma por defecto de la property
+        String tipoTransporte = TIPO_TRANSPORTE;
         log.info("[getDatosRegistroNormalizados] normalizando datos firmados");
         try {
             String datosAFirmar = registroPort.normalizaDatosFirmados(
             		organismo, // Organismo
                     asunto, // Asunto
                     nombre, // Nombre remitente
-                    null, // TipoTransporte (opcional)
+                    tipoTransporte, // TipoTransporte (opcional)
                     tipoDocumento, // TipoDocumento (opcional)
                     numeroDocumento, // NIF remitente
                     fecha, // Fecha en la que se produce la solicitud
@@ -361,11 +367,16 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     }
     
     private es.gobcan.platino.servicios.registro.Documento insertarDocumentoGestorDocumentalPlatino(
-            ExpedientePlatino expedientePlatino, DatosDocumento datosDocumento)
+            ExpedientePlatino expedientePlatino, DatosDocumento datosDocumento, Documento documento)
             throws RegistroServiceException {
         try {
             String uri = platinoGestorDocumentalService.guardarDocumento(expedientePlatino.ruta, datosDocumento);
             es.gobcan.platino.servicios.registro.Documento doc = DatosRegistro.documentoSGRDEToRegistro(datosDocumento.getContenido(), uri);
+            if (documento != null) {
+            	documento.uriPlatino = uri;
+            	documento.save();
+            }  	
+            
             return doc;
         }catch(Exception e){
             throw new RegistroServiceException("Error al insertar el documento a registrar en el gestor documental de platino", e);
@@ -398,9 +409,14 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     @Override
     public models.JustificanteRegistro registroDeSalida(Solicitante solicitante, Documento documento,ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
     	play.Logger.info("Preparando registro de salida");
+    	
+    	EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
 
+    	tx.begin();
 		DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
-		String datosAFirmar = getDatosRegistroNormalizados(expediente, datosRegistro);
+		String datosAFirmar = getDatosRegistroNormalizados(expediente, datosRegistro, documento);
+		tx.commit();
 		play.Logger.info(datosAFirmar);
 
 		String datosFirmados;
@@ -410,23 +426,26 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 		} catch(Exception e){
             throw new RegistroServiceException("Error firmando los datos de registro de Salida"+ e);
         }
-
+		
+		models.JustificanteRegistro justificante;
+		tx.begin();
 		try {	
 			JustificanteRegistro justificantePlatino = registroDeSalida(datosAFirmar, datosFirmados);
 			play.Logger.info("Registro de salida realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
 			play.Logger.info("registroDeSalida -> EXIT OK");
-			models.JustificanteRegistro justificante = getJustificanteRegistroModel(justificantePlatino);
+			justificante = getJustificanteRegistroModel(justificantePlatino);
 			play.Logger.info("Realizando un Registro de Salida: " +
 	        		"Agente: "+AgenteController.getAgente().name+
 	        		"Número de Registro: "+justificante.getNumeroRegistro()+
 	        		"Fecha: "+justificante.getFechaRegistro());
 			play.Logger.info("Registro de Salida realizado con éxito");
-			return justificante;
 		} catch (Exception e) {
 			play.Logger.info("Error al obtener el justificante y EXIT "+e);
 			play.Logger.info("registroDeSalida -> EXIT ERROR");
 			throw new RegistroServiceException("Error al registrar de salida: "+e.getMessage());
-		}		
+		}
+		tx.commit();
+		return justificante;
 	}	
 
 	public JustificanteRegistro registroDeSalida(String datosAFirmar, String datosFirmados) throws Exception {

@@ -85,6 +85,8 @@ public class Documento extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Firmantes firmantes;
 
+	public Boolean anexo;
+
 	public Documento() {
 		init();
 	}

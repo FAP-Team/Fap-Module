@@ -39,6 +39,7 @@ public class DocumentosFAPController extends DocumentosFAPControllerGen {
 				CustomValidation.required("documento", documento);
 				dbDocumento.tipo = documento.tipo;
 				dbDocumento.descripcion = documento.descripcion;
+                dbDocumento.anexo = true;
 		
 				if ((documento.uri != null) && (!documento.uri.isEmpty())) {
 					services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);

@@ -10,7 +10,8 @@ import models.Documento;
 import models.SolicitudGenerica;
 import controllers.fap.AgenteController;
 import controllers.gen.DocumentosAportacionControllerGen;
-			
+import play.mvc.Util;
+
 public class DocumentosAportacionController extends DocumentosAportacionControllerGen {
 	public static void index(String accion, Long idSolicitud, Long idDocumento) {
 		if (accion == null)
@@ -50,6 +51,7 @@ public class DocumentosAportacionController extends DocumentosAportacionControll
 		CustomValidation.required("documento", documento);
 		dbDocumento.tipo = documento.tipo;
 		dbDocumento.descripcion = documento.descripcion;
+		dbDocumento.anexo = true;
 
 		if ((documento.uri != null) && (!documento.uri.isEmpty())) {
 			services.GestorDocumentalService gestorDocumentalService = config.InjectorConfig.getInjector().getInstance(services.GestorDocumentalService.class);

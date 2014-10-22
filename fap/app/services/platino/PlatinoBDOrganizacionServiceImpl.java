@@ -35,6 +35,21 @@ public class PlatinoBDOrganizacionServiceImpl {
         WSUtils.configureSecurityHeaders(dbOrgPort, propertyPlaceholder);
         PlatinoProxy.setProxy(dbOrgPort, propertyPlaceholder);
 	}
+	
+	public PlatinoBDOrganizacionServiceImpl(PropertyPlaceholder propertyPlaceholder, DBOrganizacionServiceBean dbOrgPortRecibido) {
+		this.propertyPlaceholder = propertyPlaceholder;
+		
+		if (dbOrgPortRecibido != null) {
+			 dbOrgPort = dbOrgPortRecibido;
+		} else {
+	        URL wsdlURL = PlatinoBDOrganizacionServiceImpl.class.getClassLoader().getResource("wsdl/dborganizacion.wsdl");
+	        dbOrgPort = new DBOrganizacionService(wsdlURL).getDBOrganizacionService();
+	        
+	        WSUtils.configureEndPoint(dbOrgPort, getEndPoint());
+	        WSUtils.configureSecurityHeaders(dbOrgPort, propertyPlaceholder);
+	        PlatinoProxy.setProxy(dbOrgPort, propertyPlaceholder);
+		}
+	}
 
 	private String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.organizacion.url");
@@ -67,10 +82,12 @@ public class PlatinoBDOrganizacionServiceImpl {
 	
 	public String recuperarURIPersona(String uid) throws DBOrganizacionException_Exception {
 		try {
+			List<String> lstURIPersona = null;
 			
-			List<String> lstURIPersona = dbOrgPort.recuperarURIPersona(uid, null, true);
+			if (uid != null)
+				lstURIPersona = dbOrgPort.recuperarURIPersona(uid, null, true);
 			
-			if (!lstURIPersona.isEmpty())
+			if ((lstURIPersona != null) && (!lstURIPersona.isEmpty()))
 				return lstURIPersona.get(0);
 			else
 				return null;

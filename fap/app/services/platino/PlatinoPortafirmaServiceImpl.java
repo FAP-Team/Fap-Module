@@ -78,10 +78,10 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 
 	@Inject
 	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder) {
-        this(propertyPlaceholder, null);
+        this(propertyPlaceholder, null, null);
     }
 		
-	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, SolicitudFirmaInterface portafirmaPortRecibido) {
+	public PlatinoPortafirmaServiceImpl(PropertyPlaceholder propertyPlaceholder, SolicitudFirmaInterface portafirmaPortRecibido, PlatinoBDOrganizacionServiceImpl platinoDBOrgPortRecibido) {
 		this.propertyPlaceholder = propertyPlaceholder;
         if (portafirmaPortRecibido != null) {
             portafirmaPort = portafirmaPortRecibido;
@@ -94,6 +94,10 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 		
             PlatinoProxy.setProxy(portafirmaPort, propertyPlaceholder);
         }
+        
+
+        if (platinoDBOrgPortRecibido != null)
+        	platinoDBOrgPort = platinoDBOrgPortRecibido;
 	}
 	
 	//---------CONFIGURACION SERVICIO----------
@@ -133,8 +137,17 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 
 	private void setupSecurityHeadersWithUser(String uid) {
 		try {
-			String userUri = platinoDBOrgPort.recuperarURIPersona(uid);
-			WSUtils.configureSecurityHeadersWithUser(portafirmaPort, userUri);
+			String userUri = null;
+			
+			if (uid != null)
+				userUri = platinoDBOrgPort.recuperarURIPersona(uid);
+			else
+				throw new DBOrganizacionException_Exception("El uid de la persona es null");
+			
+			if (userUri != null)
+				WSUtils.configureSecurityHeadersWithUser(portafirmaPort, userUri);
+			else
+				throw new DBOrganizacionException_Exception("La uri de la persona es null");
 		} catch (DBOrganizacionException_Exception e) {
 			play.Logger.info("Error al configurar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage());
 			//throw new PortafirmaFapServiceException("Error al configurar cabecera de seguridad para usuario: " + uid + ". " + e.getMessage(), e);

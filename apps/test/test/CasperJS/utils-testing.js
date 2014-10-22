@@ -169,7 +169,7 @@ exports.subirDocumentacionSolicitud = function() {
     exports.echo("Subiendo documentos ...");
     var pwd = require('system').env['PWD'];
     exports.echo("PWD = " + pwd);
-    var file = "res/pdf-file.pdf";
+    var file = "./res/pdf-file.pdf";
     var rutaJenkins = (pwd && (pwd.indexOf("jenkins") != -1)) ? pwd + "/test/CasperJS/" : "";
     exports.abrirEnlace("Documentación FAP", "Documentación");
     exports.rellenarFormularioNuevoDocumento(

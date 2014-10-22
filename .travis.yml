@@ -11,10 +11,13 @@ env:
     - PLAY_VERSION=1.2.4
     - FAPSDK=${TRAVIS_BUILD_DIR}
     - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
+    - DIR_CASPERJS=${FAPSDK}/CasperJS
+    - CASPERJS=${DIR_CASPERJS}/bin/casperjs
 
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
+- git clone git://github.com/n1k0/casperjs.git ${DIR_CASPERJS}
 
 script:
 - echo FAPSDK=${FAPSDK}
@@ -26,5 +29,9 @@ script:
 - cd ${FAPSDK}/apps/test
 - ${PLAY} dependencies  --sync -Dfapsdk=${FAPSDK} > /dev/null
 - ${PLAY} fap:generate
-- ${PLAY} auto-test -XX:MaxPermSize=1024m 
+- ${PLAY} auto-test -XX:MaxPermSize=1024m
+- ${PLAY} test & casper_pid=$!
+- sleep 30
+- ${CASPERJS} test `pwd`/test/CasperJS/*.test.js
+- kill $casper_pid
 

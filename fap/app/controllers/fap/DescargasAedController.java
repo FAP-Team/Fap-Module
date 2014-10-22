@@ -11,10 +11,12 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 
+import models.Documento;
 import org.joda.time.DateTime;
 
 import config.InjectorConfig;
 
+import play.Logger;
 import play.libs.Codec;
 import play.libs.IO;
 import play.mvc.Router;
@@ -96,56 +98,70 @@ public class DescargasAedController extends GenericController {
 	 */
 	public static void descargarFirmado(String k){
 		String uri= AedUtils.desencriptarUri(k);
-		
-		es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(uri);
-		
-		if (documentoPlatino != null){
-		
-			response.setHeader("Content-Disposition", "inline; filename=\"" + documentoPlatino.getContenido().getName() + "\"");
-	        response.contentType = documentoPlatino.getContenido().getContentType();
-	        
-	        try {
-				IO.write(documentoPlatino.getContenido().getInputStream(), response.out);
-			} catch (IOException e) {
-				play.Logger.error("Se produjo un error generando el documento: " + e);
-			}
-	       
-		} else {
-			if(uri != null){
-				BinaryResponse bresp;
-				try {
-				    Documento documento = Documento.findByUri(uri);
-				    
-					if(documento == null) {
-						bresp = aedService.getDocumentoConInformeDeFirmaByUri(uri);
-						if(bresp == null){
-							bresp = aedService.getDocumentoByUri(uri);
-							if(bresp == null)
-								notFound();
-						}	
-					}
-					else {
-						bresp = aedService.getDocumentoConInformeDeFirma(documento);
-						if(bresp == null){
-							bresp = aedService.getDocumento(documento);
-							if(bresp == null)
-								notFound();
-						}
-					}
-					
-		            response.setHeader("Content-Disposition", "inline; filename=\"" + bresp.nombre + "\"");
-		            response.contentType = bresp.contenido.getContentType();
-					
-		            IO.write(bresp.contenido.getInputStream(), response.out);
-				} catch (Exception e) {
-					play.Logger.error("Se produjo un error recuperando el documento del AED"+e);
-				}
-			}else{
-				forbidden("No tiene permisos para acceder a este documento");
-			}
+        Documento documento = buscarDocumentoAed(uri);
+        es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = buscarDocumentoPlatinoAed(uri,documento);
+        if (documentoPlatino.getContenido() != null){
+            generarPdfResponse(documentoPlatino.getContenido(),"");
+		} else if(uri != null){
+            BinaryResponse bresp = buscarDocumentoFirmadoAed(uri, documento);
+            generarPdfResponse(bresp.contenido, bresp.nombre);
+        }else {
+            forbidden("No tiene permisos para acceder a este documento");
 		}
 	}
-	
+
+    private static Documento buscarDocumentoAed(String uri) {
+        Documento documento = new Documento();
+        if(uri != null) {
+            documento = Documento.findByUri(uri);
+        }
+        return documento;
+    }
+
+    private static es.gobcan.platino.servicios.sgrde.Documento buscarDocumentoPlatinoAed(String uri, Documento documento) {
+        es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = new es.gobcan.platino.servicios.sgrde.Documento();
+        if((documento != null) && (!documento.anexo) && (documento.uriPlatino != null)) {
+            documentoPlatino = platinoaed.descargarFirmado(uri);
+        }
+        return documentoPlatino;
+    }
+
+    private static void generarPdfResponse(DataHandler dataHandler, String fileName) {
+        response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+        response.contentType =dataHandler.getContentType();
+
+        try {
+            IO.write(dataHandler.getInputStream(), response.out);
+        } catch (IOException e) {
+            play.Logger.error("Se produjo un error generando el documento: " + e);
+        }
+    }
+
+    private static BinaryResponse buscarDocumentoFirmadoAed(String uri, Documento documento){
+        BinaryResponse bresp = null;
+        try {
+            if (documento == null) {
+                bresp = aedService.getDocumentoConInformeDeFirmaByUri(uri);
+                if (bresp == null) {
+                    bresp = aedService.getDocumentoByUri(uri);
+                    if (bresp == null)
+                        notFound();
+                }
+            } else {
+                bresp = aedService.getDocumentoConInformeDeFirma(documento);
+                if (bresp == null) {
+                    bresp = aedService.getDocumento(documento);
+                    if (bresp == null)
+                        notFound();
+                }
+            }
+        } catch (GestorDocumentalServiceException e) {
+            Logger.info("Error al obtener documento firmado AED en DescargasAedController: " + e.getMessage());
+        }
+        return bresp;
+    }
+
+
 	/**
 	 * Controlador intermedio necesario porque de una plantilla html no podemos invocar directamente 
 	 * un método de la interfaz GestorDocumentalService.

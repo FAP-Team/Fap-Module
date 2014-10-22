@@ -254,7 +254,7 @@ public class PlatinoGestorDocumentalService {
 	 */
 	//TODO Este método debe ir en la implementación del GestorDocumental de Platino
 	public static String obtenerURIPlatino(String uriDocumento, Object service) {
-		GestorDocumentalService gestorDocumentalPort = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		
 		//Caso en el que el documento se encuentra en el AED de la ACIISI
 		models.Documento documento = models.Documento.findByUri(uriDocumento); // Documento subido al gestor documental de la ACIISI
@@ -268,7 +268,7 @@ public class PlatinoGestorDocumentalService {
 				String uriPlatinoExpediente = convertToHexNoQuery(expedientePlatino.getRuta());
 				
 				//Obtenemos el documento original del gestor documental
-				BinaryResponse doc = gestorDocumentalPort.getDocumentoByUri(documento.uri);
+				BinaryResponse doc = gestorDocumentalService.getDocumentoByUri(documento.uri);
 				
 				//Configuramos los datos de subida del documento
 				DatosDocumento datos = new DatosDocumento();

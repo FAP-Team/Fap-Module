@@ -110,6 +110,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					play.Logger.info("Se inicia el proceso de Registro");
 					// Se obtiene el justificante de registro de salida del oficio de remisión
 					models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
+					lineaResolucionFAP.registro.refresh();
 					lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
 					Documento documento = lineaResolucionFAP.registro.justificante;
 					documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
@@ -156,7 +157,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		
 		if (!Messages.hasErrors()) {
 
-			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada sin éxito (Problemas de Validación)");
 

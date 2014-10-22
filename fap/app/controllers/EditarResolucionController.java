@@ -91,7 +91,7 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		//System.out.println("url = " + ad.toString());
 		
 		
-		log.info("Visitando página: " + "gen/EditarResolucion/EditarResolucion.html" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+		log.info("Visitando página: " + "gen/EditarResolucion/EditarResolucion.html" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		renderTemplate("fap/EditarResolucion/EditarResolucion.html", accion, idResolucionFAP, resolucionFAP);		
 	}
 	

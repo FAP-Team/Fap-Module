@@ -409,14 +409,9 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     @Override
     public models.JustificanteRegistro registroDeSalida(Solicitante solicitante, Documento documento,ExpedientePlatino expediente, String descripcion) throws RegistroServiceException {
     	play.Logger.info("Preparando registro de salida");
-    	
-    	EntityTransaction tx = JPA.em().getTransaction();
-		tx.commit();
 
-    	tx.begin();
 		DatosRegistro datosRegistro = getDatosRegistro(solicitante, documento, expediente, descripcion);
 		String datosAFirmar = getDatosRegistroNormalizados(expediente, datosRegistro, documento);
-		tx.commit();
 		play.Logger.info(datosAFirmar);
 
 		String datosFirmados;
@@ -428,7 +423,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         }
 		
 		models.JustificanteRegistro justificante;
-		tx.begin();
+
 		try {	
 			JustificanteRegistro justificantePlatino = registroDeSalida(datosAFirmar, datosFirmados);
 			play.Logger.info("Registro de salida realizado con justificante con NDE " + justificantePlatino.getNDE() + " Numero Registro General: " + justificantePlatino.getDatosFirmados().getNúmeroRegistro().getContent().get(0)+" Nº Registro Oficina: "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getOficina()+" / "+justificantePlatino.getDatosFirmados().getNúmeroRegistro().getNumOficina());
@@ -444,7 +439,6 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 			play.Logger.info("registroDeSalida -> EXIT ERROR");
 			throw new RegistroServiceException("Error al registrar de salida: "+e.getMessage());
 		}
-		tx.commit();
 		return justificante;
 	}	
 

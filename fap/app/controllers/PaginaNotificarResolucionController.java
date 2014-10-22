@@ -80,7 +80,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		} else if (!"borrado".equals(accion))
 			resolucionFAP = PaginaNotificarResolucionController.getResolucionFAP(idResolucionFAP);
 
-		log.info("Visitando página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+		log.info("Visitando página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		renderTemplate("fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html", accion, idResolucionFAP, resolucionFAP);
 	}
 
@@ -157,7 +157,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		}
 		if (!Messages.hasErrors()) {
 
-			log.info("Acción Editar de página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+			log.info("Acción Editar de página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "fap/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaNotificarResolucionController.formVolverRender(idResolucionFAP);
@@ -238,7 +238,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		
 		if (!Messages.hasErrors()) {
 			dbResolucionFAP.save();
-			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaNotificarResolucionController.formEnviarOficiosRemisionPortaFirmaRender(idResolucionFAP);
@@ -365,7 +365,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		}
 		if (!Messages.hasErrors()) {
 
-			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaNotificarResolucionController.formComprobarFirmasOficiosRemisionPortaFirmaRender(idResolucionFAP);
@@ -388,12 +388,17 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 				GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 				
+				EntityTransaction tx = JPA.em().getTransaction();
+				tx.commit();
+				
 				try  {
+					tx.begin();
 					
 					if (!lineaResolucionFAP.registro.fasesRegistro.registro) {
 						play.Logger.info("Se inicia el proceso de registro de salida del oficio de remisión "+lineaResolucionFAP.registro.oficial.uri);
 						// Se obtiene el justificante de registro de salida del oficio de remisión
 						models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
+						lineaResolucionFAP.registro.refresh();
 						lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
 						Documento documento = lineaResolucionFAP.registro.justificante;
 						documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
@@ -437,7 +442,9 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 					Messages.error("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
 					play.Logger.info("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
 				}
+				tx.commit();
 			}
+			
 		}
 
 		if (!Messages.hasErrors()) {
@@ -447,7 +454,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 		
 		if (!Messages.hasErrors()) {
 
-			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaNotificarResolucion/PaginaNotificarResolucion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaNotificarResolucionController.formRegistrarOficiosRemisionRender(idResolucionFAP);

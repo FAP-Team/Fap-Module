@@ -171,7 +171,7 @@ exports.presentarSolicitudActual = function () {
 
 exports.subirDocumentacionSolicitud = function() {
     exports.echo("Subiendo documentos ...");
-    var file = "/res/pdf-file.pdf";
+    var file = "res/pdf-file.pdf";
     var folder = "/test/CasperJS/";
     var rutaFichero = "";
     if (JENKINS) {
@@ -180,7 +180,7 @@ exports.subirDocumentacionSolicitud = function() {
     } else if (TRAVIS) {
         rutaFichero = require('system').env['TRAVIS_BUILD_DIR'] + folder;
     } else {
-        rutaFichero = ".";
+        rutaFichero = "./";
     }
     exports.abrirEnlace("Documentación FAP", "Documentación");
     exports.rellenarFormularioNuevoDocumento(

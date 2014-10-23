@@ -872,8 +872,8 @@ Entidad AutorizacionCesion noConstruct{
 	Boolean atc
 	Boolean inssA008
 	OneToMany Trabajador trabajadores
-	Boolean idi
-	Boolean platino
+	Boolean idi //Difusion BBDD ACIISI y otras I+D+I
+	Boolean identidad //SVD identidad
 }
 
 Entidad Trabajador {

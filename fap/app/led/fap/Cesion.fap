@@ -13,7 +13,7 @@ Formulario Solicitud campo=SolicitudGenerica {
 			titulo="El acceso a la certificación acreditativa de hallarme al corriente de las obligaciones tributarias en la Administración Tributaria Canaria (ATC)"
 			Check checkObtenerTrab campo=AutorizacionCesion.inssA008
 			titulo="Obtener de la Seguridad Social el Informe del número medio anual de trabajadores en situación de alta"
-			Check chkPlatino campo=AutorizacionCesion.platino 
+			Check chkPlatino campo=AutorizacionCesion.identidad
 			titulo="Obtener de la base de datos de la Polícia Nacional datos de mi identidad basándose en los datos introducidos"
 			Grupo borde=false mostrarSiCheck checkObtenerTrab = true{
 				Tabla trabajadoresSS campo=AutorizacionCesion.trabajadores popup=PopupTrabajadores titulo="Solicitante"{

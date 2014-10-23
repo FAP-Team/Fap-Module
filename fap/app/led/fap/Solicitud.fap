@@ -293,10 +293,10 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		Wiki {"En esta página se procederá a la verificación de Datos del usuario siempre y cuando el usuario haya consentido
 				el acceso a la base de datos."}
 		
-		Grupo sinPermiso titulo="Crear una nueva verificación de datos" permiso=noHayverificacion mostrarSiCampo SolicitudGenerica.cesion.autorizacionCesion.platino="false"{
+		Grupo sinPermiso titulo="Crear una nueva verificación de datos" permiso=noHayverificacion mostrarSiCampo SolicitudGenerica.cesion.autorizacionCesion.identidad="false"{
 				Wiki{"El usuario no ha consentido el acceso a su base de datos."}
 			}
-		Grupo VerificaDatos titulo="Crear una nueva verificación de datos" permiso=noHayverificacion mostrarSiCampo SolicitudGenerica.cesion.autorizacionCesion.platino="true"{
+		Grupo VerificaDatos titulo="Crear una nueva verificación de datos" permiso=noHayverificacion mostrarSiCampo SolicitudGenerica.cesion.autorizacionCesion.identidad="true"{
 			Form verificacionNueva {
 				Texto campo=SolicitudGenerica.peticion.uidUsuario titulo="Usuario" requerido
 				Texto campo=SolicitudGenerica.peticion.codigoCertificado titulo="Código de Certificado" requerido

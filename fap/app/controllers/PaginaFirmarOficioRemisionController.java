@@ -24,7 +24,9 @@ import properties.FapProperties;
 import resolucion.ResolucionBase;
 import security.Accion;
 import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
 import services.RegistroService;
+import services.RegistroServiceException;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
@@ -66,7 +68,8 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 	@Util
 	public static void firmaFirmarOficioRemisionFormFirmarOficioRemision(Long idResolucionFAP, Long idLineaResolucionFAP, String firma) {
 		LineaResolucionFAP lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP(idResolucionFAP, idLineaResolucionFAP);
-
+		Messages.clear();
+		
 		play.Logger.info("Metodo: firmaFirmarOficioRemisionFormFirmarOficioRemision");
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		Map<String, Object> vars = new HashMap<String, Object>();
@@ -97,6 +100,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			//ERROR
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
+		
 		if (!Messages.hasErrors()) {
 			lineaResolucionFAP.save();
 
@@ -149,18 +153,23 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					Messages.ok("Se realizó la clasificación correctamente");
 				}
 				
-			} catch (Throwable e)   {
-				Messages.error("Error almacenando el justificante del documento de oficio de remisión en el AED");
-				play.Logger.info("Error almacenando el justificante del documento de oficio de remisión en el AED");
+			} catch (RegistroServiceException reg)   {
+				Messages.error("Error realizando el proceso de registro");
+				play.Logger.error("Error realizando el proceso de registro");
+			} catch (GestorDocumentalServiceException e) {
+				Messages.error("Error clasificando los documentos de oficio de remisión en el AED");
+				play.Logger.error("Error clasificando los documentos de oficio de remisión en el AED");
+			} catch (Throwable e){
+				play.Logger.error("Error en el metodo firmaOficioRemision: " + e.getMessage());
 			}
 		}
 		
 		if (!Messages.hasErrors()) {
-
-			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
+			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada con éxito" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaFirmarOficioRemision/PaginaFirmarOficioRemision.html" + " , intentada sin éxito (Problemas de Validación)");
 
+		Messages.keep();
 		redirect("PaginaNotificarResolucionController.index", "editar", idResolucionFAP);
 	}
 	

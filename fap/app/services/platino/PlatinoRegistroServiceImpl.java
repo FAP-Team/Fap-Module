@@ -333,8 +333,13 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         if (datosRegistro.getUnidadOrganica() != null)
         	organismo = Long.valueOf(datosRegistro.getUnidadOrganica());
 
-        //El valor de este campo se toma por defecto de la property
-        String tipoTransporte = TIPO_TRANSPORTE;
+        //El valor de este campo se toma por defecto de la property si estuviese definida
+        String tipoTransporte;
+        if (TIPO_TRANSPORTE != "undefined") {
+        	tipoTransporte = TIPO_TRANSPORTE;
+        } else
+        	tipoTransporte = null;
+        
         log.info("[getDatosRegistroNormalizados] normalizando datos firmados");
         try {
             String datosAFirmar = registroPort.normalizaDatosFirmados(

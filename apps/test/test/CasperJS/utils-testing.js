@@ -69,7 +69,7 @@ exports.abrirUltimaSolicitud = function() {
     casper.thenOpen("Principal/solicitudes", function() {
         if (casper.exists("tr.x-grid-row:last-child")){
             casper.click("tr.x-grid-row:last-child");
-            casper.echo("Abriendo ˙ltima solicitud...")
+            casper.echo("Abriendo √∫ltima solicitud...")
             casper.thenClick(x('//span[text()[contains(.,"Editar")]]'), function() {
                 casper.then(function() {
                     casper.test.assertTitle("Combos");
@@ -98,7 +98,7 @@ exports.assertPaginaGuardada = function(casperRecibido) {
         casper.waitForSelector(selector);
     })
     casper.then(function() {
-        casper.test.assertSelectorHasText(selector,'P·gina editada correctamente');
+        casper.test.assertSelectorHasText(selector,'P√°gina editada correctamente');
     });
 }
 
@@ -136,7 +136,7 @@ exports.rellenarNuevaSolicitud = function() {
 
 exports.prepararParaFirmarSolicitudActual = function () {
     exports.echo("Preparando para firmar...");
-    exports.abrirEnlace("Presentacion","PresentaciÛn de la Solicitud");
+    exports.abrirEnlace("Presentacion","Presentaci√≥n de la Solicitud");
     var selector = "input[type='submit'][value='Preparar para firmar']";
     casper.then(function() {
         casper.test.assertExists(selector);
@@ -156,7 +156,7 @@ exports.prepararParaFirmarSolicitudActual = function () {
 exports.presentarSolicitudActual = function () {
     exports.echo("Presentando la solicitud...");
     var selectorTextoFirmar = x('//p[text()[contains(.,"Firmar y Registrar")]][1]');
-    exports.abrirEnlace("Presentacion","PresentaciÛn de la Solicitud");
+    exports.abrirEnlace("Presentacion","Presentaci√≥n de la Solicitud");
     casper.then(function() {
         if (!casper.exists(selectorTextoFirmar)) {
            exports.prepararParaFirmarSolicitudActual();
@@ -182,10 +182,10 @@ exports.subirDocumentacionSolicitud = function() {
     } else {
         rutaFichero = ".";
     }
-    exports.abrirEnlace("DocumentaciÛn FAP", "DocumentaciÛn");
+    exports.abrirEnlace("Documentaci√≥n FAP", "Documentaci√≥n");
     exports.rellenarFormularioNuevoDocumento(
         "fs://aportacionsolicitud/v01",
-        "La DescripciÛn del documento",
+        "La Descripci√≥n del documento",
         rutaFichero + file);
 };
 
@@ -215,7 +215,7 @@ exports.rellenarFormularioSolicitud = function() {
 
 exports.rellenarFormularioNuevoDocumento = function(tipo, descripcion, fichero) {
     var _tipo = tipo || "fs://aportacionsolicitud/v01";
-    var _desc = descripcion || "DescripciÛn del documento";
+    var _desc = descripcion || "Descripci√≥n del documento";
     var _file = fichero || "res/pdf-file.pdf";
     exports.echo("Rellenando documento " + _tipo + ": \""+ _desc + "\" con fichero " + _file );
     exports.clickEnSelector(x('//span[text()[contains(.,"Nuevo")]]'));
@@ -229,13 +229,13 @@ exports.rellenarFormularioNuevoDocumento = function(tipo, descripcion, fichero) 
 
 exports.guardarPCEconomicos = function() {
     exports.echo("Guardando PCEconomicos...");
-    exports.abrirEnlace("PCEconÛmicos", "Conceptos econÛmicos");
+    exports.abrirEnlace("PCEcon√≥micos", "Conceptos econ√≥micos");
     casper.then(function() {
         if(existeMensajeErrorBaremacion()) {
-            exports.echo("La baremaciÛn est· desactivada")
+            exports.echo("La baremaci√≥n est√° desactivada")
             exports.activarBaremacion(casper.getCurrentUrl());
         } else {
-            exports.echo("La baremaciÛn esta activada");
+            exports.echo("La baremaci√≥n esta activada");
         }
     });
     exports.clickEnGuardar();
@@ -245,11 +245,11 @@ exports.guardarPCEconomicos = function() {
 
 exports.activarBaremacion = function(paginaPrevia) {
     casper.then(function() {
-        exports.echo("Activando BaremaciÛn...")
+        exports.echo("Activando Baremaci√≥n...")
         var usuarioActual = exports.getUsuarioActual();
         exports.changeRole(casper, "Administrador");
         exports.abrirUrl("http://localhost:9009/Administracion/activarbaremacion", function () {
-            casper.click("input[type='submit'][value='Cargar Tipo EvaluaciÛn']");
+            casper.click("input[type='submit'][value='Cargar Tipo Evaluaci√≥n']");
         });
         if (paginaPrevia) {
             exports.abrirUrl(paginaPrevia);
@@ -274,7 +274,7 @@ exports.configurarGestorDocumental = function() {
             casper.click("input[type='submit'][value='Configurar gestor documental']");
         });
         casper.then(function () {
-            casper.click("input[type='submit'][value='Actualizar tr·mites']");
+            casper.click("input[type='submit'][value='Actualizar tr√°mites']");
         });
         exports.changeRole(casper, usuarioActual);
         casper.then(function() {
@@ -322,7 +322,7 @@ exports.getUsuarioActual = function() {
 }
 
 function existeMensajeErrorBaremacion() {
-    var selector = x("//div[contains(@class,'alert-error')]//li[contains(text(),'no est·n disponibles')]");
+    var selector = x("//div[contains(@class,'alert-error')]//li[contains(text(),'no est√°n disponibles')]");
     return casper.exists(selector);
 }
 

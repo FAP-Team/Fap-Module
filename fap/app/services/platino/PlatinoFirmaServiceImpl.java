@@ -448,7 +448,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 				// Guarda la firma en el AED
                 firmante.nombre = firmanteCertificado.nombre;
                 agregarFirmaEnGestorDocumental(documento, firma, firmante);
-                Messages.ok("Firma de documento " + documento.descripcion + " con éxito");
             }
 		}else{
 			play.Logger.error("firmanteCertificado == null????");

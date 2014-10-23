@@ -164,7 +164,6 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
         	if (!Messages.hasErrors()) {
             	firmante.fechaFirma = new DateTime();
             	firmante.save();
-            	Messages.ok("Firma de documento " + documento.descripcion + " con éxito");
             	play.Logger.info("Firma del documento " + documento.descripcion + ", con fecha " + firmante.fechaFirma + " guardada en FileSystem");
         	}
             	

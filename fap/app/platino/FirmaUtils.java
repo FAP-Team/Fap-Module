@@ -65,7 +65,7 @@ public class FirmaUtils {
 		
 		firmaService.firmar(documento, listaFirmantes, firma, valorDocumentofirmanteSolicitado);
 		
-		if (!Messages.hasMessages()) {
+		if (!Messages.hasErrors()) {
 			Messages.ok("El documento se firmó correctamente");
 			
 			if(documento.firmantes.hanFirmadoTodos()){
@@ -213,6 +213,7 @@ public class FirmaUtils {
 		
 		//Si no había firmado nadie antes, se indica que el documento se ha firmado
 		if (!Messages.hasErrors()) {
+			 Messages.ok("Firma de documento " + documento.descripcion + " con éxito");
 			if(documento.getFirma() != null && !documento.firmado){
 				documento.firmado = true;
 				documento.save();

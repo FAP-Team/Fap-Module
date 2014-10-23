@@ -42,18 +42,21 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		 *  Según el tipo de la entidad resolución, deberíamos devolver un tipo u otro
 		 *  de los que extiendan de ResoluciónBase.
 		 */
-		if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleTotal.name())) {
-			return new ResolucionMultipleTotal(resolucion);
-		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleParcialExpedientes.name())) {
-			return new ResolucionParcial(resolucion);
-		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
-			return new ResolucionSimple(resolucion);
-		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
-			return new ResolucionSimpleEjecucion(resolucion);
-		} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())) {
-			return new ResolucionMultipleEjecucion(resolucion);
-		}
-		return new ResolucionBase(resolucion);
+		if (resolucion != null) {
+			if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleTotal.name())) {
+				return new ResolucionMultipleTotal(resolucion);
+			} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleParcialExpedientes.name())) {
+				return new ResolucionParcial(resolucion);
+			} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleTotal.name())) {
+				return new ResolucionSimple(resolucion);
+			} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.simpleEjecucion.name())) {
+				return new ResolucionSimpleEjecucion(resolucion);
+			} else if (resolucion.tipoDefinidoResolucion.equals(ResolucionesDefinidasEnum.multipleEjecucion.name())) {
+				return new ResolucionMultipleEjecucion(resolucion);
+			}
+			return new ResolucionBase(resolucion);
+		} else
+			return null;
 	}
 	
 	/**

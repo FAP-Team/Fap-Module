@@ -20,7 +20,7 @@ public class ResolucionesFAPController extends ResolucionesFAPControllerGen {
 			renderTemplate("gen/ResolucionesFAP/ResolucionesFAP.html");
 		}
 
-		log.info("Visitando página: " + "gen/ResolucionesFAP/ResolucionesFAP.html" + ", usuario: " + AgenteController.getAgente().name + " Solicitud: " + params.get("idSolicitud"));
+		log.info("Visitando página: " + "gen/ResolucionesFAP/ResolucionesFAP.html" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + params.get("idResolucionFAP"));
 		renderTemplate("gen/ResolucionesFAP/ResolucionesFAP.html", accion);
 	}
 	

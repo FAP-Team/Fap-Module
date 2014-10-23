@@ -90,7 +90,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		//ad.absolute();
 		//System.out.println("url = " + ad.toString());
 		
-		
 		log.info("Visitando página: " + "gen/EditarResolucion/EditarResolucion.html" + ", usuario: " + AgenteController.getAgente().name + " Resolución: " + idResolucionFAP);
 		renderTemplate("fap/EditarResolucion/EditarResolucion.html", accion, idResolucionFAP, resolucionFAP);		
 	}
@@ -98,56 +97,87 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 	/**
 	 * Expedientes que se muestran en la tabla para poder seleccionar
 	 */
-	public static void tablatablaExpedientes() {
+	public static void tablatablaExpedientes(Long idResolucionFAP) {
+
+		java.util.List<SolicitudGenerica> rows = new ArrayList<SolicitudGenerica>();
 		
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
-		Long idResolucionFAP = ids.get("idResolucionFAP");
+		
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		
 		try {
 			resolBase = getResolucionObject(idResolucionFAP);
+			
+			java.util.List<SolicitudGenerica> allrows = null;
+			allrows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(idResolucionFAP);
+			
+			for (SolicitudGenerica solicitud : allrows) {
+				Map<String, Object> vars = new HashMap<String, Object>();
+				vars.put("solicitud", solicitud);
+				if (secure.checkAcceso("solicitudes", "leer", ids, vars)) {
+					rows.add(solicitud);
+				}
+			}
+			
+			List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
+			tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+			renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
+			
 		} catch (Throwable e) {
 			play.Logger.error("No se ha podido obtener el objeto resolución: "+idResolucionFAP);
 		}
 		
-		java.util.List<SolicitudGenerica> rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(idResolucionFAP);
-		
-		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
-		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
-
-		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
 	}
-	
-	public static void tablatablaExpedientesUnico() {
 
-		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 
+	/**
+	 * Expedientes (Unico) que se muestran en la tabla para poder seleccionar.
+	 */
+	public static void tablatablaExpedientesUnico(Long idResolucionFAP) {
+		
+		java.util.List<SolicitudGenerica> rows = new ArrayList<SolicitudGenerica>();
+		
 		// Obtenemos el usuario conectado al sistema y el rol activo
 		Agente usuario = AgenteController.getAgente();
 		String rolActivo = usuario.getRolActivo();
 		// Obtenemos el objeto "ResolucionBase"
 		ResolucionBase resolBase = null;
+		
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		
 		try {
-			resolBase = getResolucionObject(ids.get("idResolucionFAP"));
-		} catch (Throwable e) {
-			play.Logger.error("No se ha podido obtener el objeto resolución: "+ids.get("idResolucionFAP"));
-		}
-		
-		java.util.List<SolicitudGenerica> rows;
-		// Listamos los expedientes segun la provincia a la que esta asignado el gestor o todos
-		if(rolActivo.equals("gestorTenerife")){
-			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverSC(ids.get("idResolucionFAP"));
-		} else if(rolActivo.equals("gestorLasPalmas")){
-			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverLP(ids.get("idResolucionFAP"));
-		}else {
-			rows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
-		}
-		
-		List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
-		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+			resolBase = getResolucionObject(idResolucionFAP);
+			java.util.List<SolicitudGenerica> allrows = null;
+			
+			// Listamos los expedientes segun la provincia a la que esta asignado el gestor o todos
+			if(rolActivo.equals("gestorTenerife")){
+				allrows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverSC(ids.get("idResolucionFAP"));
+			} else if(rolActivo.equals("gestorLasPalmas")){
+				allrows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolverLP(ids.get("idResolucionFAP"));
+			}else {
+				allrows = (List<SolicitudGenerica>) resolBase.getSolicitudesAResolver(ids.get("idResolucionFAP"));
+			}
+			
+			for (SolicitudGenerica solicitud : allrows) {
+				Map<String, Object> vars = new HashMap<String, Object>();
+				vars.put("solicitud", solicitud);
+				if (secure.checkAcceso("solicitudes", "leer", ids, vars)) {
+					rows.add(solicitud);
+				}
+			}
+			
+			List<SolicitudGenerica> rowsFiltered = rows; //Tabla sin permisos, no filtra
+			tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
+			renderJSON(response.toJSON("id", "expedienteAed.idAed", "estadoValue", "estado", "estadoUsuario", "solicitante.id", "solicitante.nombreCompleto"));
+			
+		} catch (Throwable e) {
+			play.Logger.error("No se ha podido obtener el objeto resolución: "+ idResolucionFAP);
+		}
 	}
+	
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).

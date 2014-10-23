@@ -25,7 +25,7 @@
      seleccionable:'Crear Resolucion', 
      tipoContainer:'pagina', 
      urlSeleccionable:'EditarResolucionController.crearResolucion', 
-     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico(),
+     urlTabla:@EditarResolucionController.tablatablaExpedientesUnico(idResolucionFAP),
      idP:resolucionFAP?.id,
      mostrarTablaSeleccionados:true
 }
@@ -66,7 +66,7 @@
      seleccionable:'Seleccionar', 
      tipoContainer:'pagina', 
      urlSeleccionable:'EditarResolucionController.seleccionar', 
-     urlTabla:@EditarResolucionController.tablatablaExpedientes(),
+     urlTabla:@EditarResolucionController.tablatablaExpedientes(idResolucionFAP),
      idP:resolucionFAP?.id
 }
 	

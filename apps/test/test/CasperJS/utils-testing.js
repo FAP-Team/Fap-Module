@@ -178,7 +178,7 @@ exports.subirDocumentacionSolicitud = function() {
         exports.echo("PWD = " + pwd);
         rutaFichero = pwd + folder;
     } else if (TRAVIS) {
-        rutaFichero = require('system').env['TRAVIS_BUILD_DIR'] + "/test" + folder;
+        rutaFichero = require('system').env['TRAVIS_BUILD_DIR'] + "/apps/test" + folder;
     } else {
         rutaFichero = "./";
     }

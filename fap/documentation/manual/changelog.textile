@@ -1,5 +1,22 @@
 h2. Changelog
 
+h3. Versión 2.5.5RC3
+
+* Asignar al usuario el atributo "Usuario LDAP", necesario para Portafirma.
+* Correción en la gestión de errores en la firma masiva de documentos.
+* Cambios en los mensajes emitidos al usuario en la firma.
+* Añadida property ("fap.platino.registro.tipoTransporte") para definir el tipo de transporte en el servicio de registro.
+* Corregido property para definir el tipo de transporte a null si no está definida.
+* Corrección de tests y mejora en la gestión de errores en el Portafirma.
+* Agregado campo "anexo" en Documento.
+* Solucionado no subir documentos anexos a Platino.
+* Corrección de errores en el registro de la resolución.
+* Controlar estado de firma y registro en los oficios de remisión.
+* Mejora en la gestión de mensajes y control de errores en la firma.
+* Actualizados los nombres de variables "Cesión de Datos".
+* Corregido mostrar la lista de expedientes en Resolución.
+
+
 h3. Versión 2.5.5RC2
 
 * Revisión de Tests y corrección de errores

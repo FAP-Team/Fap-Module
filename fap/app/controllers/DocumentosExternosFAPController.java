@@ -1,12 +1,14 @@
 package controllers;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import play.mvc.Util;
 import validation.CustomValidation;
 import messages.Messages;
 import models.DocumentoExterno;
 import models.SolicitudGenerica;
 import controllers.gen.DocumentosExternosFAPControllerGen;
-
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.BinaryResponse;
@@ -61,8 +63,10 @@ public class DocumentosExternosFAPController extends DocumentosExternosFAPContro
                 BinaryResponse documentoAed = gestorDocumentalService.getDocumentoByUri(documentoExterno.uri);
                 dbDocumentoExterno.hash = documentoAed.getPropiedades().getSellado().getHash();
             } catch (GestorDocumentalServiceException e) {
-                e.printStackTrace();
-               log.error("No se pudo recuperar el hash del documento con uri " + documentoExterno.uri);
+            	StringWriter errors = new StringWriter();
+            	e.printStackTrace(new PrintWriter(errors));
+                log.error(errors.toString());
+                log.error("No se pudo recuperar el hash del documento con uri " + documentoExterno.uri);
             }
         } else {
             log.info("No se indicó una uri para el documento externo");

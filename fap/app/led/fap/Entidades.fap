@@ -174,7 +174,7 @@ Entidad Documento {
 	String firmadoVisible transient
 	String firmadoVisibleLocal transient
 	Firmantes firmantes
-	Boolean anexo //Indica si es un anexo subido a través de DocumentacionFAP, que no requiere subida a Platino
+	Boolean anexo default="false" //Indica si es un anexo subido a través de DocumentacionFAP, que no requiere subida a Platino
 }
 
 // La entidad Documentación agrupa aportaciones de documentos

@@ -104,6 +104,9 @@ public class Documento extends FapModel {
 		else
 			firmantes.init();
 
+		if (anexo == null)
+			anexo = false;
+
 		postInit();
 	}
 

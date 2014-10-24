@@ -120,7 +120,7 @@ public class DescargasAedController extends GenericController {
 
     private static es.gobcan.platino.servicios.sgrde.Documento buscarDocumentoPlatinoAed(String uri, Documento documento) {
         es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = new es.gobcan.platino.servicios.sgrde.Documento();
-        if((documento != null) && (!documento.anexo) && (documento.uriPlatino != null)) {
+        if((documento != null) && (!documento.anexo) && (documento.anexo != null) && (documento.uriPlatino != null)) {
             documentoPlatino = platinoaed.descargarFirmado(uri);
         }
         return documentoPlatino;

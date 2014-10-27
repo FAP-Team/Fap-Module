@@ -151,7 +151,7 @@ public abstract class GestorDocumentalServiceTest extends UnitTest {
     private void mockPersonaJuridica(Persona personaJuridica){
         personaJuridica.tipo = "juridica";
         personaJuridica.juridica.entidad = "Imperio";
-        personaJuridica.juridica.cif = "X123456789";;
+        personaJuridica.juridica.cif = "X123456789";
     }
     
     @Test

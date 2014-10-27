@@ -24,6 +24,7 @@ public class ConvocatoriaTest extends UnitTest {
         String expected = "C2001";
         when(mockPropertyPlaceholder.get(anyString())).thenReturn(expected);
         String actual = Convocatoria.getIdentificadorConvocatoria(mockPropertyPlaceholder);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "fap.aed.convocatoria");
         assertThat(actual,is(equalTo(expected)));
     }
 
@@ -33,6 +34,7 @@ public class ConvocatoriaTest extends UnitTest {
         PropertyPlaceholder mockPropertyPlaceholder = mock(PropertyPlaceholder.class);
         String expected = Convocatoria.PREFIJO_CONVOCATORIA_ANUAL + Calendar.getInstance().get(Calendar.YEAR);
         String actual = Convocatoria.getIdentificadorConvocatoria(mockPropertyPlaceholder);
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "fap.aed.convocatoria");
         assertThat(actual,is(equalTo(expected)));
     }
 }

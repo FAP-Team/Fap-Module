@@ -62,6 +62,7 @@ public class SemillaExpedienteTest extends UnitTest {
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,getAnyo());
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "fap.aed.convocatoria");
         assertThat(s2.semilla, is(equalTo(s1.semilla + 1)));
     }
 
@@ -72,6 +73,7 @@ public class SemillaExpedienteTest extends UnitTest {
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA, ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "fap.aed.convocatoria");
         assertThat(s2.semilla, is(equalTo(s1.semilla + 1)));
     }
 
@@ -82,6 +84,7 @@ public class SemillaExpedienteTest extends UnitTest {
         SemillaExpediente s1 = saveNuevaSemilla(VALOR_SEMILLA,ANYO_DIFERENTE);
         SemillaExpediente s2 = new SemillaExpediente();
         s2.save();
+        FapProperties.updateProperty(FapPropertiesKeys.AED_CONVOCATORIA, "fap.aed.convocatoria");
         assertThat(s2.semilla, is(equalTo(VALOR_INICIAL_EXPEDIENTE + 1)));
     }
 

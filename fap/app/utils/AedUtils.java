@@ -10,6 +10,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -108,20 +112,21 @@ public class AedUtils {
 	 */
 	public static void docPlatinotoDocumentoFirmantes(Documento documento, es.gobcan.platino.servicios.sgrde.Documento documentoPlatino){
 		
-		DateTimeFormatter formateoFecha = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-		
 		for (int i = 0; i < documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().size(); i++) {
 
 			Firmante firmante = new Firmante();
 			firmante.idvalor = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getIdFirmante();
 			firmante.nombre = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getDescFirmante();
+	
+			XMLGregorianCalendar fechaXML = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getFechaFirma();		
 			
-			String fechaHora = documentoPlatino.getMetaInformacion().getFirmasElectronicas().getInformacionFirmaElectronica().get(i).getFechaFirma().toXMLFormat();
-			String dateToken = fechaHora.substring(0, fechaHora.indexOf('T'));
-			String hourToken = fechaHora.substring(fechaHora.indexOf('T')+1, fechaHora.indexOf('+'));
-			firmante.fechaFirma = formateoFecha.parseDateTime(dateToken + " " + hourToken);
-
-			documento.firmantes.todos.add(firmante);
+			try {
+				DateTime fecha = new DateTime (fechaXML.toGregorianCalendar().getTime());
+				firmante.fechaFirma = fecha;
+				documento.firmantes.todos.add(firmante);
+			} catch (IllegalArgumentException ex) {
+				play.Logger.error("Fallo al parsear la fecha de la firma");
+			}
 		}		
 	}
 	

@@ -15,6 +15,7 @@ import models.DocumentoNotificacion;
 import models.Notificacion;
 import play.mvc.Util;
 import properties.FapProperties;
+import tables.TableRenderResponse;
 import utils.AedUtils;
 import utils.NotificacionUtils;
 import controllers.fap.AgenteController;
@@ -62,9 +63,8 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		if(notificacion.documentoPuestaADisposicion != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
 			if (!uriDocAux.equals("")){
-				Documento doc = new Documento();
-				doc.uri = uriDocAux;
-				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>";
+				Documento doc = Documento.findByUri(uriDocAux);
+				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(doc.uri)+"\" target=\"_blank\">Descargar Firmado</a>";
 				doc.descripcion = DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION.value();
 				Agente agente = AgenteController.getAgente();
 				if ((agente.rolActivo.equals("usuario") && (notificacion.estado.contains("leida") || notificacion.estado.contains("leidaplazorespuestavencido")
@@ -76,9 +76,8 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		if (notificacion.documentoAcuseRecibo != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 			if (!uriDocAux.equals("")){
-				Documento doc = new Documento();
-				doc.uri = uriDocAux;
-				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>";
+				Documento doc = Documento.findByUri(uriDocAux);
+				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(doc.uri)+"\" target=\"_blank\">Descargar Firmado</a>";
 				doc.descripcion = DocumentoNotificacionEnumType.ACUSE_RECIBO.value();
 				rowsDocumentos.add(doc);
 			}
@@ -89,9 +88,8 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		if(notificacion.documentoAnulacion != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.ANULACION);
 			if (!uriDocAux.equals("")){
-				Documento doc = new Documento();
-				doc.uri = uriDocAux;
-				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>";
+				Documento doc = Documento.findByUri(uriDocAux);
+				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(doc.uri)+"\" target=\"_blank\">Descargar Firmado</a>";
 				doc.descripcion = DocumentoNotificacionEnumType.ANULACION.value();
 				rowsDocumentos.add(doc);
 			}
@@ -102,9 +100,8 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		if(notificacion.documentoRespondida != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
 			if (!uriDocAux.equals("")){
-				Documento doc = new Documento();
-				doc.uri = uriDocAux;
-				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>";
+				Documento doc = Documento.findByUri(uriDocAux);
+				doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(doc.uri)+"\" target=\"_blank\">Descargar Firmado</a>";
 				doc.descripcion = DocumentoNotificacionEnumType.MARCADA_RESPONDIDA.value();
 				rowsDocumentos.add(doc);
 			}
@@ -113,9 +110,8 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		//Comprobar documento de noPresentacion
 		uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.NO_ACCESO);
 		if (!uriDocAux.equals("")){
-			Documento doc = new Documento();
-			doc.uri = uriDocAux;
-			doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(uriDocAux)+"\" target=\"_blank\">Descargar Firmado</a>"; 
+			Documento doc = Documento.findByUri(uriDocAux);
+			doc.enlaceDescargaFirmado = "<a href=\""+AedUtils.crearUrlConInformeDeFirma(doc.uri)+"\" target=\"_blank\">Descargar Firmado</a>"; 
 			doc.descripcion = DocumentoNotificacionEnumType.NO_ACCESO.value();
 			rowsDocumentos.add(doc);
 		}

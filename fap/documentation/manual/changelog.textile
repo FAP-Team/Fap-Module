@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.5.5RC3
 
+* Corregido formato en la fecha de firma al añadir firmantes al documento de Platino.
+* Inicialización del campo anexo en Documentos.
 * Asignar al usuario el atributo "Usuario LDAP", necesario para Portafirma.
 * Correción en la gestión de errores en la firma masiva de documentos.
 * Cambios en los mensajes emitidos al usuario en la firma.

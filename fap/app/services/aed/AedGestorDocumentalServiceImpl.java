@@ -708,6 +708,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
  					e.printStackTrace();
  				}
  				doc.refAed = false;
+ 				doc.clasificado = true;
  				doc.save();
  			}
         }
@@ -749,6 +750,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	                    errores += "Error al clasificar el documento copiado " + documento.uri + "\n";
     				}
     				documento.refAed = false;
+    				documento.clasificado = true;
     				documento.save();
     			} else {
 	                try {
@@ -1086,22 +1088,47 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	 */
     @Override
     public models.Firma getFirma(models.Documento documento) throws GestorDocumentalServiceException {
-        boolean clasificado = isClasificado(documento);
-        
-        PropiedadesDocumento propiedades;
-        try {
-            propiedades = obtenerPropiedades(documento.uri, clasificado);
-        } catch (AedExcepcion e) {
-            throw serviceExceptionFrom(e);
-        }
-        PropiedadesAdministrativas propsAdmin = ((PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas());
-        Firma firmaAed = propsAdmin.getFirma();
-        models.Firma result = null;
+    	models.Firma docFirma = null;
+    	Firma firmaAed = null;
+    	PropiedadesDocumento propiedades = null;
+    	PropiedadesAdministrativas propsAdmin = null;
+    	
+    	if (documento.refAed){
+    		docFirma = obtenerDocumentoFirma(documento);
+    	}else {
+    		
+    		    try {
+    	            propiedades = obtenerPropiedades(documento.uri, isClasificado(documento));
+    	            propsAdmin = ((PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas());
+    	            firmaAed = propsAdmin.getFirma();
+    	        } catch (AedExcepcion e) {
+    	            throw serviceExceptionFrom(e);
+    	        }
+    	}
+    	
         if(firmaAed != null){
-            result = toFirmaModel(firmaAed);
+            docFirma = toFirmaModel(firmaAed);
         }
-        return result;
+        
+        return docFirma;
     }
+    
+	@Override
+	public models.Firma obtenerDocumentoFirma(models.Documento documento) throws GestorDocumentalServiceException {
+		
+		models.Firma docFirma = null;
+		
+		if ((documento != null) && (documento.uri != null)){
+			try {
+				Firma aedFirma = aedPort.obtenerDocumentoFirma(documento.uri);
+				docFirma = toFirmaModel(aedFirma);
+			} catch (AedExcepcion e){
+				throw serviceExceptionFrom(e);
+			}
+		}
+		
+		return docFirma;
+	}
 
     private models.Firma toFirmaModel(Firma firmaAed){
         models.Firma result = new models.Firma(firmaAed.getContenido(), toModelFirmantes(firmaAed.getFirmantes()));
@@ -1388,6 +1415,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			throws GestorDocumentalServiceException {
 		
 		dbDocumento.refAed = true;
+		dbDocumento.anexo = true;
 		dbDocumento.uri = documento.uri;
 		dbDocumento.descripcion = documento.descripcion;
 		dbDocumento.fechaSubida = new DateTime();
@@ -1395,10 +1423,12 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		Documento docAed = obtenerDocumento(dbDocumento.uri);
 		BinaryResponse response = new BinaryResponse();
 		response.propiedades = (PropiedadesAdministrativas)docAed.getPropiedades().getPropiedadesAvanzadas();
-		if (response.propiedades.getRegistro().getFechaRegistro() != null) {
+		
+		if (response.propiedades.getRegistro().getFechaRegistro() != null) 
 			dbDocumento.fechaRegistro = new DateTime(response.propiedades.getRegistro().getFechaRegistro());
-			dbDocumento.clasificado = true;
-		}
+
+		if (response.propiedades.getSellado().getHash() != null)
+			dbDocumento.hash = response.propiedades.getSellado().getHash();
 		
 		dbDocumento.save();
 		

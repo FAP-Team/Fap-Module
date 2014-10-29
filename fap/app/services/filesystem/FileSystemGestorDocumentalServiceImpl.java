@@ -443,6 +443,12 @@ public class FileSystemGestorDocumentalServiceImpl implements GestorDocumentalSe
     	
     	return new Firma("", new Firmante());
     }
+    
+    @Override
+	public Firma obtenerDocumentoFirma(Documento documento)	throws GestorDocumentalServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     @Override
     public List<Tramite> getTramites() throws GestorDocumentalServiceException {

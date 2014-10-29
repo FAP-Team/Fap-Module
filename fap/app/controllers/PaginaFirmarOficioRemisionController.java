@@ -87,15 +87,22 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			}
 			lineaResolucionFAP.registro.firmantes.save();
 			//}
-			if (!lineaResolucionFAP.registro.fasesRegistro.firmada) {
-				FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, null);
-				if (!Messages.hasErrors()) {
-					lineaResolucionFAP.registro.fasesRegistro.firmada = true;
-				} else {
-					Messages.error("Se produjeron errores en la firma, inténtelo de nuevo.");
-					play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo.");
+			
+			ResolucionFAP resolucionFAP = PaginaFirmarOficioRemisionController.getResolucionFAP(idResolucionFAP);
+			if (!Messages.hasErrors()) {
+				if (!lineaResolucionFAP.registro.fasesRegistro.firmada) {
+					FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, resolucionFAP.idSolicitudFirmaOficiosRemision);
+					if (!Messages.hasErrors()) {
+						lineaResolucionFAP.registro.fasesRegistro.firmada = true;
+					} else {
+						Messages.error("Se produjeron errores en la firma, inténtelo de nuevo.");
+						play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo.");
+					}
 				}
+			} else {
+				Messages.error("No se ha podido recuperar la resolución");
 			}
+			
 		} else {
 			//ERROR
 			Messages.error("No tiene permisos suficientes para realizar la acción");

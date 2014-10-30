@@ -2,6 +2,10 @@ h2. Changelog
 
 h3. Versión 2.5.5RC3
 
+* Corregido los documentos adjuntos por uri no se copian al expediente del aed.
+* Controlar firmante que debe firmar los Oficios de Remisión.
+* Mejoras en la tabla de documentos de las notificaciones
+* Corregido problema al descargar firmado en las notificaciones
 * Corregido formato en la fecha de firma al añadir firmantes al documento de Platino.
 * Inicialización del campo anexo en Documentos.
 * Asignar al usuario el atributo "Usuario LDAP", necesario para Portafirma.

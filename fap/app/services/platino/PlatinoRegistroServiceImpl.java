@@ -346,7 +346,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 
         //El valor de este campo se toma por defecto de la property si estuviese definida
         String tipoTransporte;
-        if (TIPO_TRANSPORTE != "undefined") {
+        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
         	tipoTransporte = TIPO_TRANSPORTE;
         } else
         	tipoTransporte = null;

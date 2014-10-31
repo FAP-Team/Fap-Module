@@ -1,5 +1,11 @@
 h2. Changelog
 
+h3. Versión 2.5.5RC4
+
+* Añadida cabecera de seguridad para el servicio de Registro.
+* Añadida property "fap.platino.security.procedimiento.uri" para definir cabecera de seguridad para el servicio de registro.
+* Corregido. Tipo de transporte a null si no está definido.
+
 h3. Versión 2.5.5RC3
 
 * Corregido los documentos adjuntos por uri no se copian al expediente del aed.

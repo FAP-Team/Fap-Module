@@ -2,6 +2,8 @@ package utils;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -18,12 +20,10 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import config.InjectorConfig;
-
 import messages.Messages;
 import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
 import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
-
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import properties.FapProperties;
@@ -40,16 +40,20 @@ public class WSUtils {
 	}
 	
 	public static void configureSecurityHeaders(Object service, PropertyPlaceholder propertyPlaceholder){
+		configureSecurityHeaders(service, propertyPlaceholder, null);
+	}
+	
+	public static void configureSecurityHeaders(Object service, PropertyPlaceholder propertyPlaceholder, Map<String, String> headers){
 		String backoffice = propertyPlaceholder.get("fap.platino.security.backoffice.uri");
 		String certificadoalias = propertyPlaceholder.get("fap.platino.security.certificado.alias");
-		
+				
 		PlatinoCXFSecurityHeaders.addSoapWSSHeader(
 				service,
 				PlatinoCXFSecurityHeaders.SOAP_11,
 				backoffice,
 				certificadoalias,
 				KeystoreCallbackHandler.class.getName(),
-				null);
+				headers);
 	}
 	
 	public static void configureSecurityHeadersWithUser(Object service, String userUri){

@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataSource;
 import javax.inject.Inject;
@@ -32,7 +34,6 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 import controllers.fap.AgenteController;
-
 import emails.Mails;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
@@ -49,7 +50,6 @@ import platino.DatosExpediente;
 import platino.DatosFirmante;
 import platino.DatosRegistro;
 import platino.FirmaClient;
-
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
@@ -112,6 +112,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	private final String ASUNTO;
 	private final long UNIDAD_ORGANICA;
 	private final String TIPO_TRANSPORTE;
+	private final String URIPROCEDIMIENTO;
 	
 	@Inject
 	public PlatinoRegistroServiceImpl(PropertyPlaceholder propertyPlaceholder, FirmaService firmaService, GestorDocumentalService gestorDocumentalService){
@@ -119,12 +120,6 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 	    this.firmaService = firmaService;
 	    this.gestorDocumentalService = gestorDocumentalService;
 	    
-        URL wsdlURL = Registro_Service.class.getClassLoader().getResource("wsdl/registro.wsdl");
-        registroPort = new Registro_Service(wsdlURL).getRegistroPort();
-        WSUtils.configureEndPoint(registroPort, getEndPoint());
-        WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder);
-        PlatinoProxy.setProxy(registroPort); 
-        
         USERNAME = FapProperties.get("fap.platino.registro.username");
         PASSWORD = FapProperties.get("fap.platino.registro.password");
         ALIAS = FapProperties.get("fap.platino.registro.aliasServidor");
@@ -132,6 +127,22 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
         ASUNTO = FapProperties.get("fap.platino.registro.asunto");
         UNIDAD_ORGANICA = FapProperties.getLong("fap.platino.registro.unidadOrganica");
         TIPO_TRANSPORTE = FapProperties.get("fap.platino.registro.tipoTransporte");
+        URIPROCEDIMIENTO = FapProperties.get("fap.platino.security.procedimiento.uri");
+        
+        URL wsdlURL = Registro_Service.class.getClassLoader().getResource("wsdl/registro.wsdl");
+        registroPort = new Registro_Service(wsdlURL).getRegistroPort();
+        WSUtils.configureEndPoint(registroPort, getEndPoint());
+        
+        Map<String, String> headers = null;
+        
+        if ((URIPROCEDIMIENTO != null) && (URIPROCEDIMIENTO.compareTo("undefined") != 0)) {
+        	headers = new HashMap<String, String>();
+        	headers.put("uriProcedimiento", URIPROCEDIMIENTO);		
+        }
+		
+        WSUtils.configureSecurityHeaders(registroPort, propertyPlaceholder, headers);
+        
+        PlatinoProxy.setProxy(registroPort); 
         
         this.platinoGestorDocumentalService = new PlatinoGestorDocumentalService(propertyPlaceholder);
 	}

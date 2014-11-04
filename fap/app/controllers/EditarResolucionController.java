@@ -322,41 +322,51 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		}
 		ResolucionFAP dbResolucionFAP = EditarResolucionController.getResolucionFAP(idResolucionFAP);
 		ResolucionUtils.actualizarSolicitudesFirmaPortafirmaAntiguasResolucion(dbResolucionFAP);
+		dbResolucionFAP.refresh();
 		
 		EditarResolucionController.formSelectJefeServicioBindReferences(resolucionFAP);
 		
 		Agente agenteActual = AgenteController.getAgente();
 		
+		EntityTransaction tx = JPA.em().getTransaction();
+		tx.commit();
+		
 		if (!Messages.hasErrors()) {
-			resolucionFAP.solicitudFirmaPortafirma.idSolicitante = agenteActual.usuarioldap;
-			EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
-			
-			if (!Messages.hasErrors()) {
-				if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
-					PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-					try {
-						dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante);
-					} catch (DBOrganizacionException_Exception e) {
-						play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
-						Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+			if (dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante == null) {
+				resolucionFAP.solicitudFirmaPortafirma.idSolicitante = agenteActual.usuarioldap;
+				EditarResolucionController.formSelectJefeServicioValidateCopy("editar", dbResolucionFAP, resolucionFAP);
+				
+				if (!Messages.hasErrors()) {
+					if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
+						PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+						try {
+							tx.begin();
+							dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante = platinoDBOrgPort.recuperarURIPersona(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante);
+							dbResolucionFAP.save();
+							tx.commit();
+						} catch (DBOrganizacionException_Exception e) {
+							play.Logger.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización: " + e.getMessage());
+							Messages.error("Error al obtener la uri del funcionario solicitante en la Base de Datos de Organización.");
+						}
+						if ((dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante.isEmpty()))
+							Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 					}
-					if ((dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante == null) || (dbResolucionFAP.solicitudFirmaPortafirma.uriFuncionarioSolicitante.isEmpty()))
-						Messages.error("El usuario "+dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante+" especificado no se encuentra en la Base de Datos de Organización.");
 				}
 			}
 		}
 
 		if (!Messages.hasErrors()) {
 			EditarResolucionController.formSelectJefeServicioValidateRules(dbResolucionFAP, resolucionFAP);
-
 			try {
-				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = agenteActual;
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
-                portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
+				portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
+				tx.begin();
+				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = agenteActual;
 				dbResolucionFAP.solicitudFirmaPortafirma.uriSolicitud = response.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirma.solicitudEstadoComentario = response.getComentarios();
 				dbResolucionFAP.save();
+				tx.commit();
 			} catch (PortafirmaFapServiceException e) {
 				play.Logger.error("Error al crear la solicitud de firma: " + e);
 				Messages.error("Error al crear la solicitud de firma");
@@ -365,12 +375,15 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				Messages.error("Error al crear la solicitud de firma");
 			}
 		}
+		
 		if (!Messages.hasErrors()) {
 			ResolucionBase resolBase = null;
 			try {
+				tx.begin();
 				resolBase = getResolucionObject(dbResolucionFAP.id);
 				resolBase.avanzarFase_Preparada_Portafirma(dbResolucionFAP);
 				dbResolucionFAP.save();
+				tx.commit();
 				Messages.ok("Se ha enviado correctamente al portafirma la solicitud de la firma");
 			} catch (Throwable e) {
 				play.Logger.error("No se ha enviado correctamente al portafirma la solicitud de firma: "+e);
@@ -384,6 +397,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 
 	@Util
 	public static void formSelectJefeServicioValidateCopy(String accion, ResolucionFAP dbResolucionFAP, ResolucionFAP resolucionFAP) {
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		
 		CustomValidation.clearValidadas();
 		
 		CustomValidation.valid("resolucionFAP.solicitudFirmaPortafirma", resolucionFAP.solicitudFirmaPortafirma);
@@ -432,8 +448,9 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				CustomValidation.error("No se ha podido calcular el límite de fecha para la firma", "resolucionFAP.solicitudFirmaPortafirma.plazoMaximo", resolucionFAP.solicitudFirmaPortafirma.plazoMaximo);
 			}
 		}
-		
+		tx.begin();
 		dbResolucionFAP.save();
+		tx.commit();
 		
 	}
 	

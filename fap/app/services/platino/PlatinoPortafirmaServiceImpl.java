@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
+import javax.persistence.EntityTransaction;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -32,6 +33,7 @@ import platino.DatosDocumento;
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import platino.PlatinoProxy;
+import play.db.jpa.JPA;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
@@ -246,28 +248,39 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	@Override
 	public PortafirmaCrearSolicitudResponse crearSolicitudFirma(ResolucionFAP resolucion) throws PortafirmaFapServiceException {
 		
-		// Se rellena SolicitudFirmaPortafirma a partir de ResolucionFAP
-		resolucion.solicitudFirmaPortafirma.tema = resolucion.tituloInterno;
-		if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
-			resolucion.solicitudFirmaPortafirma.materia = resolucion.sintesis;
-		else
-			resolucion.solicitudFirmaPortafirma.materia = resolucion.descripcion;
-		resolucion.solicitudFirmaPortafirma.documentosFirma.add(resolucion.registro.oficial);
-		for (Documento documento: resolucion.docConsultaPortafirmasResolucion) {
-			resolucion.solicitudFirmaPortafirma.documentosConsulta.add(documento);
+		EntityTransaction tx = JPA.em().getTransaction();
+		
+		//Si solicitudFirmaPortafirma no se ha rellenado antes
+		if (resolucion.solicitudFirmaPortafirma.tema == null) {
+			tx.begin();
+			
+			// Se rellena SolicitudFirmaPortafirma a partir de ResolucionFAP
+			resolucion.solicitudFirmaPortafirma.tema = resolucion.tituloInterno;
+			if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
+				resolucion.solicitudFirmaPortafirma.materia = resolucion.sintesis;
+			else
+				resolucion.solicitudFirmaPortafirma.materia = resolucion.descripcion;
+			resolucion.solicitudFirmaPortafirma.documentosFirma.add(resolucion.registro.oficial);
+			for (Documento documento: resolucion.docConsultaPortafirmasResolucion) {
+				resolucion.solicitudFirmaPortafirma.documentosConsulta.add(documento);
+			}
+			// TODO: ¿Por qué se cogen de gestor documental?
+			resolucion.solicitudFirmaPortafirma.procedimiento = properties.FapProperties.get("fap.platino.gestordocumental.procedimiento");
+			resolucion.solicitudFirmaPortafirma.expediente = properties.FapProperties.get("fap.platino.gestordocumental.expediente.descripcion");
+			resolucion.solicitudFirmaPortafirma.tipoDocumento = "SOL";
+			resolucion.solicitudFirmaPortafirma.mecanismoFirma = "SERIE";
+			resolucion.solicitudFirmaPortafirma.solicitudFechaInicio = new DateTime();
+			resolucion.solicitudFirmaPortafirma.save();
+			
+			tx.commit();
 		}
-		// TODO: ¿Por qué se cogen de gestor documental?
-		resolucion.solicitudFirmaPortafirma.procedimiento = properties.FapProperties.get("fap.platino.gestordocumental.procedimiento");
-		resolucion.solicitudFirmaPortafirma.expediente = properties.FapProperties.get("fap.platino.gestordocumental.expediente.descripcion");
-		resolucion.solicitudFirmaPortafirma.tipoDocumento = "SOL";
-		resolucion.solicitudFirmaPortafirma.mecanismoFirma = "SERIE";
-		resolucion.solicitudFirmaPortafirma.solicitudFechaInicio = new DateTime();
-		resolucion.solicitudFirmaPortafirma.save();
 		
 		//Configuramos el usuario del agente actual, recuperando su URI de BDOrg de platino
 		setupSecurityHeadersWithUser(resolucion.solicitudFirmaPortafirma.idSolicitante);
 		
 		try {
+			tx.begin();
+			
 			// Crear solicitud de firma
 			SolicitudFirmaPropiedadesType solicitudFirmaPropiedadesType = crearSolicitudFirmaPlatino(resolucion.solicitudFirmaPortafirma);
 			resolucion.solicitudFirmaPortafirma.uriSolicitud = portafirmaPort.crearSolicitudFirma(solicitudFirmaPropiedadesType);
@@ -276,11 +289,14 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 			//Adjuntamos el documento a firmar y los documentos anexos
 			asociarDocumento(resolucion.solicitudFirmaPortafirma.uriSolicitud, resolucion.solicitudFirmaPortafirma.idSolicitante, resolucion.solicitudFirmaPortafirma.documentosFirma, TipoDocumentacionEnumType.PRINCIPAL);
 			asociarDocumento(resolucion.solicitudFirmaPortafirma.uriSolicitud, resolucion.solicitudFirmaPortafirma.idSolicitante, resolucion.solicitudFirmaPortafirma.documentosConsulta, TipoDocumentacionEnumType.ANEXA); 
-			
+		
 			PortafirmaCrearSolicitudResponse portafirmaCrearSolicitudResponse = new PortafirmaCrearSolicitudResponse();
 			portafirmaCrearSolicitudResponse.setIdSolicitud(resolucion.solicitudFirmaPortafirma.uriSolicitud);
 			resolucion.solicitudFirmaPortafirma.solicitudEstadoComentario = "La solicitud de firma de portafirma ha sido enviada.";
 			resolucion.save();
+			
+			tx.commit();
+			
 			portafirmaCrearSolicitudResponse.setComentarios(resolucion.solicitudFirmaPortafirma.solicitudEstadoComentario);
 			return portafirmaCrearSolicitudResponse;
 			

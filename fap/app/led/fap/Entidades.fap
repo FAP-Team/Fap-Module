@@ -874,6 +874,7 @@ Entidad AutorizacionCesion noConstruct{
 	OneToMany Trabajador trabajadores
 	Boolean idi //Difusion BBDD ACIISI y otras I+D+I
 	Boolean identidad //SVD identidad
+	Boolean residencia //SVD residecia
 }
 
 Entidad Trabajador {

@@ -2,7 +2,9 @@ package services.comunicacionesInternas;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -14,9 +16,7 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
-
 import es.gobcan.platino.servicios.sfst.FirmaService;
-
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import play.modules.guice.InjectSupport;
@@ -53,13 +53,25 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private PropertyPlaceholder propertyPlaceholder;
 	private PlatinoGestorDocumentalService platinoGestorDocumental;
 	
+	private final String URIPROCEDIMIENTO;
+	
 	@Inject
 	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
 		this.propertyPlaceholder = propertyPlaceholder;
 		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/CIServices.wsdl");
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
 		WSUtils.configureEndPoint(comunicacionesServices, getEndPoint());
-        WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder);
+		
+		URIPROCEDIMIENTO = FapProperties.get("fap.platino.security.procedimiento.uri");
+	    Map<String, String> headers = null;
+        
+        if ((URIPROCEDIMIENTO != null) && (URIPROCEDIMIENTO.compareTo("undefined") != 0)) {
+        	headers = new HashMap<String, String>();
+        	headers.put("uriProcedimiento", URIPROCEDIMIENTO);		
+        }
+		
+        WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder, headers);
+		
         //El servicio de comunicaciones internas y servicios genéricos no funciona con proxy, entra en conflicto.
         //Por esto hay que ponerlo a falso, antes de configurar sus políticas.
         if (FapProperties.getBoolean("fap.proxy.enable")){

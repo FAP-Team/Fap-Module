@@ -73,7 +73,7 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre v20140729:
+    - es.gobcan.platino -> platino.pre 2.0.0.20141028:
         transitive: false   
     - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
        transitive: false

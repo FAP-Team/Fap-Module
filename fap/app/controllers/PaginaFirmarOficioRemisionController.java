@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityTransaction;
+
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
@@ -17,6 +19,7 @@ import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import platino.FirmaUtils;
+import play.db.jpa.JPA;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Util;
@@ -27,6 +30,8 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.RegistroService;
 import services.RegistroServiceException;
+import services.platino.PlatinoGestorDocumentalService;
+import utils.AedUtils;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
@@ -70,10 +75,17 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		LineaResolucionFAP lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP(idResolucionFAP, idLineaResolucionFAP);
 		Messages.clear();
 		
+		PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+		
+		EntityTransaction tx = JPA.em().getTransaction();
+		if (tx.isActive())
+			tx.commit();
+		
 		play.Logger.info("Metodo: firmaFirmarOficioRemisionFormFirmarOficioRemision");
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		Map<String, Object> vars = new HashMap<String, Object>();
 		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
+			tx.begin();
 			//if (lineaResolucionFAP.registro.firmantes.todos == null || lineaResolucionFAP.registro.firmantes.todos.size() == 0) {
 			
 			//Calculo que todos los firmantes sean Gestores.
@@ -94,6 +106,8 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, resolucionFAP.idSolicitudFirmaOficiosRemision);
 					if (!Messages.hasErrors()) {
 						lineaResolucionFAP.registro.fasesRegistro.firmada = true;
+						//Se sube el documento firmado a Platino
+						platinoaed.obtenerURIPlatino(lineaResolucionFAP.registro.oficial.uri, PlatinoGestorDocumentalService.class);
 					} else {
 						Messages.error("Se produjeron errores en la firma, inténtelo de nuevo.");
 						play.Logger.error("Se produjeron errores en la firma, inténtelo de nuevo.");
@@ -102,13 +116,14 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			} else {
 				Messages.error("No se ha podido recuperar la resolución");
 			}
-			
+			tx.commit();
 		} else {
 			//ERROR
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
 		
 		if (!Messages.hasErrors()) {
+			tx.begin();
 			lineaResolucionFAP.save();
 
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(lineaResolucionFAP.solicitud.id);
@@ -169,6 +184,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			} catch (Throwable e){
 				play.Logger.error("Error en el metodo firmaOficioRemision: " + e.getMessage());
 			}
+			tx.commit();
 		}
 		
 		if (!Messages.hasErrors()) {

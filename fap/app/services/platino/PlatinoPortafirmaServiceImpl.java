@@ -42,6 +42,8 @@ import models.Agente;
 import models.Convocatoria;
 import models.Documento;
 import models.ExpedientePlatino;
+import models.Firma;
+import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
 
@@ -52,6 +54,7 @@ import services.PortafirmaFapServiceException;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import services.platino.*;
 import tags.ComboItem;
+import utils.AedUtils;
 import utils.BinaryResponse;
 import utils.WSUtils;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
@@ -186,7 +189,7 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 				
 				//Subimos el documento al gestor documental de platino
 				documento.uriPlatino = platinoGestorDocumentalPort.guardarDocumento(uriPlatinoExpediente, datos);
-				documento.save();	
+				documento.save();
 			}
 			
 		} catch (PlatinoGestorDocumentalServiceException e) {
@@ -209,12 +212,13 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 		if (documentos != null) {
 			for (Documento documento: documentos) {
 				// Copiamos el documento a Platino si no está
-				subirDocumentoAEDaPlatino(documento, idSolicitante);
+				Documento documentoBD = Documento.findByUri(documento.uri);
+				subirDocumentoAEDaPlatino(documentoBD, idSolicitante);
 				// Añadimos el documento a la solicitud de firma
 				DocumentoSolicitudFirmaType documentoSolicitudFirmaType = new DocumentoSolicitudFirmaType();
-				documentoSolicitudFirmaType.setUriDocumento(documento.uriPlatino);
-				documentoSolicitudFirmaType.setComentario(documento.descripcionVisible); // TODO: Revisar si setComentario es lo que sale en la descripción del  interfaz de portafirma.
-				play.Logger.info("Se adjunta documento " + documento.uriPlatino + " a la solicitud de firma " + uriSolicitud);
+				documentoSolicitudFirmaType.setUriDocumento(documentoBD.uriPlatino);
+				documentoSolicitudFirmaType.setComentario(documentoBD.descripcionVisible); // TODO: Revisar si setComentario es lo que sale en la descripción del  interfaz de portafirma.
+				play.Logger.info("Se adjunta documento " + documentoBD.uriPlatino + " a la solicitud de firma " + uriSolicitud);
 				// TODO: Comprobar si devuelve una uri o sólo un error cuando falla.
 				portafirmaPort.crearDocumento(uriSolicitud, documentoSolicitudFirmaType, tipoDocumentacionEnumType);
 			}

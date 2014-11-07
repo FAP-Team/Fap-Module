@@ -10,6 +10,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityTransaction;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -17,13 +18,22 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import models.Documento;
-import models.Firmante;
-import models.Persona;
+import config.InjectorConfig;
 
+import models.Documento;
+import models.Firma;
+import models.Firmante;
+import models.LineaResolucionFAP;
+import models.Persona;
+import models.ResolucionFAP;
+
+import play.db.jpa.JPA;
 import play.libs.Crypto;
 import play.mvc.Router;
 import properties.FapProperties;
+import services.GestorDocumentalService;
+import services.GestorDocumentalServiceException;
+import services.platino.PlatinoGestorDocumentalService;
 
 public class AedUtils {
 
@@ -128,6 +138,37 @@ public class AedUtils {
 				play.Logger.error("Fallo al parsear la fecha de la firma");
 			}
 		}		
+	}
+
+	/**
+	 * 
+	 * Agrega la firma de un documento de FAP a un documento de Platino.
+	 * 
+	 * @param documento Documento FAP
+	 */
+	
+	public static void agregarFirma(Documento documento) {
+				
+		//Se agrega la firma de un documento al AED de la ACIISI
+
+		PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
+
+	    es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(documento.uri);
+	    
+		if (documentoPlatino != null){
+			
+			try {
+				AedUtils.docPlatinotoDocumentoFirmantes(documento, documentoPlatino);
+				gestorDocumentalService.agregarFirma(documento, 
+						new Firma(documentoPlatino.getMetaInformacion().getFirmasElectronicas().getFirma(), documento.firmantes.todos));
+				documento.save();
+				play.Logger.info("Agregada al AED la firma del documento");
+					
+			} catch (GestorDocumentalServiceException e) {
+				play.Logger.error("Error. No se ha podido agregar la firma al documento de resolución en el AED.", e);
+			}
+		}
 	}
 	
 }

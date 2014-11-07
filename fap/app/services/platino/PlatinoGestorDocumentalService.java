@@ -44,7 +44,7 @@ import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
-import es.gobcan.platino.servicios.registro.Documento;
+import models.Documento;
 import es.gobcan.platino.servicios.registro.Documentos;
 import es.gobcan.platino.servicios.sgrde.DocumentoBase;
 import es.gobcan.platino.servicios.sgrde.DocumentoExpediente;
@@ -257,7 +257,7 @@ public class PlatinoGestorDocumentalService {
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		
 		//Caso en el que el documento se encuentra en el AED de la ACIISI
-		models.Documento documento = models.Documento.findByUri(uriDocumento); // Documento subido al gestor documental de la ACIISI
+		Documento documento = Documento.findByUri(uriDocumento); // Documento subido al gestor documental de la ACIISI
 		
 		try {
 			//Subir documento a firmar a gestor documental de platino (si no está subido)

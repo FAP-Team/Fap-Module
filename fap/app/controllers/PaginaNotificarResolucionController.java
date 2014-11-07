@@ -1,19 +1,12 @@
 package controllers;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityTransaction;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.soap.SOAPFaultException;
-
-import org.joda.time.DateTime;
 
 import messages.Messages;
 import models.Agente;
@@ -21,8 +14,12 @@ import models.Documento;
 import models.Firma;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
-import models.SolicitudFirmaPortafirma;
 import models.SolicitudGenerica;
+import models.ResolucionFAP;
+
+
+import org.joda.time.DateTime;
+
 import play.db.jpa.JPA;
 import play.mvc.Util;
 import properties.FapProperties;
@@ -44,15 +41,8 @@ import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
 import controllers.gen.PaginaNotificarResolucionControllerGen;
-import enumerado.fap.gen.EstadoResolucionEnum;
 import enumerado.fap.gen.EstadoResolucionNotificacionEnum;
-import enumerado.fap.gen.EstadoResolucionPublicacionEnum;
-import es.gobcan.aciisi.portafirma.ws.dominio.DocumentoAedType;
-import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosAedType;
-import es.gobcan.aciisi.portafirma.ws.dominio.ListaDocumentosType;
-import es.gobcan.aciisi.portafirma.ws.dominio.ObtenerEstadoSolicitudResponseType;
 import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
-import es.gobcan.aciisi.portafirma.ws.dominio.TipoDocumentoEnumType;
 import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 
@@ -307,31 +297,15 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			try {
 				PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 				if (portafirmaService.comprobarSiSolicitudFirmada(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision)) {
+					
 					//Se agrega la firma de los oficios de remisión del portafirma del gobierno al AED de la ACIISI
-					
-					PlatinoGestorDocumentalService platinoaed = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
-					GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
-					
-				    es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = platinoaed.descargarFirmado(dbResolucionFAP.registro.oficial.uri);
-				    play.Logger.info("uri de documento platino " + documentoPlatino.getMetaInformacion().getURI());
-					if (documentoPlatino != null){
-						
-						try {
-							AedUtils.docPlatinotoDocumentoFirmantes(dbResolucionFAP.registro.oficial, documentoPlatino);
-							gestorDocumentalService.agregarFirma(dbResolucionFAP.registro.oficial, 
-									new Firma(documentoPlatino.getMetaInformacion().getFirmasElectronicas().getFirma(), dbResolucionFAP.registro.oficial.firmantes.todos));
-								
-						} catch (GestorDocumentalServiceException e) {
-							play.Logger.error("Error. No se ha podido agregar la firma al documento de resolución en el AED.", e);
-						}
-					}
-
-					dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionFirmados.name();
 					for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 						if (!linea.registro.fasesRegistro.firmada) {
 							linea.registro.fasesRegistro.firmada = true;
+							AedUtils.agregarFirma(linea.registro.oficial);
 						}
 					}
+					dbResolucionFAP.estadoNotificacion = EstadoResolucionNotificacionEnum.oficiosRemisionFirmados.name();
 					dbResolucionFAP.save();
 					Messages.ok("Los oficios de remisión de la resolución asociados a la solicitud de firma se han firmado y finalizado correctamente.");
 					play.Logger.info("Los oficios de remisión de la resolución [" + idResolucionFAP + "] asociados a la solicitud de firma se han firmado y finalizado correctamente.");
@@ -389,7 +363,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 				
 				EntityTransaction tx = JPA.em().getTransaction();
-				tx.commit();
+				if (tx.isActive())
+					tx.commit();
 				
 				try  {
 					tx.begin();
@@ -398,7 +373,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 						play.Logger.info("Se inicia el proceso de registro de salida del oficio de remisión "+lineaResolucionFAP.registro.oficial.uri);
 						// Se obtiene el justificante de registro de salida del oficio de remisión
 						models.JustificanteRegistro justificanteSalida = registroService.registroDeSalida(solicitud.solicitante, lineaResolucionFAP.registro.oficial, solicitud.expedientePlatino, "Oficio de remisión");				
-						lineaResolucionFAP.registro.refresh();
 						lineaResolucionFAP.registro.informacionRegistro.setDataFromJustificante(justificanteSalida);
 						Documento documento = lineaResolucionFAP.registro.justificante;
 						documento.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteRegistroSalida");
@@ -437,14 +411,12 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 						solicitud.save();
 						Messages.ok("Se realizó la clasificación correctamente");
 					}
-					
+					tx.commit();
 				} catch (Throwable e)   {
 					Messages.error("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
 					play.Logger.info("Error almacenando el justificante de registro de salida del oficio de remisión en el AED");
 				}
-				tx.commit();
 			}
-			
 		}
 
 		if (!Messages.hasErrors()) {

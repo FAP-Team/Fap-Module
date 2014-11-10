@@ -120,7 +120,16 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * @return
 	 */
 	public static int getDiasLimiteFirma (Long idResolucion) {
-		return 2;
+		
+		int plazoMaximo;
+		String plazoMaximoDefinido = properties.FapProperties.get("fap.platino.portafirma.plazoMaximo");
+		
+		if ((plazoMaximoDefinido != null) && (plazoMaximoDefinido.compareTo("undefined") != 0))
+			 plazoMaximo = Integer.parseInt(plazoMaximoDefinido);
+		else
+			plazoMaximo = 2;
+		
+		return plazoMaximo;
 	}
 
 	/**

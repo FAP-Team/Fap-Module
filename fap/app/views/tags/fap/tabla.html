@@ -275,21 +275,24 @@
 						select: function(sm, record, index, eOpts) {
 							grid.addSelected(record);
 							#{if mostrarTablaSeleccion}
-							mostrarDetallesSeleccion(sm, eOpts);
+							mostrarDetallesSeleccion();
 							#{/if}
 						},
 						deselect: function(sm, record, index, eOpts) {
 							grid.delSelected(record);
 							#{if mostrarTablaSeleccion}
-							mostrarDetallesSeleccion(sm, eOpts);
+							mostrarDetallesSeleccion();
 							#{/if}
-						}
+						},
+						selectionchange: function() {
+                            grid.refreshSelection();
+                        }
 					}
 				});
 
 				#{if mostrarTablaSeleccion}
-				function mostrarDetallesSeleccion(sm, eOpts) {
-					store${id}Selected.loadRecords(sm.getSelection())
+				function mostrarDetallesSeleccion() {
+					store${id}Selected.loadRecords(grid.selectedRecords);
 				}
 				#{/if}
 
@@ -350,7 +353,6 @@
 		        	writeAllMessages${id}(); 
 		        	// Para las filas de la tabla
 				 	store${id}.loadData(ajax2Data(data.obj.rows));
-				 	
 				 	// Quitamos la mask loading
 				 	grid.body.unmask();
 				});
@@ -657,12 +659,16 @@
 		    		grid.body.mask("Cargando....");
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
 		    		peticionJSON${id}();
+		    		grid.clean();
+		    		#{if mostrarTablaSeleccion}
+		    		gridSelected.clean();
+		    		#{/if}
 		    	}
 		    });
 
 		   	var grid = new Ext.grid.GridPanel({
 		   		id: '${id}GridID',
-				selectedRecords: [],
+		   		selectedRecords: [],
 				store : store${id},
 				#{if urlSubir}
 			 	hidden:true,
@@ -687,7 +693,10 @@
 			    },
 			    delSelected: function(recordToDelete) {
 			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
-			    },
+                },
+                clean: function() {
+                   this.selectedRecords = [];
+                },
 			    refreshSelection: function() {
 			        if (0 >= this.selectedRecords.length) {
 			            return;
@@ -755,12 +764,11 @@
 				listeners : {
 					render : function(grid){      
        			    	grid.body.mask('Cargando...');
-       			    	this.refreshSelection();
+       			        grid.clean();
        				},
        				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
        				itemmouseenter: function(grid) {
        					console.log('Mouse over panel');
-       					//this.refreshSelection();
        					this.getView().focus();
        				}
 				}
@@ -773,8 +781,15 @@
                 title:'Selección',
                 height:${Integer.parseInt(alto)/2},
                 columns : #{verbatim}${columnas}#{/verbatim},
-                store : store${id}Selected
-
+                store : store${id}Selected,
+                clean: function(){
+                   this.store.removeAll();
+                },
+                listeners : {
+                    render : function(grid){      
+                        this.clean();
+                    }
+                }
             });
 
 	        Ext.create('Ext.Panel', {
@@ -836,7 +851,7 @@
 		    		   	}); */
 	
 		    store${id}.addListener("datachanged", function(){
-		    	store${id}.sync();
+		     	store${id}.sync();
 		    });
 		    
 		    store${id}.addListener("load", function(){

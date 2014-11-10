@@ -28,7 +28,6 @@ import org.joda.time.DateTime;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.fap.ResolucionControllerFAP;
-
 import platino.DatosDocumento;
 import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
@@ -46,7 +45,6 @@ import models.Firma;
 import models.LineaResolucionFAP;
 import models.ResolucionFAP;
 import models.SolicitudFirmaPortafirma;
-
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.PortafirmaFapService;
@@ -69,6 +67,8 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	private SolicitudFirmaInterface portafirmaPort;
 	private PropertyPlaceholder propertyPlaceholder;
 	private static Logger log = Logger.getLogger(PlatinoPortafirmaServiceImpl.class);
+	
+	private final int MAX_MATERIA;
 	
 	//private String userID;
 	
@@ -103,6 +103,9 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 
         if (platinoDBOrgPortRecibido != null)
         	platinoDBOrgPort = platinoDBOrgPortRecibido;
+        
+        //Se limita el campo materia a 255 caracteres
+        MAX_MATERIA = 255;
 	}
 	
 	//---------CONFIGURACION SERVICIO----------
@@ -260,10 +263,20 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 			
 			// Se rellena SolicitudFirmaPortafirma a partir de ResolucionFAP
 			resolucion.solicitudFirmaPortafirma.tema = resolucion.tituloInterno;
+			
+			//Se rellena el campo materia
+			String materia;
 			if ((resolucion.descripcion == null) || (resolucion.descripcion.trim().equals("")))
-				resolucion.solicitudFirmaPortafirma.materia = resolucion.sintesis;
+				materia = resolucion.sintesis;
 			else
-				resolucion.solicitudFirmaPortafirma.materia = resolucion.descripcion;
+				materia = resolucion.descripcion;
+			
+			//Se trunca el campo materia al máximo de caracteres del campo en el portafirma
+			if (materia != null && materia.length() > MAX_MATERIA) {
+				materia = materia.substring(0, MAX_MATERIA);
+			}
+			resolucion.solicitudFirmaPortafirma.materia = materia;
+			
 			resolucion.solicitudFirmaPortafirma.documentosFirma.add(resolucion.registro.oficial);
 			for (Documento documento: resolucion.docConsultaPortafirmasResolucion) {
 				resolucion.solicitudFirmaPortafirma.documentosConsulta.add(documento);

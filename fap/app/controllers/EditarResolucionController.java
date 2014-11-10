@@ -436,12 +436,16 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			// Comprobar la fecha de tope de firma con el ResolucionBase
 			try {
 				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
-				DateTime diaLimite = new DateTime();
-				diaLimite = diaLimite.plusDays(dias);
-				if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo)) {
-					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
-					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.solicitudFirmaPortafirma.plazoMaximo", resolucionFAP.solicitudFirmaPortafirma.plazoMaximo);					
-				}
+				//Si hay un plazo límite, se calcula si la fecha seleccionada está dentro del rango 
+				if (dias != -1) {
+					DateTime diaLimite = new DateTime();
+					diaLimite = diaLimite.plusDays(dias);
+					if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo)) {
+						play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
+						CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.solicitudFirmaPortafirma.plazoMaximo", resolucionFAP.solicitudFirmaPortafirma.plazoMaximo);					
+					}
+				} else
+					play.Logger.info("No hay fecha límite para la firma");
 			} catch (Throwable e) {
 				e.printStackTrace();
 				play.Logger.error("No se ha podido calcular el límite de fecha para la firma."+e);

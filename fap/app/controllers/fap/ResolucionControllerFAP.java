@@ -116,8 +116,9 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	/**
 	 * Devuelve el número de días máximo para la fecha de tope de firma (Información que se
 	 * envía al portafirma, aunque la "usa" como guía)
+	 * Se devuelve -1 si no hay un plazo máximo especificado
 	 * @param idResolucion
-	 * @return
+	 * @return plazoMaximo
 	 */
 	public static int getDiasLimiteFirma (Long idResolucion) {
 		
@@ -127,7 +128,7 @@ public class ResolucionControllerFAP extends InvokeClassController {
 		if ((plazoMaximoDefinido != null) && (plazoMaximoDefinido.compareTo("undefined") != 0))
 			 plazoMaximo = Integer.parseInt(plazoMaximoDefinido);
 		else
-			plazoMaximo = 2;
+			plazoMaximo = -1;
 		
 		return plazoMaximo;
 	}

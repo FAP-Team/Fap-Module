@@ -2,6 +2,16 @@ h2. Changelog
 
 h3. Versión 2.5.5RC4
 
+* Se corrige la selección de varios expedientes en Resolución.
+* Limitado el campo "materia" a 255 caracteres para el envío al portafirmas.
+* Modificación en el plazo máximo para la firma de resoluciones.
+* Se corrige error en el registro de salida de Oficios de Remisión.
+* Se permite modifcar la fecha límite de la firma en la Resolución.
+* Se corrige problema en la visualización de la Baremación.
+* Se controla el estado del envío al Portafirma.
+* Actualizada librería de Platino.
+* Se añade nuevo atributo "residencia" a la entidad Autorización de Cesión.
+* Añadida cabecera de seguridad para el servicio de Comunicaciones Internas.
 * Añadida cabecera de seguridad para el servicio de Registro.
 * Añadida property "fap.platino.security.procedimiento.uri" para definir cabecera de seguridad para el servicio de registro.
 * Corregido. Tipo de transporte a null si no está definido.

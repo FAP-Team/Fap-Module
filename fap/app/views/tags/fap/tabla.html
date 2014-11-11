@@ -274,18 +274,16 @@
 					listeners : {
 						select: function(sm, record, index, eOpts) {
 							grid.addSelected(record);
-							#{if mostrarTablaSeleccion}
-							mostrarDetallesSeleccion();
-							#{/if}
 						},
 						deselect: function(sm, record, index, eOpts) {
 							grid.delSelected(record);
-							#{if mostrarTablaSeleccion}
-							mostrarDetallesSeleccion();
-							#{/if}
 						},
 						selectionchange: function() {
-                            grid.refreshSelection();
+						    if (!grid.rememberSelection)
+                               grid.refreshSelection();
+                            #{if mostrarTablaSeleccion}
+                            mostrarDetallesSeleccion();
+                            #{/if}
                         }
 					}
 				});
@@ -659,10 +657,12 @@
 		    		grid.body.mask("Cargando....");
 		    		grid.getComponent('barraInferior').getComponent('searchbox').onTrigger1Click();
 		    		peticionJSON${id}();
-		    		grid.clean();
-		    		#{if mostrarTablaSeleccion}
-		    		gridSelected.clean();
-		    		#{/if}
+		    		#{if seleccionable}
+		    		   grid.rememberSelection = true;
+			    		#{if mostrarTablaSeleccion}
+			    		   gridSelected.clean();
+			    		#{/if}
+			    	#{/if}
 		    	}
 		    });
 
@@ -683,6 +683,7 @@
 				id: '${id}-grid',
 				height: ${alto},
 				title: '${titulo}',
+				rememberSelection: false,
 				addSelected: function(newRecordsToSelect) {
 			        if (!this.rendered || Ext.isEmpty(this.el))
 			            return;
@@ -703,6 +704,19 @@
 			        }
 
 				    this.getSelectionModel().select(this.selectedRecords, true);
+			    },
+			    actualizar: function(){
+			        this.rememberSelection = false;
+			        var newRecordsToSelect = [];
+                    for (var i = 0; i < this.selectedRecords.length; i++) {
+                       record = this.getStore().getAt(store${id}.find("id", this.selectedRecords[i].data.id));
+                       if (!Ext.isEmpty(record)) {
+                          newRecordsToSelect.push(record);
+                       }
+                    }
+			        
+			        this.clean();
+			        this.getSelectionModel().select(newRecordsToSelect);  
 			    },
 			    #{if urlEditar || urlLeer}
 				plugins: [
@@ -803,7 +817,13 @@
 			#{/if}
 
 
-		   	
+		   	#{if seleccionable}
+            grid.getView().on('refresh', function(gridView) {
+                if (grid.rememberSelection) 
+                   grid.actualizar();
+            });
+            #{/if}
+            
 		    // Creamos el tooltip de la celda
 		    grid.getView().on('render', function(gridView) {
             	gridView.tip = Ext.create('Ext.tip.ToolTip', {
@@ -850,6 +870,12 @@
 		    		   	    });
 		    		   	}); */
 	
+	        #{if seleccionable}
+	        grid.getStore().on('beforeload', function() {
+                grid.selectedRecords = grid.getSelectionModel().getSelection();
+            });
+            #{/if}
+	    
 		    store${id}.addListener("datachanged", function(){
 		     	store${id}.sync();
 		    });

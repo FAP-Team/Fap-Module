@@ -35,3 +35,6 @@ script:
 - ${CASPERJS} test `pwd`/test/CasperJS/*.test.js
 - kill $casper_pid
 
+notifications:
+slack:
+	secure: "EDp3P1CxjeJOin/1rupN27r4w15rxIHsz1t7W0aVi0oQZ8ZpMBofKgDuAVvJIYLLb1zg2sQ1BwOWn7ZfqxibhGlT8Ko18h5bdMDlKdQ+jNh0NBUhfnGM691p5IMiiD7krtQOWM14hT5qL0BTOrd1Ur+byPEn2veOFipqhZK5FQk="

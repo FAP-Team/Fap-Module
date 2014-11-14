@@ -127,9 +127,11 @@ Esta función debe devolver las prioridades permitidas en la aplicación. Por de
 
 * Método para obtener el número de días máximo para obtener la firma.
 
-bc. public static int getDiasLimiteFirma(Long idResolucion)
+bc. public static int getDiasLimiteFirma(Long idResolucion, Boolean oficios)
 
 Esta función devuelve el número de días máximo para la fecha tope de firma en el portafirma.
+
+Si el parámetro "oficios" está a false, se devolverá la fecha tope de firma de la resolución. Si está a true, se devolverá la fecha tope de firma de los oficios de remisión.
 
 * Método para obtener los interesados de la resolución.
 

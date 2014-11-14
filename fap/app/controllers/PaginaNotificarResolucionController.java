@@ -244,8 +244,6 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
 			CustomValidation.validValueFromTable("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario;
-			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
-			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo;
 			
 			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {
 				if (resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante == null){
@@ -265,12 +263,21 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 				play.Logger.error("La fecha tope de firma no puede ser anterior a hoy.");
 				CustomValidation.error("La fecha tope de firma no puede ser anterior a hoy.","resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
 			}
+			int dias = 0;
 			try {
-				DateTime diaLimite = new DateTime();
-				diaLimite = diaLimite.plusDays(1);	// Por defecto, sólo se permite un día de plazo máximo
-				if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo)) {
-					play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
-					CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);					
+				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id, true);
+				//Si hay un plazo límite, se calcula si la fecha seleccionada está dentro del rango 
+				if (dias != -1) {
+					//Es requerido sólo si existe la property y tiene valor
+					CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);
+					dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo;
+					
+					DateTime diaLimite = new DateTime();
+					diaLimite = diaLimite.plusDays(1);	// Por defecto, sólo se permite un día de plazo máximo
+					if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo)) {
+						play.Logger.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".");
+						CustomValidation.error("La fecha tope de firma no puede ser posterior a "+diaLimite+".", "resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo);					
+					}
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();

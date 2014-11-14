@@ -164,7 +164,11 @@
 				
 			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario', id:'selectJefeServicio', requerido:true, titulo:'Destinatario Portafirma' /}		
 		
-			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo', requerido:true, titulo:'Fecha tope firma' /}		
+			#{fap.grupo borde:false, mostrarSi:((properties.FapProperties.get("fap.platino.portafirma.plazoMaximoOficios") != null) && (properties.FapProperties.get("fap.platino.portafirma.plazoMaximoOficios") != "undefined"))}
+				
+			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo', id:'fechaTopeFirma', requerido:true, titulo:'Fecha Tope Firma' /}		
+		
+			#{/fap.grupo}
 
 			#{fap.grupo borde:false, mostrarSi:properties.FapProperties.getBoolean("fap.platino.portafirma") == true}
 		

@@ -312,7 +312,9 @@ Formulario Principal {
 				Form formSelectJefeServicio {
 					Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirma.idDestinatario titulo="Destinatario Portafirma" requerido
 					Combo selectPrioridadFirma campo=ResolucionFAP.solicitudFirmaPortafirma.prioridad titulo="Prioridad Firma" requerido
-					Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirma.plazoMaximo titulo="Fecha Tope Firma" requerido
+					Grupo gPlazoMaximo borde=false mostrarSiExpresion"((properties.FapProperties.get(\"fap.platino.portafirma.plazoMaximo\") != null) && (properties.FapProperties.get(\"fap.platino.portafirma.plazoMaximo\") != \"undefined\"))" {
+						Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirma.plazoMaximo titulo="Fecha Tope Firma" requerido
+					}
 					Texto campo=ResolucionFAP.numero_folios titulo="Nº Folios" requerido ayuda = "Número de folios del documento de la resolución" (popover)
 
 					Boton enviarFirmaJSPortafirma titulo="Enviar al portafirma" waitPopup
@@ -593,8 +595,9 @@ Formulario Principal {
 							Wiki {"Puede enviar los Oficios de Remisión sin firmar aún al Portafirma."}
 							Form formEnviarOficiosRemisionPortaFirma permiso=permisoEnviarOficiosRemisionPortafirma {
 								Combo selectJefeServicio campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario titulo="Destinatario Portafirma" requerido
-								Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha tope firma" requerido
-								
+								Grupo gPlazoMaximoOficios borde=false mostrarSiExpresion"((properties.FapProperties.get(\"fap.platino.portafirma.plazoMaximoOficios\") != null) && (properties.FapProperties.get(\"fap.platino.portafirma.plazoMaximoOficios\") != \"undefined\"))" {
+									Fecha fechaTopeFirma campo=ResolucionFAP.solicitudFirmaPortafirmaOficioRemision.plazoMaximo titulo="Fecha Tope Firma" requerido
+								}
 								Boton botonEnviarOficiosRemisionPortaFirma titulo="Enviar Oficios de Remisión sin firmar" waitPopup
 							}
 						}

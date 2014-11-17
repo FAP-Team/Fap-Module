@@ -1,17 +1,17 @@
 package controllers;
 
-import org.h2.constant.SysProperties;
-import org.joda.time.DateTime;
-
 import messages.Messages;
 import models.SolicitudGenerica;
 import models.Verificacion;
+
+import org.joda.time.DateTime;
+
 import controllers.gen.AccesoVerificacionesControllerGen;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
 
 public class AccesoVerificacionesController extends AccesoVerificacionesControllerGen {
-	
+
 	public static void verificacionNueva(Long idSolicitud, String botonIniciarVerificacion) {
 		checkAuthenticity();
 		if (!permisoVerificacionNueva("editar")) {
@@ -22,13 +22,14 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 		if (!Messages.hasErrors()) {
 			AccesoVerificacionesController.verificacionNuevaValidateRules();
 		}
-		
+
 		if ((!Messages.hasErrors()) /*&& !dbSolicitud.estado.equals(EstadosSolicitudEnum.verificado.name())*/) {
 			// Asignamos una nueva verificacion con su fecha de creacion, cuando se pulse el boton de nueva verificación
 			dbSolicitud.verificacion = new Verificacion();
 			dbSolicitud.verificacion.expediente = dbSolicitud.expedienteAed.idAed;
 			dbSolicitud.verificacion.estado = EstadosVerificacionEnum.iniciada.name();
-			dbSolicitud.estadoAntesVerificacion = dbSolicitud.estado;
+			if (dbSolicitud.estado.compareTo(EstadosSolicitudEnum.enVerificacion.name()) != 0)
+				dbSolicitud.estadoAntesVerificacion = dbSolicitud.estado;
 			dbSolicitud.estado = EstadosSolicitudEnum.enVerificacion.name(); // TODO: Debería ir en el método iniciarVerificacion pero por permisos se pone aquí
 			dbSolicitud.verificacion.fechaCreacion = new DateTime();
 			dbSolicitud.save();
@@ -36,7 +37,7 @@ public class AccesoVerificacionesController extends AccesoVerificacionesControll
 			String accion = getAccion();
 			redirect("PaginaVerificacionController.index", accion, idSolicitud, idVerificacion);
 		}
-		
+
 		log.info("Acción Editar de página: " + "gen/AccesoVerificaciones/AccesoVerificaciones.html" + " , intentada sin éxito (Problemas de Validación)");
 		AccesoVerificacionesController.verificacionNuevaRender(idSolicitud);
 	}

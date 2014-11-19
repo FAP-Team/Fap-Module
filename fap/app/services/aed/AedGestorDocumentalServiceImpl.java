@@ -360,7 +360,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             	doc = aedPort.obtenerDocumentoNoClasificado(documento.uri);
             }
             catch(Exception e){
-            	play.Logger.info("El documento no está entre los documentos 'no clasificados'. Se procede a obtener " +
+            	log.info("El documento no está entre los documentos 'no clasificados'. Se procede a obtener " +
             			"de documentos clasificados...", e);
                 doc = aedPort.obtenerDocumento(documento.uri);
             }

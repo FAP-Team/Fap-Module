@@ -12,15 +12,12 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
 import config.InjectorConfig;
-
-
 import messages.Messages;
 import models.Agente;
 
 import org.apache.log4j.Logger;
 
 import enumerado.fap.gen.AccesoAgenteEnum;
-
 import platino.InfoCert;
 import play.Play;
 import play.cache.Cache;
@@ -553,7 +550,16 @@ public class SecureController extends GenericController{
             Messages.keep();
             loginFap();
 			// TODO: Los demás datos... no se pueden obtener
-		}
+		} else
+			if (session.contains("username") && agente.username != null && agente.username.compareTo(session.get("username")) != 0){
+				try {
+					log.info("Intentando inicio de sesión mediante ticketig (ticket = "+ ticket + " y agente = " + agente.username + ")");
+					Messages.error("Error en la sesión de usuario.");
+					logoutFap();
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+			}
     	
     	
      	log.info("Login con ticketing. User: "+agente.username);

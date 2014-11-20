@@ -211,6 +211,9 @@ Formulario Administracion permiso=administrador{
 	    		Boton actualizarBaremacionBoton titulo="Actualizar Baremación"
 	    	}
 	    }
+	    Grupo EvaluacionesFinalizadas titulo="Estado de las evaluaciones" mostrarSiExpresion"((models.TipoEvaluacion != null) && (models.TipoEvaluacion.comprobarEstadoTipoEvaluacion(\"evaluada\")))" {
+	       Wiki{ "La evaluaciones ya han sido finalizadas" }
+	    }
     }
 	
 	Pagina Usuarios titulo="Administración de Usuarios" perteneceA="Administracion"{

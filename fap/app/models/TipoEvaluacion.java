@@ -82,6 +82,16 @@ public class TipoEvaluacion extends FapModel {
 		List<TipoDatoAdicional> sortedDatosAdicionales = TipoDatoAdicional.find("select tda from TipoEvaluacion te join te.datosAdicionales tda where te.id=? order by tda.orden", this.id).fetch();
 		return sortedDatosAdicionales;
 	}
+
+	public static boolean comprobarEstadoTipoEvaluacion(String estado) {
+		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+
+		if (tipoEvaluacion != null)
+			if (tipoEvaluacion.estado != null)
+				return (tipoEvaluacion.estado.compareTo(estado) == 0);
+
+		return false;
+	}
 	// === MANUAL REGION END ===
 
 }

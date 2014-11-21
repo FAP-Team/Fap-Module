@@ -1,5 +1,17 @@
 h2. Changelog
 
+h3. Versión 2.5.5RC5
+
+* Se mejora la seguridad de acceso mediante ticketing.
+* Se mejora la comprobación del estado del proxy en Comunicaciones Internas.
+* Se añade mensaje de estado en los botones de acción en los Popups.
+* Corregido, se muestra página de Baremación en blanco.
+* Corregido, duplicación de nombres en los tags de firma.
+* Se modifica la información mostrada en el log.
+* Corregido, actualizar estado de la Verificación.
+* No se limita la fecha tope de firma en el Portafirma.
+* Se añade implementación para mantener la selección de registros en tablas.
+
 h3. Versión 2.5.5RC4
 
 * Se corrige la selección de varios expedientes en Resolución.

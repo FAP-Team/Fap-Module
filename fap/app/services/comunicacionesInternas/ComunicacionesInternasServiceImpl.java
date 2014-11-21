@@ -74,18 +74,18 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		
         //El servicio de comunicaciones internas y servicios genéricos no funciona con proxy, entra en conflicto.
         //Por esto hay que ponerlo a falso, antes de configurar sus políticas.
-        if (FapProperties.getBoolean("fap.proxy.enable")){
-        	FapProperties.setBoolean("fap.proxy.enable", false);
-        }
+        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
+        FapProperties.setBoolean("fap.proxy.enable", false);
+
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
         
 		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
 		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
 		genericosService.mostrarInfoInyeccion();
-		
-		if (!FapProperties.getBoolean("fap.proxy.enable")){
-			FapProperties.setBoolean("fap.proxy.enable", true);
-		}
+
+		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
+	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);
+
 	}
 	
 	public boolean isConfigured(){

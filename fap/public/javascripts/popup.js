@@ -98,7 +98,7 @@ function popupWarning_open(warningText, functionButton) {
 					 "</div>"+
 					 "<div class=\"modal-footer\">"+
 					 	"<a href=\"#\" id=\""+acceptTextButton+"_id\""+onClickAccept+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+ acceptTextButton +"</a>"+
-					 	"<a href=\"#\" id=\""+cancelTextButton+"_id\""+onClickCancel+" class=\"btn "+cancelType+"\" data-loading-text=\"Enviando...\">"+ cancelTextButton +"</a>"+
+					 	"<a href=\"#\" id=\""+cancelTextButton+"_id\""+onClickCancel+" class=\"btn "+cancelType+"\" data-loading-text=\"Cancelando...\">"+ cancelTextButton +"</a>"+
 					 "</div>"+
 					 "</div>");
 
@@ -151,7 +151,7 @@ function popupAddButton (popup, textButton, functionButton, type, enable) {
 	var typeLocal = type;
 	if (textButton == 'Borrar')
 		typeLocal = 'btn-danger';
-	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id_"+popup+"\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Enviando...\">"+textButton+"</a>");
+	$popup.find('.modal-footer').append("<a href=\"#\" id=\""+textButton+"_id_"+popup+"\""+onClick+disabled+" class=\"btn "+typeLocal+"\" data-loading-text=\"Procesando...\" data-complete-text=\"Completado...\">"+textButton+"</a>");
 }
 
 function popupTitle (popup, title) {
@@ -168,3 +168,4 @@ function popupMessages (popup, idMessages) {
 	var $popup = $('#' + popup);
 	$popup.find('.modal-body').append("<div id=\""+idMessages+"\"></div>");
 }
+

@@ -79,10 +79,10 @@ $(document).ready(function(){
 	 	recargarPagina = true;
 	 }
 	
-	#{if (accion != 'leer')}
+	#{if (accion != 'leer')}   
 		${idBotonAccion} = function(){
-			$('#${botonAccion}_id').button('loading');
   			var data = $('#'+idPopup+' form').serialize();
+  			$('#${botonAccion}_id_${popup}_popup').button('loading');
 			$.post(replaceAmpersand('${url}'), data, function(data){
  				mensajes.clear(); //Quita los mensajes
 				if(typeof(data)=='string'){
@@ -98,7 +98,8 @@ $(document).ready(function(){
 							callback();
 						
 						//Todo correcto, cierra el popup
-						$('#'+idPopup).modal('hide');
+						$('#${botonAccion}_id_${popup}_popup').button('complete');
+						$popup.modal('hide');
 						// Para recargar la pagina, pasandole todos los id y la accion editar, para que se muestre bien los valores del popup en la tabla
 						if (recargarPagina === true){
 							if ("${urlRecargar}" !== ""){ // Comprobamos que la recarga que se va a realizar sea correcta
@@ -107,16 +108,15 @@ $(document).ready(function(){
 						}
 					}
 				}
-				$('#${idBotonAccion}').button('complete');
 			});
 		};
+		
 	  	popupButtons (idPopup, {"${botonAccion}": "${idBotonAccion}()"}, "btn-primary", true, ${tags.TagMapStack.top("editable") || accion == "borrar"}, ${guardarAntes});
   	#{/if}
   	#{else}
   		popupButtons (idPopup, {}, "btn-primary", true, true, false);
   	#{/else}
   	popupTitle(idPopup, "${titulo}");
-
 
 });
 Ext.onReady(function() {

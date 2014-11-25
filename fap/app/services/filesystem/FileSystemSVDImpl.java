@@ -1,5 +1,9 @@
 package services.filesystem;
 
+import java.util.List;
+
+import models.PeticionSVDFAP;
+import models.SolicitudGenerica;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
 import services.SVDService;
@@ -20,19 +24,22 @@ public class FileSystemSVDImpl implements SVDService {
 	}
 
 	@Override
-	public void crearPeticionSincrona() {
+	public void crearPeticion(PeticionSVDFAP peticion,
+			List<SolicitudGenerica> solicitudes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void crearPeticionAsincrona() {
+	public Respuesta enviarPeticionSincrona(PeticionSVDFAP peticion)
+			throws VerificarDatosServiceException {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public Respuesta enviarPeticion() throws VerificarDatosServiceException {
+	public Respuesta enviarPeticionAsincrona(PeticionSVDFAP peticion)
+			throws VerificarDatosServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,4 +64,5 @@ public class FileSystemSVDImpl implements SVDService {
 		return null;
 	}
 
+	
 }

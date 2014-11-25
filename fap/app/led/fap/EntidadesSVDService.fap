@@ -1,0 +1,262 @@
+Entidad PeticionSVDFAP{
+   String uidUsuario
+   AtributosSVDFAP atributos
+   SolicitudesSVDFAP solicitudes
+   Lista tipoEstadoPeticionSVDFAP estadoPeticion
+}
+
+Entidad PeticionSVDIdentidadFAP extends PeticionSVDFAP{}
+
+Entidad PeticionSVDResidenciaFAP extends PeticionSVDFAP{}
+
+Entidad AtributosSVDFAP{
+   String codigoCertificado
+}
+
+Entidad SolicitudesSVDFAP{
+   OneToMany SolicitudTransmisionSVDFAP solicitudTransmision
+}
+
+Entidad SolicitudTransmisionSVDFAP{
+   DatosGenericosPeticionSVDFAP datosGenericos
+   DatosEspecificosPeticionSVDFAP datosEspecificos
+   SolicitudGenerica solicitud
+}
+
+Entidad DatosGenericosPeticionSVDFAP{
+   SolicitanteSVDFAP solicitante
+   TitularSVDFAP titular
+}
+
+Entidad SolicitanteSVDFAP{
+   String identificadorSolicitante
+   String nombreSolicitante
+   String finalidad
+   String idExpediente
+   String unidadTramitadora
+   ProcedimientoSVDFAP procedimiento
+   FuncionarioSVDFAP funcionario
+   Lista TipoConsentimientoSVDFAP consentimiento
+}
+
+Entidad ProcedimientoSVDFAP {
+   String codigoProcedimiento
+   String nombreProcedimiento
+}
+
+Entidad FuncionarioSVDFAP{
+   String nombreCompletoFuncionario
+   String nifFuncionario
+}
+
+Entidad TitularSVDFAP{
+ String documentacion
+ String nombreCompleto transient
+ String nombre
+ String apellido1
+ String apellido2
+ Lista TipoDocumentacion tipoDocumentacion
+}
+
+Entidad DatosEspecificosPeticionSVDFAP{
+  SolicitanteDatosSVDFAP solicitanteDatos
+  SolicitudSVDFAP solicitud
+}
+
+Entidad SolicitanteDatosSVDFAP{
+   String tipo
+}
+
+Entidad SolicitudSVDFAP{
+   ResidenciaSVDFAP residencia
+   NacimientoSVDFAP solicitudNacimiento
+   String espanol
+}
+
+Entidad ProvinciaSVDFAP{
+  String codigo
+  String nombre
+}
+
+Entidad MunicipioSVDFAP{
+  String codigo
+  String nombre
+}
+
+Entidad ResidenciaSVDFAP{
+  ProvinciaSVDFAP provincia
+  MunicipioSVDFAP municipio
+}
+
+Entidad NacimientoSVDFAP{
+  DateTime fecha
+  MunicipioSVDFAP municipio
+  ProvinciaSVDFAP provincia
+}
+
+////--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
+
+Entidad RespuestaSVDFAP {   
+  AtributosRespuestaSVDFAP atributos
+  TransmisionesRespuestaSVDFAP transmisiones
+}
+
+Entidad AtributosRespuestaSVDFAP {   
+  String idPeticion
+  String codigoCertificado
+  String timestamp
+  Integer numElementos
+  EstadoRespuestaSVDFAP estado
+}
+
+Entidad TransmisionesRespuestaSVDFAP{
+  OneToMany TransmisionDatosRespuestaSVDFAP transmisionDatos
+}
+
+Entidad EstadoRespuestaSVDFAP {
+  String codigoEstado
+  String literalError
+  String codigoEstadoSecundario
+  Integer tiempoEstimadoRespuesta
+}
+
+Entidad TransmisionDatosRespuestaSVDFAP{
+  DatosGenericosRespuestaSVDFAP datosGenericos
+  DatosEspecificosRespuestaSVDFAP datosEspecificos
+}
+
+Entidad DatosGenericosRespuestaSVDFAP{
+   EmisorSVDFAP emisor
+   SolicitanteSVDFAP solicitante
+   TitularSVDFAP titular
+   TransmisionSVDFAP transmision
+}
+
+Entidad EmisorSVDFAP{
+ String nif
+ String nombreEmisor
+}
+
+Entidad TransmisionSVDFAP{
+ String codigoCertificado
+ String idSolicitud
+ String idTransmision
+ DateTime fechaGeneracion
+}
+
+Entidad DatosEspecificosRespuestaSVDFAP{
+   EstadoSVDFAP estado
+   EstadoResultadoSVDFAP estadoResultado
+   DomicilioRespuestaSVDFAP domicilio
+   DatosTitularRespuestaSVDFAP datosTitular 
+}
+
+Entidad DatosTitularRespuestaSVDFAP{
+  String identificador
+  String numeroSoporte
+  String nombre
+  String apellido1
+  String apellido2
+  String nacionalidad
+  String nombrePadre
+  String nombreMadre
+  DateTime fechacaducidad
+  SexoSVDFAP sexo
+  NacimientoSVDFAP datosNacimiento
+  DatosDireccionSVDFAP datosDireccion
+}
+
+Entidad EstadoSVDFAP{
+  String codigoEstado
+  String literalError
+}
+
+Entidad EstadoResultadoSVDFAP{
+  String codigoEstado
+  String literalError
+}
+
+Entidad SexoSVDFAP {
+  String nombre
+  String valor
+}
+
+Entidad DatosDireccionSVDFAP {
+  String localidad
+  ProvinciaSVDFAP provincia
+  ViaSVDFAP datosVia
+}
+
+Entidad DomicilioRespuestaSVDFAP {
+  ProvinciaSVDFAP provincia
+  MunicipioSVDFAP municipio
+  EntidadColectivaSVDFAP entColectiva
+  EntidadSingularSVDFAP entSingular
+  EntidadNucleoSVDFAP nucleo
+  DireccionRespuestaSVDFAP direccion
+  String codUnidadPoblacional
+  UltimaVariacionSVDFAP ultimaVariacion
+}
+
+Entidad EntidadColectivaSVDFAP{
+  String codigo
+  String nombre
+}
+
+Entidad EntidadSingularSVDFAP{
+  String codigo
+  String nombre
+}
+
+Entidad EntidadNucleoSVDFAP{
+  String codigo
+  String nombre
+}
+
+Entidad DireccionRespuestaSVDFAP{
+  ViaSVDFAP via
+  NumeroSVDFAP numero
+  NumeroSuperiorSVDFAP numeroSuperior
+  String bloque
+  String codigoPostal
+  String escalera
+  String hmt
+  String kmt
+  String planta
+  String portal
+  String puerta
+}
+
+Entidad ViaSVDFAP{
+  String codigo
+  String nombre
+  String tipo
+}
+
+Entidad NumeroSVDFAP{
+  String calificador
+  String valor
+}
+
+Entidad NumeroSuperiorSVDFAP{
+  String calificador
+  String valor
+}
+
+Entidad UltimaVariacionSVDFAP{
+   String codigo
+   String descripcion
+   DateTime fecha
+}
+
+Lista tipoEstadoPeticionSVDFAP crearEnumerado {
+   creada: "Creada"
+   enviada : "Enviada"
+   recibida: "Recibida"
+   cancelada: "Cancelada"
+}
+
+Lista TipoConsentimientoSVDFAP crearEnumerado {
+   Si: "Si"
+   Ley: "Ley"
+}

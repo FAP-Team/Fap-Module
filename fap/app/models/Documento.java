@@ -139,7 +139,7 @@ public class Documento extends FapModel {
 			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			try {
 				String firma = gestorDocumental.getDocumentoFirmaByUri(uri, this.clasificado);
-				if (firma != null) {
+				if (firma != null && !firma.isEmpty()) {
 					String ret = "<a href=\"";
 					ret += AedUtils.crearUrlConInformeDeFirma(uri);
 					ret += "\" target=\"_blank\">Descargar Firmado</a>";

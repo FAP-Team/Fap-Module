@@ -37,7 +37,7 @@ public class JSONLayout extends Layout
         // Now we can fill the object with the event attributes.
 
         String user = "anónimo";
-        if (play.mvc.Scope.Session.current().contains("username"))
+        if (!play.mvc.Scope.Session.current().isEmpty() && play.mvc.Scope.Session.current().contains("username"))
         	user = play.mvc.Scope.Session.current().get("username");
 
         lLogObj.add("time", new JsonPrimitive(new ISO8601DateFormat().format(new Date(loggingEvent.timeStamp))));

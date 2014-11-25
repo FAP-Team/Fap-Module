@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.PaginaNuevaComunicacionInternaDocumentosControllerGen;
+
+public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNuevaComunicacionInternaDocumentosControllerGen {
+
+}

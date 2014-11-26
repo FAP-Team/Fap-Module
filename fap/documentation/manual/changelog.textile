@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.5.5RC5
 
+* Corregido, descargar documentos firmados no registrados.
+* Se mejora la comprobación de la versión del navegador.
 * Se mejora la seguridad de acceso mediante ticketing.
 * Se mejora la comprobación del estado del proxy en Comunicaciones Internas.
 * Se añade mensaje de estado en los botones de acción en los Popups.

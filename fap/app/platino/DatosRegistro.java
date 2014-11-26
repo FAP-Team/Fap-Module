@@ -81,10 +81,13 @@ public class DatosRegistro {
 			String uriDocumentoPlatino) throws Exception {
 		Documento documento = new Documento();
 		InputStream inputStream = dataSource.getInputStream();
+		byte[] arrayByte = PlatinoSecurityUtils.obtenerHash(inputStream);
 		// URN
 		documento.setNombre(uriDocumentoPlatino);
 		// Hash
-		documento.setHash(PlatinoSecurityUtils.obtenerHash(inputStream));
+		dataSource = new javax.mail.util.ByteArrayDataSource(arrayByte, "xml");
+		DataHandler dataHandler = new DataHandler(dataSource);
+		documento.setHash(dataHandler);
 		return documento;
 	}
 	

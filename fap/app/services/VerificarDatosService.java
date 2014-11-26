@@ -3,6 +3,7 @@ package services;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
 import es.gobcan.platino.servicios.svd.Solicitudes;
+import es.gobcan.platino.servicios.svd.SolicitudesIdResi;
 import platino.*;
 
 public interface VerificarDatosService {
@@ -21,7 +22,7 @@ public interface VerificarDatosService {
 			String finalidad, String idExpediente, String unidadTramitadora, String codigoProc, String nombreProc, String nombreCompletoFuncionario, String nif, 
 			String valorConsentimiento, String documentacion, String nombreCompleto, String nombre, String apellido1, String apellido2, String tipoDoc) throws VerificarDatosServiceException;
 	
-	public Respuesta peticionAsincronaIdentidad(Solicitudes solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante, 
+	public Respuesta peticionAsincronaIdentidad(SolicitudesIdResi solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante,
 			String finalidad, String idExpediente, String unidadTramitadora, String codigoProc, String nombreProc, String nombreCompletoFuncionario, String nif, 
 			String valorConsentimiento, String documentacion, String nombreCompleto, String nombre, String apellido1, String apellido2, String tipoDoc) throws VerificarDatosServiceException;
 }

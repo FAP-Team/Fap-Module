@@ -204,9 +204,9 @@ public class PlatinoVerificarDatosServiceImpl implements services.VerificarDatos
 //		return solicitudSVD;
 //	}
 	
-	private SolicitudTransmision setSolicitudTransmision (DatosGenericos datosGenericos){
+	private SolicitudTransmisionIdResi setSolicitudTransmision (DatosGenericos datosGenericos){
 		
-		SolicitudTransmision solicitudTransmision = new SolicitudTransmision();
+		SolicitudTransmisionIdResi solicitudTransmision = new SolicitudTransmisionIdResi();
 		solicitudTransmision.setDatosGenericos(datosGenericos);
 		return solicitudTransmision;
 	}
@@ -236,9 +236,9 @@ public class PlatinoVerificarDatosServiceImpl implements services.VerificarDatos
 		
 		DatosGenericos datosGenericos = setDatos(solicitante, titular);
 		
-		SolicitudTransmision solicitudTransmision = setSolicitudTransmision(datosGenericos);
+		SolicitudTransmisionIdResi solicitudTransmision = setSolicitudTransmision(datosGenericos);
 		
-		Solicitudes solicitud = new Solicitudes();
+		SolicitudesIdResi solicitud = new SolicitudesIdResi();
 		solicitud.getSolicitudTransmision().add(solicitudTransmision);
 
 		peticion.setSolicitudes(solicitud);
@@ -252,7 +252,7 @@ public class PlatinoVerificarDatosServiceImpl implements services.VerificarDatos
 		}
 	}
 	
-	public Respuesta peticionAsincronaIdentidad(Solicitudes solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante, 
+	public Respuesta peticionAsincronaIdentidad(SolicitudesIdResi solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante,
 			String finalidad, String idExpediente, String unidadTramitadora, String codigoProc, String nombreProc, String nombreCompletoFuncionario, String nif, 
 			String valorConsentimiento, String documentacion, String nombreCompleto, String nombre, String apellido1, String apellido2, String tipoDoc) throws VerificarDatosServiceException{
 		

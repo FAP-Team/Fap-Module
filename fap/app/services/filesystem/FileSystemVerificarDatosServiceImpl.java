@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.xml.ws.soap.MTOMFeature;
 
+import es.gobcan.platino.servicios.svd.*;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -28,12 +29,6 @@ import es.gobcan.platino.servicios.edmyce.dominio.mensajes.RemesaType;
 import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ResultadoBusquedaMensajeType;
 import es.gobcan.platino.servicios.edmyce.mensajes.*;
 import es.gobcan.platino.servicios.registro.Registro_Service;
-import es.gobcan.platino.servicios.svd.Atributos;
-import es.gobcan.platino.servicios.svd.Respuesta;
-import es.gobcan.platino.servicios.svd.RespuestaPdf;
-import es.gobcan.platino.servicios.svd.ScspwsService;
-import es.gobcan.platino.servicios.svd.Solicitudes;
-import es.gobcan.platino.servicios.svd.SvdException;
 import es.gobcan.platino.servicios.svd.peticionpeticionpdf.PeticionPdf;
 import es.gobcan.platino.servicios.svd.peticionpeticionrecover.PeticionRecover;
 import es.gobcan.platino.servicios.svd.peticionpeticionsincrona.PeticionSincrona;
@@ -131,7 +126,7 @@ public class FileSystemVerificarDatosServiceImpl implements services.VerificarDa
 			}
 		}
 		
-		public Respuesta peticionAsincronaIdentidad(Solicitudes solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante, 
+		public Respuesta peticionAsincronaIdentidad(SolicitudesIdResi solicitud, String codigoCertificado, String uidUsuario, String idSolicitante, String nombreSolicitante,
 				String finalidad, String idExpediente, String unidadTramitadora, String codigoProc, String nombreProc, String nombreCompletoFuncionario, String nif, 
 				String valorConsentimiento, String documentacion, String nombreCompleto, String nombre, String apellido1, String apellido2, String tipoDoc) throws VerificarDatosServiceException{
 			

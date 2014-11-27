@@ -1,21 +1,16 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -34,14 +29,23 @@ public class PeticionSVDIdentidadFAP extends PeticionSVDFAP {
 	}
 
 	// === MANUAL REGION START ===
-	
-    private final String codigoCertificado = "CDISFWS01";
-    
-    public PeticionSVDIdentidadFAP() {
+
+	private final String codigoCertificado = "CDISFWS01";
+
+	public PeticionSVDIdentidadFAP() {
 		init();
 		this.getAtributos().setCodigoCertificado(codigoCertificado);
 	}
-	
+
+	@Override
+	public DatosEspecificosPeticionSVDFAP rellenarDatosEspecificos(SolicitudGenerica solicitud) {
+
+		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP();
+
+		return datosEspecificos;
+
+	}
+
 	// === MANUAL REGION END ===
 
 }

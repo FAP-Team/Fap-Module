@@ -1,21 +1,16 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -43,7 +38,7 @@ public class SolicitanteSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public FuncionarioSVDFAP funcionario;
 
-	@ValueFromTable("TipoConsentimiento")
+	@ValueFromTable("TipoConsentimientoSVDFAP")
 	public String consentimiento;
 
 	public SolicitanteSVDFAP() {
@@ -66,10 +61,9 @@ public class SolicitanteSVDFAP extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	
-	public SolicitanteSVDFAP(String identificadorSolicitante, String nombreSolicitante, String idExpediente, String consentimiento, String finalidad
-			, String unidadTramitadora, FuncionarioSVDFAP funcionario, ProcedimientoSVDFAP procedimiento) {
-		
+
+	public SolicitanteSVDFAP(String identificadorSolicitante, String nombreSolicitante, String idExpediente, String consentimiento, String finalidad, String unidadTramitadora, FuncionarioSVDFAP funcionario, ProcedimientoSVDFAP procedimiento) {
+
 		init();
 		this.setIdentificadorSolicitante(identificadorSolicitante);
 		this.setNombreSolicitante(nombreSolicitante);
@@ -144,7 +138,7 @@ public class SolicitanteSVDFAP extends FapModel {
 	public void setConsentimiento(String consentimiento) {
 		this.consentimiento = consentimiento;
 	}
-	
+
 	// === MANUAL REGION END ===
 
 }

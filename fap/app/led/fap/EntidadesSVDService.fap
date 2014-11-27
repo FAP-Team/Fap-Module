@@ -1,7 +1,8 @@
 Entidad PeticionSVDFAP{
    String uidUsuario
    AtributosSVDFAP atributos
-   SolicitudesSVDFAP solicitudes
+   OneToMany SolicitudTransmisionSVDFAP solicitudesTransmision
+   TransmisionesRespuestaSVDFAP transmisionesRespuesta
    Lista tipoEstadoPeticionSVDFAP estadoPeticion
 }
 
@@ -9,18 +10,10 @@ Entidad PeticionSVDIdentidadFAP extends PeticionSVDFAP{}
 
 Entidad PeticionSVDResidenciaFAP extends PeticionSVDFAP{}
 
-Entidad AtributosSVDFAP{
-   String codigoCertificado
-}
-
-Entidad SolicitudesSVDFAP{
-   OneToMany SolicitudTransmisionSVDFAP solicitudTransmision
-}
-
 Entidad SolicitudTransmisionSVDFAP{
    DatosGenericosPeticionSVDFAP datosGenericos
-   DatosEspecificosPeticionSVDFAP datosEspecificos
-   SolicitudGenerica solicitud
+   DatosEspecificosSVDFAP datosEspecificos
+   ManyToOne SolicitudGenerica solicitud
 }
 
 Entidad DatosGenericosPeticionSVDFAP{
@@ -58,16 +51,19 @@ Entidad TitularSVDFAP{
  Lista TipoDocumentacion tipoDocumentacion
 }
 
-Entidad DatosEspecificosPeticionSVDFAP{
-  SolicitanteDatosSVDFAP solicitanteDatos
-  SolicitudSVDFAP solicitud
+Entidad DatosEspecificosSVDFAP {}
+
+/**** Servicio Residencia **/
+Entidad DatosEspecificosResidenciaSVDFAP extends DatosEspecificosSVDFAP{
+  String tipoSolicitante
+  SolicitudEspecificaSVDFAP solicitud
+  EstadoSVDFAP estado
+  EstadoResultadoSVDFAP estadoResultado
+  DomicilioRespuestaSVDFAP domicilio
+  DatosTitularRespuestaSVDFAP datosTitular 
 }
 
-Entidad SolicitanteDatosSVDFAP{
-   String tipo
-}
-
-Entidad SolicitudSVDFAP{
+Entidad SolicitudEspecificaSVDFAP{
    ResidenciaSVDFAP residencia
    NacimientoSVDFAP solicitudNacimiento
    String espanol
@@ -96,12 +92,7 @@ Entidad NacimientoSVDFAP{
 
 ////--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
 
-Entidad RespuestaSVDFAP {   
-  AtributosRespuestaSVDFAP atributos
-  TransmisionesRespuestaSVDFAP transmisiones
-}
-
-Entidad AtributosRespuestaSVDFAP {   
+Entidad AtributosSVDFAP {   
   String idPeticion
   String codigoCertificado
   String timestamp
@@ -122,7 +113,7 @@ Entidad EstadoRespuestaSVDFAP {
 
 Entidad TransmisionDatosRespuestaSVDFAP{
   DatosGenericosRespuestaSVDFAP datosGenericos
-  DatosEspecificosRespuestaSVDFAP datosEspecificos
+  DatosEspecificosSVDFAP datosEspecificos
 }
 
 Entidad DatosGenericosRespuestaSVDFAP{
@@ -142,13 +133,6 @@ Entidad TransmisionSVDFAP{
  String idSolicitud
  String idTransmision
  DateTime fechaGeneracion
-}
-
-Entidad DatosEspecificosRespuestaSVDFAP{
-   EstadoSVDFAP estado
-   EstadoResultadoSVDFAP estadoResultado
-   DomicilioRespuestaSVDFAP domicilio
-   DatosTitularRespuestaSVDFAP datosTitular 
 }
 
 Entidad DatosTitularRespuestaSVDFAP{

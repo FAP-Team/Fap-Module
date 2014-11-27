@@ -29,14 +29,22 @@ public class PeticionSVDResidenciaFAP extends PeticionSVDFAP {
 	}
 
 	// === MANUAL REGION START ===
-	
+
 	private final String codigoCertificado = "VDRSFWS02";
-	
-    public PeticionSVDResidenciaFAP() {
+
+	public PeticionSVDResidenciaFAP() {
 		init();
 		this.getAtributos().setCodigoCertificado(codigoCertificado);
 	}
 
+	@Override
+	public DatosEspecificosPeticionSVDFAP rellenarDatosEspecificos(SolicitudGenerica solicitud) {
+
+		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP();
+
+		return datosEspecificos;
+
+	}
 	// === MANUAL REGION END ===
 
 }

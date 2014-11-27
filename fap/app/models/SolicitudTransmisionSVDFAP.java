@@ -1,21 +1,16 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -33,7 +28,7 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosEspecificosPeticionSVDFAP datosEspecificos;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
 
 	public SolicitudTransmisionSVDFAP() {
@@ -52,21 +47,19 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 		else
 			datosEspecificos.init();
 
-		if (solicitud == null)
-			solicitud = new SolicitudGenerica();
-		else
+		if (solicitud != null)
 			solicitud.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-	
+
 	public SolicitudTransmisionSVDFAP(SolicitudGenerica solicitud, DatosGenericosPeticionSVDFAP datosGenericos, DatosEspecificosPeticionSVDFAP datosEspecificos) {
 		init();
 		this.setDatosGenericos(datosGenericos);
-    	this.setDatosEspecificos(datosEspecificos);
-    	this.setSolicitud(solicitud);
+		this.setDatosEspecificos(datosEspecificos);
+		this.setSolicitud(solicitud);
 	}
 
 	public DatosGenericosPeticionSVDFAP getDatosGenericos() {
@@ -92,8 +85,7 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	public void setSolicitud(SolicitudGenerica solicitud) {
 		this.solicitud = solicitud;
 	}
-	
-	
+
 	// === MANUAL REGION END ===
 
 }

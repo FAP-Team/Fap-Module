@@ -1,18 +1,9 @@
 package models;
 
-import java.util.*;
-import javax.persistence.*;
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.data.validation.*;
-import org.joda.time.DateTime;
-import models.*;
-import messages.Messages;
-import validation.*;
-import audit.Auditable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 
 // === IMPORT REGION START ===
 
@@ -32,6 +23,7 @@ public class Respuesta extends FapModel {
 		init();
 	}
 
+	@Override
 	public void init() {
 
 		if (atributos == null)
@@ -48,6 +40,8 @@ public class Respuesta extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
+
+
 
 	// === MANUAL REGION END ===
 

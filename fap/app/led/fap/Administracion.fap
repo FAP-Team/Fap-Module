@@ -26,6 +26,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Resoluciones" pagina=CargarTiposAreasResoluciones
 			Enlace "Gráficas" pagina=ServiciosWebApp
 			Enlace "Migración de Aportaciones" pagina=ActualizarAportaciones
+			Enlace "Unidades Orgánicas" pagina=UnidadesOrganicas
 		}
 		
 		Enlace "Ayuda" pagina=Soporte crear
@@ -649,6 +650,31 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 		//Boton btnVolver titulo="Volver"
 		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+	
+	Pagina UnidadesOrganicas titulo="Cargar Unidades Orgánicas" noForm{
+	   
+	   Tabla tblUO campo=ReturnUnidadOrganicaFap titulo="Unidades Orgánicas" popupLeer=PopupDatosLeerUnidadesOrganicas {
+            Columna campo=ReturnUnidadOrganicaFap.codigo titulo="Código" expandir
+            Columna campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción" expandir
+            Columna campo=ReturnUnidadOrganicaFap.esBaja titulo="Alta/Baja" expandir
+            Columna campo=ReturnUnidadOrganicaFap.esReceptora titulo="Receptora" expandir
+      }
+      
+      Form frmUO {
+         Grupo grpUO titulo="Cargar Unidades Orgánicas" {
+            Boton btnCargarUO titulo="Cargar" waitPopup
+         }
+      }
+	}
+	
+	Popup PopupDatosLeerUnidadesOrganicas campo=ReturnUnidadOrganicaFap titulo="Unidad Orgánica" {
+	   Texto codigo campo=ReturnUnidadOrganicaFap.codigo titulo="Codigo"
+	   Texto codigoCompleto campo=ReturnUnidadOrganicaFap.codigoCompleto titulo="Codigo Completo"
+	   Texto descripcion campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción"
+	   Texto esBaja campo=ReturnUnidadOrganicaFap.esBaja titulo="Diponibilidad"
+	   Texto esReceptora campo=ReturnUnidadOrganicaFap.esReceptora titulo="Receptora"
+	   Texto codigoReceptora campo=ReturnUnidadOrganicaFap.codigoReceptora titulo="Codigo Receptora"
 	}
 
 }

@@ -1,0 +1,7 @@
+package controllers.popups;
+
+import controllers.gen.popups.PopupDatosLeerUnidadesOrganicasControllerGen;
+
+public class PopupDatosLeerUnidadesOrganicasController extends PopupDatosLeerUnidadesOrganicasControllerGen {
+
+}

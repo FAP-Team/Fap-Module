@@ -78,19 +78,12 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con FileSystem y está operativo.");
 		
 	}
-	
-	@Override
-	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(String userId, String password){
+
+	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(Long codigo) throws ComunicacionesInternasServiceException{
 		List<ReturnUnidadOrganicaFap> resultado = new ArrayList<ReturnUnidadOrganicaFap>();
 		resultado.add(new ReturnUnidadOrganicaFap());
 		resultado.add(new ReturnUnidadOrganicaFap());
 		return resultado;
-	}
-
-	@Override
-	public String encriptarPassword(String password) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

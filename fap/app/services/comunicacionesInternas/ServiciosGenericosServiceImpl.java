@@ -78,17 +78,16 @@ public class ServiciosGenericosServiceImpl {
 		return hasConnection; 
 	}
 
-	public List<ReturnUnidadOrganicaFap> consultaUnidadesOrganicas(String userId, String password){
-		ArrayOfReturnUnidadOrganica resultado = genericosServices.obtenerUnidadesOrganicas(0, userId, password);
-		 ReturnUnidadOrganica unidadorganica = resultado.getReturnUnidadOrganica().get(0);
-		 System.out.println("codigo: " + unidadorganica.getCodigo());
-		 System.out.println("codigo completo: " + unidadorganica.getCodigoCompleto());
-		 System.out.println("descripcion: " + unidadorganica.getDescripcion());
-		 System.out.println("es baja: " + unidadorganica.getEsBaja());
-		 System.out.println("es receptora: " + unidadorganica.getEsReceptora());
-		 System.out.println("codigo receptora: " + unidadorganica.getCodigoUOReceptora());
-		 System.out.println("error: " + unidadorganica.getError().toString());
-		 return ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(resultado);
+	public ArrayOfReturnUnidadOrganica consultaUnidadesOrganicas(Long codigo, String userId, String password) {
+		ArrayOfReturnUnidadOrganica resultado =  null;
+		
+		try {
+			resultado = genericosServices.obtenerUnidadesOrganicas(codigo, userId, password);
+		} catch (Exception e){
+			play.Logger.error("No se han podido recuperar las Unidades Organicas");
+		}
+	
+		return resultado;
 	}
 
 	public boolean validarUsuario (String userId, String password){

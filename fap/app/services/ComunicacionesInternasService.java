@@ -16,9 +16,4 @@ public interface ComunicacionesInternasService {
 
 	public void mostrarInfoInyeccion();
 	
-	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(String userId, String password);
-	
-	//TODO poner privada y quitar de aqui
-	public String encriptarPassword(String password);
-	
 }

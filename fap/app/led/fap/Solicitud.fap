@@ -1798,7 +1798,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		}
 	}
 	
-	Pagina PaginaDatosLeerComunicacionInterna campo=SolicitudGenerica.comunicacionesInternas noForm {
+	Pagina PaginaDatosLeerComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm {
 	   Grupo titulo="Datos Origen" {
    		Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
    		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
@@ -1806,14 +1806,18 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
    		Texto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
    		
    		Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-            Columna campo=ListaUris.uri titulo="Uri del documento"
+            Columna campo=ListaUris.uri titulo="Uri del documento" expandir
          }
 		}
 		
 		Grupo titulo="Datos Respuesta" {
-		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número de oficina"
+		   Texto interesadorespuesta campo=ComunicacionInterna.respuesta.interesado.nombre titulo="Interesado"
 		   Texto fecha campo=ComunicacionInterna.respuesta.fecha titulo="Fecha de alta"
-		   Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
+         Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
+         Texto ejercicio campo=ComunicacionInterna.respuesta.ejercicio titulo="Ejercicio"
+         Texto tipo campo=ComunicacionInterna.respuesta.tipoComunicacion titulo="Tipo de comunicación"
+         Texto numComunicaion campo=ComunicacionInterna.respuesta.contadorUO titulo="Número particular de la comunicación"
+		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número particular del asiento"
 		}
 		
 		Form frmVolverComunicacionInternas {
@@ -1823,31 +1827,31 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	
 	Popup PopupDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos 
-      Grupo titulo="Paso 2: Datos de la Comunicacion Interna"{
+      Grupo titulo="Datos de la Comunicacion Interna"{
          Grupo grupoUsuario titulo="Datos de usuario" borde=false{
             Texto usuario titulo="Usuario de Hiperreg" campo=ComunicacionInterna.asiento.userId requerido
             Texto password titulo="Password" campo=ComunicacionInterna.asiento.password requerido
          }
          //Otros datos necesarios para crear una CI
          Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado requerido
-         Combo uoDestino titulo="Unidad Orgánica destino" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido
+         Combo uoDestino titulo="Unidad Orgánica destino" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo busqueda requerido
          Texto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
       }
       
    } 
    
-   Popup PopupDatosBorrarComunicacionInterna titulo="Borrar Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
+   Popup PopupDatosBorrarComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas{
       Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
       Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
       Texto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
       Texto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
          
       Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-         Columna campo=ListaUris.uri titulo="Uri del documento"
+         Columna campo=ListaUris.uri titulo="Uri del documento" expandir
       }
    } 
 
-	Pagina PaginaNuevaComunicacionInternaDocumentos titulo="Aportar documentación a la Comunicación Interna" campo=SolicitudGenerica.comunicacionesInternas  noForm{
+	Pagina PaginaNuevaComunicacionInternaDocumentos titulo="Aportar documentación" campo=SolicitudGenerica.comunicacionesInternas  noForm{
 		Grupo titulo = "Selección de Documentos"{
 			Wiki{"Selecciones los documentos que desea adjuntar antes de pulsar el botón Seleccionar"}
 			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Documentos a enviar en la comunicación"{
@@ -1858,19 +1862,22 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 			}
 		}
 		Form frmNuevaComunicacionInternaDocumentos {
-		   Grupo titulo="No aportar Documentación" {
+		   Grupo titulo="No aportar documentación" {
             Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente" pagina=PaginaNuevoAsiento
          }
 		}
 	}
 	
-	Pagina PaginaNuevoAsiento titulo="Crear nuevo asiento" campo=SolicitudGenerica.comunicacionesInternas{
+	Pagina PaginaNuevoAsiento titulo="Alta de comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm{
 		Accion editar crearSiempre 
-		Grupo titulo="Datos adicionales"{
-			//Otros datos adicionales para crear una CI
-			Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
-			Texto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
-		}
+		Form frmNuevoAsiento {
+		   Grupo titulo="Datos adicionales" {
+            //Otros datos adicionales para crear una CI
+            Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
+            Texto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+         }
+         Boton btnNuevoAsiento titulo="Enviar"
+      }
 	} 
 	
 }

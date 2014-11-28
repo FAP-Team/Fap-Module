@@ -639,7 +639,7 @@ Permiso listaEvaluaciones{
    vars
       TipoEvaluacion tipoEvaluacion : sql("select te from TipoEvaluacion te")
 	when
-		agente.rolActivo in ("administrador", "gestor","gestorTenerife", "gestorLasPalmas", "revisor", "evaluador") and (tipoEvaluacion?.estado = "cargada")
+		agente.rolActivo in ("administrador", "gestor","gestorTenerife", "gestorLasPalmas", "revisor", "evaluador") and (tipoEvaluacion != null)
 	return editable
 }
 

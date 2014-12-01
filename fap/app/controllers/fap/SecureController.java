@@ -403,10 +403,17 @@ public class SecureController extends GenericController{
         // Redirect to the original URL (or /)
         redirectToOriginalURL();
     }
+    
+    private static boolean logoutPorTicketing() {
+        return (flash.contains("error_ticketing") 
+                || AgenteController.getAgente().acceso.equals(AccesoAgenteEnum.ticketing.name()));
+    }
 
     @Util
     public static void logoutFap() throws Throwable{
     	String redireccion = buscarRedireccionLogout();
+    	boolean logoutPorTicketing = logoutPorTicketing();
+    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
     	Cache.delete(session.getId());
         session.clear();
         response.removeCookie("rememberme");
@@ -414,6 +421,8 @@ public class SecureController extends GenericController{
         Messages.keep();
     	if (redireccion != null){
 	        redirect(redireccion);
+        } else if(redireccionTicketing != null && logoutPorTicketing){
+            redirect(redireccionTicketing);
         } else {
         	redirect("fap.SecureController.loginFap");
         }
@@ -518,8 +527,14 @@ public class SecureController extends GenericController{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-    	if (wsResponse == null || wsResponse.getStatus() != 200)
-    		return;
+    	if (wsResponse == null || wsResponse.getStatus() != 200) {
+			try {
+				logoutFap();
+			} catch (Throwable e) {
+				log.error("No se ha podido recuperar los datos de terceros: " + e.getMessage());
+				return;
+			}
+    	}
     
 		String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
 		String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
@@ -555,6 +570,8 @@ public class SecureController extends GenericController{
 				try {
 					log.info("Intentando inicio de sesión mediante ticketig (ticket = "+ ticket + " y agente = " + agente.username + ")");
 					Messages.error("Error en la sesión de usuario.");
+					flash.put("error_ticketing","Error de autentificación por ticketing");
+					flash.keep("error_ticketing");
 					logoutFap();
 				} catch (Throwable e) {
 					e.printStackTrace();

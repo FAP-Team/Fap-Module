@@ -529,6 +529,8 @@ public class SecureController extends GenericController{
 		}
     	if (wsResponse == null || wsResponse.getStatus() != 200) {
 			try {
+				flash.put("error_ticketing","Error obteniendo los datos de terceros");
+				flash.keep("error_ticketing");
 				logoutFap();
 			} catch (Throwable e) {
 				log.error("No se ha podido recuperar los datos de terceros: " + e.getMessage());

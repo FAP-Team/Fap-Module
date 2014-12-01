@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.5.5RC5
 
+* Corregido, redireccionar a url en el cierre de la sesión.
+* Corregido, problema de visualización de la Baremación.
 * Corregido, descargar documentos firmados no registrados.
 * Se mejora la comprobación de la versión del navegador.
 * Se mejora la seguridad de acceso mediante ticketing.

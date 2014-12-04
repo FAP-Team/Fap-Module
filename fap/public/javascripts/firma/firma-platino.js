@@ -22,7 +22,8 @@ Firma._firmarDocumento = function(documento, certificado){
 	formatoFirmaPlatino = "CAdES";
 	var firma;
 	var url = documento.url || documento;
-	firma = documento.firma ? peticionContraFirma(documento) : peticionFirma(url);
+	var contraFirma = (documento.firma && documento.firma != "null")
+	firma = contraFirma ? peticionContraFirma(documento) : peticionFirma(url);
     return firma;
 }
 

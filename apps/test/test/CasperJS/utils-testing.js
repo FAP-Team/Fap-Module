@@ -148,7 +148,6 @@ exports.prepararParaFirmarSolicitudActual = function () {
             exports.clickEnSelector(selector);
         }
     });
-    exports.esperarPorSelector(x('//p[text()[contains(.,"Presentar solicitud")]]'));
     casper.then(function() {
         casper.test.assertExists("input[type=submit][value='Presentar solicitud'].btn");
     })

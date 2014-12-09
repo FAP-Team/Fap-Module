@@ -233,7 +233,11 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 	public static void botonCopiarValoresGuardar(Long idSolicitud) {
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 		for (CEconomico ceco : solicitud.ceconomicos) {
-			ceco.valores.get(0).valorConcedido = ceco.valores.get(0).valorPropuesto; 
+			if (ceco.tipo.tipoOtro) {
+				copiarValoresOtrosCEconomico(ceco);
+			} else {
+				copiarValoresCEconomico(ceco);
+			}
 			ceco.save();
 		}
 		if (!Messages.hasErrors()) {
@@ -241,6 +245,20 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 		} else
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaCEconomicosEvaluadosController.guardarRender(idSolicitud);
+	}
+
+	private static void copiarValoresCEconomico(CEconomico ceco) {
+		for (int i = 0; i < ceco.valores.size(); i++) {
+			ceco.valores.get(i).valorConcedido = ceco.valores.get(i).valorPropuesto;
+		}
+	}
+
+	private static void copiarValoresOtrosCEconomico(CEconomico ceco) {
+		for (int j = 0; j < ceco.otros.size(); j++) {
+			for (int i = 0; i < ceco.otros.get(j).valores.size(); i++) {
+				ceco.otros.get(j).valores.get(i).valorConcedido = ceco.otros.get(j).valores.get(i).valorPropuesto;
+			}
+		}
 	}
 	
 }

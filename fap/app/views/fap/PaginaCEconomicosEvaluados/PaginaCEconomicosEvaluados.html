@@ -317,6 +317,10 @@
 		
 		<div class="well">
 			#{fap.boton id:'botonGuardar', titulo:'Guardar' /}
+
+			#{form play.mvc.Router.reverse('PaginaCEconomicosEvaluadosController.botonCopiarValoresGuardar' , ['idSolicitud':solicitud?.id]) , class:"form-horizontal", id:"copiarValores"}
+				#{fap.boton id:'botonCopiarValores', titulo:'Copiar Propuestos a Concedidos' /}
+			#{/form}
 		</div>
 	
 	#{/fap.grupo}

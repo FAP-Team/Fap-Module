@@ -55,7 +55,7 @@ public class PaginaCEConomicosEvaluadosGestorController extends Controller {
 				cEconomico.valores.get(i).valorConcedido = 0.0;
 				cEconomico.valores.get(i).valorPropuesto = 0.0;
 				if (i < cEconomico.otros.size()) {
-					for (int j = 0; j < cEconomico.otros.get(i).valores.size(); j++) {
+					for (int j = 0; j < cEconomico.otros.size(); j++) {
 						cEconomico.valores.get(i).valorConcedido += cEconomico.otros.get(j).valores.get(i).valorConcedido != null ? cEconomico.otros.get(j).valores.get(i).valorConcedido : 0.0;
 						cEconomico.valores.get(i).valorPropuesto += cEconomico.otros.get(j).valores.get(i).valorPropuesto != null ? cEconomico.otros.get(j).valores.get(i).valorPropuesto : 0.0;
 					}

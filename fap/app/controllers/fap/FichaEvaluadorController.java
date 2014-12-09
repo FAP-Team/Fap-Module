@@ -403,7 +403,7 @@ public class FichaEvaluadorController extends Controller {
 		for (int i=0; i<tipoEvaluacion.duracion; i++){
 			columna.put("valorSolicitado"+i, FapFormat.formatMoneda(totalesSolicitadoAnio.get(i)));
 			columna.put("valorEstimado"+i, FapFormat.formatMoneda(totalesEstimadoAnio.get(i)));
-			columna.put("valorPropuesto"+i, FapFormat.formatMoneda(totalesEstimadoAnio.get(i)));
+			columna.put("valorPropuesto"+i, FapFormat.formatMoneda(totalesPropuestoAnio.get(i)));
 			totalesSolicitado += totalesSolicitadoAnio.get(i);
 			totalesEstimado += totalesEstimadoAnio.get(i);
 			totalesPropuesto += totalesPropuestoAnio.get(i);

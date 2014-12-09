@@ -80,6 +80,9 @@ public class PaginaCEconomicoManualController extends PaginaCEconomicoManualCont
 				}
 			}
 			//dbCEconomicosManuales.valores=cEconomicosManuales.valores;
+		} else {
+			Messages.error("Actualmente no puede modificar valores.");
+			log.info("Se ha intentado crear/modificar conceptos económicos, pero el estado de tipo de evaluación no es \"cargada\""); //Es lo que comprueba el permiro iniciarBaremacion
 		}
 
 	}

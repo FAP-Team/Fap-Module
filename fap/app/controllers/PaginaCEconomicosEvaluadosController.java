@@ -91,19 +91,22 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 			 Double totalesEstimado = 0.0;
 			 Double totalAuxConcedido = 0.0;
 			 Double totalAuxPropuesto = 0.0;
+			 Double totalAuxEstimado = 0.0;
 			 for (int i=0; i<tipoEvaluacion.duracion; i++){
 				totalAuxConcedido = 0.0;
 				 totalAuxPropuesto = 0.0;
 				if (cEconomico.otros.isEmpty()) {
 					totalAuxConcedido = cEconomico.valores.get(i).valorConcedido;
 					totalAuxPropuesto = cEconomico.valores.get(i).valorPropuesto;
+					totalAuxEstimado = cEconomico.valores.get(i).valorEstimado;
 				} else {
 					for(CEconomicosManuales cem: cEconomico.otros) {
 						totalAuxConcedido += cem.valores.get(i).valorConcedido;
 						totalAuxPropuesto += cem.valores.get(i).valorPropuesto;
+						totalAuxEstimado += cem.valores.get(i).valorEstimado;
 					}
 				}
-				 if (!cEconomico.tipo.clase.equals("auto")) {
+				 if (!(cEconomico.tipo.clase.equals("auto") && !cEconomico.tipo.tipoOtro)) {
 					 totalesConcedidoAnio.set(i, totalesConcedidoAnio.get(i) + totalAuxConcedido);
 					 totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i) + cEconomico.valores.get(i).valorSolicitado);
 					 totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i) + totalAuxPropuesto);

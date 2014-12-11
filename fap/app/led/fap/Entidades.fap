@@ -1051,6 +1051,10 @@ Entidad ReturnUnidadOrganicaFap{
 	String esReceptora
 	Long codigoReceptora
 	ReturnErrorFap error
+	Long codigoRaiz transient
+	Long codigoSubNivel1 transient
+	Long codigoSubNivel2 transient
+	Long codigoSubNivel3 transient
 }	
 
 Entidad ReturnErrorFap {

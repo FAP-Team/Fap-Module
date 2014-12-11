@@ -1,0 +1,161 @@
+%{
+
+def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.uoDestinoJerarquia');
+
+}%
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'PaginaDatosNuevaComunicacionInterna', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Crear una nueva Comunicacion Interna', 
+     urlBorrar:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.borrar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.editar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id])
+}
+    
+            #{fap.grupo titulo:'Datos de la Comunicacion Interna'}
+                
+            #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', requerido:true, titulo:'Nombre completo del interesado' /}     
+        
+            #{fap.areaTexto campo:'comunicacionInterna.asiento.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
+        
+            #{fap.grupo titulo:'Unidad Orgánica de destino'}
+                
+            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoRaiz', id:'uoDestinoRaiz', searchable:true, titulo:'Nivel 1' /}      
+        
+            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel1', id:'uoDestinoSubNivel1', searchable:true, titulo:'Nivel 2' /}        
+        
+            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel2', id:'uoDestinoSubNivel2', searchable:true, titulo:'Nivel 3' /}        
+        
+            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3', id:'uoDestinoSubNivel3', searchable:true, titulo:'Nivel 4' /}        
+        
+            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', id:'uoDestino', requerido:true, titulo:'Código' /}        
+        
+            #{/fap.grupo}
+        
+            #{/fap.grupo}
+        
+#{/fap.pagina}
+
+<script>
+
+    function peticionUO(combo, codigoUO, subnivelUO){
+        var resultado;
+        $.ajax({
+            type: "POST",
+            url: "${urlUOSubniveles}",
+                data: {
+                    codigo: codigoUO,
+                    subnivel: subnivelUO
+                },
+                async: false,
+                success: function(data) {
+                   rellenarCombo(combo, data);
+                },
+                error: function(data) {
+                   resetCombo(combo);
+                }
+        });
+    }
+    
+    $( document ).ready(function() {
+       $('#uoDestino').prop('readonly', true);
+       
+       var comboRaiz = $("#uoDestinoRaiz");
+       peticionUO(comboRaiz, 0, 0);
+    });
+
+    $( "#uoDestinoRaiz" ).change(function() {
+        var combo = $("#uoDestinoRaiz");   
+        var comboHijo = $("#uoDestinoSubNivel1");
+   
+        almacenarUODestino(null, combo);
+        obtenerSubnivel(combo, comboHijo, 1);
+        comboHijo.change();
+    });
+    
+    $( "#uoDestinoSubNivel1" ).change(function() {  
+        var comboPadre = $("#uoDestinoRaiz");     
+        var combo = $("#uoDestinoSubNivel1");  
+        var comboHijo = $("#uoDestinoSubNivel2");
+        
+        almacenarUODestino(comboPadre, combo);
+        obtenerSubnivel(combo, comboHijo, 2);
+        comboHijo.change();  
+    });
+    
+    $( "#uoDestinoSubNivel2" ).change(function() {
+        var comboPadre = $("#uoDestinoSubNivel1");
+        var combo = $("#uoDestinoSubNivel2");
+        var comboHijo = $("#uoDestinoSubNivel3");
+        
+        almacenarUODestino(comboPadre, combo);
+        obtenerSubnivel(combo, comboHijo, 3);
+        comboHijo.change();        
+    });
+    
+    $( "#uoDestinoSubNivel3" ).change(function() {
+        var comboPadre = $("#uoDestinoSubNivel2");
+        var combo = $("#uoDestinoSubNivel3");
+        
+        almacenarUODestino(comboPadre, combo);    
+    });
+       
+    function obtenerSubnivel(comboPadre, comboHijo, subnivel){
+        var codigo = comboPadre.val();
+        peticionUO(comboHijo, codigo, subnivel);      
+    }
+    
+    function rellenarCombo(combo, data){
+    
+            if (data != null) {
+	            var json = jQuery.parseJSON(data);
+	    
+	            combo.empty();
+	            combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));
+	            $.each(json, function(i, item) {
+	                combo.append($('<option>', { 
+                    value: item.codigo,
+                    text : item.codigoCompleto+' '+item.descripcion 
+                }));        
+                });
+           
+                combo.trigger("liszt:updated");
+            } else
+               resetCombo(combo);
+           
+    }
+    
+    function resetCombo(combo){ 
+       combo.empty();                     
+       combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
+       combo.trigger("liszt:updated"); 
+    }
+    
+    function almacenarUODestino(comboPadre, combo) {
+        var uoDestino = $( "#uoDestino" );
+        var codigo = combo.val();
+                     
+        if ((codigo >= 0) || (comboPadre == null))
+           if (codigo >= 0)
+              uoDestino.val(codigo);
+           else
+              uoDestino.val('');
+        else {
+           var codigoPadre = comboPadre.val();
+           if (codigoPadre >= 0)
+              uoDestino.val(codigoPadre);
+        }
+    }
+
+</script>
+		

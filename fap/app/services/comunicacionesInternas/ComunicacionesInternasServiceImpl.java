@@ -55,6 +55,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private PlatinoGestorDocumentalService platinoGestorDocumental;
 	
 	private final String URIPROCEDIMIENTO;
+	private final String TIPO_TRANSPORTE;
 	public final String USUARIOHIPERREG;
 	public final String PASSWORDHIPERREG;
 	
@@ -68,6 +69,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
 		PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");
 		URIPROCEDIMIENTO = FapProperties.get("fap.platino.security.procedimiento.uri");
+		TIPO_TRANSPORTE = FapProperties.get("fap.platino.registro.tipoTransporte");
 		
 	    Map<String, String> headers = null;
         
@@ -138,19 +140,27 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 		
 		try{
-		ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
-				asientoFap.resumen,
-				asientoFap.numeroDocumentos,
-				asientoFap.interesado,
-				asientoFap.unidadOrganicaDestino.codigo,
-				asientoFap.asuntoCodificado,
-				asientoFap.userId,
-				asientoFap.password,
-				asientoFap.tipoTransporte,
-				listaUris);
-		System.out.println(respuesta.getUsuario().toString());
+			String tipoTransporte;
+	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
+	        	tipoTransporte = TIPO_TRANSPORTE;
+	        } else
+	        	tipoTransporte = null;
+	        
+	        asientoFap.tipoTransporte = tipoTransporte;
+	        asientoFap.save();
+	        	        
+			ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
+					asientoFap.resumen,
+					asientoFap.numeroDocumentos,
+					asientoFap.interesado,
+					asientoFap.unidadOrganicaDestino.codigo,
+					asientoFap.asuntoCodificado,
+					asientoFap.userId,
+					encriptarPassword(asientoFap.password),
+					tipoTransporte,
+					listaUris);
 		
-		return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+			return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
 		}
 		catch(Exception e){
 			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
@@ -171,6 +181,16 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 		
 		try{
+			
+			String tipoTransporte;
+	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
+	        	tipoTransporte = TIPO_TRANSPORTE;
+	        } else
+	        	tipoTransporte = null;
+			
+	        asientoAmpliadoFap.tipoTransporte = tipoTransporte;
+	        asientoAmpliadoFap.save();
+	        
 			ReturnComunicacionInternaAmpliada respuesta = comunicacionesServices.nuevoAsientoAmpliado(
 					asientoAmpliadoFap.observaciones, 
 					asientoAmpliadoFap.resumen,
@@ -179,7 +199,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 					asientoAmpliadoFap.unidadOrganicaDestino.codigo,
 					asientoAmpliadoFap.asuntoCodificado,
 					asientoAmpliadoFap.userId,
-					asientoAmpliadoFap.password,
+					encriptarPassword(asientoAmpliadoFap.password),
 					asientoAmpliadoFap.tipoTransporte,
 					listaUris,
 					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);

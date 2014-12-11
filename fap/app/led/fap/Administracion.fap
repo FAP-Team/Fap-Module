@@ -664,6 +664,8 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
       Form frmUO {
          Grupo grpUO titulo="Cargar Unidades Orgánicas" {
             Boton btnCargarUO titulo="Cargar" waitPopup
+            
+            Wiki {"Nota: La operación de carga puede tardar varios minutos."}
          }
       }
 	}

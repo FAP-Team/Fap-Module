@@ -50,7 +50,7 @@ public class PaginaCEConomicosEvaluadosGestorController extends Controller {
 		CEconomico cEconomico = PaginaCEConomicosEvaluadosGestorController.getCEconomico(idSolicitud, idCEconomico);
 		
 		//Inicializar valores de suma???
-		if (cEconomico.tipo.tipoOtro) {
+		if ((cEconomico != null) && (cEconomico.tipo.tipoOtro)) {
 			for (int i=0; i<=duracion; i++) {
 				cEconomico.valores.get(i).valorConcedido = 0.0;
 				cEconomico.valores.get(i).valorPropuesto = 0.0;

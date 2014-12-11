@@ -75,7 +75,8 @@ public class BaremacionFAP {
 			// Asignamos a la entidad evaluacion, los valores introducidos por el solicitante de CEconomicos, si los hubiera
 			for(CEconomico ceconomicoS : solicitud.ceconomicos){
 				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-					if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)){
+					if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)
+							&& ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia)){
 						for (int i=0; i<tipoEvaluacion.duracion; i++){
 							ceconomicoE.valores.get(i).valorSolicitado = ceconomicoS.valores.get(i).valorSolicitado;
 //							ceconomicoE.valores.get(i).valorEstimado = ceconomicoS.valores.get(i).valorSolicitado;
@@ -86,7 +87,8 @@ public class BaremacionFAP {
 				if (ceconomicoS.tipo.tipoOtro){
 					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
 						for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-							if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)){
+							if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)
+									&& ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia)){
 								for (int i=0; i<tipoEvaluacion.duracion; i++){
 									ceconomicoE.valores.get(i).valorSolicitado = ceconomicoManual.valores.get(i).valorSolicitado;
 //									ceconomicoE.valores.get(i).valorEstimado = ceconomicoManual.valores.get(i).valorSolicitado;

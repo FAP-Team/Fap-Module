@@ -1,0 +1,50 @@
+h1. Comunicaciones Internas
+
+Permite realizar un asiento simple de una solicitud y ver los datos de la respuesta.
+Es necesario enlazar la página dentro de una solicitud.
+
+!images/app-comunicaciones-internas!
+
+h3. Asiento simple
+
+Se considera un asiento simple a aquél asiento que sólo requiere la unidad orgánica de destino. 
+Si se especificara un asunto codificado no haría falta especificar la unidad orgánica de destino.
+
+h3. Asiento ampliado
+
+Se considera un asiento ampliado a aquél asiento que requiere la unidad orgánica de destino y la unidad orgánica de origen.
+
+h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
+
+FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Comunicación Interna que trae implementada el módulo FAP. 
+Concretamente:
+
+* *ComunicacionesInternas*: Esta es la página que se encarga de crear, editar y ver los datos de las comunicaciones internas.
+
+h2. Ejemplo de creacion de una nueva comunicación.
+
+h3. Nueva
+
+Se solicitan los datos obligatorios para la creación de la comunicación.
+
+!images/app-comunicaciones-internas-nueva!
+
+h3. Selección de documentos (No es obligatorio)
+
+Se solicitan los documentos que se van a transmitir en la comunicación.
+
+!images/app-comunicaciones-internas-documentos!
+
+h3. Alta de la comunicación
+
+Se solicitan los datos opcionales para finalizar y enviar la comunicación.
+
+!images/app-comunicaciones-internas-enviar!
+
+h3. Ver los datos de la comunicación.
+
+Se muestran los datos tanto de origen como de respuesta del alta de la comunicación.
+
+!images/app-comunicaciones-internas-datosorigen!
+
+!images/app-comunicaciones-internas-datosdestino!

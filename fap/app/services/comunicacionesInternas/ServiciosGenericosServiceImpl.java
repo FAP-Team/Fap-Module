@@ -16,12 +16,10 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import messages.Messages;
 import models.ReturnUnidadOrganicaFap;
-
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
@@ -32,8 +30,12 @@ import utils.WSUtils;
 
 
 public class ServiciosGenericosServiceImpl {
+	
 	private ServiceSoap genericosServices;
 	private PropertyPlaceholder propertyPlaceholder;
+	
+	public final String USUARIOHIPERREG;
+	public final String PASSWORDHIPERREG;
 	
 	@Inject
 	public ServiciosGenericosServiceImpl (PropertyPlaceholder propertyPlaceholder){
@@ -45,6 +47,8 @@ public class ServiciosGenericosServiceImpl {
         WSUtils.configureSecurityHeaders(genericosServices, propertyPlaceholder);
         PlatinoProxy.setProxy(genericosServices, propertyPlaceholder);
         
+        USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
+		PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");       
 	}
 	
 	private String getEndPoint() {
@@ -67,10 +71,7 @@ public class ServiciosGenericosServiceImpl {
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			String usuario = FapProperties.get("fap.platino.registro.username");
-			String password = FapProperties.get("fap.platino.registro.password");
-			//System.out.println("+++++++++++++++++++ PASSWORD Genericos: "+password);
-			hasConnection = validarUsuario(usuario, password);
+			hasConnection = validarUsuario(USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());

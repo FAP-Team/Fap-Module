@@ -1,5 +1,12 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC1
+
+* Añadido boton copiar PCEconomicos propuestos a concedidos.
+* Correcciones varias en PCEconomicos.
+* Corregido, errores en la descarga de las resoluciones.
+* Corregido, errores en la firma de documentos.
+
 h3. Versión 2.5.5RC5
 
 * Corregido, redireccionar a url en el cierre de la sesión.

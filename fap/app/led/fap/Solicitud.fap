@@ -1882,7 +1882,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             //Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
             AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
          }
-         Boton btnNuevoAsiento titulo="Enviar"
+         Boton btnNuevoAsiento titulo="Enviar" style="float : right;"
       }
 	} 
 	

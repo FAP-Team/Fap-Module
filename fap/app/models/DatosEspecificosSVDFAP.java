@@ -19,30 +19,25 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class TransmisionDatosRespuestaSVDFAP extends FapModel {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class DatosEspecificosSVDFAP extends FapModel {
 	// Código de los atributos
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosGenericosRespuestaSVDFAP datosGenericos;
+	public String tipoSolicitante;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosEspecificosSVDFAP datosEspecificos;
+	public SolicitudEspecificaSVDFAP solicitud;
 
-	public TransmisionDatosRespuestaSVDFAP() {
+	public DatosEspecificosSVDFAP() {
 		init();
 	}
 
 	public void init() {
 
-		if (datosGenericos == null)
-			datosGenericos = new DatosGenericosRespuestaSVDFAP();
+		if (solicitud == null)
+			solicitud = new SolicitudEspecificaSVDFAP();
 		else
-			datosGenericos.init();
-
-		if (datosEspecificos == null)
-			datosEspecificos = new DatosEspecificosSVDFAP();
-		else
-			datosEspecificos.init();
+			solicitud.init();
 
 		postInit();
 	}

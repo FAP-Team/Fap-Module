@@ -34,7 +34,7 @@ public class PeticionSVDResidenciaFAP extends PeticionSVDFAP {
 
 	public PeticionSVDResidenciaFAP() {
 		init();
-		this.getAtributos().setCodigoCertificado(codigoCertificado);
+		super.atributos.codigoCertificado = codigoCertificado;
 	}
 
 	@Override

@@ -28,6 +28,7 @@ public class SolicitudEspecificaSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public NacimientoSVDFAP solicitudNacimiento;
 
+	@ValueFromTable("Espanol")
 	public String espanol;
 
 	public SolicitudEspecificaSVDFAP() {

@@ -1,0 +1,101 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'SolicitudTransmision', 
+     hayForm:true, 
+     mensajeFinal:false, 
+     pagina:'CesionDatosExpedienteSVD', 
+     permiso:'adminOrGestor', 
+     titulo:'Cesión de datos', 
+     urlBorrar:play.mvc.Router.reverse('CesionDatosExpedienteSVDController.borrar' , ['idSolicitud':solicitud?.id]), 
+     urlCrear:play.mvc.Router.reverse('CesionDatosExpedienteSVDController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('CesionDatosExpedienteSVDController.editar' , ['idSolicitud':solicitud?.id])
+}
+	
+			#{fap.combo campo:'solicitud.nombreServicio', id:'tipoServicioSVD', requerido:true, titulo:'Seleccione el tipo de Servicio: ' /}		
+		
+			#{fap.grupo borde:false, siCombo:'tipoServicioSVD', siComboValue:['identidad']}
+				
+#{fap.tabla 
+     campo:'SolicitudTransmisionSVDFAP', 
+     id:'solicitudesPeticionIdentidad', 
+     idEntidad:'idSolicitudTransmisionSVDFAP', 
+     permisoCrear:'adminOrGestor', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Solicitudes de Transmisión Identidad', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("BorrarSolicitudTransmisionSVDController.index" , ['accion':'borrar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlCrear:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDController.index" , ['accion':'crear', 'redirigir': 'anterior']), 
+     urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDController.index" , ['accion':'editar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionIdentidad()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:50, cabecera:'Id', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Estado', campo:'estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Funcionario', campo:'datosGenericos.solicitante.funcionario.nombreCompletoFuncionario' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento' /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, siCombo:'tipoServicioSVD', siComboValue:['residencia']}
+				
+#{fap.tabla 
+     campo:'SolicitudTransmisionSVDFAP', 
+     id:'solicitudesPeticionResidencia', 
+     idEntidad:'idSolicitudTransmisionSVDFAP', 
+     permisoCrear:'adminOrGestor', 
+     recargarPagina:true, 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Solicitudes de Transmisión Residencia', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
+     urlBorrar:play.mvc.Router.reverse("BorrarSolicitudTransmisionSVDController.index" , ['accion':'borrar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlCrear:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDController.index" , ['accion':'crear', 'redirigir': 'anterior']), 
+     urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDController.index" , ['accion':'editar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionResidencia()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:50, cabecera:'Id', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Estado', campo:'estado' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Funcionario', campo:'datosGenericos.solicitante.funcionario.nombreCompletoFuncionario' /}
+		
+	#{fap.columna alignPosition:'left', ancho:120, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora' /}
+		
+	#{fap.columna alignPosition:'left', ancho:100, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento' /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo }
+				
+			<div class="wiki ">
+<p>Pulse el botón para verificar los datos del solicitante.</p>
+
+			</div>
+		
+			#{fap.boton id:'botonIniciarVerificacionDatos', titulo:'Verificar Datos', waitPopup:true /}
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

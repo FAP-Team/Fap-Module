@@ -53,76 +53,46 @@ public class PeticionSVDFAP extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	public String getUidUsuario() {
-		return uidUsuario;
-	}
-
-	public void setUidUsuario(String uidUsuario) {
-		this.uidUsuario = uidUsuario;
-	}
-
-	public AtributosSVDFAP getAtributos() {
-		return atributos;
-	}
-
-	public void setAtributos(AtributosSVDFAP atributos) {
-		this.atributos = atributos;
-	}
-
-	public SolicitudesSVDFAP getSolicitudes() {
-		return solicitudes;
-	}
-
-	public void setSolicitudes(SolicitudesSVDFAP solicitudes) {
-		this.solicitudes = solicitudes;
-	}
-
-	public String getEstadoPeticion() {
-		return estadoPeticion;
-	}
-
-	public void setEstadoPeticion(String estadoPeticion) {
-		this.estadoPeticion = estadoPeticion;
-	}
-
 	public void rellenarSolicitud(List<SolicitudGenerica> solicitudes) {
 
 		for (SolicitudGenerica solicitud : solicitudes) {
 			DatosGenericosPeticionSVDFAP datosGenericos = rellenarDatosGenericos(solicitud);
 			SolicitudTransmisionSVDFAP solicitudTransmision = new SolicitudTransmisionSVDFAP(solicitud, datosGenericos, null);
-			getSolicitudes().getSolicitudTransmision().add(solicitudTransmision);
+			this.solicitudesTransmision.add(solicitudTransmision);
 		}
 
 	}
 
 	public DatosGenericosPeticionSVDFAP rellenarDatosGenericos(SolicitudGenerica solicitud) {
+		return null;
 
-		FuncionarioSVDFAP funcionario = new FuncionarioSVDFAP(AgenteController.getAgente().username, AgenteController.getAgente().name);
-		ProcedimientoSVDFAP procedimiento = new ProcedimientoSVDFAP("codigoProcedimiento", "nombreProcedimiento");
-
-		SolicitanteSVDFAP solicitante = new SolicitanteSVDFAP(FapProperties.get("identificadorSolicitante"), FapProperties.get("nombreCompleto"), solicitud.expedienteAed.idAed, "SI", "finalidad", "unidadTramitadora", funcionario, procedimiento);
-
-		TitularSVDFAP titular = new TitularSVDFAP("nombre del titular", "nombre completo del titular anterior", "primer apellido", "segundo apellido", "nif del titular del expediente de la solicitudGenerica", "Tipo de documento (NIF, DNI, NIE, CIF)");
-
-		DatosGenericosPeticionSVDFAP datosGenericos = new DatosGenericosPeticionSVDFAP(solicitante, titular);
-
-		return datosGenericos;
+		//		FuncionarioSVDFAP funcionario = new FuncionarioSVDFAP(AgenteController.getAgente().username, AgenteController.getAgente().name);
+		//		ProcedimientoSVDFAP procedimiento = new ProcedimientoSVDFAP("codigoProcedimiento", "nombreProcedimiento");
+		//
+		//		SolicitanteSVDFAP solicitante = new SolicitanteSVDFAP(FapProperties.get("identificadorSolicitante"), FapProperties.get("nombreCompleto"), solicitud.expedienteAed.idAed, "SI", "finalidad", "unidadTramitadora", funcionario, procedimiento);
+		//
+		//		TitularSVDFAP titular = new TitularSVDFAP("nombre del titular", "nombre completo del titular anterior", "primer apellido", "segundo apellido", "nif del titular del expediente de la solicitudGenerica", "Tipo de documento (NIF, DNI, NIE, CIF)");
+		//
+		//		DatosGenericosPeticionSVDFAP datosGenericos = new DatosGenericosPeticionSVDFAP(solicitante, titular);
+		//
+		//		return datosGenericos;
 	}
 
 	public DatosEspecificosPeticionSVDFAP rellenarDatosEspecificos(SolicitudGenerica solicitud) {
-		SolicitanteDatosSVDFAP solicitanteDatos = new SolicitanteDatosSVDFAP("app/fun");
-
-		MunicipioSVDFAP municipio = new MunicipioSVDFAP("codigo", "nombre");
-		ProvinciaSVDFAP provincia = new ProvinciaSVDFAP("codigo", "nombre");
-
-		ResidenciaSVDFAP residencia = new ResidenciaSVDFAP(municipio, provincia);
-		NacimientoSVDFAP nacimiento = new NacimientoSVDFAP(new DateTime(), municipio, provincia);
-
-		SolicitudSVDFAP solicitudEspecifica = new SolicitudSVDFAP(residencia, nacimiento, "espaniol");
-
-		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP(solicitanteDatos, solicitudEspecifica);
-
-		return datosEspecificos;
+		return null;
+		//		SolicitanteDatosSVDFAP solicitanteDatos = new SolicitanteDatosSVDFAP("app/fun");
+		//
+		//		MunicipioSVDFAP municipio = new MunicipioSVDFAP("codigo", "nombre");
+		//		ProvinciaSVDFAP provincia = new ProvinciaSVDFAP("codigo", "nombre");
+		//
+		//		ResidenciaSVDFAP residencia = new ResidenciaSVDFAP(municipio, provincia);
+		//		NacimientoSVDFAP nacimiento = new NacimientoSVDFAP(new DateTime(), municipio, provincia);
+		//
+		//		SolicitudSVDFAP solicitudEspecifica = new SolicitudSVDFAP(residencia, nacimiento, "espaniol");
+		//
+		//		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP(solicitanteDatos, solicitudEspecifica);
+		//
+		//		return datosEspecificos;
 	}
 
 	// === MANUAL REGION END ===

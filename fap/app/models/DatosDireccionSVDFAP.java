@@ -24,8 +24,8 @@ public class DatosDireccionSVDFAP extends FapModel {
 
 	public String localidad;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ProvinciaSVDFAP provincia;
+	@ValueFromTable("provincias")
+	public String provincia;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ViaSVDFAP datosVia;
@@ -35,11 +35,6 @@ public class DatosDireccionSVDFAP extends FapModel {
 	}
 
 	public void init() {
-
-		if (provincia == null)
-			provincia = new ProvinciaSVDFAP();
-		else
-			provincia.init();
 
 		if (datosVia == null)
 			datosVia = new ViaSVDFAP();

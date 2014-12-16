@@ -127,7 +127,7 @@ public class PlatinoSVDImpl implements SVDService {
 		PeticionSincrona peticionPlatino = new PeticionSincrona();
 
 		//Atributos
-		AtributosSVDFAP atributos = peticion.getAtributos();
+		AtributosSVDFAP atributos = peticion.atributos;
 		String codigoCertificado = atributos.getCodigoCertificado();
 		es.gobcan.platino.servicios.svd.peticionatributos.Atributos atributosPlatino = setAtributosPlatino(codigoCertificado);
 
@@ -138,7 +138,7 @@ public class PlatinoSVDImpl implements SVDService {
 
 		peticionPlatino.setAtributos(atributosPlatino);
 		peticionPlatino.setSolicitudes(solicitudesPlatino);
-		peticionPlatino.setUidUsuario(peticion.getUidUsuario());
+		peticionPlatino.setUidUsuario(peticion.uidUsuario);
 
 		return peticionPlatino;
 	}
@@ -149,7 +149,7 @@ public class PlatinoSVDImpl implements SVDService {
 		DatosGenericos datosGenericos = new DatosGenericos();
 		Titularpet titular = new Titularpet();
 
-		datosGenericos.setSolicitante(setSolicitante(peticion, solicitudTransmisionSVDFAP.getDatosGenericos()));
+		datosGenericos.setSolicitante(setSolicitante(peticion, solicitudTransmisionSVDFAP.datosGenericos));
 		datosGenericos.setTitular(titular);
 
 		return solicitudTransmisionPlatino;
@@ -171,7 +171,7 @@ public class PlatinoSVDImpl implements SVDService {
 		solicitante.setUnidadTramitadora(datosGenericos.getSolicitante().getUnidadTramitadora());
 		solicitante.setIdExpediente(datosGenericos.getSolicitante().getIdExpediente());
 
-		solicitante.setProcedimiento(setProcedimiento(peticion.getAtributos().getCodigoCertificado(), "motivo petición"));
+		solicitante.setProcedimiento(setProcedimiento(peticion.atributos.getCodigoCertificado(), "motivo petición"));
 		solicitante.setFuncionario(setFuncionario(datosGenericos.getSolicitante().funcionario.nombreCompletoFuncionario, datosGenericos.getSolicitante().funcionario.nifFuncionario));
 
 		return solicitante;

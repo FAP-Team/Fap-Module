@@ -22,9 +22,27 @@ import java.text.SimpleDateFormat;
 public class AtributosSVDFAP extends FapModel {
 	// Código de los atributos
 
+	public String idPeticion;
+
 	public String codigoCertificado;
 
+	public String timestamp;
+
+	public Integer numElementos;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public EstadoRespuestaSVDFAP estado;
+
+	public AtributosSVDFAP() {
+		init();
+	}
+
 	public void init() {
+
+		if (estado == null)
+			estado = new EstadoRespuestaSVDFAP();
+		else
+			estado.init();
 
 		postInit();
 	}
@@ -38,7 +56,7 @@ public class AtributosSVDFAP extends FapModel {
 	public void setCodigoCertificado(String codigoCertificado) {
 		this.codigoCertificado = codigoCertificado;
 	}
-	
+
 	// === MANUAL REGION END ===
 
 }

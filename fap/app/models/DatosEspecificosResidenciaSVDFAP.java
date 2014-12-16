@@ -18,8 +18,10 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
+/**** Servicio Residencia **/
+
 @Entity
-public class DatosEspecificosRespuestaSVDFAP extends FapModel {
+public class DatosEspecificosResidenciaSVDFAP extends DatosEspecificosSVDFAP {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -34,11 +36,12 @@ public class DatosEspecificosRespuestaSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosTitularRespuestaSVDFAP datosTitular;
 
-	public DatosEspecificosRespuestaSVDFAP() {
+	public DatosEspecificosResidenciaSVDFAP() {
 		init();
 	}
 
 	public void init() {
+		super.init();
 
 		if (estado == null)
 			estado = new EstadoSVDFAP();

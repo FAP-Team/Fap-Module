@@ -154,6 +154,9 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_registros")
 	public List<Registro> registros;
 
+	@ValueFromTable("NombreServicioSVDFAP")
+	public String nombreServicio;
+
 	public SolicitudGenerica() {
 		init();
 	}

@@ -2,7 +2,6 @@ Entidad PeticionSVDFAP{
    String uidUsuario
    AtributosSVDFAP atributos
    OneToMany SolicitudTransmisionSVDFAP solicitudesTransmision
-   TransmisionesRespuestaSVDFAP transmisionesRespuesta
    Lista tipoEstadoPeticionSVDFAP estadoPeticion
 }
 
@@ -12,8 +11,12 @@ Entidad PeticionSVDResidenciaFAP extends PeticionSVDFAP{}
 
 Entidad SolicitudTransmisionSVDFAP{
    DatosGenericosPeticionSVDFAP datosGenericos
-   DatosEspecificosSVDFAP datosEspecificos
+   DatosEspecificosSVDFAP datosEspecificos 
    ManyToOne SolicitudGenerica solicitud
+   TransmisionDatosRespuestaSVDFAP respuesta
+   Lista NombreServicioSVDFAP nombreServicio
+   String estado
+   DateTime fechaCreacion
 }
 
 Entidad DatosGenericosPeticionSVDFAP{
@@ -29,7 +32,7 @@ Entidad SolicitanteSVDFAP{
    String unidadTramitadora
    ProcedimientoSVDFAP procedimiento
    FuncionarioSVDFAP funcionario
-   Lista TipoConsentimientoSVDFAP consentimiento
+   Lista TipoConsentimiento consentimiento
 }
 
 Entidad ProcedimientoSVDFAP {
@@ -51,43 +54,47 @@ Entidad TitularSVDFAP{
  Lista TipoDocumentacion tipoDocumentacion
 }
 
-Entidad DatosEspecificosSVDFAP {}
+Entidad DatosEspecificosSVDFAP superClass {
+	String tipoSolicitante
+	SolicitudEspecificaSVDFAP solicitud
+}
 
 /**** Servicio Residencia **/
 Entidad DatosEspecificosResidenciaSVDFAP extends DatosEspecificosSVDFAP{
-  String tipoSolicitante
-  SolicitudEspecificaSVDFAP solicitud
   EstadoSVDFAP estado
   EstadoResultadoSVDFAP estadoResultado
   DomicilioRespuestaSVDFAP domicilio
   DatosTitularRespuestaSVDFAP datosTitular 
 }
 
+Entidad DatosEspecificosIdentidadSVDFAP extends DatosEspecificosSVDFAP{}
+
 Entidad SolicitudEspecificaSVDFAP{
    ResidenciaSVDFAP residencia
    NacimientoSVDFAP solicitudNacimiento
-   String espanol
+   Lista Espanol espanol
 }
 
-Entidad ProvinciaSVDFAP{
-  String codigo
-  String nombre
-}
+//Entidad ProvinciaSVDFAP{
+//  String codigo
+//  String nombre
+//}
 
-Entidad MunicipioSVDFAP{
-  String codigo
-  String nombre
-}
+//Entidad MunicipioSVDFAP{
+//  String codigo
+//  String nombre
+//}
 
 Entidad ResidenciaSVDFAP{
-  ProvinciaSVDFAP provincia
-  MunicipioSVDFAP municipio
+  Lista comunidadesAutonomas comunidadAutonoma
+  Lista provincias provincia
+  Lista municipios municipio
 }
 
 Entidad NacimientoSVDFAP{
   DateTime fecha
-  MunicipioSVDFAP municipio
-  ProvinciaSVDFAP provincia
+  Lista municipios municipio
+  Lista provincias provincia
 }
 
 ////--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
@@ -98,10 +105,6 @@ Entidad AtributosSVDFAP {
   String timestamp
   Integer numElementos
   EstadoRespuestaSVDFAP estado
-}
-
-Entidad TransmisionesRespuestaSVDFAP{
-  OneToMany TransmisionDatosRespuestaSVDFAP transmisionDatos
 }
 
 Entidad EstadoRespuestaSVDFAP {
@@ -167,13 +170,13 @@ Entidad SexoSVDFAP {
 
 Entidad DatosDireccionSVDFAP {
   String localidad
-  ProvinciaSVDFAP provincia
+  Lista provincias provincia
   ViaSVDFAP datosVia
 }
 
 Entidad DomicilioRespuestaSVDFAP {
-  ProvinciaSVDFAP provincia
-  MunicipioSVDFAP municipio
+  Lista provincias provincia
+  Lista municipios municipio
   EntidadColectivaSVDFAP entColectiva
   EntidadSingularSVDFAP entSingular
   EntidadNucleoSVDFAP nucleo
@@ -240,7 +243,16 @@ Lista tipoEstadoPeticionSVDFAP crearEnumerado {
    cancelada: "Cancelada"
 }
 
-Lista TipoConsentimientoSVDFAP crearEnumerado {
-   Si: "Si"
-   Ley: "Ley"
+Lista NombreServicioSVDFAP crearEnumerado {
+	identidad: "Identidad"
+	residencia: "Residencia"
+}
+
+Entidad ComboNombreServicioSVDFAP  {
+	Lista NombreServicioSVDFAP nombreServicio
+}
+
+Lista Espanol crearEnumerado {
+	s: "Sí"
+	n: "No"
 }

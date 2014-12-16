@@ -26,10 +26,22 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	public DatosGenericosPeticionSVDFAP datosGenericos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosEspecificosPeticionSVDFAP datosEspecificos;
+	public DatosEspecificosSVDFAP datosEspecificos;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public TransmisionDatosRespuestaSVDFAP respuesta;
+
+	@ValueFromTable("NombreServicioSVDFAP")
+	public String nombreServicio;
+
+	public String estado;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCreacion"), @Column(name = "fechaCreacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaCreacion;
 
 	public SolicitudTransmisionSVDFAP() {
 		init();
@@ -43,46 +55,27 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 			datosGenericos.init();
 
 		if (datosEspecificos == null)
-			datosEspecificos = new DatosEspecificosPeticionSVDFAP();
+			datosEspecificos = new DatosEspecificosSVDFAP();
 		else
 			datosEspecificos.init();
 
 		if (solicitud != null)
 			solicitud.init();
 
+		if (respuesta == null)
+			respuesta = new TransmisionDatosRespuestaSVDFAP();
+		else
+			respuesta.init();
+
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
 
-	public SolicitudTransmisionSVDFAP(SolicitudGenerica solicitud, DatosGenericosPeticionSVDFAP datosGenericos, DatosEspecificosPeticionSVDFAP datosEspecificos) {
+	public SolicitudTransmisionSVDFAP(SolicitudGenerica solicitud, DatosGenericosPeticionSVDFAP datosGenericos, DatosEspecificosSVDFAP datosEspecificos) {
 		init();
-		this.setDatosGenericos(datosGenericos);
-		this.setDatosEspecificos(datosEspecificos);
-		this.setSolicitud(solicitud);
-	}
-
-	public DatosGenericosPeticionSVDFAP getDatosGenericos() {
-		return datosGenericos;
-	}
-
-	public void setDatosGenericos(DatosGenericosPeticionSVDFAP datosGenericos) {
 		this.datosGenericos = datosGenericos;
-	}
-
-	public DatosEspecificosPeticionSVDFAP getDatosEspecificos() {
-		return datosEspecificos;
-	}
-
-	public void setDatosEspecificos(DatosEspecificosPeticionSVDFAP datosEspecificos) {
 		this.datosEspecificos = datosEspecificos;
-	}
-
-	public SolicitudGenerica getSolicitud() {
-		return solicitud;
-	}
-
-	public void setSolicitud(SolicitudGenerica solicitud) {
 		this.solicitud = solicitud;
 	}
 

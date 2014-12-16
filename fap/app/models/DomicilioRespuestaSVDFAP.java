@@ -22,11 +22,11 @@ import java.text.SimpleDateFormat;
 public class DomicilioRespuestaSVDFAP extends FapModel {
 	// Código de los atributos
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ProvinciaSVDFAP provincia;
+	@ValueFromTable("provincias")
+	public String provincia;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public MunicipioSVDFAP municipio;
+	@ValueFromTable("municipios")
+	public String municipio;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public EntidadColectivaSVDFAP entColectiva;
@@ -40,21 +40,16 @@ public class DomicilioRespuestaSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DireccionRespuestaSVDFAP direccion;
 
+	public String codUnidadPoblacional;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public UltimaVariacionSVDFAP ultimaVariacion;
+
 	public DomicilioRespuestaSVDFAP() {
 		init();
 	}
 
 	public void init() {
-
-		if (provincia == null)
-			provincia = new ProvinciaSVDFAP();
-		else
-			provincia.init();
-
-		if (municipio == null)
-			municipio = new MunicipioSVDFAP();
-		else
-			municipio.init();
 
 		if (entColectiva == null)
 			entColectiva = new EntidadColectivaSVDFAP();
@@ -75,6 +70,11 @@ public class DomicilioRespuestaSVDFAP extends FapModel {
 			direccion = new DireccionRespuestaSVDFAP();
 		else
 			direccion.init();
+
+		if (ultimaVariacion == null)
+			ultimaVariacion = new UltimaVariacionSVDFAP();
+		else
+			ultimaVariacion.init();
 
 		postInit();
 	}

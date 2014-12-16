@@ -9,6 +9,7 @@ import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
 import models.TipoEvaluacion;
+import models.CEconomicosManuales;
 
 public class Evaluador {
 

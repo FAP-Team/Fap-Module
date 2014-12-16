@@ -60,11 +60,12 @@ public class DocumentosFAPController extends DocumentosFAPControllerGen {
 					else if (fileAportacion.length() > properties.FapProperties.getLong("fap.file.maxsize"))
 						validation.addError("fileAportacion", "Tamaño del archivo superior al máximo permitido (" + org.apache.commons.io.FileUtils.byteCountToDisplaySize(properties.FapProperties.getLong("fap.file.maxsize")) + ")");
 					else {
-		
 						String extension = GestorDocumentalUtils.getExtension(fileAportacion);
-						if (!extension.equalsIgnoreCase("pdf") && !extension.equalsIgnoreCase("png"))
-							validation.addError("fileAportacion", "La extensión \"" + extension + "\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
-		
+						String mimeType = play.libs.MimeTypes.getMimeType(fileAportacion.getAbsolutePath());
+						if (!utils.GestorDocumentalUtils.acceptExtension(extension))
+						   validation.addError("fileAportacion", "La extensión \"" + extension + "\" del documento a incorporar, no es válida. Compruebe los formatos de documentos aceptados.");
+						if (!utils.GestorDocumentalUtils.acceptMime(mimeType))
+							validation.addError("fileAportacion", "El tipo mime \"" + mimeType + "\" del documento a incorporar, no es válido. Compruebe los formatos de documentos aceptados.");
 					}
 				}
 			}

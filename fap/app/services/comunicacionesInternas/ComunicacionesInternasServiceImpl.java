@@ -89,7 +89,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
         
 		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
 		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
-		genericosService.mostrarInfoInyeccion();
 
 		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
 	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);
@@ -97,7 +96,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	}
 	
 	public boolean isConfigured(){
-	    return hasConnection();
+	    return platinoGestorDocumental.hasConnection() && hasConnection();
 	}
 	
 	@Override
@@ -114,6 +113,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		boolean hasConnection = false;
 		try {
 			hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
+			genericosService.mostrarInfoInyeccion();
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			e.printStackTrace();

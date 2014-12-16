@@ -164,18 +164,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     public List<String> getFirmaEnClienteJS() {
         List<String> jsclient = new ArrayList<String>();
         String host;
-        if("pre".equals(JS_ENTORNO.toLowerCase())){
-        	host = "https://www-pre.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
-        }else{
-            String baseUrl = FapProperties.get("application.baseUrl");
-            if (baseUrl.contains("gobiernodecanarias.org")) {
-                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
-            } else if (baseUrl.contains("sede.gobcan.es")) {
-                host = "https://sede.gobcan.es/platino/" + APPLET_FIRMA;
-            } else {
-                host = "https://www.gobiernodecanarias.org/platino/" + APPLET_FIRMA;
-            }
-        }
+		host = getHostJavaScripts();
 
         jsclient.add(host + "common-js/deployJava.js");
         jsclient.add(host + "miniapplet.js");
@@ -186,8 +175,52 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         jsclient.add("/public/javascripts/msg.js");
         return jsclient;
     }
-	
-    public String firmarTexto(byte[] texto) throws FirmaServiceException {
+
+	private String getHostJavaScripts() {
+		String baseJavascript = FapProperties.get("fap.platino.firma.baseJavascript");
+		StringBuilder hostBuilder = new StringBuilder();
+		if ((baseJavascript != null) && (!"undefined".equals(baseJavascript))) {
+			hostBuilder.append(baseJavascript);
+		} else {
+			String baseUrl = FapProperties.get("application.baseUrl");
+			String entornoJS = getEntornoJS(baseUrl);
+			hostBuilder.append("https://")
+					.append(entornoJS)
+					.append("/platino/")
+					.append(APPLET_FIRMA);
+		}
+
+		return hostBuilder.toString();
+	}
+
+	private String getEntornoJS(String baseUrl) {
+		StringBuilder entorno = new StringBuilder();
+		if (baseUrl.contains("sede.gobcan.es")) {
+			entorno.append("sede.gobcan.es");
+		} else {
+			entorno.append("gobiernodecanarias.org");
+		}
+		entorno.insert(0,getPrefijoEntornoJS(entorno.toString()));
+		return entorno.toString();
+	}
+
+	private String getPrefijoEntornoJS(String entornoJs) {
+		String prefijoEntorno = "";
+		if("pro".equals(JS_ENTORNO.toLowerCase())){
+            if (entornoJs.contains("gobiernodecanarias.org")) {
+                prefijoEntorno = "www-pre.";
+            } else if (entornoJs.contains("sede.gobcan.es")) {
+                prefijoEntorno = "pre-";
+            }
+        }else{
+            if (entornoJs.contains("gobiernodecanarias.org")) {
+                prefijoEntorno = "www.";
+            }
+        }
+		return prefijoEntorno;
+	}
+
+	public String firmarTexto(byte[] texto) throws FirmaServiceException {
     	log.info("[firmarTexto] Iniciando firmarTexto -> Datos de Registro"); 
         String firma = null;
         try {

@@ -112,16 +112,16 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 					 totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i) + totalAuxPropuesto);
 					 totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
 				 }
-				totalesConcedido += totalAuxConcedido;
-				 totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
-				 columna.put("valorConcedido" + i, FapFormat.formatMoneda(totalAuxConcedido));
+				 columna.put("valorConcedido" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorConcedido));
 				 columna.put("valorSolicitado" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorSolicitado));
-				
-				totalesPropuesto += totalAuxPropuesto;
-				 columna.put("valorPropuesto" + i, FapFormat.formatMoneda(totalAuxPropuesto));
-				
-				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
-				columna.put("valorEstimado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorEstimado));
+				 columna.put("valorPropuesto" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorPropuesto));
+				 columna.put("valorEstimado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorEstimado));
+
+				 totalesConcedido += totalAuxConcedido;
+				 totalesPropuesto += totalAuxPropuesto;
+				 totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
+				 totalesEstimado += cEconomico.valores.get(i).valorEstimado;
+
 			 }
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
 		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);

@@ -2,6 +2,9 @@ h2. Changelog
 
 h3. Versión 2.5.6RC1
 
+* Mejora en la carga de los javascript de firma en función de url y entorno.
+* Se establece una duración de caducidad de 5 minutos a la sesión de usuario.
+* Se calculan siempre los totales de CEconomicos Evaluados.
 * Añadido boton copiar PCEconomicos propuestos a concedidos.
 * Correcciones varias en PCEconomicos.
 * Corregido, errores en la descarga de las resoluciones.

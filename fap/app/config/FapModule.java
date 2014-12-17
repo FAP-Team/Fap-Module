@@ -15,6 +15,7 @@ import services.PortafirmaFapService;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
+import services.ServiciosGenericosService;
 import services.TercerosService;
 import services.MensajeService;
 import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
@@ -29,6 +30,7 @@ import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
+import services.filesystem.FileSystemServicioGenericosImpl;
 import services.filesystem.FileSystemTercerosServiceImpl;
 import services.filesystem.FileSystemVerificarDatosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
@@ -58,6 +60,7 @@ public class FapModule extends PlayAbstractModule {
 		comunicacionesInternas();
 		verificarDatos();
 		certificados();
+		serviciosGenericos();
 //		conversor();
 	}
 	
@@ -105,6 +108,9 @@ public class FapModule extends PlayAbstractModule {
 		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
 	}
 	
+	protected void serviciosGenericos(){
+		bindLazySingletonOnDev(ServiciosGenericosService.class, FileSystemServicioGenericosImpl.class);
+	}
 
 	protected void comunicacionesInternas(){
 		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);

@@ -1,4 +1,4 @@
-package services.comunicacionesInternas;
+package services.genericos;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -20,6 +20,7 @@ import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import services.ServiciosGenericosService;
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
@@ -29,7 +30,7 @@ import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 
 
-public class ServiciosGenericosServiceImpl {
+public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 	
 	private ServiceSoap genericosServices;
 	private PropertyPlaceholder propertyPlaceholder;
@@ -55,19 +56,6 @@ public class ServiciosGenericosServiceImpl {
 		return propertyPlaceholder.get("fap.services.genericos.comunicaciones.internas.url");
 	}
 	
-	public boolean isConfigured(){
-	    return hasConnection();
-	}
-
-    public void mostrarInfoInyeccion() {
-		if (isConfigured())
-			play.Logger.info("El servicio Genérico de Comunicaciones Internas ha sido inyectado y está operativo.");
-		else
-			play.Logger.info("El servicio Genérico de Comunicaciones Internas ha sido inyectado y NO está operativo.");
-    }
-	
-	
-	// TODO: revisar que no está completo.
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
@@ -78,19 +66,49 @@ public class ServiciosGenericosServiceImpl {
 		}
 		return hasConnection; 
 	}
-
-	public ArrayOfReturnUnidadOrganica consultaUnidadesOrganicas(Long codigo, String userId, String password) {
-		ArrayOfReturnUnidadOrganica resultado =  null;
-		
-		try {
-			resultado = genericosServices.obtenerUnidadesOrganicas(codigo, userId, password);
-		} catch (Exception e){
-			play.Logger.error("No se han podido recuperar las Unidades Organicas");
-		}
 	
-		return resultado;
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
+	}
+	
+	public boolean isConfigured(){
+	    return hasConnection();
 	}
 
+	@Override
+    public void mostrarInfoInyeccion() {
+		if (isConfigured())
+			play.Logger.info("El servicio Genérico de Comunicaciones Internas ha sido inyectado y está operativo.");
+		else
+			play.Logger.info("El servicio Genérico de Comunicaciones Internas ha sido inyectado y NO está operativo.");
+    }
+    
+	@Override
+	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(Long codigo, String userId, String password) {
+		ArrayOfReturnUnidadOrganica lstUOGenericos = null;
+		List<ReturnUnidadOrganicaFap> lstUO = null;
+		try {
+			lstUOGenericos = genericosServices.obtenerUnidadesOrganicas(codigo, USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
+			if (lstUOGenericos != null)
+				lstUO = ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
+		} catch (Exception e) {
+			play.Logger.error("No se han podido recuperar las Unidades Orgánicas: " + e.getMessage());
+		}
+		
+		return lstUO;
+	}
+
+	@Override
+	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicasV(Long codigo, String credencialesXml) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public boolean validarUsuario (String userId, String password){
 		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg con password: "+password);
 		String resultado = "";
@@ -112,12 +130,5 @@ public class ServiciosGenericosServiceImpl {
 		}
 		
 	}
-	
-	private String encriptarPassword(String password){
-        try {
-            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encriptando la contraseña");
-        }	    
-	}
+
 }

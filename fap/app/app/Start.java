@@ -46,7 +46,6 @@ import com.google.inject.Inject;
 
 import config.InjectorConfig;
 import controllers.AedController;
-
 import emails.Mails;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.EstadosVerificacionEnum;
@@ -62,7 +61,6 @@ import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
 import es.gobcan.certificados.Firmas;
-
 import messages.Messages;
 import models.*;
 import play.Logger;
@@ -88,10 +86,8 @@ import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
 import services.BaremacionService;
-
 import services.CertificadosService;
 import services.CertificadosServiceException;
-
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
@@ -105,7 +101,7 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.TercerosService;
 import services.MensajeService;
-import services.comunicacionesInternas.ServiciosGenericosServiceImpl;
+import services.genericos.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
 import swhiperreg.ciservices.ArrayOfString;

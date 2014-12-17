@@ -124,8 +124,8 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
 	            combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));
 	            $.each(json, function(i, item) {
 	                combo.append($('<option>', { 
-                    value: item.codigo,
-                    text : item.codigoCompleto+' '+item.descripcion 
+                    value: item.key,
+                    text : item.value
                 }));        
                 });
            

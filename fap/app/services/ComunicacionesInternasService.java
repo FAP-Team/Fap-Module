@@ -10,10 +10,8 @@ import models.ReturnUnidadOrganicaFap;
 
 public interface ComunicacionesInternasService {
 
+	public void mostrarInfoInyeccion();
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException;
-	
 	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException;
 
-	public void mostrarInfoInyeccion();
-	
 }

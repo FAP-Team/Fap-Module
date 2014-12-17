@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import properties.FapProperties;
+import properties.PropertyPlaceholder;
+
 import com.sun.star.util.Date;
 import com.sun.star.util.DateTime;
 
@@ -20,6 +25,18 @@ import models.AsientoAmpliadoCIFap;
 import tags.ComboItem;
 
 public class FileSystemComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
+	
+	private PropertyPlaceholder propertyPlaceholder;
+	public final String USUARIOHIPERREG;
+	public final String PASSWORDHIPERREG;
+	
+	@Inject
+	public FileSystemComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
+		this.propertyPlaceholder = propertyPlaceholder;
+		
+		USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
+		PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");
+	}
 
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {

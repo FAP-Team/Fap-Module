@@ -8,22 +8,22 @@ import javax.inject.Inject;
 
 import play.mvc.Util;
 import properties.FapProperties;
-import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
-import services.comunicacionesInternas.ComunicacionesInternasServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
 import utils.ComunicacionesInternasUtils;
+import utils.ServiciosGenericosUtils;
 import messages.Messages;
 import models.Agente;
 import models.ReturnUnidadOrganicaFap;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.UnidadesOrganicasControllerGen;
+import services.ServiciosGenericosService;
 
 public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen {
 
 	@Inject
-	protected static ComunicacionesInternasServiceImpl ciService;
+	protected static ServiciosGenericosService genericosService;
 	
 	
 	@Util
@@ -39,27 +39,28 @@ public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen 
 		}
 		
 		if (!Messages.hasErrors()){
-			try {
-				Long codigoSuperior = new Long(0); //Código que indica las UO de nivel superior
-				List<ReturnUnidadOrganicaFap> lstUO = ciService.obtenerUnidadesOrganicas(codigoSuperior);
-				List<ReturnUnidadOrganicaFap> lstUOB = new ArrayList<ReturnUnidadOrganicaFap>();
-				List<ReturnUnidadOrganicaFap> lstUOSlave = new ArrayList<ReturnUnidadOrganicaFap>();
+			Long codigoSuperior = new Long(0); //Código que indica las UO de nivel superior
+			List<ReturnUnidadOrganicaFap> lstUO = genericosService.obtenerUnidadesOrganicas(codigoSuperior, 
+					FapProperties.get("fap.platino.registro.username"),
+					FapProperties.get("fap.platino.registro.password"));
+			
+			List<ReturnUnidadOrganicaFap> lstUOB = new ArrayList<ReturnUnidadOrganicaFap>();
+			List<ReturnUnidadOrganicaFap> lstUOSlave = new ArrayList<ReturnUnidadOrganicaFap>();
+			for (ReturnUnidadOrganicaFap uo: lstUO){
 				
-				for (ReturnUnidadOrganicaFap uo: lstUO){
-					if (uo.codigo != null && uo.error.codigo == 0){
-						lstUOSlave = ciService.obtenerUnidadesOrganicas(uo.codigo);
-						
-						if (lstUOSlave != null)
-							lstUOB.addAll(lstUOSlave);
-					}
+				if (uo.codigo != null && uo.error.codigo == 0){
+					lstUOSlave = genericosService.obtenerUnidadesOrganicas(uo.codigo, 	
+							FapProperties.get("fap.platino.registro.username"),
+							FapProperties.get("fap.platino.registro.password"));
+					
+					if (lstUOSlave != null)
+						lstUOB.addAll(lstUOSlave);
 				}
 				
-				lstUO.addAll(lstUOB);
-				ComunicacionesInternasUtils.cargarUnidadesOrganicas(lstUO);
-			} catch (ComunicacionesInternasServiceException e) {
-				log.error("No se han podido recuperar las Unidades Orgánicas");
-				Messages.error("No se han podido recuperar las Unidades Orgánicas");
 			}
+			
+			lstUO.addAll(lstUOB);
+			ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
 		}
 		
 		Agente logAgente = AgenteController.getAgente();

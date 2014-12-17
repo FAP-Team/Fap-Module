@@ -12,10 +12,11 @@ import models.ComunicacionInterna;
 import models.ReturnUnidadOrganicaFap;
 import models.SolicitudGenerica;
 import play.mvc.Util;
-import services.ComunicacionesInternasServiceException;
-import services.comunicacionesInternas.ComunicacionesInternasServiceImpl;
+import properties.FapProperties;
+import services.ServiciosGenericosService;
 import tags.ComboItem;
 import utils.ComunicacionesInternasUtils;
+import utils.ServiciosGenericosUtils;
 import validation.CustomValidation;
 
 import com.google.gson.Gson;
@@ -27,7 +28,7 @@ import enumerado.fap.gen.EstadosComunicacionInternaEnum;
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
 	
 	@Inject
-	protected static ComunicacionesInternasServiceImpl ciService;
+	protected static ServiciosGenericosService genericosService;
 	
 	public static void index(String accion, Long idSolicitud, Long idComunicacionInterna) {
 		if (accion == null)
@@ -119,32 +120,35 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		dbComunicacionInterna.asiento.unidadOrganicaDestino =getUnidadOrganicaFAP(codigo);
 		dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigo;
 		
-		dbComunicacionInterna.asiento.userId = ciService.USUARIOHIPERREG;
-		dbComunicacionInterna.asiento.password = ciService.PASSWORDHIPERREG;
+		dbComunicacionInterna.asiento.userId = FapProperties.get("fap.platino.registro.username");
+		dbComunicacionInterna.asiento.password = FapProperties.get("fap.platino.registro.password");
 		dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
 	}
 	
 	public static String uoDestinoJerarquia(int codigo, int subnivel){
 		List<ReturnUnidadOrganicaFap> lstUO = null;
 		List<ReturnUnidadOrganicaFap> lstUOSubNivel = null;
+		List<ComboItem> lstCombo = new ArrayList<ComboItem>();
 		String resultados = null;
 
-		try {
-			lstUO = ciService.obtenerUnidadesOrganicas((long) codigo);
-			
-			if (lstUO != null){
-				ComunicacionesInternasUtils.cargarUnidadesOrganicas(lstUO);
-				lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
-				for (ReturnUnidadOrganicaFap unidad : lstUO){
-					if (ComunicacionesInternasUtils.calcularNivelUO(unidad) == subnivel)
-						lstUOSubNivel.add(unidad);
-				}
-				
-				if (lstUOSubNivel != null)
-					resultados = new Gson().toJson(lstUOSubNivel);
+		lstUO = genericosService.obtenerUnidadesOrganicas((long) codigo, 
+				FapProperties.get("fap.platino.registro.username"),
+				FapProperties.get("fap.platino.registro.password"));
+		
+		if (lstUO != null){
+			ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
+			lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
+			for (ReturnUnidadOrganicaFap unidad : lstUO){
+				if (ServiciosGenericosUtils.calcularNivelUO(unidad) == subnivel)
+					lstUOSubNivel.add(unidad);
 			}
-		} catch (ComunicacionesInternasServiceException e) {
-			log.error("No se han podido obtener las Unidades OrgÃ¡nicas del subnivel: "+subnivel);
+			
+			if (lstUOSubNivel != null) {
+				for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
+					lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " "  + unidad.descripcion));
+					
+				resultados = new Gson().toJson(lstCombo);
+			}
 		}
 		
 		return resultados;

@@ -5,15 +5,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
-
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.tools.corba.common.WSDLUtils;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import es.gobcan.platino.servicios.sfst.FirmaService;
@@ -30,6 +27,7 @@ import models.ReturnComunicacionInternaFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
+import services.ServiciosGenericosService;
 import services.VerificarDatosServiceException;
 import services.platino.PlatinoFirmaServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
@@ -50,9 +48,11 @@ import utils.GestorDocumentalUtils;
 public class ComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
 
 	private CIServicesSoap comunicacionesServices;
-	private ServiciosGenericosServiceImpl genericosService;
 	private PropertyPlaceholder propertyPlaceholder;
 	private PlatinoGestorDocumentalService platinoGestorDocumental;
+	
+	@Inject
+	private ServiciosGenericosService genericosService;
 	
 	private final String URIPROCEDIMIENTO;
 	private final String TIPO_TRANSPORTE;
@@ -88,15 +88,39 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
         
 		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
-		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
-
+		
 		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
 	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);
 
 	}
 	
+	private String getEndPoint() {
+		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
+	}
+	
+	// TODO: revisar que no está completo.
+	private boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
+			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
+		}catch(Exception e){
+			e.printStackTrace();
+			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
+		}
+		return hasConnection; 
+	}
+	
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
+	}
+	
 	public boolean isConfigured(){
-	    return platinoGestorDocumental.hasConnection() && hasConnection();
+	    return hasConnection();
 	}
 	
 	@Override
@@ -106,26 +130,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		else
 			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con Hiperreg y NO está operativo.");
     }
-	
-	
-	// TODO: revisar que no está completo.
-	private boolean hasConnection() {
-		boolean hasConnection = false;
-		try {
-			hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
-			genericosService.mostrarInfoInyeccion();
-			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
-		}catch(Exception e){
-			e.printStackTrace();
-			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
-		}
-		return hasConnection; 
-	}
-	
-	private String getEndPoint() {
-		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
-	}
-
 
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
@@ -212,27 +216,4 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 	}
 
-	private String encriptarPassword(String password){
-        try {
-            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encriptando la contraseña");
-        }	    
-	}
-
-	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(Long codigo) throws ComunicacionesInternasServiceException {
-		ArrayOfReturnUnidadOrganica lstUOGenericos = null;
-		List<ReturnUnidadOrganicaFap> lstUO = null;
-		try {
-			lstUOGenericos = genericosService.consultaUnidadesOrganicas(codigo, USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
-			if (lstUOGenericos != null)
-				lstUO = ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
-		} catch (Exception e) {
-			play.Logger.error("No se han podido recuperar las Unidades Orgánicas");
-			throw new ComunicacionesInternasServiceException("Excepción obteniendo unidades orgánicas");
-		}
-		
-		return lstUO;
-	}
-	
 }

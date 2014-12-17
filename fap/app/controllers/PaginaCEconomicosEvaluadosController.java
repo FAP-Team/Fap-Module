@@ -56,9 +56,9 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 		boolean noPuedeEditar = true;
 		Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", idSolicitud).first();
 		if (evaluacion != null){
+			BaremacionUtils.calcularTotales(solicitud);
 			if ((evaluacion.tipo.estado.equals("evaluada")) && (evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))){
 				noPuedeEditar = false;
-				BaremacionUtils.calcularTotales(solicitud);
 			}
 		}
 		renderTemplate("fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html", accion, duracion, idSolicitud, solicitud, noPuedeEditar);

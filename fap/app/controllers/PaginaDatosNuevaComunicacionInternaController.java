@@ -117,7 +117,7 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaDestino", comunicacionInterna.asiento.unidadOrganicaDestino);
 		CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaDestino.codigo", comunicacionInterna.asiento.unidadOrganicaDestino.codigo);
 		Long codigo = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;
-		dbComunicacionInterna.asiento.unidadOrganicaDestino =getUnidadOrganicaFAP(codigo);
+		dbComunicacionInterna.asiento.unidadOrganicaDestino = getUnidadOrganicaFAP(codigo);
 		dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigo;
 		
 		dbComunicacionInterna.asiento.userId = FapProperties.get("fap.platino.registro.username");
@@ -130,24 +130,33 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		List<ReturnUnidadOrganicaFap> lstUOSubNivel = null;
 		List<ComboItem> lstCombo = new ArrayList<ComboItem>();
 		String resultados = null;
-
-		lstUO = genericosService.obtenerUnidadesOrganicas((long) codigo, 
-				FapProperties.get("fap.platino.registro.username"),
-				FapProperties.get("fap.platino.registro.password"));
 		
-		if (lstUO != null){
-			ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
-			lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
-			for (ReturnUnidadOrganicaFap unidad : lstUO){
-				if (ServiciosGenericosUtils.calcularNivelUO(unidad) == subnivel)
-					lstUOSubNivel.add(unidad);
-			}
+		String usuarioHiperReg = FapProperties.get("fap.platino.registro.username");
+		String passwordHiperReg = FapProperties.get("fap.platino.registro.password");
+		
+		if (usuarioHiperReg == null || "undefined".equals(usuarioHiperReg) || passwordHiperReg == null || "undefined".equals(passwordHiperReg)) {
+			log.info("No se han definido las credenciales del usuario HiperReg, consultar properties");
+			Messages.error("Faltan las credenciales del usuario HiperReg");
+			Messages.keep();
+		}
+		
+		if (!Messages.hasErrors()) {
+			lstUO = genericosService.obtenerUnidadesOrganicas((long) codigo, usuarioHiperReg, passwordHiperReg);
 			
-			if (lstUOSubNivel != null) {
-				for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
-					lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " "  + unidad.descripcion));
-					
-				resultados = new Gson().toJson(lstCombo);
+			if (lstUO != null){
+				ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
+				lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
+				for (ReturnUnidadOrganicaFap unidad : lstUO){
+					if (ServiciosGenericosUtils.calcularNivelUO(unidad) == subnivel)
+						lstUOSubNivel.add(unidad);
+				}
+				
+				if (lstUOSubNivel != null) {
+					for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
+						lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " "  + unidad.descripcion));
+						
+					resultados = new Gson().toJson(lstCombo);
+				}
 			}
 		}
 		

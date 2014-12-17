@@ -2,7 +2,9 @@ package services.genericos;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -14,6 +16,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
+import config.InjectorConfig;
 import messages.Messages;
 import models.ReturnUnidadOrganicaFap;
 import platino.PlatinoProxy;
@@ -21,6 +24,7 @@ import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import services.ServiciosGenericosService;
+import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
@@ -35,6 +39,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 	private ServiceSoap genericosServices;
 	private PropertyPlaceholder propertyPlaceholder;
 	
+	private final String URIPROCEDIMIENTO;
 	public final String USUARIOHIPERREG;
 	public final String PASSWORDHIPERREG;
 	
@@ -45,11 +50,26 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		URL wsdlURL = ServiciosGenericosServiceImpl.class.getClassLoader().getResource("wsdl/Service.wsdl");
 		genericosServices = new Service(wsdlURL).getServiceSoap();
 		WSUtils.configureEndPoint(genericosServices, getEndPoint());
+		
+		URIPROCEDIMIENTO = FapProperties.get("fap.platino.security.procedimiento.uri");
+		USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
+	    PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");   
+		
+	    Map<String, String> headers = null;       
+        if ((URIPROCEDIMIENTO != null) && (URIPROCEDIMIENTO.compareTo("undefined") != 0)) {
+        	headers = new HashMap<String, String>();
+        	headers.put("uriProcedimiento", URIPROCEDIMIENTO);		
+        }
+	    
         WSUtils.configureSecurityHeaders(genericosServices, propertyPlaceholder);
-        PlatinoProxy.setProxy(genericosServices, propertyPlaceholder);
         
-        USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
-		PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");       
+        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
+        FapProperties.setBoolean("fap.proxy.enable", false);
+
+        PlatinoProxy.setProxy(genericosServices, propertyPlaceholder);
+		
+		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
+	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);    	
 	}
 	
 	private String getEndPoint() {

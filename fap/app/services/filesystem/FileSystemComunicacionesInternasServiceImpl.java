@@ -1,6 +1,8 @@
 package services.filesystem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import models.AsientoCIFap;
 import models.ListaUris;
 import models.ReturnComunicacionInternaAmpliadaFap;
 import models.ReturnComunicacionInternaFap;
+import models.ReturnErrorFap;
 import models.ReturnInteresadoFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
@@ -45,7 +48,7 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.resumen = asientoFap.resumen;
 		respuesta.observaciones = asientoFap.observaciones;
 		//respuesta.referencia //Solo existe en la doc no en el WS.
-		respuesta.fecha = new DateTime().toString();
+		respuesta.fecha = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 		respuesta.hora = Long.toString(new java.util.Date().getTime());
 		respuesta.tipoComunicacion = asientoFap.tipoTransporte;
 		respuesta.ejercicio =Long.toString(new java.util.Date().getYear());
@@ -60,8 +63,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.tipoTransporte = "Tipo de transporte";
 		respuesta.uris = new ArrayList<ListaUris>();
 			//¿Añadir uris de documentos o vacio para probar???
-		respuesta.error.descripcion = "0"; //Sin errores
-		return null;
+		respuesta.error = new ReturnErrorFap();
+		respuesta.error.codigo = 0;
+		respuesta.error.descripcion = null;
+		return respuesta;
 	}
 	
 	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{

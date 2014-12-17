@@ -38,20 +38,25 @@ public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen 
 			UnidadesOrganicasController.frmUOValidateRules();
 		}
 		
+		String usuarioHiperReg = FapProperties.get("fap.platino.registro.username");
+		String passwordHiperReg = FapProperties.get("fap.platino.registro.password");
+		
+		if (usuarioHiperReg == null || "undefined".equals(usuarioHiperReg) || passwordHiperReg == null || "undefined".equals(passwordHiperReg)) {
+			log.info("No se han definido las credenciales del usuario HiperReg, consultar properties");
+			Messages.error("Faltan las credenciales del usuario HiperReg");
+			Messages.keep();
+		}
+		
 		if (!Messages.hasErrors()){
 			Long codigoSuperior = new Long(0); //Código que indica las UO de nivel superior
-			List<ReturnUnidadOrganicaFap> lstUO = genericosService.obtenerUnidadesOrganicas(codigoSuperior, 
-					FapProperties.get("fap.platino.registro.username"),
-					FapProperties.get("fap.platino.registro.password"));
+			List<ReturnUnidadOrganicaFap> lstUO = genericosService.obtenerUnidadesOrganicas(codigoSuperior,	usuarioHiperReg, passwordHiperReg);
 			
 			List<ReturnUnidadOrganicaFap> lstUOB = new ArrayList<ReturnUnidadOrganicaFap>();
 			List<ReturnUnidadOrganicaFap> lstUOSlave = new ArrayList<ReturnUnidadOrganicaFap>();
 			for (ReturnUnidadOrganicaFap uo: lstUO){
 				
 				if (uo.codigo != null && uo.error.codigo == 0){
-					lstUOSlave = genericosService.obtenerUnidadesOrganicas(uo.codigo, 	
-							FapProperties.get("fap.platino.registro.username"),
-							FapProperties.get("fap.platino.registro.password"));
+					lstUOSlave = genericosService.obtenerUnidadesOrganicas(uo.codigo, usuarioHiperReg, passwordHiperReg);
 					
 					if (lstUOSlave != null)
 						lstUOB.addAll(lstUOSlave);

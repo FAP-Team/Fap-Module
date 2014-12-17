@@ -1,14 +1,13 @@
 package controllers;
 
 import javax.inject.Inject;
-
 import messages.Messages;
 import models.Agente;
 import models.ComunicacionInterna;
 import models.ReturnComunicacionInternaFap;
 import play.mvc.Util;
+import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
-import services.comunicacionesInternas.ComunicacionesInternasServiceImpl;
 import validation.CustomValidation;
 import controllers.fap.AgenteController;
 import controllers.gen.PaginaAltaComunicacionInternaControllerGen;
@@ -17,7 +16,7 @@ import enumerado.fap.gen.EstadosComunicacionInternaEnum;
 public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicacionInternaControllerGen {
 	
 	@Inject
-	protected static ComunicacionesInternasServiceImpl ciService;
+	protected static ComunicacionesInternasService ciService;
 	
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
@@ -42,7 +41,7 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 			try {
 				ReturnComunicacionInternaFap respuesta = ciService.crearNuevoAsiento(dbComunicacionInterna.asiento);
 				
-				if (respuesta.error.descripcion == null) {
+				if (respuesta != null && respuesta.error != null && respuesta.error.descripcion == null) {
 					dbComunicacionInterna.respuesta = respuesta;
 					dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.enviada.name();
 				}

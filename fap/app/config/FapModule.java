@@ -57,10 +57,10 @@ public class FapModule extends PlayAbstractModule {
 		terceros();
 		ticketing();
 		mensaje();
+		serviciosGenericos();
 		comunicacionesInternas();
 		verificarDatos();
 		certificados();
-		serviciosGenericos();
 //		conversor();
 	}
 	

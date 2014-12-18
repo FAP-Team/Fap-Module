@@ -99,6 +99,7 @@ import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
+import services.ServiciosGenericosService;
 import services.TercerosService;
 import services.MensajeService;
 import services.genericos.ServiciosGenericosServiceImpl;
@@ -258,11 +259,13 @@ public class Start extends Job {
 		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
+		
+		ServiciosGenericosService serviciosGenericos = InjectorConfig.getInjector().getInstance(ServiciosGenericosService.class);
+		serviciosGenericos.mostrarInfoInyeccion();
 
 		ComunicacionesInternasService comunicacionInternaService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
 		comunicacionInternaService.mostrarInfoInyeccion();
 		
-
 		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 		verificarDatosService.mostrarInfoInyeccion();
 			

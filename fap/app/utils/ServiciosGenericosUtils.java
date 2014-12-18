@@ -155,14 +155,18 @@ public class ServiciosGenericosUtils {
 		
 		if (unidad != null){
 			String codigoCompleto = unidad.codigoCompleto;
-			String[] arbolUO = codigoCompleto.split(patternSeparadorNivel);
-			int niveles = arbolUO.length;
-			while (descendencia && (nivel < niveles)){ 
-				if (arbolUO[nivel].matches(patternNoDescendencia))
-					descendencia = false;	
-				else
-					nivel++;
-			}
+			
+			if (codigoCompleto != null && !codigoCompleto.isEmpty()) {
+				String[] arbolUO = codigoCompleto.split(patternSeparadorNivel);
+				int niveles = arbolUO.length;
+				while (descendencia && (nivel < niveles)){ 
+					if (arbolUO[nivel].matches(patternNoDescendencia))
+						descendencia = false;	
+					else
+						nivel++;
+				}
+			} else
+				nivel = -1;
 		}
 		
 		return nivel-1;

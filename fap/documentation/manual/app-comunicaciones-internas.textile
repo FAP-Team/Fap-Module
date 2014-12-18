@@ -2,6 +2,8 @@ h1. Comunicaciones Internas
 
 Permite realizar un asiento simple de una solicitud y ver los datos de la respuesta.
 Es necesario enlazar la página dentro de una solicitud.
+Es importante uitlizar conjuntamente los servicios de comunicaciones internas y el servicio genérico 
+para poder validar el usuario de HiperReg necesario para poder crear las comunicaciones, así como para obtener las unidades orgánicas disponibles.
 
 !images/app-comunicaciones-internas!
 

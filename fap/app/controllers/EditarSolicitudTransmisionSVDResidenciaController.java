@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.EditarSolicitudTransmisionSVDResidenciaControllerGen;
+
+public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSolicitudTransmisionSVDResidenciaControllerGen {
+
+}

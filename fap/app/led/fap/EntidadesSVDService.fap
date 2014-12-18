@@ -54,7 +54,7 @@ Entidad TitularSVDFAP{
  Lista TipoDocumentacion tipoDocumentacion
 }
 
-Entidad DatosEspecificosSVDFAP superClass {
+Entidad DatosEspecificosSVDFAP {
 	String tipoSolicitante
 	SolicitudEspecificaSVDFAP solicitud
 }

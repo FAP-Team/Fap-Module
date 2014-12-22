@@ -2,6 +2,10 @@ h2. Changelog
 
 h3. Versión 2.5.6RC1
 
+* Corregido, se crean usuarios vacíos.
+* Comentado tiempo de caducidad de sesión en el módulo. Utilizar en las aplicaciones.
+* Cambio en la versión de Play en comando winservice.
+* Cambios en los servicios de Comunicaciones Internas y Genéricos.
 * Mejora en la carga de los javascript de firma en función de url y entorno.
 * Se establece una duración de caducidad de 5 minutos a la sesión de usuario.
 * Se calculan siempre los totales de CEconomicos Evaluados.

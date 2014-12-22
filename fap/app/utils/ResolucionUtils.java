@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import properties.FapProperties;
-
+import models.Agente;
 import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
@@ -86,6 +86,8 @@ public class ResolucionUtils {
 				resolucionFAP.solicitudFirmaPortafirma.uriSolicitud = resolucionFAP.idSolicitudFirma;
 				resolucionFAP.solicitudFirmaPortafirma.idSolicitante = FapProperties.get("portafirma.usuario");
 				resolucionFAP.solicitudFirmaPortafirma.idDestinatario = resolucionFAP.jefeDeServicio;
+				if (resolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud == null)
+					resolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = new Agente();
 				resolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = resolucionFAP.hacePeticionPortafirma;
 				resolucionFAP.save();
 			}
@@ -99,6 +101,8 @@ public class ResolucionUtils {
 				resolucionFAP.solicitudFirmaPortafirmaOficioRemision.uriSolicitud = resolucionFAP.idSolicitudFirmaOficiosRemision;
 				resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idSolicitante = FapProperties.get("portafirma.usuario");
 				resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.destinatarioOficioRemisionPortafirma;
+				if (resolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud == null)
+					resolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = new Agente();
 				resolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = resolucionFAP.hacePeticionPortafirmaOficiosRemision;
 				resolucionFAP.save();
 			}

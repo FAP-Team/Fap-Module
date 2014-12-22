@@ -198,6 +198,8 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.prioridad = PrioridadEnumType.NORMAL.value();
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.tipoDocumento = "SOL";
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.emailNotificacion = agenteActual.email;
+			if (dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud == null)
+				dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = new Agente();
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.agenteHaceSolicitud = agenteActual;
 			for (LineaResolucionFAP linea: dbResolucionFAP.lineasResolucion) {
 				if (!linea.registro.fasesRegistro.firmada) {

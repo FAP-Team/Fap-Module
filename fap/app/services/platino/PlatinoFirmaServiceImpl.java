@@ -206,7 +206,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
 	private String getPrefijoEntornoJS(String entornoJs) {
 		String prefijoEntorno = "";
-		if("pro".equals(JS_ENTORNO.toLowerCase())){
+		if("pre".equals(JS_ENTORNO.toLowerCase())){
             if (entornoJs.contains("gobiernodecanarias.org")) {
                 prefijoEntorno = "www-pre.";
             } else if (entornoJs.contains("sede.gobcan.es")) {

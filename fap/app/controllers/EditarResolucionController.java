@@ -362,6 +362,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
 				tx.begin();
+				if (dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud == null)
+					dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = new Agente();
 				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = agenteActual;
 				dbResolucionFAP.solicitudFirmaPortafirma.uriSolicitud = response.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirma.solicitudEstadoComentario = response.getComentarios();

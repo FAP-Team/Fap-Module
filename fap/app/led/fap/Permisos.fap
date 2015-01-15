@@ -523,7 +523,7 @@ Permiso aportacionModificar{
 	vars
 		SolicitudGenerica solicitud
 	when
-		solicitud?.aportaciones?.actual?.estado in ("borrador")
+		solicitud?.aportaciones?.actual?.estado in ("borrador", "preparada")
 	return editable
 }	
 	

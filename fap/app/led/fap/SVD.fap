@@ -67,15 +67,13 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
 			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma ordenarPorClave
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia ordenarPorClave dependeDe=ComboComunidadAutonoma
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio ordenarPorClave dependeDe=ComboProvincia 
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
 			}
-			Grupo datosIdentidad titulo="Datos de identidad" {
-				Grupo Identidad titulo="Identidad" {
-				}
-			}
+
 		}
 		Enlace volverVerificacionDatos titulo="Volver" pagina=CesionDatosExpedienteSVD estilo="btn" 	
 	}
@@ -100,9 +98,10 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
 			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma ordenarPorClave
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia ordenarPorClave dependeDe=ComboComunidadAutonoma
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio ordenarPorClave dependeDe=ComboProvincia 
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
 			}
 			Grupo datosIdentidad titulo="Datos de identidad" {
@@ -132,9 +131,10 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
 			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma ordenarPorClave
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia ordenarPorClave dependeDe=ComboComunidadAutonoma
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio ordenarPorClave dependeDe=ComboProvincia 
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
 			}
 			Grupo datosResidencia titulo="Datos de residencia" {
@@ -165,9 +165,10 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
 			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma ordenarPorClave
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia ordenarPorClave dependeDe=ComboComunidadAutonoma
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio ordenarPorClave dependeDe=ComboProvincia 
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
 			}
 			Grupo datosResidencia titulo="Datos de residencia" {

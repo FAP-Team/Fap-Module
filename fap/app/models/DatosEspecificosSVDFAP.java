@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class DatosEspecificosSVDFAP extends FapModel {
 	// Código de los atributos
 

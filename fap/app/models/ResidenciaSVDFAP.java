@@ -28,6 +28,9 @@ public class ResidenciaSVDFAP extends FapModel {
 	@ValueFromTable("provincias")
 	public String provincia;
 
+	@ValueFromTable("islas")
+	public String isla;
+
 	@ValueFromTable("municipios")
 	public String municipio;
 

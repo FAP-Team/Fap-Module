@@ -2,18 +2,18 @@
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
-     botonCrear:'Crear', 
+     botonCrear:'Guardar', 
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'SolicitudTransmision', 
      hayForm:true, 
      mensajeFinal:false, 
-     pagina:'EditarSolicitudTransmisionSVDIdentidad', 
+     pagina:'EditarSolicitudTransmisionSVDResidencia', 
      permiso:'adminOrGestor', 
      titulo:'Nueva Solicitud de Transmisión - Identidad', 
-     urlBorrar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDIdentidadController.borrar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id]), 
-     urlCrear:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDIdentidadController.crear', ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id]), 
-     urlEditar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDIdentidadController.editar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id])
+     urlBorrar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.borrar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id]), 
+     urlCrear:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.crear', ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.editar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id])
 }
 	
 			#{fap.grupo titulo:'Datos genéricos de la Solicitud'}
@@ -64,8 +64,17 @@
 		
 			#{/fap.grupo}
 		
+			#{fap.grupo titulo:'Datos de residencia'}
+				
+			#{fap.grupo titulo:'Residencia'}
+				
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
 			#{/fap.grupo}
 		
 			#{fap.enlace action:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.index" , ['idSolicitud':solicitud?.id, 'redirigir': 'anterior']), estilo:'btn', id:'volverVerificacionDatos', titulo:'Volver' /}
 		
 #{/fap.pagina}
+		

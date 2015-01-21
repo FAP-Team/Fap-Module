@@ -11,9 +11,9 @@ Entidad PeticionSVDResidenciaFAP extends PeticionSVDFAP{}
 
 Entidad SolicitudTransmisionSVDFAP{
    DatosGenericosPeticionSVDFAP datosGenericos
-   DatosEspecificosSVDFAP datosEspecificos 
+   DatosEspecificosSVDFAP datosEspecificos
    ManyToOne SolicitudGenerica solicitud
-   TransmisionDatosRespuestaSVDFAP respuesta
+   TransmisionDatosRespuestaSVDFAP respuesta noConstruct
    Lista NombreServicioSVDFAP nombreServicio
    String estado
    DateTime fechaCreacion
@@ -88,6 +88,7 @@ Entidad SolicitudEspecificaSVDFAP{
 Entidad ResidenciaSVDFAP{
   Lista comunidadesAutonomas comunidadAutonoma
   Lista provincias provincia
+  Lista islas isla
   Lista municipios municipio
 }
 

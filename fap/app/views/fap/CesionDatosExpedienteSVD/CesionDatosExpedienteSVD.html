@@ -33,7 +33,7 @@
      urlBorrar:play.mvc.Router.reverse("BorrarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlCrear:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id, 'redirigir': 'anterior']), 
      urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
-     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionIdentidad(solicitud?.id)
+     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionIdentidad(idSolicitud)
 }
 	
 	#{fap.columna alignPosition:'left', ancho:50, cabecera:'Id', campo:'id' /}
@@ -65,9 +65,9 @@
      titulo:'Solicitudes de Transmisión Residencia', 
      urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
      urlBorrar:play.mvc.Router.reverse("BorrarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
-     urlCrear:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id, 'redirigir': 'anterior']), 
+     urlCrear:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'crear', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
-     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionResidencia(solicitud?.id)
+     urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionResidencia(idSolicitud)
 }
 	
 	#{fap.columna alignPosition:'left', ancho:50, cabecera:'Id', campo:'id' /}

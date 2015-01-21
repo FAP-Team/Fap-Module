@@ -62,11 +62,6 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 		if (solicitud != null)
 			solicitud.init();
 
-		if (respuesta == null)
-			respuesta = new TransmisionDatosRespuestaSVDFAP();
-		else
-			respuesta.init();
-
 		postInit();
 	}
 
@@ -77,6 +72,14 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 		this.datosGenericos = datosGenericos;
 		this.datosEspecificos = datosEspecificos;
 		this.solicitud = solicitud;
+	}
+
+	@Override
+	public void postInit() {
+
+		fechaCreacion = new DateTime();
+		estado = "creada";
+
 	}
 
 	// === MANUAL REGION END ===

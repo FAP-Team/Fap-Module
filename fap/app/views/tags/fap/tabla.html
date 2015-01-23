@@ -390,7 +390,6 @@
 			   		#{/if}
 			   		#{else}
 						#{if saveBefore && saveEntity}
-							console.log("${urlEditar}");
 	    					var urlBeforeOpenPageTableEditar = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlEditar}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
     						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableEditar).submit();
 						#{/if}
@@ -450,7 +449,6 @@
 			   		#{else}
 						#{if saveBefore && saveEntity && !"leer".equals(primeraAccionMock)}
 	    					var urlBeforeOpenPageTableLeer = replaceAmpersand("${mUrlBeforeOpenPageTable}")+replaceId("${urlLeer}", "_${_idEntidad}_", selected_id).replace(/&/g, "@");
-	    					alert("${urlLeer} \n\n "+urlBeforeOpenPageTableLeer);
     						$('#${id}').closest('form').attr("action",urlBeforeOpenPageTableLeer).submit();
 						#{/if}
 						#{else}
@@ -629,7 +627,6 @@
 		    				j += 1;
 		    				urlSubmitPage += "idsSeleccionados="+selected[i].data.id;
 		    			}
-		    			alert("url: "+urlSubmitPage);
 		    			$('#${id}').closest('form').attr("action",urlSubmitPage).submit();
 		    		#{/if}
 		    		#{else}
@@ -782,7 +779,6 @@
        				},
        				//Si la vista no tiene el focus, se resetea la seleccion tras filtrar
        				itemmouseenter: function(grid) {
-       					console.log('Mouse over panel');
        					this.getView().focus();
        				}
 				}

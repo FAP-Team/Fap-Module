@@ -1,0 +1,3 @@
+Formulario LogoutSede {
+	Pagina LogOutSede titulo="Salida Aplicación" noAutenticar {}
+}

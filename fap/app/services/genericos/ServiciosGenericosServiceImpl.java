@@ -31,6 +31,7 @@ import swhiperreg.service.ReturnUnidadOrganica;
 import swhiperreg.service.Service;
 import swhiperreg.service.ServiceSoap;
 import utils.ComunicacionesInternasUtils;
+import utils.ServiciosGenericosUtils;
 import utils.WSUtils;
 
 
@@ -114,14 +115,14 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		try {
 			lstUOGenericos = genericosServices.obtenerUnidadesOrganicas(codigo, USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
 			if (lstUOGenericos != null)
-				lstUO = ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
+				lstUO = ServiciosGenericosUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
 		} catch (Exception e) {
 			play.Logger.error("No se han podido recuperar las Unidades Orgánicas: " + e.getMessage());
 		}
 		
 		return lstUO;
 	}
-
+	
 	@Override
 	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicasV(Long codigo, String credencialesXml) {
 		// TODO Auto-generated method stub

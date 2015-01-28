@@ -17,21 +17,7 @@ public class FileSystemServicioGenericosImpl implements ServiciosGenericosServic
 
 	@Override
 	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(Long codigo, String userId, String password) {
-		List<ReturnUnidadOrganicaFap> lstUO = null;
-		try {
-			if ((codigo != null) && (codigo == 0)) {
-				lstUO = ServiciosGenericosUtils.unidadesOrganicasNivel(0);
-			} else {
-				ReturnUnidadOrganicaFap unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", codigo).first();
-				if (unidad != null)
-					lstUO = ServiciosGenericosUtils.obtenerDescendeciaUO(unidad);
-			}
-			
-		} catch (Exception e) {
-			play.Logger.error("No se han podido recuperar las Unidades Orgánicas: " + e.getMessage());
-		}
-		
-		return lstUO;
+		return ServiciosGenericosUtils.obtenerUnidadesOrganicasBD(codigo);
 	}
 
 	@Override

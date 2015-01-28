@@ -97,4 +97,46 @@ public class PlatinoBDOrganizacionServiceImpl {
 			throw new DBOrganizacionException_Exception("Error al hacer recuperarUiPersona: "+ e.getMessage(), e);
 		}
 	}
+	
+	public DatosBasicosPersonaItem recuperarDatosPersona(String uri) throws DBOrganizacionException_Exception {
+		List<DatosBasicosPersonaItem> lstdatosPersona = null;
+		
+		try{
+			if (uri != null && !uri.isEmpty())
+				lstdatosPersona = dbOrgPort.recuperarDatosPersona(uri);
+			
+			if ((lstdatosPersona != null) && (!lstdatosPersona.isEmpty()))
+				return lstdatosPersona.get(0);
+			else
+				return null;
+		}catch(Exception e){
+			play.Logger.info("Error al recuperar los datos de la persona");
+			throw new DBOrganizacionException_Exception("Error al hacer recuperarDatosPersona: "+ e.getMessage(), e);
+		}
+	}
+	
+	public List<UnidadOrganicaItem> buscarUnidadesPorCampos(UnidadOrganicaCriteriaItem campos) throws DBOrganizacionException_Exception{
+		List<UnidadOrganicaItem> unidadOrganicas = null;
+		
+		try {
+			unidadOrganicas = dbOrgPort.buscarUnidadesPorCampos(campos);
+		} catch (DBOrganizacionException_Exception e) {
+			play.Logger.info("Error al recuperar la Unidad Orgánica en DBOrganización");
+			throw new DBOrganizacionException_Exception("Error al hacer recuperarUiPersona: "+ e.getMessage(), e);
+		}
+		
+		return unidadOrganicas;
+	}
+	
+	public List<UnidadOrganicaItem> buscarUnidadesPorConsulta(String consulta) throws DBOrganizacionException_Exception{
+		List<UnidadOrganicaItem> unidadesOrganicas = null;
+		
+		try {
+			unidadesOrganicas = dbOrgPort.buscarUnidadesPorConsulta(consulta);
+		} catch (DBOrganizacionException_Exception e) {
+			play.Logger.info("Error al recuperar el usuario desde BD Orgaizacion de Platino");
+			throw new DBOrganizacionException_Exception("Error al hacer recuperarUiPersona: "+ e.getMessage(), e);
+		}
+		return unidadesOrganicas;
+	}
 }

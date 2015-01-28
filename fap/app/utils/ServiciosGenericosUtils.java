@@ -2,7 +2,12 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import models.MapeoUOBDOrganizacionHiperreg;
+import models.ReturnErrorFap;
 import models.ReturnUnidadOrganicaFap;
+import swhiperreg.service.ArrayOfReturnUnidadOrganica;
+import swhiperreg.service.ReturnUnidadOrganica;
 import tags.ComboItem;
 
 public class ServiciosGenericosUtils {
@@ -34,7 +39,8 @@ public class ServiciosGenericosUtils {
 	public static List<ReturnUnidadOrganicaFap> unidadesOrganicasNivel(int nivel){
 		final String patternStart = "^(";
 		final String patternEnd = ")$";
-		final String patternSubnivel = "[0-9A-Za-z][1-9A-Za-z]";
+		final String patternSubnivelLeft = "[0-9A-Za-z][1-9A-Za-z]";
+		final String patternSubnivelRight = "[1-9A-Za-z][0-9A-Za-z]";
 		final String patternNoDescendencia = "00";
 		final String patternSeparadorSubnivel = ".";
 		final int maxNiveles = 3;
@@ -43,29 +49,39 @@ public class ServiciosGenericosUtils {
 			nivel = maxNiveles;
 		
 		int poda = maxNiveles - nivel;
-		String pattern = patternStart;
+		String patternLeafLeft = patternStart;
+		String patternLeafRight = patternStart;
 		for (int i = 0; i <= nivel; i++){
-			if (poda >0)
-				pattern += patternSubnivel + patternSeparadorSubnivel;
-			else
-				if (i == maxNiveles)
-					pattern += patternSubnivel;
-				else
-					pattern += patternSubnivel + patternSeparadorSubnivel;
+			if (poda >0) {
+				patternLeafLeft += patternSubnivelLeft + patternSeparadorSubnivel;
+				patternLeafRight += patternSubnivelRight + patternSeparadorSubnivel;
+			} else
+				if (i == maxNiveles) {
+					patternLeafLeft += patternSubnivelLeft;
+					patternLeafRight += patternSubnivelRight;
+				} else {
+					patternLeafLeft += patternSubnivelLeft + patternSeparadorSubnivel;
+					patternLeafRight += patternSubnivelRight + patternSeparadorSubnivel;
+				}
 		}
+		
 		for (int j = 0; j < poda; j++){
-			if (j == poda-1)
-				pattern += patternNoDescendencia;
-			else
-				pattern += patternNoDescendencia + patternSeparadorSubnivel;
+			if (j == poda-1) {
+				patternLeafLeft += patternNoDescendencia;
+				patternLeafRight += patternNoDescendencia;
+			} else {
+				patternLeafLeft += patternNoDescendencia + patternSeparadorSubnivel;
+				patternLeafRight += patternNoDescendencia + patternSeparadorSubnivel;
+			}
 		}
-		pattern += patternEnd;
+		patternLeafLeft += patternEnd;
+		patternLeafRight += patternEnd;
 		
 		List<ReturnUnidadOrganicaFap> resultado = new ArrayList<ReturnUnidadOrganicaFap>();
 		List<ReturnUnidadOrganicaFap> unidadesOrganicas = ReturnUnidadOrganicaFap.findAll();
 		for (ReturnUnidadOrganicaFap unidad : unidadesOrganicas)
 			if (unidad != null && unidad.codigoCompleto != null && !unidad.codigoCompleto.isEmpty())
-				if (unidad.codigoCompleto.matches(pattern))
+				if (unidad.codigoCompleto.matches(patternLeafLeft) || unidad.codigoCompleto.matches(patternLeafRight))
 					resultado.add(unidad);
 		
 		return resultado;
@@ -103,8 +119,8 @@ public class ServiciosGenericosUtils {
 	public static List<ReturnUnidadOrganicaFap> obtenerDescendeciaUO(ReturnUnidadOrganicaFap unidad){
 		final String patternStart = "^(";
 		final String patternEnd = ")$";
-		final String patternSubnivel = "[0-9A-Za-z][1-9A-Za-z]";
-		final String patternNoDescendencia = "00";
+		final String patternSubnivelLeft = "[0-9A-Za-z][1-9A-Za-z]";
+		final String patternSubnivelRight = "[1-9A-Za-z][0-9A-Za-z]";
 		final String splitSeparadorSubnivel = "\\.";
 		final String patternSeparadorSubnivel = ".";
 		final int maxNiveles;
@@ -120,20 +136,23 @@ public class ServiciosGenericosUtils {
 	
 				unidadesOrganicas = ReturnUnidadOrganicaFap.findAll();
 				if (unidadesOrganicas != null && !unidadesOrganicas.isEmpty()) {
-					String[] patterSubNivel = codigoUONiveles;
+					String[] patternLeafLeft = codigoUONiveles;
+					String[] patternLeaflRight = codigoUONiveles;
 					for (int i = nivel; i < maxNiveles; i++) {
-						patterSubNivel[i+1] = patternSubnivel;
-						String pattern = patternStart + StringUtils.join(patternSeparadorSubnivel, patterSubNivel);
-						int pos = pattern.lastIndexOf(patternSeparadorSubnivel);
-						pattern = pattern.substring(0, pos) + patternEnd;
+						patternLeafLeft[i+1] = patternSubnivelLeft;
+						patternLeaflRight[i+1] = patternSubnivelRight;
+						String patternLeft = patternStart + StringUtils.join(patternSeparadorSubnivel, patternLeafLeft);
+						int posLeft = patternLeft.lastIndexOf(patternSeparadorSubnivel);
+						patternLeft = patternLeft.substring(0, posLeft) + patternEnd;
+						String patternRight = patternStart + StringUtils.join(patternSeparadorSubnivel, patternLeaflRight);
+						int posRight = patternRight.lastIndexOf(patternSeparadorSubnivel);
+						patternRight = patternRight.substring(0, posRight) + patternEnd;
 						
 						for (ReturnUnidadOrganicaFap unidadUO : unidadesOrganicas)
 							if (unidadUO != null && unidadUO.codigoCompleto != null && !unidadUO.codigoCompleto.isEmpty())
-								if (unidadUO.codigoCompleto.matches(pattern))
+								if (unidadUO.codigoCompleto.matches(patternLeft) || unidadUO.codigoCompleto.matches(patternRight))
 									resultado.add(unidadUO);
 					}
-					
-					
 				}
 			}
 		}
@@ -186,8 +205,106 @@ public class ServiciosGenericosUtils {
 				
 				if (unidadOrganica == null && unidad != null && unidad.codigo != null)
 					unidad.save();
+				else {
+					if (unidadOrganica.codigoCompleto == null || (unidadOrganica.codigoCompleto != null && unidad.codigoCompleto != null && unidadOrganica.codigoCompleto != unidad.codigoCompleto))
+						unidadOrganica.codigoCompleto = unidad.codigoCompleto;
+					
+					if (unidadOrganica.codigoBDOrganizacion == null || (unidadOrganica.codigoBDOrganizacion != null && unidad.codigoBDOrganizacion != null && unidadOrganica.codigoBDOrganizacion != unidad.codigoBDOrganizacion))
+						unidadOrganica.codigoBDOrganizacion = unidad.codigoBDOrganizacion;
+					
+					if (unidadOrganica.codigoReceptora == null || (unidadOrganica.codigoReceptora != null && unidad.codigoReceptora != null && unidadOrganica.codigoReceptora != unidad.codigoReceptora))
+						unidadOrganica.codigoReceptora = unidad.codigoReceptora;
+					
+					if (unidadOrganica.descripcion == null || (unidadOrganica.descripcion != null && unidad.descripcion != null && unidadOrganica.descripcion != unidad.descripcion))
+						unidadOrganica.descripcion = unidad.descripcion;
+					
+					if (unidadOrganica.esBaja == null || (unidadOrganica.esBaja != null && unidad.esBaja != null && unidadOrganica.esBaja != unidad.esBaja))
+						unidadOrganica.esBaja = unidad.esBaja;
+					
+					if (unidadOrganica.esReceptora == null || (unidadOrganica.esReceptora != null && unidad.esReceptora != null && unidadOrganica.esReceptora != unidad.esReceptora))
+						unidadOrganica.esReceptora = unidad.esReceptora;
+					
+					unidadOrganica.save();
+				}
 			}
 		}
+	}
+	
+	/**
+	 * Realiza el mapeado de Unidades Orgánicas de Hiperreg con BDOrganización
+	 * @param lstUO
+	 */
+	public static void mapearUnidadesOrganicasBDOrganizacionHiperreg(List<MapeoUOBDOrganizacionHiperreg> lstUO){
+		
+		if (lstUO != null) {
+			for (MapeoUOBDOrganizacionHiperreg mapeo : lstUO){
+				ReturnUnidadOrganicaFap unidadOrganica = null;
+		    	if (mapeo != null && mapeo.codigo != null && mapeo.unidadhiperreg != null){
+		    		unidadOrganica = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", mapeo.unidadhiperreg).first();
+		    		if (unidadOrganica != null) {
+		    			unidadOrganica.codigoBDOrganizacion = mapeo.codigo;
+		    			unidadOrganica.save();
+		    		}
+		    	}
+		    }
+		}
+	}
+	
+	/**
+	 * Recupera las unidades orgánicas de la base de datos simulando la llamada al servicio genérico
+	 * @param codigo
+	 * @return
+	 */
+	public static List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicasBD(Long codigo) {
+		List<ReturnUnidadOrganicaFap> lstUO = null;
+		try {
+			if ((codigo != null) && (codigo == 0)) {
+				lstUO = ServiciosGenericosUtils.unidadesOrganicasNivel(0);
+			} else {
+				ReturnUnidadOrganicaFap unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", codigo).first();
+				if (unidad != null)
+					lstUO = ServiciosGenericosUtils.obtenerDescendeciaUO(unidad);
+			}
+			
+		} catch (Exception e) {
+			play.Logger.error("No se han podido recuperar las Unidades Orgánicas: " + e.getMessage());
+		}
+		
+		return lstUO;
+	}
+
+	
+	public static List<ReturnUnidadOrganicaFap> returnUnidadOrganica2returnUnidadOrganicaFap (ArrayOfReturnUnidadOrganica uo){
+		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
+		List<ReturnUnidadOrganicaFap> unidadesFap = new ArrayList<ReturnUnidadOrganicaFap>();
+		for (ReturnUnidadOrganica unidad : unidades){
+			
+			ReturnUnidadOrganicaFap unidadOrganica = new ReturnUnidadOrganicaFap();
+			unidadOrganica.codigo = unidad.getCodigo();
+			unidadOrganica.codigoCompleto = unidad.getCodigoCompleto();
+			unidadOrganica.descripcion = unidad.getDescripcion();
+			unidadOrganica.esBaja = unidad.getEsBaja();
+			unidadOrganica.esReceptora = unidad.getEsReceptora();
+			unidadOrganica.codigoReceptora = unidad.getCodigoUOReceptora();
+			unidadOrganica.error = error2errorFap(unidad.getError()); //Este ReturnError es del Services.amx no del CIServices.amx
+			
+			unidadesFap.add(unidadOrganica);
+		}
+		return unidadesFap;
+	}
+	
+	public static ReturnErrorFap error2errorFap (swhiperreg.service.ReturnError error){
+		ReturnErrorFap errorFap = null;
+		
+		if (error != null) {
+			if (error.getCodigo() != 0){
+				errorFap = new ReturnErrorFap();
+				errorFap.codigo = error.getCodigo();
+				errorFap.descripcion = error.getDescripcion();
+			}
+		}
+		
+		return errorFap;
 	}
 	
 	private static String esReceptora(boolean esReceptora){

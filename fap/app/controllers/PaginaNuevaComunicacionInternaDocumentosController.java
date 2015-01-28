@@ -52,41 +52,93 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 		renderTemplate("fap/PaginaNuevaComunicacionInternaDocumentos/PaginaNuevaComunicacionInternaDocumentos.html", accion, idSolicitud, idComunicacionInterna, solicitud, comunicacionInterna);
 	}
 	
+	public static void tablatblDocPrincipal(Long idSolicitud) {
+
+		java.util.List<Documento> rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=?", idSolicitud).fetch();
+
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		
+		List<Documento> rowsFiltered = new ArrayList<Documento>();
+		try {
+			for (Documento doc : rows){
+				String firma = doc.getFirma();
+				if (firma != null && !firma.isEmpty())
+					rowsFiltered.add(doc);
+			}
+		}catch(Exception e){
+			log.error("Se ha producido un error obteniendo la firma de los documentos: "+e.getMessage());
+		}
+		
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+		renderJSON(response.toJSON("descripcionVisible", "enlaceDescarga", "enlaceDescargaFirmado", "id"));
+	}
+	
+	public static void tablatblDocPrincipalSelect(Long idComunicacionInterna) {
+
+		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
+		List<Documento> rowsFiltered = new ArrayList<Documento>();
+		for (ListaUris lsturi: rows){
+			Documento doc = null;
+			if (lsturi.uri != null && !lsturi.uri.isEmpty()) {
+				 doc = Documento.findByUri(lsturi.uri);
+				 
+				 if (doc != null)
+					 rowsFiltered.add(doc);
+			}
+		}
+		
+		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
+
+		renderJSON(response.toJSON("descripcionVisible", "id"));
+	}
+	
 	public static void seleccionar(Long id, List<Long> idsSeleccionados) {
 		Long idComunicacionInterna = id;
-		ComunicacionInterna comunicacionInterna = ComunicacionInterna.findById(idComunicacionInterna);
+		ComunicacionInterna comunicacionInterna = null;
+		
+		if (idComunicacionInterna != null)
+		   comunicacionInterna = ComunicacionInterna.findById(idComunicacionInterna);
 		
 		if (comunicacionInterna != null) {
 			List<ListaUris> lstUri = new ArrayList<ListaUris>();
-			if (idsSeleccionados != null && !idsSeleccionados.isEmpty()){
-				for (Long idDoc : idsSeleccionados) {
-					Documento doc = Documento.findById(idDoc);
-					ListaUris uri = new ListaUris();
-					if (doc != null){
-						if (doc.uriPlatino != null && !doc.uriPlatino.isEmpty()){
-							uri.uri = doc.uriPlatino;
+			if (idsSeleccionados != null && !idsSeleccionados.isEmpty() && idsSeleccionados.size() == 1){
+				Long idDoc = idsSeleccionados.get(0);
+				Documento doc = Documento.findById(idDoc);
+				ListaUris uri = new ListaUris();
+				if (doc != null){
+					if (doc.uriPlatino != null && !doc.uriPlatino.isEmpty()){
+						uri.uri = doc.uriPlatino;
+						lstUri.add(uri);
+					} else
+						if (doc.uri != null && !doc.uri.isEmpty()){
+							uri.uri = doc.uri;
 							lstUri.add(uri);
-						} else
-							if (doc.uri != null && !doc.uri.isEmpty()){
-								uri.uri = doc.uri;
-								lstUri.add(uri);
-							}
-					} else {
-						log.error("No se encuentra el documento con identificador: " + idDoc);
-						Messages.error("No se encuentra el documento con identificador: " + idDoc);
-					}
+						}
+				} else {
+					log.error("No se encuentra el documento con identificador: " + idDoc);
+					Messages.error("No se encuentra el documento con identificador: " + idDoc);
 				}
+			} else {
+				log.info("Un documento como máximo");
+				Messages.info("Se debe escoger un documento principal como máximo");
 			}
-			
-			if (!lstUri.isEmpty()) {
+		
+			if (!Messages.hasMessages() && !lstUri.isEmpty()) {
+				
+				java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+				if (rows != null && !rows.isEmpty()){
+					comunicacionInterna.asiento.uris = null;
+					comunicacionInterna.save();
+					for (ListaUris uri : rows)
+						uri.delete();
+				}
+				
 				comunicacionInterna.asiento.uris = lstUri;
 				comunicacionInterna.asiento.numeroDocumentos = lstUri.size();
 				comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 				comunicacionInterna.save(); 
-			} else {
-				log.error("Debe seleccionar al menos un documento");
-				Messages.error("Debe seleccionar al menos un documento");
-			}
+			} 
 			
 		} else {
 			log.error("No se encuentra la comunicacion interna con identificador: " + idComunicacionInterna);
@@ -94,18 +146,58 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 		}
 			
 		
-		if (!Messages.hasErrors()){
+		if (!Messages.hasMessages()){
 			SolicitudGenerica solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.comunicacionesInternas comunicacionesInternas where comunicacionesInternas.id = ?", idComunicacionInterna).first();
-			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			ids.put("idSolicitud", solicitud.id);
 			redirect("PaginaAltaComunicacionInternaController.index", "editar", solicitud.id, idComunicacionInterna);
 		} else {
 			SolicitudGenerica solicitud = SolicitudGenerica.find("Select solicitud from Solicitud solicitud join solicitud.comunicacionesInternas comunicacionesInternas where comunicacionesInternas.id = ?", idComunicacionInterna).first();
-			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			ids.put("idSolicitud", solicitud.id);
 			Messages.keep();
 			redirect("PaginaNuevaComunicacionInternaDocumentosController.index", "editar", solicitud.id, idComunicacionInterna);
 		}
+	}
+	
+	@Util
+	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
+	public static void frmNoAportarDocumentacion(Long idSolicitud, Long idComunicacionInterna, String btnNuevaComunicacionInternaDocumentos) {
+		checkAuthenticity();
+		if (!permisoFrmNoAportarDocumentacion("editar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+
+		if (!Messages.hasErrors()) {
+			ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
+			java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+			if (rows != null && !rows.isEmpty()){
+				comunicacionInterna.asiento.uris = null;
+				comunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
+				comunicacionInterna.save();
+				for (ListaUris uri : rows)
+					uri.delete();
+			}
+		}
+
+		if (!Messages.hasErrors()) {
+			PaginaNuevaComunicacionInternaDocumentosController.frmNoAportarDocumentacionValidateRules();
+		}
+		
+		Agente logAgente = AgenteController.getAgente();
+		if (!Messages.hasErrors()) {
+
+			log.info("Acción Editar de página: " + "gen/PaginaNuevaComunicacionInternaDocumentos/PaginaNuevaComunicacionInternaDocumentos.html" + " , intentada con éxito " + " Agente: " + logAgente);
+		} else
+			log.info("Acción Editar de página: " + "gen/PaginaNuevaComunicacionInternaDocumentos/PaginaNuevaComunicacionInternaDocumentos.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		PaginaNuevaComunicacionInternaDocumentosController.frmNoAportarDocumentacionRender(idSolicitud, idComunicacionInterna);
+	}
+
+	@Util
+	public static void frmNoAportarDocumentacionRender(Long idSolicitud, Long idComunicacionInterna) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("PaginaAltaComunicacionInternaController.index", "editar", idSolicitud, idComunicacionInterna);
+		}
+		Messages.keep();
+		redirect("PaginaAltaComunicacionInternaController.index", "editar", idSolicitud, idComunicacionInterna);
 	}
 	
 	@Util
@@ -129,4 +221,5 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 		}
 		return comunicacionInterna;
 	}
+	
 }

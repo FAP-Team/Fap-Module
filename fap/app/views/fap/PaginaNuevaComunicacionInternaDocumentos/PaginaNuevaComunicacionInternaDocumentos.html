@@ -2,7 +2,6 @@
     def idComunicacionTabla = comunicacionInterna?.id;
 %}
 
-
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -24,42 +23,42 @@
             #{fap.grupo titulo:'Selección de Documentos'}
                 
             <div class="wiki ">
-<p>Selecciones los documentos que desea adjuntar antes de pulsar el botón Seleccionar</p>
+<p>Recuerde que debe seleccionar un documento como máximo. Cada nueva selección sobrescribirá la anterior.</p>
 
             </div>
         
 #{fap.tabla 
      campo:'Solicitud.documentacion.documentos', 
-     id:'tablaDocumentos', 
+     id:'tblDocPrincipal', 
      idEntidad:'idDocumento', 
      saveEntity:false, 
      seleccionable:'Seleccionar', 
      tipoContainer:'pagina', 
-     titulo:'Documentos a enviar en la comunicación', 
+     titulo:'Seleccione un documento como máximo', 
      urlSeleccionable:'PaginaNuevaComunicacionInternaDocumentosController.seleccionar', 
-     urlTabla:@PaginaNuevaComunicacionInternaDocumentosController.tablatablaDocumentos(idSolicitud),
+     urlTabla:@PaginaNuevaComunicacionInternaDocumentosController.tablatblDocPrincipal(idSolicitud),
      idP:idComunicacionTabla
 }
     
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible' /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga' /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga', expandir:true /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado' /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado', expandir:true /}
         
 #{/fap.tabla}
 
             #{/fap.grupo}
         
-                #{form play.mvc.Router.reverse('PaginaNuevaComunicacionInternaDocumentosController.frmNuevaComunicacionInternaDocumentos' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]) , class:"form-horizontal", id:"frmNuevaComunicacionInternaDocumentos"}
-                    
             #{fap.grupo titulo:'No aportar documentación'}
                 
-            #{fap.enlace action:play.mvc.Router.reverse("PaginaAltaComunicacionInternaController.index" , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]), estilo:'btn ', id:'btnNuevaComunicacionInternaDocumentosIDenlace', titulo:'Siguiente' /}
-        
-            #{/fap.grupo}
+                #{form play.mvc.Router.reverse('PaginaNuevaComunicacionInternaDocumentosController.frmNoAportarDocumentacion' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]) , class:"form-horizontal", id:"frmNoAportarDocumentacion"}
+                    
+            #{fap.boton id:'btnNuevaComunicacionInternaDocumentos', titulo:'Siguiente' /}
         
                 #{/form}
             
+            #{/fap.grupo}
+        
 #{/fap.pagina}
 		

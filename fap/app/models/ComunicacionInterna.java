@@ -23,7 +23,7 @@ public class ComunicacionInterna extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public AsientoCIFap asiento;
+	public AsientoAmpliadoCIFap asiento;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnComunicacionInternaFap respuesta;
@@ -36,11 +36,6 @@ public class ComunicacionInterna extends FapModel {
 	}
 
 	public void init() {
-
-		if (asiento == null)
-			asiento = new AsientoCIFap();
-		else
-			asiento.init();
 
 		if (respuesta == null)
 			respuesta = new ReturnComunicacionInternaFap();

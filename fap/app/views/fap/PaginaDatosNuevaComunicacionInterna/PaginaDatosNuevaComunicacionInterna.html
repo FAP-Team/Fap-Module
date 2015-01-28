@@ -24,7 +24,9 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
     
             #{fap.grupo titulo:'Datos de la Comunicacion Interna'}
                 
-            #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', requerido:true, titulo:'Nombre completo del interesado' /}     
+            #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', titulo:'Nombre completo del interesado' /}     
+        
+            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaOrigen.descripcion', id:'uoOrigen', requerido:true, readonly:true, titulo:'Unidad orgánica de origen' /}      
         
             #{fap.areaTexto campo:'comunicacionInterna.asiento.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
         
@@ -45,7 +47,7 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
             #{/fap.grupo}
         
 #{/fap.pagina}
-
+        
 <script>
 
     function peticionUO(combo, codigoUO, subnivelUO){

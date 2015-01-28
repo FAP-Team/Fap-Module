@@ -2,13 +2,17 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
+import models.AsientoAmpliadoCIFap;
 import models.ComunicacionInterna;
+import models.Documento;
+import models.ListaUris;
 import models.ReturnUnidadOrganicaFap;
 import models.SolicitudGenerica;
 import play.mvc.Util;
@@ -27,9 +31,6 @@ import enumerado.fap.gen.EstadosComunicacionInternaEnum;
 
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
 	
-	@Inject
-	protected static ServiciosGenericosService genericosService;
-	
 	public static void index(String accion, Long idSolicitud, Long idComunicacionInterna) {
 		if (accion == null)
 			accion = getAccion();
@@ -43,6 +44,10 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		ComunicacionInterna comunicacionInterna = null;
 		if ("crear".equals(accion)) {
 			comunicacionInterna = PaginaDatosNuevaComunicacionInternaController.getComunicacionInterna();
+			
+			if (comunicacionInterna.asiento == null)
+				comunicacionInterna.asiento = new AsientoAmpliadoCIFap();
+			
 			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
 
 				comunicacionInterna.save();
@@ -109,19 +114,18 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 
 		CustomValidation.valid("comunicacionInterna.asiento", comunicacionInterna.asiento);
 		CustomValidation.valid("comunicacionInterna", comunicacionInterna);
-		CustomValidation.required("comunicacionInterna.asiento.interesado", comunicacionInterna.asiento.interesado);
-		dbComunicacionInterna.asiento.interesado = comunicacionInterna.asiento.interesado;
-		CustomValidation.required("comunicacionInterna.asiento.resumen", comunicacionInterna.asiento.resumen);
-		dbComunicacionInterna.asiento.resumen = comunicacionInterna.asiento.resumen;
 		
+		if (dbComunicacionInterna.asiento == null)
+			dbComunicacionInterna.asiento = new AsientoAmpliadoCIFap();
+		
+		dbComunicacionInterna.asiento.interesado = comunicacionInterna.asiento.interesado;
 		CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaDestino", comunicacionInterna.asiento.unidadOrganicaDestino);
 		CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaDestino.codigo", comunicacionInterna.asiento.unidadOrganicaDestino.codigo);
 		Long codigo = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;
 		dbComunicacionInterna.asiento.unidadOrganicaDestino = getUnidadOrganicaFAP(codigo);
 		dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigo;
-		
-		dbComunicacionInterna.asiento.userId = FapProperties.get("fap.platino.registro.username");
-		dbComunicacionInterna.asiento.password = FapProperties.get("fap.platino.registro.password");
+		CustomValidation.required("comunicacionInterna.asiento.resumen", comunicacionInterna.asiento.resumen);
+		dbComunicacionInterna.asiento.resumen = comunicacionInterna.asiento.resumen;
 		dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
 	}
 	
@@ -131,18 +135,8 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		List<ComboItem> lstCombo = new ArrayList<ComboItem>();
 		String resultados = null;
 		
-		String usuarioHiperReg = FapProperties.get("fap.platino.registro.username");
-		String passwordHiperReg = FapProperties.get("fap.platino.registro.password");
-		
-		if (usuarioHiperReg == null || "undefined".equals(usuarioHiperReg) || passwordHiperReg == null || "undefined".equals(passwordHiperReg)) {
-			log.info("No se han definido las credenciales del usuario HiperReg, consultar properties");
-			Messages.error("Faltan las credenciales del usuario HiperReg");
-			Messages.keep();
-		}
-		
 		if (!Messages.hasErrors()) {
-			lstUO = genericosService.obtenerUnidadesOrganicas((long) codigo, usuarioHiperReg, passwordHiperReg);
-			
+			lstUO = ServiciosGenericosUtils.obtenerUnidadesOrganicasBD((long) codigo);
 			if (lstUO != null){
 				ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
 				lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
@@ -176,5 +170,13 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		}
 		return unidad;
 	}
+	
+//	public static List<ComboItem> cmbDocFirma(){
+//		List<ComboItem> result = new ArrayList<ComboItem>();
+//		result.add(new ComboItem(1L, "Uno"));
+//		result.add(new ComboItem(2L, "Dos"));
+//		result.add(new ComboItem(3L, "Tres"));
+//		return result;
+//	}
 	
 }

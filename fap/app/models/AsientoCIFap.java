@@ -37,6 +37,7 @@ public class AsientoCIFap extends FapModel {
 
 	public String userId;
 
+	@Transient
 	public String password;
 
 	public String tipoTransporte;

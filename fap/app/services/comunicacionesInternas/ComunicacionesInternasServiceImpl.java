@@ -5,14 +5,21 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.tools.corba.common.WSDLUtils;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
+import es.gobcan.platino.servicios.organizacion.DatosBasicosPersonaItem;
+import es.gobcan.platino.servicios.organizacion.UnidadOrganicaCriteriaItem;
+import es.gobcan.platino.servicios.organizacion.UnidadOrganicaItem;
+import es.gobcan.platino.servicios.registro.Asunto;
 import es.gobcan.platino.servicios.sfst.FirmaService;
 import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
@@ -22,6 +29,7 @@ import properties.PropertyPlaceholder;
 import models.Agente;
 import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
+import models.ListaUris;
 import models.ReturnComunicacionInternaAmpliadaFap;
 import models.ReturnComunicacionInternaFap;
 import models.ReturnUnidadOrganicaFap;
@@ -29,6 +37,7 @@ import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
 import services.ServiciosGenericosService;
 import services.VerificarDatosServiceException;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.platino.PlatinoFirmaServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ArrayOfString;
@@ -133,14 +142,12 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
-		ArrayOfString listaUris = new ArrayOfString();
-		
-		for (int i = 0; i < asientoFap.uris.size(); i++){
-			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(asientoFap.uris.get(i).uri, comunicacionesServices);
-			if ((uriPlatino != null) && (!uriPlatino.isEmpty()))
-				listaUris.getString().add(uriPlatino);
-			else
-				play.Logger.error("Error al obtener la uri de platino del documento con uri "+asientoFap.uris.get(i).uri);
+		ArrayOfString listaUris = null;
+		try{
+			listaUris = obtenerUriPlatino(asientoFap.uris);
+		}catch(Exception e){
+			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
 		}
 		
 		try{
@@ -173,28 +180,40 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	}
 	
 	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
-
-		ArrayOfString listaUris = new ArrayOfString();
 		
-		for (int i = 0; i < asientoAmpliadoFap.uris.size(); i++){
-			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(asientoAmpliadoFap.uris.get(i).uri, comunicacionesServices);
-			if ((uriPlatino != null) && (!uriPlatino.isEmpty()))
-				listaUris.getString().add(uriPlatino);
-			else
-				play.Logger.error("Error al obtener la uri de platino del documento con uri "+asientoAmpliadoFap.uris.get(i).uri);
-		}
-		
+//		PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
 		try{
+			
+//			String uriPersona = platinoDBOrgPort.recuperarURIPersona(AgenteController.getAgente().usuarioldap);
+//			DatosBasicosPersonaItem datosPersona = platinoDBOrgPort.recuperarDatosPersona(uriPersona);
+//			UnidadOrganicaCriteriaItem campos = new UnidadOrganicaCriteriaItem();
+//			campos.setCodigoUnidadOrg(datosPersona.getCodigoUnidadOrg());
+//			List<UnidadOrganicaItem> lstuo = platinoDBOrgPort.buscarUnidadesPorCampos(campos);
+//			play.Logger.info(lstuo.get(0).getDescripcionUnidadOrg());
 			
 			String tipoTransporte;
 	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
 	        	tipoTransporte = TIPO_TRANSPORTE;
 	        } else
 	        	tipoTransporte = null;
-			
+
 	        asientoAmpliadoFap.tipoTransporte = tipoTransporte;
 	        asientoAmpliadoFap.save();
-	        
+			
+		}catch(Exception e){
+			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("No se ha podido recuperar los datos del origen");
+		}
+		
+		ArrayOfString listaUris = null;
+		try{
+			listaUris = obtenerUriPlatino(asientoAmpliadoFap.uris);
+		}catch(Exception e){
+			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
+		}
+		
+		try{
 			ReturnComunicacionInternaAmpliada respuesta = comunicacionesServices.nuevoAsientoAmpliado(
 					asientoAmpliadoFap.observaciones, 
 					asientoAmpliadoFap.resumen,
@@ -214,6 +233,23 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
 			throw new ComunicacionesInternasServiceException("No se ha podido obtener respuesta");
 		}
+	}
+	
+	private ArrayOfString obtenerUriPlatino(List<ListaUris> uris) {
+		ArrayOfString listaUris = null;
+		
+		for (int i = 0; i < uris.size(); i++){
+			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(uris.get(i).uri, comunicacionesServices);
+			if ((uriPlatino != null) && (!uriPlatino.isEmpty())) {
+				if (listaUris == null)
+					listaUris = new ArrayOfString();
+				listaUris.getString().add(uriPlatino);
+			}
+			else
+				play.Logger.error("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
+		}
+		
+		return listaUris;
 	}
 
 }

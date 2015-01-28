@@ -1796,10 +1796,9 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
 		paginaLeer=PaginaDatosLeerComunicacionInterna paginaCrear=PaginaDatosNuevaComunicacionInterna paginaEditar=PaginaDatosNuevaComunicacionInterna
       {
-			Columna campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-			Columna campo=ComunicacionInterna.estado titulo="Estado"
+			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino" expandir
+			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen" expandir
+			Columna campo=ComunicacionInterna.estado titulo="Estado" expandir
 		}
 	}
 	
@@ -1832,11 +1831,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	
 	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos
-      Grupo titulo="Datos de la Comunicacion Interna"{
-         
-         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado requerido
+      
+       Grupo titulo="Datos de la Comunicacion Interna"{
+         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
+         Texto uoOrigen titulo="Unidad orgánica de origen" campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.descripcion requerido
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
-         
          Grupo titulo="Unidad Orgánica de destino"{
             Combo uoDestinoRaiz titulo="Nivel 1" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoRaiz busqueda
             Combo uoDestinoSubNivel1 titulo="Nivel 2" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel1 busqueda 
@@ -1844,7 +1843,8 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             Combo uoDestinoSubNivel3 titulo="Nivel 4" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3 busqueda 
             Texto uoDestino titulo="Código" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido          
          }
-      }
+  
+       }
    } 
    
    Popup PopupDatosBorrarComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas{
@@ -1860,28 +1860,46 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 
 	Pagina PaginaNuevaComunicacionInternaDocumentos titulo="Aportar documentación" campo=SolicitudGenerica.comunicacionesInternas  noForm{
 		Grupo titulo = "Selección de Documentos"{
-			Wiki{"Selecciones los documentos que desea adjuntar antes de pulsar el botón Seleccionar"}
-			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Documentos a enviar en la comunicación"{
-				Columna titulo="Descripción" campo=Documento.descripcionVisible
-				Columna titulo="Descargar" campo=Documento.enlaceDescarga
-				Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
+			Wiki{"Recuerde que debe seleccionar un documento como máximo. Cada nueva selección sobrescribirá la anterior."}
+			Tabla tblDocPrincipal campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione un documento como máximo"{
+				Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+				Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+				Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
 			}
 		}
-		Form frmNuevaComunicacionInternaDocumentos {
-		   Grupo titulo="No aportar documentación" {
-            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente" pagina=PaginaAltaComunicacionInterna 
+		
+	   Grupo titulo="No aportar documentación" {
+	      Form frmNoAportarDocumentacion {
+            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente"
          }
-		}
+      }
 	}
 	
 	Pagina PaginaAltaComunicacionInterna titulo="Alta de comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm{
 		Accion editar crearSiempre 
 		Form frmNuevoAsiento {
+		   
+		   Grupo titulo="Credenciales de la comunicación" {
+            Texto userID titulo="Usuario" campo=ComunicacionInterna.asiento.userId requerido
+            Texto passwd titulo="Clave" campo=ComunicacionInterna.asiento.password requerido password
+         }
+		   
 		   Grupo titulo="Datos adicionales" {
             //Otros datos adicionales para crear una CI
-            //Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
-            AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+            //Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado 
+            Grupo titulo = "Selección de documentos a consultar" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\"" {
+               Tabla tblDocAdicionales campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione"{
+                  Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+                  Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+                  Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
+               }
+            }
+            
+            Grupo titulo= "Comentarios" {
+               AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+            }
          }
+         
          Boton btnNuevoAsiento titulo="Enviar" style="float : right;"
       }
 	} 

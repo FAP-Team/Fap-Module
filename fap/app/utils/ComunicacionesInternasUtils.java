@@ -115,33 +115,6 @@ public class ComunicacionesInternasUtils {
 		return interesadoFap;
 	}
 	
-	public static ReturnErrorFap error2errorFap (swhiperreg.service.ReturnError error){
-		ReturnErrorFap errorFap = new ReturnErrorFap();
-		errorFap.codigo = error.getCodigo();
-		errorFap.descripcion = error.getDescripcion();
-		return errorFap;
-	}
-	
-	
-	public static List<ReturnUnidadOrganicaFap> returnUnidadOrganica2returnUnidadOrganicaFap (ArrayOfReturnUnidadOrganica uo){
-		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
-		List<ReturnUnidadOrganicaFap> unidadesFap = new ArrayList<ReturnUnidadOrganicaFap>();
-		for (ReturnUnidadOrganica unidad : unidades){
-			
-			ReturnUnidadOrganicaFap unidadOrganica = new ReturnUnidadOrganicaFap();
-			unidadOrganica.codigo = unidad.getCodigo();
-			unidadOrganica.codigoCompleto = unidad.getCodigoCompleto();
-			unidadOrganica.descripcion = unidad.getDescripcion();
-			unidadOrganica.esBaja = unidad.getEsBaja();
-			unidadOrganica.esReceptora = unidad.getEsReceptora();
-			unidadOrganica.codigoReceptora = unidad.getCodigoUOReceptora();
-			unidadOrganica.error = error2errorFap(unidad.getError()); //Este ReturnError es del Services.amx no del CIServices.amx
-			
-			unidadesFap.add(unidadOrganica);
-		}
-		return unidadesFap;
-	}
-	
 //	public static List<String> ArrayOfReturnUnidadOrganica2List (ArrayOfReturnUnidadOrganica uo){
 //		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
 //		List<String> resultado = new ArrayList<String>();

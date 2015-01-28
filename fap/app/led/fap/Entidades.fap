@@ -986,7 +986,7 @@ Entidad JsonPeticionModificacion{
 // -----------------------------------------------------------------------
 
 Entidad ComunicacionInterna{
-	AsientoCIFap asiento
+	AsientoAmpliadoCIFap asiento noConstruct
 	ReturnComunicacionInternaFap respuesta
 	Lista estadosComunicacionInterna estado
 }
@@ -999,7 +999,7 @@ Entidad AsientoCIFap {
 	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
 	String asuntoCodificado  //No ob
 	String userId
-	String password //String utf-16 unicode
+	String password transient//String utf-16 unicode
 	String tipoTransporte  //No ob
 	OneToMany ListaUris uris  //Array de uris  //No ob
 }
@@ -1050,12 +1050,19 @@ Entidad ReturnUnidadOrganicaFap{
 	String esBaja
 	String esReceptora
 	Long codigoReceptora
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 	Long codigoRaiz transient
 	Long codigoSubNivel1 transient
 	Long codigoSubNivel2 transient
 	Long codigoSubNivel3 transient
+	Long codigoBDOrganizacion
 }	
+
+Entidad MapeoUOBDOrganizacionHiperreg nonPersist {
+   Long codigo
+   String descripcion
+   Long unidadhiperreg
+}
 
 Entidad ReturnErrorFap {
 	Integer codigo

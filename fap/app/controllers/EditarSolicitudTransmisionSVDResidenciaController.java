@@ -3,7 +3,6 @@ package controllers;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
-import models.DatosEspecificosResidenciaSVDFAP;
 import models.SolicitudGenerica;
 import models.SolicitudTransmisionSVDFAP;
 import play.mvc.Util;
@@ -47,12 +46,12 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
-	public static void editar(Long idSolicitud, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
+	public static void editar(Long idSolicitud, Long idSolicitudTransmisionSVDFAP, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
 		checkAuthenticity();
 		if (!permiso("editar")) {
 			Messages.error("No tiene permisos suficientes para realizar la acción");
 		}
-		SolicitudTransmisionSVDFAP dbSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.getSolicitudTransmisionSVDFAP(solicitudTransmisionSVDFAP.id);
+		SolicitudTransmisionSVDFAP dbSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.getSolicitudTransmisionSVDFAP(idSolicitudTransmisionSVDFAP);
 
 		EditarSolicitudTransmisionSVDResidenciaController.EditarSolicitudTransmisionSVDResidenciaBindReferences(solicitudTransmisionSVDFAP);
 
@@ -71,7 +70,7 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 			log.info("Acción Editar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada con éxito " + " Agente: " + logAgente);
 		} else
 			log.info("Acción Editar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
-		EditarSolicitudTransmisionSVDResidenciaController.editarRender(idSolicitud, solicitudTransmisionSVDFAP.id);
+		EditarSolicitudTransmisionSVDResidenciaController.editarRender(idSolicitud, idSolicitudTransmisionSVDFAP);
 	}
 
 	public static void crear(Long idSolicitud, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
@@ -110,16 +109,16 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 		if (!Messages.hasErrors()) {
 
 			dbSolicitudTransmisionSVDFAP.solicitud = solicitud;
-			dbSolicitudTransmisionSVDFAP.nombreServicio = "identidad";
+			dbSolicitudTransmisionSVDFAP.nombreServicio = "residencia";
 
 			dbSolicitudTransmisionSVDFAP.datosGenericos = solicitudTransmisionSVDFAP.datosGenericos;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = solicitud.solicitante.numeroId;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = solicitud.solicitante.nombreCompleto;
-			//falta nombre y apellidos divididos: nombre, apellido1 y apellido2
+
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion = solicitud.solicitante.fisica.nip.tipo;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.id.toString(); //Id expediente = Id solicitud?
 
-			dbSolicitudTransmisionSVDFAP.datosEspecificos = new DatosEspecificosResidenciaSVDFAP();
+			dbSolicitudTransmisionSVDFAP.datosEspecificos = solicitudTransmisionSVDFAP.datosEspecificos;
 
 			dbSolicitudTransmisionSVDFAP.save();
 			idSolicitudTransmisionSVDFAP = dbSolicitudTransmisionSVDFAP.id;
@@ -129,6 +128,32 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 			log.info("Acción Crear de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
 		}
 		return idSolicitudTransmisionSVDFAP;
+	}
+
+	public static void borrar(Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
+		checkAuthenticity();
+		if (!permiso("borrar")) {
+			Messages.error("No tiene permisos suficientes para realizar la acción");
+		}
+		SolicitudTransmisionSVDFAP dbSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.getSolicitudTransmisionSVDFAP(idSolicitudTransmisionSVDFAP);
+
+		if (!Messages.hasErrors()) {
+			EditarSolicitudTransmisionSVDResidenciaController.borrarValidateRules(dbSolicitudTransmisionSVDFAP);
+		}
+
+		if (!Messages.hasErrors()) {
+
+		}
+		Agente logAgente = AgenteController.getAgente();
+		if (!Messages.hasErrors()) {
+
+			dbSolicitudTransmisionSVDFAP.delete();
+
+			log.info("Acción Borrar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada con éxito" + " Agente: " + logAgente);
+		} else {
+			log.info("Acción Borrar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
+		}
+		EditarSolicitudTransmisionSVDResidenciaController.borrarRender(idSolicitud, idSolicitudTransmisionSVDFAP);
 	}
 
 	@Util
@@ -153,6 +178,18 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 		}
 		Messages.keep();
 		redirect("EditarSolicitudTransmisionSVDResidenciaController.index", "crear", idSolicitud, idSolicitudTransmisionSVDFAP);
+	}
+
+
+	@Util
+	public static void borrarRender(Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página borrada correctamente");
+			Messages.keep();
+			redirect("CesionDatosExpedienteSVDController.index", "editar", idSolicitud);
+		}
+		Messages.keep();
+		redirect("EditarSolicitudTransmisionSVDResidenciaController.index", "borrar", idSolicitud, idSolicitudTransmisionSVDFAP);
 	}
 
 	@Util

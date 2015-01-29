@@ -1,7 +1,0 @@
-package controllers;
-
-import controllers.gen.BorrarSolicitudTransmisionSVDControllerGen;
-
-public class BorrarSolicitudTransmisionSVDController extends BorrarSolicitudTransmisionSVDControllerGen {
-
-}

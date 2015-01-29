@@ -49,7 +49,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "fechaCreacion", "estado", "datosGenericos.solicitante.funcionario.nombreCompletoFuncionario", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.consentimiento"));
+		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "estado"));
 	}
 
 	public static void tablasolicitudesPeticionResidencia(Long idSolicitud) {
@@ -61,7 +61,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "fechaCreacion", "estado", "datosGenericos.solicitante.funcionario.nombreCompletoFuncionario", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.consentimiento"));
+		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "estado"));
 	}
 
 }

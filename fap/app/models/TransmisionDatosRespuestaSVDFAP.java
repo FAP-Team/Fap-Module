@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
+/********** Entidades Respuesta - Peticion Sincrona  *************/
+
 @Entity
 public class TransmisionDatosRespuestaSVDFAP extends FapModel {
 	// Código de los atributos
@@ -26,7 +28,7 @@ public class TransmisionDatosRespuestaSVDFAP extends FapModel {
 	public DatosGenericosRespuestaSVDFAP datosGenericos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosEspecificosSVDFAP datosEspecificos;
+	public DatosEspecificosRespuestaSVDFAP datosEspecificos;
 
 	public TransmisionDatosRespuestaSVDFAP() {
 		init();
@@ -40,7 +42,7 @@ public class TransmisionDatosRespuestaSVDFAP extends FapModel {
 			datosGenericos.init();
 
 		if (datosEspecificos == null)
-			datosEspecificos = new DatosEspecificosSVDFAP();
+			datosEspecificos = new DatosEspecificosRespuestaSVDFAP();
 		else
 			datosEspecificos.init();
 

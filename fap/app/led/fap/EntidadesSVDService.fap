@@ -1,3 +1,5 @@
+/***** Peticion al Servicio ******/
+
 Entidad PeticionSVDFAP{
    String uidUsuario
    AtributosSVDFAP atributos
@@ -5,9 +7,8 @@ Entidad PeticionSVDFAP{
    Lista tipoEstadoPeticionSVDFAP estadoPeticion
 }
 
-Entidad PeticionSVDIdentidadFAP extends PeticionSVDFAP{}
 
-Entidad PeticionSVDResidenciaFAP extends PeticionSVDFAP{}
+/******* Solicitud de Transmision *******/
 
 Entidad SolicitudTransmisionSVDFAP{
    DatosGenericosPeticionSVDFAP datosGenericos
@@ -59,31 +60,11 @@ Entidad DatosEspecificosSVDFAP {
 	SolicitudEspecificaSVDFAP solicitud
 }
 
-/**** Servicio Residencia **/
-Entidad DatosEspecificosResidenciaSVDFAP extends DatosEspecificosSVDFAP{
-  EstadoSVDFAP estado
-  EstadoResultadoSVDFAP estadoResultado
-  DomicilioRespuestaSVDFAP domicilio
-  DatosTitularRespuestaSVDFAP datosTitular 
-}
-
-Entidad DatosEspecificosIdentidadSVDFAP extends DatosEspecificosSVDFAP{}
-
 Entidad SolicitudEspecificaSVDFAP{
    ResidenciaSVDFAP residencia
    NacimientoSVDFAP solicitudNacimiento
    Lista Espanol espanol
 }
-
-//Entidad ProvinciaSVDFAP{
-//  String codigo
-//  String nombre
-//}
-
-//Entidad MunicipioSVDFAP{
-//  String codigo
-//  String nombre
-//}
 
 Entidad ResidenciaSVDFAP{
   Lista comunidadesAutonomas comunidadAutonoma
@@ -94,11 +75,36 @@ Entidad ResidenciaSVDFAP{
 
 Entidad NacimientoSVDFAP{
   DateTime fecha
-  Lista municipios municipio
+  Lista comunidadesAutonomas comunidadAutonoma
   Lista provincias provincia
+  Lista islas isla
+  Lista municipios municipio
 }
 
-////--------------------------ENTIDADES RESPUESTA PETICION SINCRONA--------------
+/********** Entidades Respuesta - Peticion Sincrona  *************/
+
+Entidad TransmisionDatosRespuestaSVDFAP{
+  DatosGenericosRespuestaSVDFAP datosGenericos
+  DatosEspecificosRespuestaSVDFAP datosEspecificos
+}
+
+/* Datos genericos Respuesta */
+
+Entidad DatosGenericosRespuestaSVDFAP{
+   EmisorSVDFAP emisor
+   SolicitanteSVDFAP solicitante
+   TitularSVDFAP titular
+   TransmisionSVDFAP transmision
+}
+
+/* Datos especificos Respuesta */
+
+Entidad DatosEspecificosRespuestaSVDFAP {
+	EstadoSVDFAP estado
+  	EstadoResultadoSVDFAP estadoResultado
+ 	DomicilioRespuestaSVDFAP domicilio
+ 	DatosTitularRespuestaSVDFAP datosTitular 
+}
 
 Entidad AtributosSVDFAP {   
   String idPeticion
@@ -113,18 +119,6 @@ Entidad EstadoRespuestaSVDFAP {
   String literalError
   String codigoEstadoSecundario
   Integer tiempoEstimadoRespuesta
-}
-
-Entidad TransmisionDatosRespuestaSVDFAP{
-  DatosGenericosRespuestaSVDFAP datosGenericos
-  DatosEspecificosSVDFAP datosEspecificos
-}
-
-Entidad DatosGenericosRespuestaSVDFAP{
-   EmisorSVDFAP emisor
-   SolicitanteSVDFAP solicitante
-   TitularSVDFAP titular
-   TransmisionSVDFAP transmision
 }
 
 Entidad EmisorSVDFAP{

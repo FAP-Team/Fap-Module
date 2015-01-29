@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
+/***** Servicio Identidad *****/
+
 @Entity
 public class DatosEspecificosIdentidadSVDFAP extends DatosEspecificosSVDFAP {
 	// Código de los atributos

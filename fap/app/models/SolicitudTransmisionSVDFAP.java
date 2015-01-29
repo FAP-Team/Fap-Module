@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
+/******* Solicitud de Transmision *******/
+
 @Entity
 public class SolicitudTransmisionSVDFAP extends FapModel {
 	// Código de los atributos

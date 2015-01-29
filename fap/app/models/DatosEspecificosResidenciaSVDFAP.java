@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-/**** Servicio Residencia **/
+/***** Servicio Residencia *****/
 
 @Entity
 public class DatosEspecificosResidenciaSVDFAP extends DatosEspecificosSVDFAP {

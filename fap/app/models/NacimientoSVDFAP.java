@@ -26,11 +26,17 @@ public class NacimientoSVDFAP extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
 
-	@ValueFromTable("municipios")
-	public String municipio;
+	@ValueFromTable("comunidadesAutonomas")
+	public String comunidadAutonoma;
 
 	@ValueFromTable("provincias")
 	public String provincia;
+
+	@ValueFromTable("islas")
+	public String isla;
+
+	@ValueFromTable("municipios")
+	public String municipio;
 
 	public void init() {
 

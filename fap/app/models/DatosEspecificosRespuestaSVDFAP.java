@@ -18,49 +18,49 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-/* Datos genericos Respuesta */
+/* Datos especificos Respuesta */
 
 @Entity
-public class DatosGenericosRespuestaSVDFAP extends FapModel {
+public class DatosEspecificosRespuestaSVDFAP extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public EmisorSVDFAP emisor;
+	public EstadoSVDFAP estado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitanteSVDFAP solicitante;
+	public EstadoResultadoSVDFAP estadoResultado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public TitularSVDFAP titular;
+	public DomicilioRespuestaSVDFAP domicilio;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public TransmisionSVDFAP transmision;
+	public DatosTitularRespuestaSVDFAP datosTitular;
 
-	public DatosGenericosRespuestaSVDFAP() {
+	public DatosEspecificosRespuestaSVDFAP() {
 		init();
 	}
 
 	public void init() {
 
-		if (emisor == null)
-			emisor = new EmisorSVDFAP();
+		if (estado == null)
+			estado = new EstadoSVDFAP();
 		else
-			emisor.init();
+			estado.init();
 
-		if (solicitante == null)
-			solicitante = new SolicitanteSVDFAP();
+		if (estadoResultado == null)
+			estadoResultado = new EstadoResultadoSVDFAP();
 		else
-			solicitante.init();
+			estadoResultado.init();
 
-		if (titular == null)
-			titular = new TitularSVDFAP();
+		if (domicilio == null)
+			domicilio = new DomicilioRespuestaSVDFAP();
 		else
-			titular.init();
+			domicilio.init();
 
-		if (transmision == null)
-			transmision = new TransmisionSVDFAP();
+		if (datosTitular == null)
+			datosTitular = new DatosTitularRespuestaSVDFAP();
 		else
-			transmision.init();
+			datosTitular.init();
 
 		postInit();
 	}

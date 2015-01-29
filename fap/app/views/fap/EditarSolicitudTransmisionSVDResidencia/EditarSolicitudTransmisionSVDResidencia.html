@@ -10,7 +10,7 @@
      mensajeFinal:false, 
      pagina:'EditarSolicitudTransmisionSVDResidencia', 
      permiso:'adminOrGestor', 
-     titulo:'Nueva Solicitud de Transmisión - Identidad', 
+     titulo:'Solicitud de Transmisión - Residencia', 
      urlBorrar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.borrar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id]), 
      urlCrear:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.crear', ['idSolicitud':solicitud?.id]), 
      urlEditar:play.mvc.Router.reverse('EditarSolicitudTransmisionSVDResidenciaController.editar' , ['idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id])
@@ -64,10 +64,82 @@
 		
 			#{/fap.grupo}
 		
-			#{fap.grupo titulo:'Datos de residencia'}
+			#{fap.grupo titulo:'Datos específicos de residencia'}
 				
+			#{fap.grupo titulo:'Nacimiento'}
+				
+			#{fap.fecha campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha', id:'FechaNacimiento', requerido:true, titulo:'Fecha' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.comunidadAutonoma', id:'ComboComunidadAutonomaNacimiento', requerido:true, searchable:true, titulo:'Comunidad Autónoma' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia', dependeDe:'ComboComunidadAutonomaNacimiento', id:'ComboProvinciaNacimiento', requerido:true, searchable:true, titulo:'Provincia' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.isla', dependeDe:'ComboProvinciaNacimiento', id:'ComboIslaNacimiento', requerido:true, searchable:true, titulo:'Isla' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio', dependeDe:'ComboIslaNacimiento', id:'ComboMunicipioNacimiento', requerido:true, searchable:true, titulo:'Municipio' /}		
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo mostrarSi:(solicitudTransmisionSVDFAP.estado == "recibida"), titulo:'Respuesta'}
+				
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.idTransmision', titulo:'idTransmision' /}		
+		
+			#{fap.fecha campo:'solicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion', titulo:'Fecha generación' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.estado.literalError', titulo:'Estado' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.tipoDocumentacion', titulo:'Tipo documentación' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.documentacion', titulo:'Documentación' /}		
+		
 			#{fap.grupo titulo:'Residencia'}
 				
+			#{fap.grupo titulo:'Domicilio'}
+				
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.provincia', titulo:'Provincia' /}		
+		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.municipio', titulo:'Municipio' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.entColectiva.nombre', titulo:'Entidad colectiva' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.entSingular.nombre', titulo:'Entidad singular' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.nucleo.nombre', titulo:'Núcleo' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.codUnidadPoblacional', titulo:'Unidad poblacional' /}		
+		
+			#{/fap.grupo}
+		
+			#{fap.grupo titulo:'Dirección'}
+				
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.via.tipo', titulo:'Tipo de vía' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.via.nombre', titulo:'Vía' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.numero.valor', titulo:'Número' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.numeroSuperior.valor', titulo:'Número superior' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.kmt', titulo:'Kmt' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.hmt', titulo:'Hmt' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.bloque', titulo:'Bloque' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.portal', titulo:'Portal' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.escalera', titulo:'Escalera' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.planta', titulo:'Planta' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.puerta', titulo:'Puerta' /}		
+		
+			#{fap.texto campo:'solicitudTransmisionSVDFAP.respuesta.datosEspecificos.domicilio.direccion.codigoPostal', titulo:'Código Postal' /}		
+		
 			#{/fap.grupo}
 		
 			#{/fap.grupo}

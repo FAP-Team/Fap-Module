@@ -105,14 +105,14 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 			if (idsSeleccionados != null && !idsSeleccionados.isEmpty() && idsSeleccionados.size() == 1){
 				Long idDoc = idsSeleccionados.get(0);
 				Documento doc = Documento.findById(idDoc);
-				ListaUris uri = new ListaUris();
 				if (doc != null){
+					ListaUris uri = new ListaUris();
 					if (doc.uriPlatino != null && !doc.uriPlatino.isEmpty()){
 						uri.uri = doc.uriPlatino;
 						lstUri.add(uri);
 					} else
 						if (doc.uri != null && !doc.uri.isEmpty()){
-							uri.uri = doc.uri;
+							uri.uri = doc.uri;	
 							lstUri.add(uri);
 						}
 				} else {
@@ -125,15 +125,6 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 			}
 		
 			if (!Messages.hasMessages() && !lstUri.isEmpty()) {
-				
-				java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
-				if (rows != null && !rows.isEmpty()){
-					comunicacionInterna.asiento.uris = null;
-					comunicacionInterna.save();
-					for (ListaUris uri : rows)
-						uri.delete();
-				}
-				
 				comunicacionInterna.asiento.uris = lstUri;
 				comunicacionInterna.asiento.numeroDocumentos = lstUri.size();
 				comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
@@ -166,13 +157,9 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 
 		if (!Messages.hasErrors()) {
 			ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
-			java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
-			if (rows != null && !rows.isEmpty()){
+			if( comunicacionInterna != null && comunicacionInterna.asiento != null){
 				comunicacionInterna.asiento.uris = null;
-				comunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
 				comunicacionInterna.save();
-				for (ListaUris uri : rows)
-					uri.delete();
 			}
 		}
 

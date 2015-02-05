@@ -10,6 +10,7 @@ import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
 import models.AsientoAmpliadoCIFap;
+import models.AsientoCIFap;
 import models.ComunicacionInterna;
 import models.Documento;
 import models.ListaUris;
@@ -18,6 +19,7 @@ import models.SolicitudGenerica;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.ServiciosGenericosService;
+import services.platino.PlatinoBDOrganizacionServiceImpl;
 import tags.ComboItem;
 import utils.ComunicacionesInternasUtils;
 import utils.ServiciosGenericosUtils;
@@ -25,9 +27,12 @@ import validation.CustomValidation;
 
 import com.google.gson.Gson;
 
+import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.PaginaDatosNuevaComunicacionInternaControllerGen;
 import enumerado.fap.gen.EstadosComunicacionInternaEnum;
+import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
+import es.gobcan.platino.servicios.organizacion.DatosBasicosPersonaItem;
 
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
 	
@@ -46,7 +51,7 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 			comunicacionInterna = PaginaDatosNuevaComunicacionInternaController.getComunicacionInterna();
 			
 			if (comunicacionInterna.asiento == null)
-				comunicacionInterna.asiento = new AsientoAmpliadoCIFap();
+				comunicacionInterna.asiento = new AsientoCIFap();
 			
 			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
 
@@ -85,28 +90,6 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		Messages.keep();
 		redirect("PaginaDatosNuevaComunicacionInternaController.index", "crear", idSolicitud, idComunicacionInterna);
 	}
-	
-//	@Util
-//	public static void editarRender(Long idSolicitud, Long idComunicacionInterna) {
-//		ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
-//		
-//		if (!Messages.hasErrors()) {
-//			Messages.ok("Página editada correctamente");
-//			Messages.keep();
-//			if ("creada".equals(comunicacionInterna.estado)){
-//				redirect("PaginaNuevaComunicacionInternaDocumentosController.index", "editar", idSolicitud, idComunicacionInterna);
-//			} else
-//				if ("docAdjuntos".equals(comunicacionInterna.estado) || "datosCompletos".equals(comunicacionInterna.estado)){
-//					redirect("PaginaAltaComunicacionInternaController.index", "editar", idSolicitud, idComunicacionInterna);
-//				} else {
-//					Messages.info("La comunicación interna ya ha sido enviada");
-//					Messages.keep();
-//					redirect("ComunicacionesInternasController.index", "editar", idSolicitud, idComunicacionInterna);
-//				}
-//		}
-//		Messages.keep();
-//		redirect("PaginaDatosNuevaComunicacionInternaController.index", "editar", idSolicitud, idComunicacionInterna);
-//	}
 
 	@Util
 	public static void PaginaDatosNuevaComunicacionInternaValidateCopy(String accion, ComunicacionInterna dbComunicacionInterna, ComunicacionInterna comunicacionInterna) {
@@ -116,14 +99,16 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		CustomValidation.valid("comunicacionInterna", comunicacionInterna);
 		
 		if (dbComunicacionInterna.asiento == null)
-			dbComunicacionInterna.asiento = new AsientoAmpliadoCIFap();
+			dbComunicacionInterna.asiento = new AsientoCIFap();
 		
 		dbComunicacionInterna.asiento.interesado = comunicacionInterna.asiento.interesado;
 		CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaDestino", comunicacionInterna.asiento.unidadOrganicaDestino);
 		CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaDestino.codigo", comunicacionInterna.asiento.unidadOrganicaDestino.codigo);
-		Long codigo = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;
-		dbComunicacionInterna.asiento.unidadOrganicaDestino = getUnidadOrganicaFAP(codigo);
-		dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigo;
+		Long codigoUODestino = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;
+		if (codigoUODestino != null) {
+			dbComunicacionInterna.asiento.unidadOrganicaDestino = getUnidadOrganicaFAP(codigoUODestino);
+			dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigoUODestino;
+		}
 		CustomValidation.required("comunicacionInterna.asiento.resumen", comunicacionInterna.asiento.resumen);
 		dbComunicacionInterna.asiento.resumen = comunicacionInterna.asiento.resumen;
 		dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
@@ -171,12 +156,24 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		return unidad;
 	}
 	
-//	public static List<ComboItem> cmbDocFirma(){
-//		List<ComboItem> result = new ArrayList<ComboItem>();
-//		result.add(new ComboItem(1L, "Uno"));
-//		result.add(new ComboItem(2L, "Dos"));
-//		result.add(new ComboItem(3L, "Tres"));
-//		return result;
+//	private static void obtenerUoOrigen(ComunicacionInterna comunicacionInterna, Agente agente){
+//		PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
+//		try {
+//			String uri = platinoDBOrgPort.recuperarURIPersona(agente.usuarioldap);		
+//			DatosBasicosPersonaItem persona = platinoDBOrgPort.recuperarDatosPersona(uri);
+//			ReturnUnidadOrganicaFap unidad = null;
+//			Long id = (long) 9938;
+		
+//			if (persona != null && persona.getCodigoUnidadOrg() != null && !persona.getCodigoUnidadOrg().isEmpty()){
+//				Long codigobdorganizacion = Long.parseLong(persona.getCodigoUnidadOrg());
+//				unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", id).first();
+			
+//				if (unidad != null)
+//					comunicacionInterna.asiento.unidadOrganicaOrigen = unidad;
+//			}
+//		} catch (DBOrganizacionException_Exception e) {
+//			log.error("No se puede obtener la unidad orgánica de origen del solicitante: " + e.getMessage());
+//		}
 //	}
 	
 }

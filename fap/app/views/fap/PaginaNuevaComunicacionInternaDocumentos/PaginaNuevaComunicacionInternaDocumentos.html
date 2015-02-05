@@ -20,7 +20,7 @@
      urlEditar:play.mvc.Router.reverse('PaginaNuevaComunicacionInternaDocumentosController.editar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id])
 }
     
-            #{fap.grupo titulo:'Selección de Documentos'}
+            #{fap.grupo titulo:'Selección del documento principal'}
                 
             <div class="wiki ">
 <p>Recuerde que debe seleccionar un documento como máximo. Cada nueva selección sobrescribirá la anterior.</p>
@@ -42,9 +42,9 @@
     
     #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga', expandir:true /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga' /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado', expandir:true /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado' /}
         
 #{/fap.tabla}
 
@@ -52,6 +52,11 @@
         
             #{fap.grupo titulo:'No aportar documentación'}
                 
+            <div class="wiki ">
+<p>Se eliminará cualquier selección de documentos hecha previamente.</p>
+
+            </div>
+        
                 #{form play.mvc.Router.reverse('PaginaNuevaComunicacionInternaDocumentosController.frmNoAportarDocumentacion' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]) , class:"form-horizontal", id:"frmNoAportarDocumentacion"}
                     
             #{fap.boton id:'btnNuevaComunicacionInternaDocumentos', titulo:'Siguiente' /}
@@ -61,4 +66,4 @@
             #{/fap.grupo}
         
 #{/fap.pagina}
-		
+        		

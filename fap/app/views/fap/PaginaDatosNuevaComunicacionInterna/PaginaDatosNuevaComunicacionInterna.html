@@ -26,8 +26,6 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
                 
             #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', titulo:'Nombre completo del interesado' /}     
         
-            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaOrigen.descripcion', id:'uoOrigen', requerido:true, readonly:true, titulo:'Unidad orgánica de origen' /}      
-        
             #{fap.areaTexto campo:'comunicacionInterna.asiento.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
         
             #{fap.grupo titulo:'Unidad Orgánica de destino'}
@@ -40,7 +38,7 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
         
             #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3', id:'uoDestinoSubNivel3', searchable:true, titulo:'Nivel 4' /}        
         
-            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', id:'uoDestino', requerido:true, titulo:'Código' /}        
+            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', id:'uoDestino', requerido:true, titulo:'Código de unidad' /}      
         
             #{/fap.grupo}
         

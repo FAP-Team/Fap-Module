@@ -652,36 +652,38 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
 	}
 	
+	//---------------------------------------------------------------------------
+   //------------------------- Unidades Orgánicas ------------------------------
+   //---------------------------------------------------------------------------
+	
 	Pagina UnidadesOrganicas titulo="Cargar Unidades Orgánicas" noForm{
 	   
 	   Tabla tblUO campo=ReturnUnidadOrganicaFap titulo="Unidades Orgánicas" popupCrear=PopupDatosUnidadesOrganicas popupLeer=PopupDatosUnidadesOrganicas
 	               popupEditar=PopupDatosUnidadesOrganicas popupBorrar=PopupDatosUnidadesOrganicas{
             Columna campo=ReturnUnidadOrganicaFap.codigo titulo="Código"
             Columna campo=ReturnUnidadOrganicaFap.codigoCompleto titulo="Código Completo"
-            Columna campo=ReturnUnidadOrganicaFap.codigoBDOrganizacion titulo="Código BDOrganización"
             Columna campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción" expandir
       }
     
-    
-      Grupo grpUOFichero titulo="Cargar o Actualizar Unidades Orgánicas desde Fichero"{
-         Form frmCargarUOFichero {
-            Boton btnCargarUOFichero titulo="Cargar desde fichero" waitPopup
-         }
-      }
-      
       Grupo grpUOServicio titulo="Cargar o Actualizar Unidades Orgánicas desde Servicio" {
          Form frmCargarUOServicio {
             Boton btnCargarUOServicio titulo="Cargar desde servicio" waitPopup
          }
       }
       
+      Grupo grpUOFichero titulo="Cargar o Actualizar Unidades Orgánicas desde Fichero"{
+         Form frmCargarUOFichero {
+            Boton btnCargarUOFichero titulo="Cargar desde fichero" waitPopup
+         }
+      }
+ 
       Wiki { "Nota: La operación de carga puede tardar varios minutos. 
-                   Tenga en cuenta que la operación sobrescribirá los datos según la fuente escogida en cada caso." }
+                    Tenga en cuenta que la operación sobrescribirá los datos según la fuente escogida en cada caso." }
 	}
 	
 	Popup PopupDatosUnidadesOrganicas campo=ReturnUnidadOrganicaFap titulo="Unidad Orgánica" {
 	   Texto codigo campo=ReturnUnidadOrganicaFap.codigo titulo="Codigo" requerido
-	   Texto codigoCompleto campo=ReturnUnidadOrganicaFap.codigoCompleto titulo="Codigo Completo"
+	   Texto codigoCompleto campo=ReturnUnidadOrganicaFap.codigoCompleto titulo="Codigo Completo" requerido
 	   Texto codigoBDOrganizacion campo=ReturnUnidadOrganicaFap.codigoBDOrganizacion titulo="Codigo BDOrganización"
 	   Texto descripcion campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción" requerido
 	   Texto esBaja campo=ReturnUnidadOrganicaFap.esBaja titulo="Es Baja"

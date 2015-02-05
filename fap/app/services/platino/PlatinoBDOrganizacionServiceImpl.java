@@ -58,10 +58,8 @@ public class PlatinoBDOrganizacionServiceImpl {
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			
 			hasConnection = getVersion() != null;
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
-			
 		}catch(Exception e){
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
 		}
@@ -80,6 +78,12 @@ public class PlatinoBDOrganizacionServiceImpl {
 	    }
 	}
 	
+	/**
+	 * Método que recupera la uri de una persona de la base de datos de organización mediante el nombre de usuario.
+	 * @param uid
+	 * @return
+	 * @throws DBOrganizacionException_Exception
+	 */
 	public String recuperarURIPersona(String uid) throws DBOrganizacionException_Exception {
 		try {
 			List<String> lstURIPersona = null;
@@ -98,6 +102,12 @@ public class PlatinoBDOrganizacionServiceImpl {
 		}
 	}
 	
+	/**
+	 * Método que recupera la información de una persona mediante la uri recuperada de la base de datos de organización.
+	 * @param uri
+	 * @return
+	 * @throws DBOrganizacionException_Exception
+	 */
 	public DatosBasicosPersonaItem recuperarDatosPersona(String uri) throws DBOrganizacionException_Exception {
 		List<DatosBasicosPersonaItem> lstdatosPersona = null;
 		
@@ -115,6 +125,13 @@ public class PlatinoBDOrganizacionServiceImpl {
 		}
 	}
 	
+	/**
+	 * Método que permite hacer una búsqueda de las unidades orgánicas de la base de datos de organización por medio de una 
+	 * serie de campos.
+	 * @param campos
+	 * @return
+	 * @throws DBOrganizacionException_Exception
+	 */
 	public List<UnidadOrganicaItem> buscarUnidadesPorCampos(UnidadOrganicaCriteriaItem campos) throws DBOrganizacionException_Exception{
 		List<UnidadOrganicaItem> unidadOrganicas = null;
 		
@@ -128,6 +145,13 @@ public class PlatinoBDOrganizacionServiceImpl {
 		return unidadOrganicas;
 	}
 	
+	/**
+	 * Método que permite realizar la búsqueda de unidades orgánicas de la base de datos de organización mediante una 
+	 * consulta a la misma.
+	 * @param consulta
+	 * @return
+	 * @throws DBOrganizacionException_Exception
+	 */
 	public List<UnidadOrganicaItem> buscarUnidadesPorConsulta(String consulta) throws DBOrganizacionException_Exception{
 		List<UnidadOrganicaItem> unidadesOrganicas = null;
 		

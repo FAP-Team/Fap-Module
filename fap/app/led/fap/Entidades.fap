@@ -986,8 +986,10 @@ Entidad JsonPeticionModificacion{
 // -----------------------------------------------------------------------
 
 Entidad ComunicacionInterna{
-	AsientoAmpliadoCIFap asiento noConstruct
-	ReturnComunicacionInternaFap respuesta
+   AsientoCIFap asiento noConstruct
+   RespuestaCIFap respuesta noConstruct
+	AsientoAmpliadoCIFap asientoApmliado noConstruct
+	RespuestaCIAmpliadaFap respuestaAmpliada noConstruct
 	Lista estadosComunicacionInterna estado
 }
 
@@ -1008,7 +1010,7 @@ Entidad AsientoAmpliadoCIFap extends AsientoCIFap {
 	ReturnUnidadOrganicaFap unidadOrganicaOrigen
 }
 	
-Entidad ReturnComunicacionInternaFap {
+Entidad RespuestaCIFap {
 	String usuario
 	String resumen
 	String observaciones
@@ -1022,14 +1024,14 @@ Entidad ReturnComunicacionInternaFap {
 	Long numeroRegistro
 	String asunto
 	String unidadOrganica
-	ReturnInteresadoCIFap interesado
+	ReturnInteresadoCIFap interesado noConstruct
 	String tipoTransporte
 	OneToMany ListaUris uris
 	//Lista listaReturnErrorFap error	//Lo tenía Yure, no se por qué habrá que preguntar
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 }	
 
-Entidad ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
+Entidad RespuestaCIAmpliadaFap extends RespuestaCIFap {
 	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna.
 	String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora.
 }
@@ -1055,7 +1057,7 @@ Entidad ReturnUnidadOrganicaFap{
 	Long codigoSubNivel1 transient
 	Long codigoSubNivel2 transient
 	Long codigoSubNivel3 transient
-	Long codigoBDOrganizacion
+	Long codigoBDOrganizacion //Código que nos permite realizar el mapeo con la BDOrganización si fuera necesario
 }	
 
 Entidad MapeoUOBDOrganizacionHiperreg nonPersist {

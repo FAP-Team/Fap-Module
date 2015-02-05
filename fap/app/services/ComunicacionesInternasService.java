@@ -1,17 +1,16 @@
 package services;
 
 import java.util.List;
-
 import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
-import models.ReturnComunicacionInternaAmpliadaFap;
-import models.ReturnComunicacionInternaFap;
+import models.RespuestaCIAmpliadaFap;
+import models.RespuestaCIFap;
 import models.ReturnUnidadOrganicaFap;
 
 public interface ComunicacionesInternasService {
 
 	public void mostrarInfoInyeccion();
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException;
-	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException;
+	public RespuestaCIFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException;
+	public RespuestaCIAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException;
 
 }

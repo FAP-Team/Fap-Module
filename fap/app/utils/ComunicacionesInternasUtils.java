@@ -2,11 +2,9 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.Hibernate;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.mockito.internal.invocation.UnusedStubsFinder;
-
 import config.InjectorConfig;
 import es.gobcan.platino.servicios.procedimientos.UnidadOrganicaWSItem;
 import services.ComunicacionesInternasService;
@@ -22,8 +20,8 @@ import swhiperreg.service.ReturnUnidadOrganica;
 import tags.ComboItem;
 import models.ComunicacionInterna;
 import models.ListaUris;
-import models.ReturnComunicacionInternaAmpliadaFap;
-import models.ReturnComunicacionInternaFap;
+import models.RespuestaCIAmpliadaFap;
+import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoCIFap;
 import models.ReturnInteresadoFap;
@@ -32,8 +30,14 @@ import models.SolicitudGenerica;
 
 public class ComunicacionesInternasUtils {
 
-	public static ReturnComunicacionInternaFap respuestaComunicacionInterna2respuestaComunicacionInternaFap (ReturnComunicacionInterna respuesta){
-		ReturnComunicacionInternaFap respuestaFap = new ReturnComunicacionInternaFap();
+	/**
+	 * Método que parsea los datos de la respuesta a la creación de una comunicación interna (Normal) en un modelo propio
+	 * para almacenarlo en la base de datos.
+	 * @param respuesta
+	 * @return
+	 */
+	public static RespuestaCIFap respuestaComunicacionInterna2respuestaComunicacionInternaFap (ReturnComunicacionInterna respuesta){
+		RespuestaCIFap respuestaFap = new RespuestaCIFap();
 		if (respuesta.getError().getDescripcion() == null){
 			respuestaFap.usuario = respuesta.getUsuario();
 			respuestaFap.resumen = respuesta.getResumen();
@@ -48,25 +52,37 @@ public class ComunicacionesInternasUtils {
 			respuestaFap.numeroRegistro = respuesta.getNumeroRegistro();
 			respuestaFap.asunto = respuesta.getAsunto();
 			respuestaFap.unidadOrganica = respuesta.getUnidadOrganica();
-			//TODO REVISAR bien que devuelve esta parte -> ¿Solo un nombre?
-			//respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
+			ReturnInteresadoCIFap interesadoFAP = interesadoCI2interesadoFap(respuesta.getInteresado());
+			if (interesadoFAP != null) {
+				respuestaFap.interesado = new ReturnInteresadoCIFap();
+				respuestaFap.interesado = interesadoFAP;
+			}
 			respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
-			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
+			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); 
 		}
 		else{
-			respuestaFap.error = errorCI2errorFap(respuesta.getError());
+			ReturnErrorFap errorFAP = errorCI2errorFap(respuesta.getError());
+			if (errorFAP != null) {
+				respuestaFap.error = new ReturnErrorFap();
+				respuestaFap.error = errorFAP;
+			}
 		}
 		
 		return respuestaFap;
 	}
 	
-	public static ReturnComunicacionInternaAmpliadaFap respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap (ReturnComunicacionInternaAmpliada respuesta){
-		ReturnComunicacionInternaAmpliadaFap respuestaFap = new ReturnComunicacionInternaAmpliadaFap();
+	/**
+	 * Método que parsea los datos de la respuesta a la creación de una comunicación interna (Ampliada) en un modelo propio
+	 * para almacenarlo en la base de datos.
+	 * @param respuesta
+	 * @return
+	 */
+	public static RespuestaCIAmpliadaFap respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap (ReturnComunicacionInternaAmpliada respuesta){
+		RespuestaCIAmpliadaFap respuestaFap = new RespuestaCIAmpliadaFap();
 		if (respuesta.getError().getDescripcion() == null){
 			respuestaFap.usuario = respuesta.getUsuario();
 			respuestaFap.resumen = respuesta.getResumen();
 			respuestaFap.observaciones = respuesta.getObservaciones();
-			//respuestaFap.referencia  //Solo existe en la doc no en el WS
 			respuestaFap.fecha = respuesta.getFecha();
 			respuestaFap.hora = respuesta.getHora();
 			respuestaFap.tipoComunicacion = respuesta.getTipoComunicacion();
@@ -77,53 +93,76 @@ public class ComunicacionesInternasUtils {
 			respuestaFap.asunto = respuesta.getAsunto();
 			respuestaFap.unidadOrganicaOrigen = respuesta.getUnidadOrganicaOrigen();
 			respuestaFap.unidadOrganica = respuesta.getUnidadOrganica();
-			//TODO Según el responsable del servicio solo devuelve un nombre
-			respuestaFap.interesado = interesadoCI2interesadoFap(respuesta.getInteresado());
+			ReturnInteresadoCIFap interesadoFAP = interesadoCI2interesadoFap(respuesta.getInteresado());
+			if (interesadoFAP != null) {
+				respuestaFap.interesado = new ReturnInteresadoCIFap();
+				respuestaFap.interesado = interesadoFAP;
+			}
 			respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
 			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
 		}
 		else {
-			respuestaFap.error = errorCI2errorFap(respuesta.getError());
+			ReturnErrorFap errorFAP = errorCI2errorFap(respuesta.getError());
+			if (errorFAP != null) {
+				respuestaFap.error = new ReturnErrorFap();
+				respuestaFap.error = errorFAP;
+			}
 		}
+		
 		return respuestaFap;
 	}
 	
-	public static List<ListaUris> urisCI2UrisFap (ArrayOfString uris){
-		List<ListaUris> urisFap = new ArrayList<ListaUris>();
-		if (uris != null) {
-			for (Object listaUris : uris.getString().toArray()) {
-				ListaUris nuevo = new ListaUris();
-				nuevo.uri = listaUris.toString();
-				System.out.println("Nuevo Uri: "+nuevo.uri);
-				urisFap.add(nuevo);
+	/**
+	 * Método que parsea las uris de los documentos enviados a un modelo propio para ser almacenadas en la base de datos.
+	 * @param listaUris
+	 * @return
+	 */
+	public static List<ListaUris> urisCI2UrisFap (ArrayOfString listaUris){
+		List<ListaUris> lstUrns = null;
+		if (listaUris != null && !listaUris.getString().isEmpty()){
+			lstUrns = new ArrayList<ListaUris>();
+			for (String urn : listaUris.getString()){
+				if (urn != null && !urn.isEmpty()){
+					ListaUris uri = new ListaUris();
+					uri.uri = urn;
+					lstUrns.add(uri);
+				}
 			}
 		}
-		return urisFap;
+		
+		return lstUrns;
 	}
 	
+	/**
+	 * Método que parsea un posible error recibido al crear una comunicación interna a un modelo propio para ser almacenado.
+	 * @param error
+	 * @return
+	 */
 	public static ReturnErrorFap errorCI2errorFap (ReturnError error){
-		ReturnErrorFap errorFap = new ReturnErrorFap();
-		errorFap.codigo = error.getCodigo();
-		errorFap.descripcion = error.getDescripcion();
+		ReturnErrorFap errorFap = null;
+		
+		if (error != null && error.getCodigo() != 0 && error.getDescripcion() != null) {
+			errorFap = new ReturnErrorFap();
+			errorFap.codigo = error.getCodigo();
+			errorFap.descripcion = error.getDescripcion();
+		}
+		
 		return errorFap;
 	}
 	
+	/**
+	 * Método que parsea el interesado de una comunicación interna a un modelo propio para ser almacenado
+	 * @param interesado
+	 * @return
+	 */
 	public static ReturnInteresadoCIFap interesadoCI2interesadoFap (ReturnInteresadoCI interesado) {
-		ReturnInteresadoCIFap interesadoFap = new ReturnInteresadoCIFap();
-		interesadoFap.nombre = interesado.getNombre();
+		ReturnInteresadoCIFap interesadoFap = null;
+		if (interesado!= null && interesado.getNombre() != null && !interesado.getNombre().isEmpty()) {
+			interesadoFap = new ReturnInteresadoCIFap();
+			interesadoFap.nombre = interesado.getNombre();
+		}
 
 		return interesadoFap;
 	}
-	
-//	public static List<String> ArrayOfReturnUnidadOrganica2List (ArrayOfReturnUnidadOrganica uo){
-//		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
-//		List<String> resultado = new ArrayList<String>();
-//		for (ReturnUnidadOrganica unidad : unidades) {
-//			if (unidad.getEsReceptora().equals("S")){
-//				resultado.add(unidad.getDescripcion());
-//			}
-//		}
-//		return resultado;
-//	}
 
 }

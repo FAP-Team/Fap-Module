@@ -2,6 +2,7 @@ package services.comunicacionesInternas;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +27,13 @@ import platino.PlatinoSecurityUtils;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
+import messages.Messages;
 import models.Agente;
 import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
 import models.ListaUris;
-import models.ReturnComunicacionInternaAmpliadaFap;
-import models.ReturnComunicacionInternaFap;
+import models.RespuestaCIAmpliadaFap;
+import models.RespuestaCIFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
@@ -140,113 +142,108 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con Hiperreg y NO está operativo.");
     }
 
+	/**
+	 * Método que crea un nuevo asiento de una comunicación interna.
+	 */
 	@Override
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
+	public RespuestaCIFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
+		
 		ArrayOfString listaUris = null;
 		try{
 			listaUris = obtenerUriPlatino(asientoFap.uris);
 		}catch(Exception e){
-			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			play.Logger.error("Se ha producido el error obteniendo las uri de los documentos de platino: " + e.getMessage(), e);
 			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
 		}
 		
-		try{
-			String tipoTransporte;
-	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
-	        	tipoTransporte = TIPO_TRANSPORTE;
-	        } else
-	        	tipoTransporte = null;
-	        
-	        asientoFap.tipoTransporte = tipoTransporte;
-	        asientoFap.save();
-	        	        
-			ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
-					asientoFap.resumen,
-					asientoFap.numeroDocumentos,
-					asientoFap.interesado,
-					asientoFap.unidadOrganicaDestino.codigo,
-					asientoFap.asuntoCodificado,
-					asientoFap.userId,
-					encriptarPassword(asientoFap.password),
-					tipoTransporte,
-					listaUris);
-		
-			return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+		try{	        	  
+			ReturnComunicacionInterna respuesta= null;
+			RespuestaCIFap respuestafap = null;
+			if (!Messages.hasErrors()) {
+				respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
+						asientoFap.resumen,
+						asientoFap.numeroDocumentos,
+						asientoFap.interesado,
+						asientoFap.unidadOrganicaDestino.codigo,
+						asientoFap.asuntoCodificado,
+						asientoFap.userId,
+						encriptarPassword(asientoFap.password),
+						asientoFap.tipoTransporte,
+						listaUris);
+			
+				respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+			}
+			
+			return respuestafap;
 		}
 		catch(Exception e){
-			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
-			throw new ComunicacionesInternasServiceException("No se ha podido obtener respuesta");
+			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("Se ha producido un error al enviar la comunicación interna");
 		}
 	}
 	
-	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
-		
-//		PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-		try{
-			
-//			String uriPersona = platinoDBOrgPort.recuperarURIPersona(AgenteController.getAgente().usuarioldap);
-//			DatosBasicosPersonaItem datosPersona = platinoDBOrgPort.recuperarDatosPersona(uriPersona);
-//			UnidadOrganicaCriteriaItem campos = new UnidadOrganicaCriteriaItem();
-//			campos.setCodigoUnidadOrg(datosPersona.getCodigoUnidadOrg());
-//			List<UnidadOrganicaItem> lstuo = platinoDBOrgPort.buscarUnidadesPorCampos(campos);
-//			play.Logger.info(lstuo.get(0).getDescripcionUnidadOrg());
-			
-			String tipoTransporte;
-	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
-	        	tipoTransporte = TIPO_TRANSPORTE;
-	        } else
-	        	tipoTransporte = null;
-
-	        asientoAmpliadoFap.tipoTransporte = tipoTransporte;
-	        asientoAmpliadoFap.save();
-			
-		}catch(Exception e){
-			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
-			throw new ComunicacionesInternasServiceException("No se ha podido recuperar los datos del origen");
-		}
+	/**
+	 * Método que crea un nueva asiento de una comunicación interna con el añadido de la unidad orgánica de origen.
+	 */
+	@Override
+	public RespuestaCIAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
 		
 		ArrayOfString listaUris = null;
 		try{
 			listaUris = obtenerUriPlatino(asientoAmpliadoFap.uris);
 		}catch(Exception e){
-			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
+			play.Logger.error("Se ha producido el error obteniendo las uri de los documentos de platino: " + e.getMessage(), e);
 			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
 		}
 		
 		try{
-			ReturnComunicacionInternaAmpliada respuesta = comunicacionesServices.nuevoAsientoAmpliado(
-					asientoAmpliadoFap.observaciones, 
-					asientoAmpliadoFap.resumen,
-					asientoAmpliadoFap.numeroDocumentos,
-					asientoAmpliadoFap.interesado,
-					asientoAmpliadoFap.unidadOrganicaDestino.codigo,
-					asientoAmpliadoFap.asuntoCodificado,
-					asientoAmpliadoFap.userId,
-					encriptarPassword(asientoAmpliadoFap.password),
-					asientoAmpliadoFap.tipoTransporte,
-					listaUris,
-					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
+			ReturnComunicacionInternaAmpliada respuesta = null;
+			RespuestaCIAmpliadaFap respuestafap = null;
+			if (!Messages.hasErrors()) {
+					comunicacionesServices.nuevoAsientoAmpliado(
+						asientoAmpliadoFap.observaciones, 
+						asientoAmpliadoFap.resumen,
+						asientoAmpliadoFap.numeroDocumentos,
+						asientoAmpliadoFap.interesado,
+						asientoAmpliadoFap.unidadOrganicaDestino.codigo,
+						asientoAmpliadoFap.asuntoCodificado,
+						asientoAmpliadoFap.userId,
+						encriptarPassword(asientoAmpliadoFap.password),
+						asientoAmpliadoFap.tipoTransporte,
+						listaUris,
+						asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
 			
-			return ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
+					respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
+			}
+			
+			return respuestafap;
 		}
 		catch(Exception e){
-			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
-			throw new ComunicacionesInternasServiceException("No se ha podido obtener respuesta");
+			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e.getMessage(), e);
+			throw new ComunicacionesInternasServiceException("Se ha producido un error al enviar la comunicación interna");
 		}
 	}
 	
+	/**
+	 * Método que comprueba si un documento está en platino, que en caso contrario si existe en el aed de aciisi lo sube a platino,
+	 * y devuelve la uri del aed de platino.
+	 * @param uris
+	 * @return
+	 */
 	private ArrayOfString obtenerUriPlatino(List<ListaUris> uris) {
 		ArrayOfString listaUris = null;
 		
 		for (int i = 0; i < uris.size(); i++){
-			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(uris.get(i).uri, comunicacionesServices);
+			String uriPlatino = platinoGestorDocumental.obtenerURIPlatino(uris.get(i).uri, PlatinoGestorDocumentalService.class);
 			if ((uriPlatino != null) && (!uriPlatino.isEmpty())) {
 				if (listaUris == null)
 					listaUris = new ArrayOfString();
 				listaUris.getString().add(uriPlatino);
 			}
-			else
+			else {
 				play.Logger.error("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
+				Messages.error("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
+			}
 		}
 		
 		return listaUris;

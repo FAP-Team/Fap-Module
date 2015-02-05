@@ -110,8 +110,7 @@ public class ServiciosGenericosUtils {
 	}
 	
 	/**
-	 * Recupera una lista de Unidades Organicas que son la descendencia de una unidad dada y hasta 
-	 * una profundidad dada.
+	 * Recupera una lista de Unidades Organicas que son la descendencia de una unidad dada.
 	 * @param unidad
 	 * @param profundidad
 	 * @return
@@ -161,7 +160,7 @@ public class ServiciosGenericosUtils {
 	}
 	
 	/**
-	 * Devuelve un entero con el nivel dentro de la jerarquia de una Unidad Organica.
+	 * Devuelve un entero con el nivel dentro de la jerarquia de una Unidad Orgánica.
 	 * Actualmente existen 4 niveles.
 	 * @param unidad
 	 * @return
@@ -231,7 +230,7 @@ public class ServiciosGenericosUtils {
 	}
 	
 	/**
-	 * Realiza el mapeado de Unidades Orgánicas de Hiperreg con BDOrganización
+	 * Realiza el mapeado de Unidades Orgánicas de Hiperreg con BDOrganización.
 	 * @param lstUO
 	 */
 	public static void mapearUnidadesOrganicasBDOrganizacionHiperreg(List<MapeoUOBDOrganizacionHiperreg> lstUO){
@@ -251,7 +250,7 @@ public class ServiciosGenericosUtils {
 	}
 	
 	/**
-	 * Recupera las unidades orgánicas de la base de datos simulando la llamada al servicio genérico
+	 * Recupera las unidades orgánicas de la base de datos simulando la llamada al servicio genérico.
 	 * @param codigo
 	 * @return
 	 */
@@ -273,7 +272,11 @@ public class ServiciosGenericosUtils {
 		return lstUO;
 	}
 
-	
+	/**
+	 * Método que parsea una unidad orgánica del servicio genérico a un modelo de fap para poder ser almacenada.
+	 * @param uo
+	 * @return
+	 */
 	public static List<ReturnUnidadOrganicaFap> returnUnidadOrganica2returnUnidadOrganicaFap (ArrayOfReturnUnidadOrganica uo){
 		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
 		List<ReturnUnidadOrganicaFap> unidadesFap = new ArrayList<ReturnUnidadOrganicaFap>();
@@ -293,6 +296,11 @@ public class ServiciosGenericosUtils {
 		return unidadesFap;
 	}
 	
+	/**
+	 * Método que parsea un error en la petición de unidad orgánicas a un modelo fap para poder ser almacenado.
+	 * @param error
+	 * @return
+	 */
 	public static ReturnErrorFap error2errorFap (swhiperreg.service.ReturnError error){
 		ReturnErrorFap errorFap = null;
 		
@@ -307,10 +315,20 @@ public class ServiciosGenericosUtils {
 		return errorFap;
 	}
 	
+	/**
+	 * Método que nos permite diferenciar si una unidad orgánica es receptora o no.
+	 * @param esReceptora
+	 * @return
+	 */
 	private static String esReceptora(boolean esReceptora){
 		return esReceptora ? "S" : "N";
 	}
 	
+	/**
+	 * Método que nos permite diferenciar si una unidad orgánica está de baja o no.
+	 * @param esReceptora
+	 * @return
+	 */
 	private static String esBaja(boolean esBaja){
 		return esBaja ? "S" : "N";
 	}

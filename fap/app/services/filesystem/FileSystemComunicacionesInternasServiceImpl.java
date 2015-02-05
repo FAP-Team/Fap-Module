@@ -5,19 +5,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-
 import com.sun.star.util.Date;
 import com.sun.star.util.DateTime;
-
 import models.AsientoCIFap;
 import models.ListaUris;
-import models.ReturnComunicacionInternaAmpliadaFap;
-import models.ReturnComunicacionInternaFap;
+import models.RespuestaCIAmpliadaFap;
+import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoFap;
 import models.ReturnUnidadOrganicaFap;
@@ -42,8 +38,8 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 	}
 
 	@Override
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
-		ReturnComunicacionInternaFap respuesta = new ReturnComunicacionInternaFap();
+	public RespuestaCIFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
+		RespuestaCIFap respuesta = new RespuestaCIFap();
 		respuesta.usuario = asientoFap.userId;
 		respuesta.resumen = asientoFap.resumen;
 		respuesta.observaciones = asientoFap.observaciones;
@@ -69,8 +65,8 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		return respuesta;
 	}
 	
-	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
-		ReturnComunicacionInternaFap respuesta = new ReturnComunicacionInternaFap();
+	public RespuestaCIAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
+		RespuestaCIAmpliadaFap respuesta = new RespuestaCIAmpliadaFap();
 		respuesta.usuario = asientoAmpliadoFap.userId;
 		respuesta.resumen = asientoAmpliadoFap.resumen;
 		respuesta.observaciones = asientoAmpliadoFap.observaciones;

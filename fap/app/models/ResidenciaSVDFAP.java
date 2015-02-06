@@ -41,6 +41,38 @@ public class ResidenciaSVDFAP extends FapModel {
 
 	// === MANUAL REGION START ===
 
+	public String getComunidadAutonoma() {
+		return comunidadAutonoma;
+	}
+
+	public void setComunidadAutonoma(String comunidadAutonoma) {
+		this.comunidadAutonoma = comunidadAutonoma;
+	}
+
+	public String getProvincia() {
+		return provincia;
+	}
+
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
+	}
+
+	public String getIsla() {
+		return isla;
+	}
+
+	public void setIsla(String isla) {
+		this.isla = isla;
+	}
+
+	public String getMunicipio() {
+		return municipio;
+	}
+
+	public void setMunicipio(String municipio) {
+		this.municipio = municipio;
+	}
+
 	// === MANUAL REGION END ===
 
 }

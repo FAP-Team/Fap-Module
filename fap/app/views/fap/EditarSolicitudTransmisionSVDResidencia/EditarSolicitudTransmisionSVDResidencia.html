@@ -50,35 +50,31 @@
 				
 			#{fap.texto campo:'solicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante', titulo:'Tipo de solicitante de datos' /}		
 		
-			#{fap.grupo titulo:'Solicitud'}
+			#{fap.grupo titulo:'Residencia'}
 				
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma', id:'ComboComunidadAutonoma', requerido:true, searchable:true, titulo:'Comunidad Autónoma' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma', id:'ComboComunidadAutonoma', searchable:true, titulo:'Comunidad Autónoma' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia', dependeDe:'ComboComunidadAutonoma', id:'ComboProvincia', requerido:true, searchable:true, titulo:'Provincia' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia', dependeDe:'ComboComunidadAutonoma', id:'ComboProvincia', searchable:true, titulo:'Provincia' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla', dependeDe:'ComboProvincia', id:'ComboIsla', requerido:true, searchable:true, titulo:'Isla' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla', dependeDe:'ComboProvincia', id:'ComboIsla', searchable:true, titulo:'Isla' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio', dependeDe:'ComboIsla', id:'ComboMunicipio', requerido:true, searchable:true, titulo:'Municipio' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio', dependeDe:'ComboIsla', id:'ComboMunicipio', searchable:true, titulo:'Municipio' /}		
 		
 			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol', id:'ComboTitulo', titulo:'Español' /}		
 		
 			#{/fap.grupo}
 		
-			#{fap.grupo titulo:'Datos específicos de residencia'}
-				
 			#{fap.grupo titulo:'Nacimiento'}
 				
-			#{fap.fecha campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha', id:'FechaNacimiento', requerido:true, titulo:'Fecha' /}		
+			#{fap.fecha campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha', id:'FechaNacimiento', titulo:'Fecha' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.comunidadAutonoma', id:'ComboComunidadAutonomaNacimiento', requerido:true, searchable:true, titulo:'Comunidad Autónoma' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.comunidadAutonoma', id:'ComboComunidadAutonomaNacimiento', searchable:true, titulo:'Comunidad Autónoma' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia', dependeDe:'ComboComunidadAutonomaNacimiento', id:'ComboProvinciaNacimiento', requerido:true, searchable:true, titulo:'Provincia' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia', dependeDe:'ComboComunidadAutonomaNacimiento', id:'ComboProvinciaNacimiento', searchable:true, titulo:'Provincia' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.isla', dependeDe:'ComboProvinciaNacimiento', id:'ComboIslaNacimiento', requerido:true, searchable:true, titulo:'Isla' /}		
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.isla', dependeDe:'ComboProvinciaNacimiento', id:'ComboIslaNacimiento', searchable:true, titulo:'Isla' /}		
 		
-			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio', dependeDe:'ComboIslaNacimiento', id:'ComboMunicipioNacimiento', requerido:true, searchable:true, titulo:'Municipio' /}		
-		
-			#{/fap.grupo}
+			#{fap.combo campo:'solicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio', dependeDe:'ComboIslaNacimiento', id:'ComboMunicipioNacimiento', searchable:true, titulo:'Municipio' /}		
 		
 			#{/fap.grupo}
 		

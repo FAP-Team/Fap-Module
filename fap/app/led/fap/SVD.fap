@@ -18,7 +18,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		
 		Grupo GrupoTablaIdentidad borde=false mostrarSiCombo tipoServicioSVD="identidad" {
 			Tabla solicitudesPeticionIdentidad titulo="Solicitudes de Transmisión Identidad" campo=SolicitudTransmisionSVDFAP
-			 seleccionable="Enviar Solicitudes Identidad" paginaLeer=EditarSolicitudTransmisionSVDIdentidad paginaCrear=EditarSolicitudTransmisionSVDIdentidad paginaEditar=EditarSolicitudTransmisionSVDIdentidad paginaBorrar=EditarSolicitudTransmisionSVDIdentidad recargarPagina
+			 seleccionable="Enviar Solicitudes Identidad" paginaLeer=EditarSolicitudTransmisionSVDIdentidad paginaCrear=EditarSolicitudTransmisionSVDIdentidad paginaEditar=EditarSolicitudTransmisionSVDIdentidad paginaBorrar=EditarSolicitudTransmisionSVDIdentidad
 			{
 				Columna campo=SolicitudTransmisionSVDFAP.id titulo="Id" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.nombreSolicitante titulo="Solicitante" expandir
@@ -33,7 +33,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		
 		Grupo GrupoTablaResidencia borde=false mostrarSiCombo tipoServicioSVD="residencia"{
 			Tabla solicitudesPeticionResidencia titulo="Solicitudes de Transmisión Residencia" campo=SolicitudTransmisionSVDFAP
-			seleccionable="Enviar Solicitudes Residencia" paginaLeer=EditarSolicitudTransmisionSVDIdentidad paginaCrear=EditarSolicitudTransmisionSVDResidencia paginaEditar=EditarSolicitudTransmisionSVDResidencia paginaBorrar=EditarSolicitudTransmisionSVDResidencia recargarPagina
+			seleccionable="Enviar Solicitudes Residencia" paginaLeer=EditarSolicitudTransmisionSVDIdentidad paginaCrear=EditarSolicitudTransmisionSVDResidencia paginaEditar=EditarSolicitudTransmisionSVDResidencia paginaBorrar=EditarSolicitudTransmisionSVDResidencia
 			{
 				Columna campo=SolicitudTransmisionSVDFAP.id titulo="Id" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.nombreSolicitante titulo="Solicitante" expandir
@@ -65,24 +65,29 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		}
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
-			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
-				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
+			Grupo datosResidencia titulo="Residencia" {
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
+			}
+			Grupo datosNacimiento titulo="Nacimiento" {
+				Fecha titulo="Fecha de nacimiento" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha
+				Combo ComboProvinciaNacimiento titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia
+				Combo ComboMunicipioNacimiento titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio dependeDe=ComboProvinciaNacimiento
 			}
 
 		}
 		
-		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" {
+		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" permiso=soloLeer{
 			Texto titulo="idTransmision" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.idTransmision
 			Fecha titulo="Fecha generación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion
 			Texto titulo="Estado" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.estado.literalError
 			Combo titulo="Tipo documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.tipoDocumentacion
 			Texto titulo="Documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.documentacion
 			Grupo respuestaIdentidad titulo="Identidad" {
-				Texto titulo="Nombre" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.nombre
+				Texto titulo="Nombre completo" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.nombreCompleto
 				Texto titulo="Apellido 1" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.apellido1
 				Texto titulo="Apellido 2" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.apellido2
 				Texto titulo="Nacionalidad" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.nacionalidad
@@ -92,12 +97,12 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 				Texto titulo="Sexo" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.sexo.nombre
 				Grupo datosNacimiento titulo="Datos nacimiento" {
 					Fecha titulo="Fecha de nacimiento" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosNacimiento.fecha
-					Combo titulo="Localidad" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosNacimiento.municipio
-					Combo titulo="Provincia" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosNacimiento.provincia
+					Combo ComboProvinciaNacimiento titulo="Provincia" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosNacimiento.provincia
+					Combo ComboLocalidadNacimiento titulo="Localidad" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosNacimiento.municipio
 				}
 				Grupo datosDireccion titulo="Datos dirección" {
-					Combo titulo="Localidad" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosDireccion.localidad
 					Combo titulo="Provincia" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosDireccion.provincia
+					Texto titulo="Localidad" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosDireccion.localidad
 					Texto titulo="Tipo de vía" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosDireccion.datosVia.tipo
 					Texto titulo="Vía" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.datosTitular.datosDireccion.datosVia.nombre
 				}
@@ -125,25 +130,23 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		}
 		Grupo datosEspecificosSolicitudTransmision titulo="Datos específicos de la Solicitud" {
 			Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante
-			Grupo solicitud titulo="Solicitud" {
-				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma requerido busqueda
-				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia requerido busqueda dependeDe=ComboComunidadAutonoma
-				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla requerido busqueda dependeDe=ComboProvincia
-				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio requerido busqueda dependeDe=ComboIsla
+			Grupo solicitud titulo="Residencia" {
+				Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.comunidadAutonoma busqueda
+				Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.provincia busqueda dependeDe=ComboComunidadAutonoma
+				Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.isla busqueda dependeDe=ComboProvincia
+				Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.residencia.municipio busqueda dependeDe=ComboIsla
 				Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.espanol
 			}
-			Grupo datosResidencia titulo="Datos específicos de residencia" {
-				Grupo Residencia titulo="Nacimiento" {
-					Fecha FechaNacimiento titulo="Fecha" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha requerido
-					Combo ComboComunidadAutonomaNacimiento titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.comunidadAutonoma requerido busqueda
-					Combo ComboProvinciaNacimiento titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia requerido busqueda dependeDe=ComboComunidadAutonomaNacimiento
-					Combo ComboIslaNacimiento titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.isla requerido busqueda dependeDe=ComboProvinciaNacimiento
-					Combo ComboMunicipioNacimiento titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio requerido busqueda dependeDe=ComboIslaNacimiento
-				}
+			Grupo datosNacimiento titulo="Nacimiento" {
+				Fecha FechaNacimiento titulo="Fecha" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.fecha
+				Combo ComboComunidadAutonomaNacimiento titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.comunidadAutonoma busqueda
+				Combo ComboProvinciaNacimiento titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.provincia busqueda dependeDe=ComboComunidadAutonomaNacimiento
+				Combo ComboIslaNacimiento titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.isla busqueda dependeDe=ComboProvinciaNacimiento
+				Combo ComboMunicipioNacimiento titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.solicitudNacimiento.municipio busqueda dependeDe=ComboIslaNacimiento
 			}
 		}
 		
-		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" {
+		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" permiso=soloLeer {
 			Texto titulo="idTransmision" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.idTransmision
 			Fecha titulo="Fecha generación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion
 			Texto titulo="Estado" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.estado.literalError

@@ -111,12 +111,21 @@ public class EditarSolicitudTransmisionSVDIdentidadController extends EditarSoli
 
 		if (!Messages.hasErrors()) {
 
+			//Se asignan los datos de la solicitud y del titular para no tener que recogerlos por el formulario
 			dbSolicitudTransmisionSVDFAP.solicitud = solicitud;
 			dbSolicitudTransmisionSVDFAP.nombreServicio = "identidad";
 
 			dbSolicitudTransmisionSVDFAP.datosGenericos = solicitudTransmisionSVDFAP.datosGenericos;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = solicitud.solicitante.numeroId;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = solicitud.solicitante.nombreCompleto;
+
+			String nombre = solicitud.solicitante.fisica.nombre;
+			String apellido1 = solicitud.solicitante.fisica.primerApellido;
+			String apellido2 = solicitud.solicitante.fisica.segundoApellido;
+
+			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombre = nombre;
+			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido1 = apellido1;
+			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido2 = apellido2;
+			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
 
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion = solicitud.solicitante.fisica.nip.tipo;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.id.toString(); //Id expediente = Id solicitud?

@@ -1,21 +1,16 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -29,7 +24,6 @@ public class TitularSVDFAP extends FapModel {
 
 	public String documentacion;
 
-	@Transient
 	public String nombreCompleto;
 
 	public String nombre;
@@ -47,12 +41,12 @@ public class TitularSVDFAP extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	
-	public TitularSVDFAP(){
+
+	public TitularSVDFAP() {
 		init();
 	}
-	
-	public TitularSVDFAP(String nombre, String nombreCompleto, String apellido1, String apellido2, String nif, String tipoDocumentacion){
+
+	public TitularSVDFAP(String nombre, String nombreCompleto, String apellido1, String apellido2, String nif, String tipoDocumentacion) {
 		init();
 		this.setDocumentacion(nif);
 		this.setNombreCompleto(nombreCompleto);
@@ -109,7 +103,7 @@ public class TitularSVDFAP extends FapModel {
 	public void setTipoDocumentacion(String tipoDocumentacion) {
 		this.tipoDocumentacion = tipoDocumentacion;
 	}
-	
+
 	// === MANUAL REGION END ===
 
 }

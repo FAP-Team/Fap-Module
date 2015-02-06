@@ -48,7 +48,7 @@ Entidad FuncionarioSVDFAP{
 
 Entidad TitularSVDFAP{
  String documentacion
- String nombreCompleto transient
+ String nombreCompleto
  String nombre
  String apellido1
  String apellido2

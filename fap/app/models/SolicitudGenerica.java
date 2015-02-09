@@ -1,28 +1,36 @@
 package models;
 
-import java.util.*;
-import javax.persistence.*;
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.data.validation.*;
-import org.joda.time.DateTime;
-import models.*;
-import messages.Messages;
-import validation.*;
-import audit.Auditable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
-// === IMPORT REGION START ===
-import controllers.fap.SecureController;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import messages.Messages;
+
+import org.joda.time.DateTime;
+
+import play.db.jpa.JPA;
+import play.db.jpa.JPABase;
+import utils.PeticionModificacion;
+import validation.ValueFromTable;
+import audit.Auditable;
+
+import com.google.gson.Gson;
+
 import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
-import play.db.jpa.JPABase;
-import play.mvc.Http.Request;
-import utils.PeticionModificacion;
-import com.google.gson.Gson;
+// === IMPORT REGION START ===
 
 // === IMPORT REGION END ===
 
@@ -158,6 +166,7 @@ public class SolicitudGenerica extends FapModel {
 		init();
 	}
 
+	@Override
 	public void init() {
 
 		if (solicitante == null)
@@ -338,32 +347,54 @@ public class SolicitudGenerica extends FapModel {
 	}
 
 	private void compruebaUsuarioParticipacion(String user, String name, String email) {
+
 		if (user == null) {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
-		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
-		if (p == null) {
-			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
+		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).fetch();
 
-			if (agente == null) {
-				agente = new Agente();
-				agente.username = user;
-				agente.name = name;
-				agente.email = email;
-				agente.roles = new HashSet<String>();
-				agente.roles.add("usuario");
-				agente.rolActivo = "usuario";
-				agente.save();
-				play.Logger.info("Creado el agente %s", user);
-			}
-			p = new Participacion();
-			p.agente = agente;
-			p.solicitud = this;
-			p.tipo = TiposParticipacionEnum.solicitante.name();
-			p.save();
+		Participacion participacionSolicitante = null;
+
+		//Si el DNI del solicitante ya pertenece a una participacion de tipo solicitante
+		for (Participacion participacion: participaciones) {
+			if (participacion != null)
+				if (participacion.tipo.equals(TiposParticipacionEnum.solicitante.name().toString())) {
+						participacionSolicitante = Participacion.findById(participacion.id);
+						break;
+				}
+		}
+
+		Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
+
+		if (agente == null) {
+			agente = new Agente();
+			agente.username = user;
+			agente.name = name;
+			agente.email = email;
+			agente.roles = new HashSet<String>();
+			agente.roles.add("usuario");
+			agente.rolActivo = "usuario";
+			agente.save();
+			play.Logger.info("Creado el agente %s", user);
+		}
+
+		//Si se va a modificar la participación o crear una nueva
+		if (participacionSolicitante == null) {
+			//Si ya existía un solicitante, se recupera la participación para modificarla
+			participacionSolicitante = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.solicitante.name(), this.id).first();
+			//Si no existía ningún solicitante se crea uno nuevo
+			if (participacionSolicitante == null)
+				participacionSolicitante = new Participacion();
+
+			//Se asignan/actualizan los campos de la participación
+			participacionSolicitante.agente = agente;
+			participacionSolicitante.solicitud = this;
+			participacionSolicitante.tipo = TiposParticipacionEnum.solicitante.name();
+			participacionSolicitante.save();
+
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
-		} //end if p == null
+		}
 	}// end método
 
 	private void compruebaUsuarioParticipacionRepresentante(String user, String name, String email) {

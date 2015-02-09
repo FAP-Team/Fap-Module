@@ -411,21 +411,29 @@ public class SecureController extends GenericController{
 
     @Util
     public static void logoutFap() throws Throwable{
-    	String redireccion = buscarRedireccionLogout();
-    	boolean logoutPorTicketing = logoutPorTicketing();
-    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
-    	Cache.delete(session.getId());
-        session.clear();
-        response.removeCookie("rememberme");
-        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
-        Messages.keep();
-    	if (redireccion != null){
-	        redirect(redireccion);
-        } else if(redireccionTicketing != null && logoutPorTicketing){
-            redirect(redireccionTicketing);
-        } else {
-        	redirect("fap.SecureController.loginFap");
-        }
+    	try {
+	    	String redireccion = buscarRedireccionLogout();
+	    	boolean logoutPorTicketing = logoutPorTicketing();
+	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
+	    	log.info("Logout del usuario: "+ session.get("username"));
+	    	Cache.delete(session.getId());
+	        session.clear();
+	        response.removeCookie("rememberme");
+	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
+	        Messages.keep();
+	    	if (redireccion != null){
+	    		log.info(" Redirigiendo a url: " + redireccion);
+		        redirect(redireccion);
+	        } else if(redireccionTicketing != null && logoutPorTicketing){
+	        	log.info(" Ticketing redirigiendo a url: " + redireccionTicketing);
+	            redirect(redireccionTicketing);
+	        } else {
+	        	log.info(" Redirigiendo a login");
+	        	redirect("fap.SecureController.loginFap");
+	        }
+    	}catch (Exception e){
+    		new Throwable("Ha ocurrido un error fatal en Logout");
+    	}
     }
     
     @Util
@@ -501,8 +509,8 @@ public class SecureController extends GenericController{
     }
     
     @Util
-    public static void authenticateTicketingPorDefecto(String ticket) {
-    	
+    public static void authenticateTicketingPorDefecto(String ticket) throws Throwable {
+
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
             flash.keep("url");
             play.Logger.error("Se ha intentado un login con ticketing y está desactivada esta opción. Ticket["+ticket+"]");
@@ -521,30 +529,28 @@ public class SecureController extends GenericController{
     
 		TicketingService ticketingService = InjectorConfig.getInjector().getInstance(TicketingService.class);
 		HttpResponse wsResponse = null;
+		String numDocumento = null;
+		String tipoDocumento = null;
+		String uriTercero = null;
 		try {
 			wsResponse = ticketingService.hazPeticion(asunto, ticket);
-		} catch (TicketingServiceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    	if (wsResponse == null || wsResponse.getStatus() != 200) {
-			try {
+			if (wsResponse == null || wsResponse.getStatus() != 200) {
 				flash.put("error_ticketing","Error obteniendo los datos de terceros");
 				flash.keep("error_ticketing");
 				logoutFap();
-			} catch (Throwable e) {
-				log.error("No se ha podido recuperar los datos de terceros: " + e.getMessage());
-				return;
-			}
-    	}
-    
-		String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
-		String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
-		String uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+	    	} else {
+	    		numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
+	    		tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
+	    		uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+	    	}
+		} catch (TicketingServiceException e1) {
+			play.Logger.error("Error fatal consultando el servicio de ticketing.");
+			new Throwable("Error fatal consultando el servicio de ticketing.");
+		}
 
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
-		Agente agente = new Agente();
+		Agente agente = null;
 		try {
 			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion (numDocumento,tipoDocumento);
 		} catch (TercerosServiceException e) {
@@ -566,37 +572,32 @@ public class SecureController extends GenericController{
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
             Messages.keep();
             loginFap();
-			// TODO: Los demás datos... no se pueden obtener
 		} else
 			if (session.contains("username") && agente.username != null && agente.username.compareTo(session.get("username")) != 0){
 				try {
-					log.info("Intentando inicio de sesión mediante ticketig (ticket = "+ ticket + " y agente = " + agente.username + ")");
+					log.info("Intentando inicio de sesión mediante ticketing (ticket = "+ ticket + " y agente = " + agente.username + ")");
 					Messages.error("Error en la sesión de usuario.");
 					flash.put("error_ticketing","Error de autentificación por ticketing");
 					flash.keep("error_ticketing");
 					logoutFap();
 				} catch (Throwable e) {
-					e.printStackTrace();
+					play.Logger.error("Error fatal en la sesión de usuario.");
+					new Throwable("Error fatal en la sesión de usuario.");
 				}
 			}
     	
-    	
-     	log.info("Login con ticketing. User: "+agente.username);
      	// Check tokens
         Boolean allowed = false;
-     	
-     	log.debug("Agente encontrado " + agente);
-     	
      	if(agente != null){
      		if(Play.mode.isDev()){
      			//En modo desarrollo se permite hacer login a cualquier usuario
      			allowed = true;
+     			log.debug("Allowed " + allowed);
      		}else {
      	        // TODO: Comprobar algo?
      		}
      	}
-		log.debug("Allowed " + allowed);
-
+	
 		// Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.ticketing.name();
 		if (agente.getSortRoles().isEmpty()) {
@@ -607,6 +608,7 @@ public class SecureController extends GenericController{
 		agente.save();
 
 		// Mark user as connected
+		session.clear();
 		session.put("username", agente.username);
 
 		// Redirect to the original URL (or /)

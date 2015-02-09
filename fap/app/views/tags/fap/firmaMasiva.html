@@ -617,9 +617,9 @@
                 // Se llama a initFirma antes de realizar la firma de forma sincrona
                 // y se comprueba si ya estaba inicializado
                 #{if miniApplet}
-                   if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
+                  // if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
                       callback();
-                   }
+                  // } 
                 #{/if}
                 
 	            var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);

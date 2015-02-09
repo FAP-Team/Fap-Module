@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
-
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Documento;
@@ -19,10 +17,13 @@ import play.mvc.Util;
 import reports.Report;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
+
+import com.google.gson.Gson;
+
 import controllers.gen.DocumentacionFAPControllerGen;
 
 public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
-	
+
 	public static void index(String accion, Long idSolicitud) {
 		if (accion == null)
 			accion = getAccion();
@@ -48,7 +49,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		log.info("Visitando página: " + "fap/DocumentacionFAP/DocumentacionFAP.html");
 		renderTemplate("gen/DocumentacionFAP/DocumentacionFAP.html", accion, idSolicitud, solicitud);
 	}
-	
+
 	@Util
 	// Este @Util es necesario porque en determinadas circunstancias crear(..) llama a editar(..).
 	public static void formAbrirPlantillaFH(Long idSolicitud, String btnAbrirPlantillaFH) {
@@ -77,7 +78,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 			log.info("Acción Editar de página: " + "gen/DocumentacionFAP/DocumentacionFAP.html" + " , intentada sin éxito (Problemas de Validación)");
 		DocumentacionFAPController.formAbrirPlantillaFHRender(idSolicitud);
 	}
-	
+
 	@Util
 	public static String firmardocumentos(Long idDocumento, String firma) {
 
@@ -87,9 +88,9 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		ArrayList<String> aciertos = new ArrayList<String>();
 
 		if (documento != null) {
-			
+
 			Messages.clear();
-			
+
 			play.Logger.info("Firmando documento " + documento.uri);
 
 			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
@@ -109,7 +110,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
 			} else {
 				//ERROR
-				String error = "No tiene permisos suficientes para realizar la acción";
+				String error = "No tiene permisos suficientes para firmar el documento " + documento.descripcion;
 				Messages.error(error);
 				errores.add(error);
 			}
@@ -121,26 +122,27 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 				else
 					json.put("firmado", false);
 			}
-			
+
 		} else {
 			String error = "Error al obtener el documento " + idDocumento;
 			play.Logger.info(error);
 			errores.add(error);
 		}
-		
+
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
-			errores.add(mensaje);
+			//Comentado porque está duplicando los mensajes de error
+//			errores.add(mensaje);
 		}
-		
+
 		for (String mensaje : Messages.messages(MessageType.OK)) {
 			aciertos.add(mensaje);
 		}
-		
+
 		json.put("errores", errores);
 		json.put("aciertos", aciertos);
 		return new Gson().toJson(json);
 	}
-	
+
 	@javax.inject.Inject
 	static GestorDocumentalService gestorDocumentalService;
 
@@ -154,7 +156,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
 			HashMap json = new HashMap();
-			
+
 			if (FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
 				json.put("firmado", true);
 				json.put("descripcion", documento.descripcion);

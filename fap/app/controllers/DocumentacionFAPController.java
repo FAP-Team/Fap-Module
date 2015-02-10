@@ -91,29 +91,24 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 
 			Messages.clear();
 
-			play.Logger.info("Firmando documento " + documento.uri);
-
 			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			Map<String, Object> vars = new HashMap<String, Object>();
 			json.put("idDocumento", idDocumento);
 			json.put("firmado", false);
-			if (secure.checkAcceso("editarFirmaDocumento", "editar", ids, vars)) {
-				if (documento.firmantes == null) {
-					documento.firmantes = new Firmantes();
-					documento.save();
-				}
-				if (documento.firmantes.todos == null || documento.firmantes.todos.size() == 0) {
-					Long idSolicitud = ids.get("idSolicitud");
-					documento.firmantes.todos = calcularFirmantesdocumentos(idSolicitud);
-					documento.firmantes.save();
-				}
-				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
-			} else {
-				//ERROR
-				String error = "No tiene permisos suficientes para firmar el documento " + documento.descripcion;
-				Messages.error(error);
-				errores.add(error);
+
+			play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + ids.get("idSolicitud") );
+
+			if (documento.firmantes == null) {
+				documento.firmantes = new Firmantes();
+				documento.save();
 			}
+
+			//Calcula los firmantes del documento
+			Long idSolicitud = ids.get("idSolicitud");
+			play.Logger.info("Calculando firmantes del documento...");
+			documento.firmantes.todos = calcularFirmantesdocumentos(idSolicitud);
+			documento.firmantes.save();
+
+			FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
 
 			if (!Messages.hasErrors()) {
 				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
@@ -130,8 +125,7 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 		}
 
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
-			//Comentado porque está duplicando los mensajes de error
-//			errores.add(mensaje);
+			errores.add(mensaje);
 		}
 
 		for (String mensaje : Messages.messages(MessageType.OK)) {

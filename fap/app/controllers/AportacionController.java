@@ -1,7 +1,5 @@
 package controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,10 +10,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-
-import com.google.gson.Gson;
-
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Aportacion;
@@ -24,22 +18,24 @@ import models.Firma;
 import models.Firmante;
 import models.Firmantes;
 import models.SolicitudGenerica;
+
+import org.joda.time.DateTime;
+
 import platino.FirmaUtils;
 import play.mvc.Util;
-import properties.FapProperties;
-import reports.Report;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import tramitacion.TramiteBase;
 import utils.StringUtils;
+
+import com.google.gson.Gson;
+
 import controllers.fap.AportacionFapController;
-import controllers.fap.PresentacionFapController;
 import controllers.gen.AportacionControllerGen;
-import es.gobcan.eadmon.aed.ws.AedExcepcion;
-			
+
 public class AportacionController extends AportacionControllerGen {
 
-	
+
 	@Inject
 	static GestorDocumentalService gestorDocumentalService;
 
@@ -67,7 +63,7 @@ public class AportacionController extends AportacionControllerGen {
 		log.info("Visitando página: " + "gen/Aportacion/Aportacion.html");
 		renderTemplate("gen/Aportacion/Aportacion.html", accion, idSolicitud, solicitud);
 	}
-	
+
 	public static void presentar(Long idSolicitud, SolicitudGenerica solicitud, String botonPresentar) {
 		checkAuthenticity();
 		if (!permisoPresentarSinRegistrar("editar")) {
@@ -77,12 +73,12 @@ public class AportacionController extends AportacionControllerGen {
 		solicitud = dbSolicitud;
 		Aportacion aportacion = solicitud.aportaciones.actual;
 		if (!Messages.hasErrors()) {
-			
+
 			//Aportacion aportacion = solicitud.aportaciones.actual;
 
 			if(aportacion.documentos.isEmpty()){
 				Messages.error("Debe aportar al menos un documento");
-				
+
 				//Reinicia el estado de la aportación
 				aportacion.estado = null;
 				aportacion.save();
@@ -93,7 +89,7 @@ public class AportacionController extends AportacionControllerGen {
 					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
 				}
 			}
-			
+
 			if(!Messages.hasErrors() && !aportacion.registro.fasesRegistro.borrador){
 				try {
 					TramiteBase tramite = AportacionFapController.invoke("getTramiteObject", idSolicitud);
@@ -119,12 +115,12 @@ public class AportacionController extends AportacionControllerGen {
 		if(!Messages.hasErrors()){
 			aportacion.estado = "preparada";
 			aportacion.save();
-			Messages.ok("La solicitud de aportación se preparó correctamente");		
+			Messages.ok("La solicitud de aportación se preparó correctamente");
 		}
-		
+
 		presentarRender(idSolicitud);
 	}
-	
+
     /**
      * Presenta la aportación de documentación sin registrar los documentos.
      * Deberá realizarlo únicamente un gestor, administrador o revisor.
@@ -145,7 +141,7 @@ public class AportacionController extends AportacionControllerGen {
 
 			if(aportacion.documentos.isEmpty()){
 				Messages.error("Debe aportar al menos un documento");
-				
+
 				//Reinicia el estado de la aportación
 				aportacion.estado = null;
 				aportacion.save();
@@ -156,12 +152,12 @@ public class AportacionController extends AportacionControllerGen {
 					play.Logger.info("No se ha podido deshacer la aportación de la solicitud tras no haber ningun documento aportado: "+e.getMessage());
 				}
 			}
-			
+
 			if(!Messages.hasErrors()) {
 				aportacion.estado = "borrador";
 				aportacion.save();
 				AportacionController.presentarSinRegistrarValidateCopy("editar", dbSolicitud, solicitud);
-				
+
 				validateDateIsAfterNow(aportacion.fechaAportacionSinRegistro);
 				clasificarDocumentosAportacionSinRegistro(dbSolicitud, aportacion);
 				finalizarAportacion(dbSolicitud, aportacion);
@@ -179,7 +175,7 @@ public class AportacionController extends AportacionControllerGen {
 			log.info("Acción Editar de página: " + "gen/Aportacion/Aportacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		AportacionController.presentarSinRegistrarRender(idSolicitud);
 	}
-    
+
     private static void validateDateIsAfterNow(DateTime fecha) {
         if(!Messages.hasErrors()){
             if ((fecha == null) || (fecha.isAfterNow())) {
@@ -189,7 +185,7 @@ public class AportacionController extends AportacionControllerGen {
             }
         }
     }
-    
+
     private static void clasificarDocumentosAportacionSinRegistro(SolicitudGenerica solicitud, Aportacion aportacion) {
         if (!Messages.hasErrors() && aportacion.estado.equals("borrador")) {
             // Establecemos la fecha de registro en todos los documentos
@@ -219,13 +215,13 @@ public class AportacionController extends AportacionControllerGen {
             }
         }
     }
-    
+
     /**
      * Mueve la aportación a la lista de aportaciones clasificadas Añade los
      * documentos a la lista de documentos
-     * 
+     *
      * Cambia el estado de la aportación a finalizada
-     * 
+     *
      * @param solicitud
      * @param aportacion
      */
@@ -241,7 +237,7 @@ public class AportacionController extends AportacionControllerGen {
             play.Logger.debug("Los documentos de la aportacion se movieron correctamente");
         }
     }
-    
+
 	@Util
 	public static String firmardocumentos(Long idDocumento, String firma) {
 
@@ -251,32 +247,27 @@ public class AportacionController extends AportacionControllerGen {
 		ArrayList<String> aciertos = new ArrayList<String>();
 
 		if (documento != null) {
-			
+
 			Messages.clear();
-			
-			play.Logger.info("Firmando documento " + documento.uri);
 
 			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			Map<String, Object> vars = new HashMap<String, Object>();
 			json.put("idDocumento", idDocumento);
 			json.put("firmado", false);
-			if (secure.checkAcceso("editarFirmaDocumento", "editar", ids, vars)) {
-				if (documento.firmantes == null) {
-					documento.firmantes = new Firmantes();
-					documento.save();
-				}
-				if (documento.firmantes.todos == null || documento.firmantes.todos.size() == 0) {
-					Long idSolicitud = ids.get("idSolicitud");
-					documento.firmantes.todos = calcularFirmantesdocumentos(idSolicitud);
-					documento.firmantes.save();
-				}
-				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
-			} else {
-				//ERROR
-				String error = "No tiene permisos suficientes para realizar la acción";
-				Messages.error(error);
-				errores.add(error);
+
+			play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + ids.get("idSolicitud") );
+
+			if (documento.firmantes == null) {
+				documento.firmantes = new Firmantes();
+				documento.save();
 			}
+
+			//Calcula los firmantes del documento
+			Long idSolicitud = ids.get("idSolicitud");
+			play.Logger.info("Calculando firmantes del documento...");
+			documento.firmantes.todos = calcularFirmantesdocumentos(idSolicitud);
+			documento.firmantes.save();
+
+			FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
 
 			if (!Messages.hasErrors()) {
 				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
@@ -285,21 +276,21 @@ public class AportacionController extends AportacionControllerGen {
 				else
 					json.put("firmado", false);
 			}
-			
+
 		} else {
 			String error = "Error al obtener el documento " + idDocumento;
 			play.Logger.info(error);
 			errores.add(error);
 		}
-		
+
 		for (String mensaje : Messages.messages(MessageType.OK)) {
 			aciertos.add(mensaje);
 		}
-		
+
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
 			errores.add(mensaje);
 		}
-		
+
 		json.put("errores", errores);
 		json.put("aciertos", aciertos);
 		return new Gson().toJson(json);

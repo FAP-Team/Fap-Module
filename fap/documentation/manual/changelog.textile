@@ -1,5 +1,16 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC2
+
+* Se modifica el proceso de comprobación de la firma de documentos en documentación y aportación sin utilizar las participaciones.
+* Se corrigen errores en la asignación de participaciones en una solicitud.
+* Se añaden mejoras y más información en el log referente a los accesos a las aplicaciones.
+* Se permite una segunda verificación de un trámite.
+* Se eliminan las migas de pan a no ser que se indique la property fap.login.type.ticketing=false en la aplicación.
+* Incorporación de página Logout para ticketing indicar en la property:fap.logout.ticketing.url
+* Actualizaciones de reports asociados a la notificación de resoluciones.
+* Corregidos errores en la autorización de usuarios en una solicitud.
+
 h3. Versión 2.5.6RC1
 
 * Corregido, se crean usuarios vacíos.

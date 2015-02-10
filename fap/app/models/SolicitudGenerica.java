@@ -352,6 +352,9 @@ public class SolicitudGenerica extends FapModel {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
+
+		play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
+
 		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).fetch();
 
 		Participacion participacionSolicitante = null;
@@ -402,8 +405,13 @@ public class SolicitudGenerica extends FapModel {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
+
+		play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
+
 		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=? and participacion.tipo=?", user, this.id, TiposParticipacionEnum.representante.name()).first();
 		if (p == null) {
+
+			play.Logger.info("No se han encontrado participaciones para este usuario en esta solicitud");
 			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
 
 			if (agente == null) {

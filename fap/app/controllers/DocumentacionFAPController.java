@@ -14,6 +14,7 @@ import models.Firmantes;
 import models.SolicitudGenerica;
 import platino.FirmaUtils;
 import play.mvc.Util;
+import play.mvc.Scope.Session;
 import reports.Report;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -95,6 +96,11 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 			json.put("idDocumento", idDocumento);
 			json.put("firmado", false);
 
+			String sessionid = Session.current().getId();
+			String sessionuser = null;
+			if (Session.current().contains("username"))
+				sessionuser = Session.current().get("username");
+			play.Logger.info("Identificador de sesion: " + sessionid + " usuario de sesion: " + sessionuser);
 			play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + ids.get("idSolicitud") );
 
 			if (documento.firmantes == null) {

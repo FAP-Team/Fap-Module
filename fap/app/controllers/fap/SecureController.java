@@ -200,6 +200,10 @@ public class SecureController extends GenericController{
     	
     	String sessionid = Session.current().getId();
     	String serverToken = (String)Cache.get(sessionid + "login.cert.token");
+    	String sessionuser = "anonimo";
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
+    	play.Logger.info("Antes de consultar certificado, identificador de sesión: " + sessionid + " usuario de sesion antes de : " + sessionuser);
     	
     	//Comprueba que el token firmado sea el correcto
     	if(!token.equals(serverToken)) validation.addError("login-certificado", "El token firmado no es correcto");
@@ -261,6 +265,7 @@ public class SecureController extends GenericController{
 		agente.save();
 
 		//Almacena el usuario en la sesion
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
 		session.put("username", agente.username);
 		
 		redirectToOriginalURL();
@@ -515,6 +520,12 @@ public class SecureController extends GenericController{
     @Util
     public static void authenticateTicketingPorDefecto(String ticket) throws Throwable {
 
+    	String sessionid = Session.current().getId();
+    	String sessionuser = "anonimo";
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
+    	play.Logger.info("Antes de consultar ticketing, identificador de sesion: " + sessionid + " usuario de sesion antes de : " + sessionuser);
+    	
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
             flash.keep("url");
             play.Logger.error("Se ha intentado un login con ticketing y está desactivada esta opción. Ticket["+ticket+"]");
@@ -546,6 +557,7 @@ public class SecureController extends GenericController{
 	    		numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
 	    		tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
 	    		uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+	    		play.Logger.info("Datos recibidos de ticketing: numero de documento:" + numDocumento + " tipo de documento: " + tipoDocumento);
 	    	}
 		} catch (TicketingServiceException e1) {
 			play.Logger.error("Error fatal consultando el servicio de ticketing.");
@@ -579,7 +591,7 @@ public class SecureController extends GenericController{
 		} else
 			if (session.contains("username") && agente.username != null && agente.username.compareTo(session.get("username")) != 0){
 				try {
-					log.info("Intentando inicio de sesión mediante ticketing (ticket = "+ ticket + " y agente = " + agente.username + ")");
+					log.info("Intentando inicio de sesion mediante ticketing (ticket = "+ ticket + " y agente = " + agente.username + ")");
 					Messages.error("Error en la sesión de usuario.");
 					flash.put("error_ticketing","Error de autentificación por ticketing");
 					flash.keep("error_ticketing");
@@ -610,8 +622,10 @@ public class SecureController extends GenericController{
 			agente.cambiarRolActivo("usuario");
 		}
 		agente.save();
+		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username);
 
 		// Mark user as connected
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
 		session.put("username", agente.username);
 
 		// Redirect to the original URL (or /)

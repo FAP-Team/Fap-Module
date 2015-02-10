@@ -415,12 +415,16 @@ public class SecureController extends GenericController{
 	    	String redireccion = buscarRedireccionLogout();
 	    	boolean logoutPorTicketing = logoutPorTicketing();
 	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
-	    	log.info("Logout del usuario: "+ session.get("username"));
+	    	String usuarioSesion = null;
+	    	if (session.contains("username"))
+	    		usuarioSesion = session.get("username");	    	
+	    	log.info("Logout del usuario: "+ usuarioSesion);
 	    	Cache.delete(session.getId());
 	        session.clear();
 	        response.removeCookie("rememberme");
 	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
 	        Messages.keep();
+	        
 	    	if (redireccion != null){
 	    		log.info(" Redirigiendo a url: " + redireccion);
 		        redirect(redireccion);
@@ -608,7 +612,6 @@ public class SecureController extends GenericController{
 		agente.save();
 
 		// Mark user as connected
-		session.clear();
 		session.put("username", agente.username);
 
 		// Redirect to the original URL (or /)

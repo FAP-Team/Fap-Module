@@ -1,36 +1,27 @@
 package models;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import messages.Messages;
-
-import org.joda.time.DateTime;
-
+import java.util.*;
+import javax.persistence.*;
+import play.Logger;
 import play.db.jpa.JPA;
-import play.db.jpa.JPABase;
-import utils.PeticionModificacion;
-import validation.ValueFromTable;
+import play.db.jpa.Model;
+import play.data.validation.*;
+import org.joda.time.DateTime;
+import models.*;
+import messages.Messages;
+import validation.*;
 import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
+// === IMPORT REGION START ===
+
+import play.db.jpa.JPABase;
+import controllers.fap.SecureController;
 import com.google.gson.Gson;
-
+import utils.PeticionModificacion;
 import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
-// === IMPORT REGION START ===
 
 // === IMPORT REGION END ===
 
@@ -166,7 +157,6 @@ public class SolicitudGenerica extends FapModel {
 		init();
 	}
 
-	@Override
 	public void init() {
 
 		if (solicitante == null)
@@ -360,11 +350,11 @@ public class SolicitudGenerica extends FapModel {
 		Participacion participacionSolicitante = null;
 
 		//Si el DNI del solicitante ya pertenece a una participacion de tipo solicitante
-		for (Participacion participacion: participaciones) {
+		for (Participacion participacion : participaciones) {
 			if (participacion != null)
 				if (participacion.tipo.equals(TiposParticipacionEnum.solicitante.name().toString())) {
-						participacionSolicitante = Participacion.findById(participacion.id);
-						break;
+					participacionSolicitante = Participacion.findById(participacion.id);
+					break;
 				}
 		}
 

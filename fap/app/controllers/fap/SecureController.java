@@ -524,7 +524,7 @@ public class SecureController extends GenericController{
     	String sessionuser = "anonimo";
 		if (Session.current().contains("username"))
 			sessionuser = Session.current().get("username");
-    	play.Logger.info("Antes de consultar ticketing, identificador de sesion: " + sessionid + " usuario de sesion antes de : " + sessionuser);
+    	play.Logger.info("Antes de consultar ticketing, (identificador de sesion: " + sessionid + ", usuario de sesion : " + sessionuser +")");
     	
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
             flash.keep("url");
@@ -548,6 +548,7 @@ public class SecureController extends GenericController{
 		String tipoDocumento = null;
 		String uriTercero = null;
 		try {
+			play.Logger.info("Consultando el servicio de ticketing: (asunto: " + asunto + ", " + "ticket: " + ticket + ")");
 			wsResponse = ticketingService.hazPeticion(asunto, ticket);
 			if (wsResponse == null || wsResponse.getStatus() != 200) {
 				flash.put("error_ticketing","Error obteniendo los datos de terceros");
@@ -557,7 +558,8 @@ public class SecureController extends GenericController{
 	    		numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
 	    		tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
 	    		uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
-	    		play.Logger.info("Datos recibidos de ticketing: numero de documento:" + numDocumento + " tipo de documento: " + tipoDocumento);
+	    		play.Logger.info("Datos recibidos de ticketing: (numero de documento:" + numDocumento + ", tipo de documento: " + tipoDocumento
+	    				+ ", uriTercero: " + uriTercero +")");
 	    	}
 		} catch (TicketingServiceException e1) {
 			play.Logger.error("Error fatal consultando el servicio de ticketing.");
@@ -568,6 +570,7 @@ public class SecureController extends GenericController{
 		tercerosService.mostrarInfoInyeccion();
 		Agente agente = null;
 		try {
+			play.Logger.info("Consultando el servicio de terceros: (numDocumento: " + numDocumento + ", " + "tipoDocumento: " + tipoDocumento + ")");
 			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion (numDocumento,tipoDocumento);
 		} catch (TercerosServiceException e) {
 			play.Logger.error("No se ha podido recuperar el tercero con numDoc = " + numDocumento + " y uri = " + uriTercero);
@@ -622,10 +625,10 @@ public class SecureController extends GenericController{
 			agente.cambiarRolActivo("usuario");
 		}
 		agente.save();
-		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username);
+		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username + ")");
 
 		// Mark user as connected
-		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ")");
 		session.put("username", agente.username);
 
 		// Redirect to the original URL (or /)

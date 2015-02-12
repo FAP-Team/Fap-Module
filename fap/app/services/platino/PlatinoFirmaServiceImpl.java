@@ -503,10 +503,11 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
     private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
         Firmante firmante = null;
+        play.Logger.info("Posibles firmantes: ");
         for (Firmante fB : firmantes) {
+        	play.Logger.info("Firmate: (idvalor: " + fB.idvalor + ", tipo: " + fB.tipo + ")");
             if (fB.idvalor.equals(idValorFirmante)) {
                 firmante = fB;
-                break;
             }
         }
         return firmante;

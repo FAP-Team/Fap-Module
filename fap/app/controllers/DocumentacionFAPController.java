@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityTransaction;
+
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Documento;
@@ -13,6 +15,7 @@ import models.Firmante;
 import models.Firmantes;
 import models.SolicitudGenerica;
 import platino.FirmaUtils;
+import play.db.jpa.JPA;
 import play.mvc.Util;
 import play.mvc.Scope.Session;
 import reports.Report;
@@ -81,54 +84,76 @@ public class DocumentacionFAPController extends DocumentacionFAPControllerGen {
 	}
 
 	@Util
-	public static String firmardocumentos(Long idDocumento, String firma) {
+	public static synchronized String firmardocumentos(Long idDocumento, String firma) {
 
-		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		Map<String, Object> json = new HashMap<String, Object>();
 		ArrayList<String> errores = new ArrayList<String>();
 		ArrayList<String> aciertos = new ArrayList<String>();
+		Documento documento = null;
+		SolicitudGenerica solicitud = null;
 
-		if (documento != null) {
-
-			Messages.clear();
-
-			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			json.put("idDocumento", idDocumento);
-			json.put("firmado", false);
-
-			String sessionid = Session.current().getId();
-			String sessionuser = null;
-			if (Session.current().contains("username"))
-				sessionuser = Session.current().get("username");
-			play.Logger.info("Identificador de sesion: " + sessionid + " usuario de sesion: " + sessionuser);
-			play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + ids.get("idSolicitud") );
-
-			if (documento.firmantes == null) {
-				documento.firmantes = new Firmantes();
-				documento.save();
+		EntityTransaction tx = JPA.em().getTransaction();
+		try {
+			if (tx.isActive())
+		    	tx.commit();
+		    tx.begin();
+		    
+			documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+			solicitud = SolicitudGenerica.find("select solicitud from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where documento.id=?", idDocumento).first();
+			if (documento != null) {
+				Messages.clear();
+	
+				String sessionid = Session.current().getId();
+				String sessionuser = null;
+				if (Session.current().contains("username"))
+					sessionuser = Session.current().get("username");
+				play.Logger.info("Identificador de sesion: " + sessionid + " usuario de sesion: " + sessionuser);
+				play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + solicitud.id );
+	
+				json.put("idDocumento", idDocumento);
+				json.put("firmado", false);
+	
+				if (documento.firmantes == null) {
+					documento.firmantes = new Firmantes();
+					documento.save();
+				}
+	
+				//Calcula los firmantes del documento
+				play.Logger.info("Calculando firmantes del documento " + documento.uri + " de la Solicitud " + solicitud.id);
+				documento.firmantes.todos = calcularFirmantesdocumentos(solicitud.id);
+				documento.firmantes.save();
+	
+				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
+	
+				if (!Messages.hasErrors()) {
+					play.Logger.info("Firma de documento " + documento.uri + " con éxito");
+					if (documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos))
+						json.put("firmado", true);
+					else
+						json.put("firmado", false);
+				}
+	
+			} else {
+				String errorDocumento = "";
+				String errorSolicitud = "";
+				if (documento == null) {
+					errorDocumento = "Error al obtener el documento " + idDocumento;
+					errores.add(errorDocumento);
+				}
+				if (solicitud == null) {
+					errorSolicitud = "Error al obtener la solicitud";
+					errores.add(errorSolicitud);
+				}
 			}
-
-			//Calcula los firmantes del documento
-			Long idSolicitud = ids.get("idSolicitud");
-			play.Logger.info("Calculando firmantes del documento...");
-			documento.firmantes.todos = calcularFirmantesdocumentos(idSolicitud);
-			documento.firmantes.save();
-
-			FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
-
-			if (!Messages.hasErrors()) {
-				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
-				if (documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos))
-					json.put("firmado", true);
-				else
-					json.put("firmado", false);
-			}
-
-		} else {
-			String error = "Error al obtener el documento " + idDocumento;
-			play.Logger.info(error);
-			errores.add(error);
+			
+			tx.commit();
+	 	}catch (RuntimeException e) {
+		    if ( tx != null && tx.isActive() ) tx.rollback();
+		    play.Logger.error("Se ha producido un error en el proceso de firma: " + documento.descripcion + " de la solicitud: " + solicitud.id);
+		    Messages.error("Error en el proceso de firma");
+		    e.printStackTrace();
 		}
+		tx.begin();
 
 		for (String mensaje : Messages.messages(MessageType.ERROR)) {
 			errores.add(mensaje);

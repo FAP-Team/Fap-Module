@@ -11,12 +11,14 @@ import java.util.ArrayList;
 
 import es.fap.simpleled.led.impl.AttributeImpl;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
-import templates.GElement
+import templates.GElement;
 import templates.GPagina;
 import templates.GPermiso;
 import templates.GPopup;
@@ -36,7 +38,6 @@ import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
-
 import generator.utils.*;
 
 public class End implements IWorkflowComponent {
@@ -179,15 +180,6 @@ public class End implements IWorkflowComponent {
 			}
 			permisosCode += permiso.permisoCode();
 			String permisoName = permiso.permiso.name;	
-			switchCode += """
-				${els} if("${permisoName}".equals(id))
-					return ${permisoName}(grafico, action, ids, vars);
-			""";
-			switchAccionCode += """
-				${els} if("${permisoName}".equals(id))
-					return ${permisoName}Accion(ids, vars);
-			""";
-			els = "else";
 		}
 	  	  
 		String vars = "";
@@ -214,22 +206,10 @@ import controllers.fap.AgenteController;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ${clazzGenName} extends Secure {
+public final class ${clazzGenName} extends Secure {
 
 	public ${clazzGenName}(Secure next) {
 		super(next);
-	}
-
-	@Override
-	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {
-		${switchCode}		
-		return nextCheck(id, grafico, action, ids, vars);
-	}
-
-	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
-		${switchAccionCode}		
-		return nextAccion(id, ids, vars);
 	}
 	
 	${permisosCode}
@@ -246,21 +226,27 @@ package security;
 
 import java.util.Map;
 
-public class ${clazzName} extends Secure {
+/**
+* Se debe implementar esta clase para extender los permisos que no
+* pueden definirse con el lenguaje FAP
+*/
+public final class ${clazzName} extends Secure {
 	
 	public ${clazzName}(Secure next) {
 		super(next);
 	}
 
-	@Override
-	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {		
-		return nextCheck(id, grafico, action, ids, vars);
-	}
+	/**
+	* Para que los permisos puedan ser invocados por reflexión deben de
+	* ser implementados siguiendo las siguientes plantillas
+	*
+	* @SuppressWarnings("unused")
+	* private ResultadoPermiso [NombrePermiso](String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars)
+	*
+	* @SuppressWarnings("unused")
+	* private ResultadoPermiso [NombrePermiso]Accion(Map<String, Long> ids, Map<String, Object> vars)
+	*/
 
-	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {		
-		return nextAccion(id, ids, vars);
-	}
 }
 """;
 

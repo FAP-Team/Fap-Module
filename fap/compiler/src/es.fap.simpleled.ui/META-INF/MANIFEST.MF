@@ -12,13 +12,18 @@ Require-Bundle: es.fap.simpleled;visibility:=reexport,
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
- org.antlr.runtime
+ org.antlr.runtime,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.compare
 Import-Package: com.google.gson;version="1.7.1",
  com.google.gson.reflect;version="1.7.1",
  org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: es.fap.simpleled.ui.contentassist.antlr,
  es.fap.simpleled.ui.contentassist,
- es.fap.simpleled.ui.quickfix
+ es.fap.simpleled.ui.quickfix,
+ es.fap.simpleled.ui.internal
 Bundle-Activator: es.fap.simpleled.ui.internal.LedActivator
 Bundle-ClassPath: .

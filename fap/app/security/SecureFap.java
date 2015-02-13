@@ -3,6 +3,8 @@ package security;
 
 import messages.Messages;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +13,7 @@ import org.joda.time.DateTime;
 
 import properties.FapProperties;
 import resolucion.ResolucionBase;
-
 import verificacion.VerificacionUtils;
-
 import models.Agente;
 import models.AutorizacionesFAP;
 import models.Busqueda;
@@ -26,7 +26,6 @@ import models.Registro;
 import models.RegistroModificacion;
 import models.ResolucionFAP;
 import models.SolicitudGenerica;
-
 import models.SolicitudGenerica;
 import models.Verificacion;
 import controllers.SolicitudesController;
@@ -46,143 +45,6 @@ public class SecureFap extends Secure {
 	public SecureFap(Secure next) {
 		super(next);
 	}
-
-	@Override
-	public ResultadoPermiso check(String id, String _permiso, String action, Map<String, Long> ids, Map<String, Object> vars) {	
-		if ("hayNuevaDocumentacionVerificacion".equals(id))
-			return hayNuevaDocumentacionVerificacion(_permiso, action, ids, vars);
-		else if ("loginTipoUser".equals(id))
-			return loginTipoUser(_permiso, action, ids, vars);
-		else if ("listaSolicitudesConBusqueda".equals(id))
-			return listaSolicitudesConBusqueda(_permiso, action, ids, vars);
-		else if ("listaSolicitudesSinBusqueda".equals(id))
-			return listaSolicitudesSinBusqueda(_permiso, action, ids, vars);
-		else if ("mostrarResultadoBusqueda".equals(id))
-			return mostrarResultadoBusqueda(_permiso, action, ids, vars);
-		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
-			return esFuncionarioHabilitadoYActivadaProperty(_permiso, action, ids, vars);
-		else if ("verificarObtenerNoProcede".equals(id))
-			return verificarObtenerNoProcede(_permiso, action, ids, vars);
-		else if ("prepararSolicitudModificacion".equals(id))
-			return prepararSolicitudModificacion(_permiso, action, ids, vars);
-		else if ("enBorradorSolicitudModificada".equals(id))
-			return enBorradorSolicitudModificada(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioSolicitudModificada".equals(id))
-			return mensajeIntermedioSolicitudModificada(_permiso, action, ids, vars);
-		else if ("habilitarFHPresentacionModificada".equals(id))
-			return habilitarFHPresentacionModificada(_permiso, action, ids, vars);
-		else if ("firmarRegistrarSolicitudModificadaFH".equals(id))
-			return firmarRegistrarSolicitudModificadaFH(_permiso, action, ids, vars);
-		else if ("firmarRegistrarSolicitudModificada".equals(id))
-			return firmarRegistrarSolicitudModificada(_permiso, action, ids, vars);
-		else if ("firmarSolicitudModificada".equals(id))
-			return firmarSolicitudModificada(_permiso, action, ids, vars);
-		else if ("registrarSolicitudModificada".equals(id))
-			return registrarSolicitudModificada(_permiso, action, ids, vars);
-		else if ("modificarSolicitudModificada".equals(id))
-			return modificarSolicitudModificada(_permiso, action, ids, vars);
-		else if ("modificacionTrasPresentacionDeSolicitud".equals(id))
-			return modificacionTrasPresentacionDeSolicitud(_permiso, action, ids, vars);
-		else if ("menuConModificacion".equals(id))
-			return menuConModificacion(_permiso, action, ids, vars);
-		else if ("clasificadaSolicitudModificada".equals(id))
-			return clasificadaSolicitudModificada(_permiso, action, ids, vars);
-		else if ("permisoGenerarBaremacionResolucion".equals(id))
-			return permisoGenerarBaremacionResolucion(_permiso, action, ids, vars);
-		if ("permisoGenerarInformeConComentarios".equals(id))
-			return permisoGenerarInformeConComentarios(_permiso, action, ids, vars);
-		else if ("permisoGenerarInformeSinComentarios".equals(id))
-			return permisoGenerarInformeSinComentarios(_permiso, action, ids, vars);
-		else if ("permisoClasificarInformeConComentarios".equals(id))
-			return permisoClasificarInformeConComentarios(_permiso, action, ids, vars);
-		else if ("permisoClasificarInformeSinComentarios".equals(id))
-			return permisoClasificarInformeSinComentarios(_permiso, action, ids, vars);
-		else if ("permisoFirmarDocBaremacionResolucion".equals(id))
-			return permisoFirmarDocBaremacionResolucion(_permiso, action, ids, vars);
-		else if ("finalizarResolucion".equals(id))
-			return finalizarResolucion(_permiso, action, ids, vars);
-		else if ("permisoOficioRemision".equals(id))
-			return permisoOficioRemision(_permiso, action, ids, vars);
-		else if ("permisoGenerarOficioRemision".equals(id))
-			return permisoGenerarOficioRemision(_permiso, action, ids, vars);
-		else if ("permisoFirmarOficioRemision".equals(id))
-			return permisoFirmarOficioRemision(_permiso, action, ids, vars);
-		else if ("permisoNotificar".equals(id))
-			return permisoNotificar(_permiso, action, ids, vars);
-		else if ("notificarResolucion".equals(id))
-			return notificarResolucion(_permiso, action, ids, vars);
-		else if ("noHayverificacion".equals(id))
-			return noHayverificacion(_permiso, action, ids, vars);
-		else if ("permisoCopiaExpedientes".equals(id))
-			return permisoCopiaExpedientes(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAlegacionFirmar".equals(id))
-			return mensajeIntermedioAlegacionFirmar(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAlegacionRegistrar".equals(id))
-			return mensajeIntermedioAlegacionRegistrar(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAlegacionJuridica".equals(id))
-			return mensajeIntermedioAlegacionJuridica(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAceptarRenunciarFirmar".equals(id))
-			return mensajeIntermedioAceptarRenunciarFirmar(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAceptarRenunciarRegistrar".equals(id))
-			return mensajeIntermedioAlegacionRegistrar(_permiso, action, ids, vars);
-		else if ("mensajeIntermedioAceptarRenunciarJuridica".equals(id))
-			return mensajeIntermedioAlegacionJuridica(_permiso, action, ids, vars);
-		else if ("firmarRegistrarAceptarRenunciar".equals(id))
-			return firmarRegistrarAceptarRenunciar(_permiso, action, ids, vars);
-		else if ("firmarAceptarRenunciar".equals(id))
-			return firmarAceptarRenunciar(_permiso, action, ids, vars);
-		else if ("registrarAceptarRenunciar".equals(id))
-			return registrarAceptarRenunciar(_permiso, action, ids, vars);
-		else if ("firmarRegistrarAlegacion".equals(id))
-			return firmarRegistrarAlegacion(_permiso, action, ids, vars);
-		else if ("firmarAlegacion".equals(id))
-			return firmarAlegacion(_permiso, action, ids, vars);
-		else if ("registrarAlegacion".equals(id))
-			return registrarAlegacion(_permiso, action, ids, vars);	
-		
-		return nextCheck(id, _permiso, action, ids, vars);
-	}
-
-	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
-		if ("hayNuevaDocumentacionVerificacion".equals(id))
-			return hayNuevaDocumentacionVerificacionAccion(ids, vars);
-		else if ("loginTipoUser".equals(id))
-			return loginTipoUserAccion(ids, vars);
-		else if ("listaSolicitudesConBusqueda".equals(id))
-			return listaSolicitudesConBusquedaAccion(ids, vars);
-		else if ("listaSolicitudesSinBusqueda".equals(id))
-			return listaSolicitudesSinBusquedaAccion(ids, vars);
-		else if ("mostrarResultadoBusqueda".equals(id))
-			return mostrarResultadoBusquedaAccion(ids, vars);
-		else if ("esFuncionarioHabilitadoYActivadaProperty".equals(id))
-			return esFuncionarioHabilitadoYActivadaPropertyAccion(ids, vars);
-		else if ("prepararSolicitudModificacion".equals(id))
-			return prepararSolicitudModificacionAccion(ids, vars);
-		else if ("enBorradorSolicitudModificada".equals(id))
-			return enBorradorSolicitudModificadaAccion(ids, vars);
-		else if ("mensajeIntermedioSolicitudModificada".equals(id))
-			return mensajeIntermedioSolicitudModificadaAccion(ids, vars);
-		else if ("clasificadaSolicitudModificada".equals(id))
-			return clasificadaSolicitudModificadaAccion(ids, vars);
-		else if ("habilitarFHPresentacionModificada".equals(id))
-			return habilitarFHPresentacionModificadaAccion(ids, vars);
-		else if ("firmarRegistrarSolicitudModificadaFH".equals(id))
-			return firmarRegistrarSolicitudModificadaFHAccion(ids, vars);
-		else if ("firmarRegistrarSolicitudModificada".equals(id))
-			return firmarRegistrarSolicitudModificadaAccion(ids, vars);
-		else if ("firmarSolicitudModificada".equals(id))
-			return firmarSolicitudModificadaAccion(ids, vars);
-		else if ("registrarSolicitudModificada".equals(id))
-			return registrarSolicitudModificadaAccion(ids, vars);
-		else if ("modificarSolicitudModificada".equals(id))
-			return modificarSolicitudModificadaAccion(ids, vars);
-		else if ("modificacionTrasPresentacionDeSolicitud".equals(id))
-			return modificacionTrasPresentacionDeSolicitudAccion(ids, vars);
-		
-		return nextAccion(id, ids, vars);
-	}
-
 	
 	private ResultadoPermiso hayNuevaDocumentacionVerificacionAccion(Map<String, Long> ids, Map<String, Object> vars) {
 		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);

@@ -2,7 +2,6 @@ package templates;
 
 import java.awt.event.ItemEvent;
 
-
 import es.fap.simpleled.led.*;
 import generator.utils.CampoPermisoUtils
 import generator.utils.Entidad;
@@ -20,7 +19,7 @@ public class GPermiso extends GElement{
 	}
 
 	private String permisoVarsCode(List<PermisoVar> vars){
-		String varStr = "";
+		StringBuilder varStr = new StringBuilder("");
 		for(PermisoVar var : vars){
 			String varName = var.name;
 			Entidad entity = Entidad.create(var.getTipo());
@@ -34,17 +33,17 @@ public class GPermiso extends GElement{
 					params = "";
 					
 				//Variable con consulta
-				varStr += """
+				varStr.append("""
 					${entity.clase} ${varName} = ${entity.clase}.find("${var.sql}"${params}).first();
-				""";
+				""");
 			}
 			else{
-				varStr += """
+				varStr.append("""
 					${entity.clase} ${varName} = get${entity.clase}(ids, vars);
-				""";
+				""");
 			}
 		}
-		return varStr;
+		return varStr.toString();
 	}
 	
 	private String permisoRuleCode(PermisoRuleOr r){
@@ -136,22 +135,23 @@ public class GPermiso extends GElement{
 		if (permiso.varSection?.vars)
 			vars = permisoVarsCode(permiso.varSection.vars);
 		
-		String condiciones = "";
+		StringBuilder condiciones = new StringBuilder();
 		if (permiso.ret)
-			condiciones += "${getCheck(permiso.ret)}";
+			condiciones.append("${getCheck(permiso.ret)}");
 		for (PermisoWhen when: permiso.whens){
-			condiciones += """
+			condiciones.append("""
 				if (${permisoRuleCode(when.rule)}){
 					${getCheck(when.ret)}
 				}
-			""";
+			""");
 		}
 		String elseCondicion = "";
 		if (permiso.getElse())
 			elseCondicion = "${getCheck(permiso.else)}";
 		else if(permiso.ret == null)
 			elseCondicion = "return null;";	
-		return """	
+		return """
+			@SuppressWarnings("unused")
 			private ResultadoPermiso ${permiso.name} (String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
 				//Variables
 				Agente agente = AgenteController.getAgente();
@@ -199,7 +199,8 @@ public class GPermiso extends GElement{
 			elseCondicion = "return null;";
 		String acciones = "";
 		return """
-			private ResultadoPermiso ${permiso.name}Accion (Map<String, Long> ids, Map<String, Object> vars){
+			@SuppressWarnings("unused")
+			private ResultadoPermiso ${permiso.name}Accion(Map<String, Long> ids, Map<String, Object> vars){
 				String grafico = "visible";
 				//Variables
 				Agente agente = AgenteController.getAgente();

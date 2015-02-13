@@ -242,7 +242,7 @@ public class AportacionController extends AportacionControllerGen {
     }
 
 	@Util
-	public static synchronized String firmardocumentos(Long idDocumento, String firma) {
+	public static String firmardocumentos(Long idDocumento, String firma) {
 
 		Map<String, Object> json = new HashMap<String, Object>();
 		ArrayList<String> errores = new ArrayList<String>();

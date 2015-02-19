@@ -30,7 +30,7 @@ public class MessagesController extends Controller {
     
     @Before
 	static void flashedParamsFromCache() {
-		Map<String, String[]> par = (Map<String, String[]>) Cache.get(session.getId());
+		Map<String, String[]> par = (Map<String, String[]>) Cache.get(session.current().getId());
 		if (par == null){
 			return;
 		}

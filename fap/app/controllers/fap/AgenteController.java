@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.log4j.MDC;
 
 import models.Agente;
+
 import org.apache.log4j.Logger;
 
 import play.cache.Cache;
@@ -14,6 +15,7 @@ import play.db.jpa.Transactional;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
+import play.mvc.Scope.Session;
 import play.mvc.Util;
 import play.mvc.Scope.Flash;
 import validation.CustomValidation;
@@ -54,8 +56,8 @@ public class AgenteController extends Controller {
 	@Util
 	@Transactional
 	public static void findAgente() {
-		play.Logger.info("Metodo findAgente: Obteniendo de la sesion: " + session.current().getId() + " el agente: " + session.current().get("username"));
-		String username = session.current().get("username");
+		play.Logger.info("Metodo findAgente: Obteniendo de la sesion: " + Session.current().getId() + " el agente: " + Session.current().get("username"));
+		String username = Session.current().get("username");
 		Agente a = Agente.find("byUsername", username).first();
 		play.Logger.info("Agente encontrado: " + a.username);
 		agente.set(a);
@@ -69,7 +71,7 @@ public class AgenteController extends Controller {
 	 */
 	@Util
 	public static boolean agenteIsConnected() {
-		return session.current().contains("username");
+		return Session.current().contains("username");
 	}
 
 	@Finally

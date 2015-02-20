@@ -59,6 +59,9 @@ public class SecureController extends GenericController{
 	
     // ~~~ Login
     public static void loginFap() {
+    	//Limpiando los datos de sesion
+    	Session.current().clear();
+    	
     	//if (!buscarLoginOverwrite())
     		loginPorDefecto();
     }
@@ -97,7 +100,7 @@ public class SecureController extends GenericController{
             String sign = remember.value.substring(0, remember.value.indexOf("-"));
             String username = remember.value.substring(remember.value.indexOf("-") + 1);
             if(Crypto.sign(username).equals(sign)) {
-            	session.current().put("username", username);
+            	Session.current().put("username", username);
                 redirectToOriginalURL();
             }
         }
@@ -106,7 +109,7 @@ public class SecureController extends GenericController{
         
         //Token para firmar y acceder por certificado
         if(FapProperties.getBoolean("fap.login.type.cert")){
-        	String sessionid = session.current().getId();
+        	String sessionid = Session.current().getId();
         	String token = Codec.UUID();
         	Cache.delete(sessionid + "login.cert.token");
         	Cache.add(sessionid + "login.cert.token",token, "5mn");
@@ -198,11 +201,11 @@ public class SecureController extends GenericController{
             loginFap();   		
     	}
  
-    	String sessionid = session.current().getId();
+    	String sessionid = Session.current().getId();
     	String serverToken = (String)Cache.get(sessionid + "login.cert.token");
     	String sessionuser = "anonimo";
-		if (session.current().contains("username"))
-			sessionuser = session.current().get("username");
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
     	play.Logger.info("Antes de consultar certificado, identificador de sesión: " + sessionid + " usuario de sesion antes de : " + sessionuser);
     	
     	//Comprueba que el token firmado sea el correcto
@@ -266,7 +269,7 @@ public class SecureController extends GenericController{
 
 		//Almacena el usuario en la sesion
 		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
-		session.current().put("username", agente.username);
+		Session.current().put("username", agente.username);
 		
 		redirectToOriginalURL();
     }    
@@ -317,8 +320,8 @@ public class SecureController extends GenericController{
     public static void authenticatePorDefecto(String username, String password, boolean remember){
 
         int accesosFallidos = 0;
-        if (session.current().get("accesoFallido") != null) {
-        	accesosFallidos = new Integer(session.current().get("accesoFallido"));
+        if (Session.current().get("accesoFallido") != null) {
+        	accesosFallidos = new Integer(Session.current().get("accesoFallido"));
         }
         
         if (accesosFallidos > 2) {
@@ -381,10 +384,10 @@ public class SecureController extends GenericController{
     		//Usuario no encontrado
     		log.warn("Intento de login fallido, user:"+ username+ ", pass:"+cryptoPassword+", IP:"+request.remoteAddress+", URL:"+request.url);
             accesosFallidos = 0;
-            if (session.current().get("accesoFallido") != null) {
-            	accesosFallidos = new Integer(session.current().get("accesoFallido"));
+            if (Session.current().get("accesoFallido") != null) {
+            	accesosFallidos = new Integer(Session.current().get("accesoFallido"));
             }
-            session.current().put("accesoFallido", accesosFallidos+1);
+            Session.current().put("accesoFallido", accesosFallidos+1);
 
             flash.keep("url");
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
@@ -396,10 +399,10 @@ public class SecureController extends GenericController{
 		agente.acceso = AccesoAgenteEnum.usuario.name();
 		agente.save();
 
-        session.current().put("accesoFallido", 0);
+		Session.current().put("accesoFallido", 0);
 
         // Mark user as connected
-        session.current().put("username", agente.username);
+		Session.current().put("username", agente.username);
         // Remember if needed
         if(remember) {
             response.setCookie("rememberme", Crypto.sign(agente.username) + "-" + username, "30d");
@@ -421,11 +424,11 @@ public class SecureController extends GenericController{
 	    	boolean logoutPorTicketing = logoutPorTicketing();
 	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
 	    	String usuarioSesion = null;
-	    	if (session.current().contains("username"))
-	    		usuarioSesion = session.current().get("username");	    	
+	    	if (Session.current().contains("username"))
+	    		usuarioSesion = Session.current().get("username");	    	
 	    	log.info("Logout del usuario: "+ usuarioSesion);
-	    	Cache.delete(session.current().getId());
-	        session.current().clear();
+	    	Cache.delete(Session.current().getId());
+	    	Session.current().clear();
 	        response.removeCookie("rememberme");
 	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
 	        Messages.keep();
@@ -520,10 +523,10 @@ public class SecureController extends GenericController{
     @Util
     public static void authenticateTicketingPorDefecto(String ticket) throws Throwable {
 
-    	String sessionid = session.current().getId();
+    	String sessionid = Session.current().getId();
     	String sessionuser = "anonimo";
-		if (session.current().contains("username"))
-			sessionuser = session.current().get("username");
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
     	play.Logger.info("Antes de consultar ticketing, (identificador de sesion: " + sessionid + ", usuario de sesion : " + sessionuser +")");
     	
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
@@ -592,7 +595,7 @@ public class SecureController extends GenericController{
             Messages.keep();
             loginFap();
 		} else
-			if (session.current().contains("username") && agente.username != null && agente.username.compareTo(session.current().get("username")) != 0){
+			if (Session.current().contains("username") && agente.username != null && agente.username.compareTo(Session.current().get("username")) != 0){
 				try {
 					log.info("Intentando inicio de sesion mediante ticketing (ticket = "+ ticket + " y agente = " + agente.username + ")");
 					Messages.error("Error en la sesión de usuario.");
@@ -629,7 +632,7 @@ public class SecureController extends GenericController{
 
 		// Mark user as connected
 		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ")");
-		session.current().put("username", agente.username);
+		Session.current().put("username", agente.username);
 
 		// Redirect to the original URL (or /)
 		redirectToOriginalURL();

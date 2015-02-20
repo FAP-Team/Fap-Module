@@ -152,8 +152,8 @@ public class GPermiso extends GElement{
 			elseCondicion = "return null;";	
 		return """
 			@SuppressWarnings("unused")
-			private ResultadoPermiso ${permiso.name} (String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
-				//Variables
+			private ResultadoPermiso ${permiso.name}(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
+				// Variables
 				Agente agente = AgenteController.getAgente();
 				${vars}
 				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
@@ -202,7 +202,7 @@ public class GPermiso extends GElement{
 			@SuppressWarnings("unused")
 			private ResultadoPermiso ${permiso.name}Accion(Map<String, Long> ids, Map<String, Object> vars){
 				String grafico = "visible";
-				//Variables
+				// Variables
 				Agente agente = AgenteController.getAgente();
 				${vars}
 				Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);

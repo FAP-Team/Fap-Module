@@ -165,7 +165,7 @@ public class End implements IWorkflowComponent {
 	private String permisos(){	  
 		String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
 		String clazzGenName = clazzName + "Gen";
-		String permisosCode = "";
+		StringBuilder permisosCode = new StringBuilder();
 		String switchCode = "";
 		String switchAccionCode = "";
 		String els = "";
@@ -178,14 +178,14 @@ public class End implements IWorkflowComponent {
 				for(PermisoVar var : permiso.permiso.varSection.vars)
 					variables.put(var.tipo.name, var.tipo);
 			}
-			permisosCode += permiso.permisoCode();
+			permisosCode.append(permiso.permisoCode());
 			String permisoName = permiso.permiso.name;	
 		}
 	  	  
-		String vars = "";
+		StringBuilder vars = new StringBuilder();
 		for (Entity e: variables.values()){
 			Entidad entidad = Entidad.create(e);
-			vars += """
+			vars.append("""
 				public ${entidad.clase} get${entidad.clase}(Map<String, Long> ids, Map<String, Object> vars){
 					if (vars != null && vars.containsKey("${entidad.variable}"))
 						return (${entidad.clase}) vars.get("${entidad.variable}");
@@ -193,7 +193,7 @@ public class End implements IWorkflowComponent {
 						return ${entidad.clase}.findById(ids.get("${entidad.id}"));
 					${entidad.isSingleton()? "return ${entidad.clase}.get(${entidad.clase}.class);" : "return null;"}
 				}
-			""";
+			""");
 		}
 		
 		// Permisos generados

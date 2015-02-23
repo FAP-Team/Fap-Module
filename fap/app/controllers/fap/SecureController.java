@@ -59,9 +59,6 @@ public class SecureController extends GenericController{
 	
     // ~~~ Login
     public static void loginFap() {
-    	//Limpiando los datos de sesion
-    	Session.current().clear();
-    	
     	//if (!buscarLoginOverwrite())
     		loginPorDefecto();
     }

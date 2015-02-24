@@ -484,7 +484,10 @@
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 	function convertirAJSON(json) {
-		return JSON && JSON.parse(json) || $.parseJSON(json);
+	   if (json != null)
+	      return JSON && JSON.parse(json) || $.parseJSON(json);
+	   else
+	      return json;
 	}
 
 	function obtenerUrlsDocumentos${id}(selected, errores) {
@@ -501,28 +504,25 @@
 			var firmadoDocumentoJSON =  obtenerFirmadoDocumento${id}(idDocumento);
 			firmadoDocumento = convertirAJSON(firmadoDocumentoJSON);
 			if ((idDocumento != null) && (firmadoDocumento != null)) {
-			
 			    if ((firmadoDocumento.refAed == null) || (firmadoDocumento.refAed === false)) {
 					if (firmadoDocumento.firmado === false) {
-						//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
-						if (firmadoDocumento.url != null) {
+						if (firmadoDocumento.url != null && firmadoDocumento.url != "") {
 							listaDocumentos[selected[i].data.id] = firmadoDocumento;
 						} else {
-							//alert("Error al obtener urlDocumento");
-							break;
+							errores["DOC_URL_AED"+i] = "El documento " + firmadoDocumento.descripcion + " no se ha podido recuperar del AED.";
 						}
 					} else if (firmadoDocumento.firmado) {
 						resultado = "true";
-	                    errores["DOC_YA_FIRMADO"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido firmado por todos los interesados";
-						//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
+	                    errores["DOC_YA_FIRMADO"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido firmado por todos los interesados.";
 				    }
 				} else {
-                     errores["DOC_REF_AED"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo";
+                     errores["DOC_REF_AED"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo.";
                 }
                 
 			} else {
-				//alert("Error al obtener idDocumento o firmadoDocumento");
-				break;
+			   errores["SERVICE_AED"+i] = "Error al obtener los datos referentes a los documentos seleccionados.";
+			   listaDocumentos = {};
+			   break;
 			}
 		} // for
 		return listaDocumentos;
@@ -546,18 +546,20 @@
 			resultado = convertirAJSON(firmar${id}(idDocumento, resultadoFirma.firma));
 			if (resultado.errores) {
 				$.each(resultado.errores , function(i, elem) {
-					errores["error-firma" + Object.keys(errores).length] = elem;
+					errores["error-firmando" + Object.keys(errores).length] = elem;
 				});
 				
 				if (resultado.aciertos) {
 				    $.each(resultado.aciertos , function(i, elem) {
-                       aciertos["acierto-firma" + Object.keys(aciertos).length] = elem;
+                       aciertos["acierto-firmando" + Object.keys(aciertos).length] = elem;
                     });
 				}
 			}
 			
 		} else if (resultadoFirma.error != null) {
-			errores[idDocumento] = resultadoFirma.error;
+			errores["error-firma"+idDocumento] = resultadoFirma.error;
+		} else {
+		    errores["error-inesperado"+idDocumento] = "Ha ocurrido un error inesperado.";
 		}
 	}
 
@@ -606,6 +608,7 @@
         var resultado;
         var errores = {};
         var aciertos = {};
+        var indexError = 0;
 
         mensajes.clear();
         if (selected.length == 0) {
@@ -629,11 +632,9 @@
 	                            firmaRealizada${id}(resultadoFirma, listaDocumentos, errores, aciertos);
 	                         });
 	
-	                        $.when(firmas[key]).fail(function(resultadoFirma){
-	                            var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
-	                            errores[idDocumento] = resultadoFirma.error;
+	                        $.when(firmas[key]).fail(function(resultadoFirma){	                
+	                            errores["error-obteniendo-firma"+(++indexError)] = resultadoFirma.error;
 	                        });
-	
 	                    }
 	                }
 	

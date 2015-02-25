@@ -1081,6 +1081,15 @@ Permiso requerimientoRequerirFirma {
 		visible
 }
 
+Permiso modificarRequerimiento{
+   vars
+      Verificacion verificacion
+   when
+      verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada")
+   return
+      all
+}
+
 Permiso obtenerRequerimiento {
 	vars
 		Verificacion verificacion

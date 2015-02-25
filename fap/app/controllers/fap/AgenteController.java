@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.log4j.MDC;
 
 import models.Agente;
+
 import org.apache.log4j.Logger;
 
 import play.cache.Cache;
@@ -14,13 +15,14 @@ import play.db.jpa.Transactional;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
+import play.mvc.Scope.Session;
 import play.mvc.Util;
 import play.mvc.Scope.Flash;
 import validation.CustomValidation;
 
 public class AgenteController extends Controller {
 
-	private static ThreadLocal<Agente> agente = new ThreadLocal<Agente>();
+	private static final ThreadLocal<Agente> agente = new ThreadLocal<Agente>();
 
 	private static Logger log = Logger.getLogger(AgenteController.class);
 
@@ -30,10 +32,15 @@ public class AgenteController extends Controller {
 		if (!agenteIsConnected()) {
 			return null;
 		}
+	
 		Agente a = agente.get();
 		if (a == null || !a.isPersistent()) {
 			findAgente();
-		}
+		} 
+		
+		if (a != null)
+			play.Logger.info("Recuperando agente local, Método getAgente: Agente: " + a.username);
+		
 		return agente.get();
 	}
 
@@ -49,8 +56,10 @@ public class AgenteController extends Controller {
 	@Util
 	@Transactional
 	public static void findAgente() {
-		String username = session.get("username");
+		play.Logger.info("Metodo findAgente: Obteniendo de la sesion: " + Session.current().getId() + " el agente: " + Session.current().get("username"));
+		String username = Session.current().get("username");
 		Agente a = Agente.find("byUsername", username).first();
+		play.Logger.info("Agente encontrado: " + a.username);
 		agente.set(a);
 		MDC.put("username", a.username);
 	}
@@ -62,7 +71,7 @@ public class AgenteController extends Controller {
 	 */
 	@Util
 	public static boolean agenteIsConnected() {
-		return session.contains("username");
+		return Session.current().contains("username");
 	}
 
 	@Finally

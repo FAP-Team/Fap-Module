@@ -79,7 +79,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			hasConnection = validarUsuario(USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
+			hasConnection = validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
@@ -140,9 +140,9 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		Pattern patron = Pattern.compile("<MensajeError>(.*?)</MensajeError>");
 		Matcher matcher = patron.matcher(resultado);
 		
-		if ((matcher.find() || resultado.isEmpty())){ //Hay error
+		if ((resultado.isEmpty() || matcher.find())){ //Hay error
 			play.Logger.error(matcher.group(1));
-			Messages.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
+			play.Logger.error("Error validando el usuario en Hiperreg: "+matcher.group(2));
 			return false;
 		} else {
 			play.Logger.info("Validación correcta del usuario "+userId+" en Comunicaciones Internas");

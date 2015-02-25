@@ -1,25 +1,22 @@
 package models;
 
-import java.util.*;
-import javax.persistence.*;
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.data.validation.*;
-import org.joda.time.DateTime;
-import models.*;
-import messages.Messages;
-import validation.*;
-import audit.Auditable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
+import javax.persistence.Transient;
 
+import org.joda.time.DateTime;
+
+import play.Logger;
 // === IMPORT REGION START ===
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.AedUtils;
 import utils.DocumentosUtils;
-import properties.FapProperties;
+import validation.ValueFromTable;
 import config.InjectorConfig;
 
 // === IMPORT REGION END ===
@@ -91,6 +88,7 @@ public class Documento extends FapModel {
 		init();
 	}
 
+	@Override
 	public void init() {
 
 		if (clasificado == null)
@@ -136,10 +134,8 @@ public class Documento extends FapModel {
 
 	public String getEnlaceDescargaFirmado() {
 		if (uri != null) {
-			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			try {
-				String firma = gestorDocumental.getDocumentoFirmaByUri(uri, this.clasificado);
-				if (firma != null && !firma.isEmpty()) {
+				if (this.firmado) {
 					String ret = "<a href=\"";
 					ret += AedUtils.crearUrlConInformeDeFirma(uri);
 					ret += "\" target=\"_blank\">Descargar Firmado</a>";
@@ -221,7 +217,7 @@ public class Documento extends FapModel {
 
 	/**
 	 * Transformamos la entidad Documento del gestor documental del Gobierno de Canarias en una entidad Documento de FAP.
-	 * 
+	 *
 	 */
 	public void docAed2Doc(es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento propiedadesDoc, String tipoDocumento) {
 		uri = propiedadesDoc.getUri();
@@ -275,7 +271,7 @@ public class Documento extends FapModel {
 
 	/*
 	 * Duplicamos todos los campos de un documento (no hacemos doc1 = doc2 porque también duplica el id)
-	 * 
+	 *
 	 */
 	public void duplicar(Documento doc) {
 		uri = doc.uri;

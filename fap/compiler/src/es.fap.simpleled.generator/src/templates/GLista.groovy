@@ -6,6 +6,7 @@ import org.eclipse.emf.common.util.EList;
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
+import generator.utils.BeautifierUtils;
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -99,7 +100,7 @@ public class GLista extends GElement{
 		}
         String className = getEnumClassName();
         String classContent = getEnumClassBody(ppackage, className, elementos);
-        FileUtils.overwrite(route, className + ".java", classContent);
+        FileUtils.overwrite(route, className + ".java", BeautifierUtils.formatear(classContent));
 	}
 	
     private String getEnumClassName(){

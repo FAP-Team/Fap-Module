@@ -488,9 +488,9 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 
-		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=requerimientoRequerirFirma{
+		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=modificarRequerimiento{
 			Wiki {"Puede modificar la resolución si necesita cambiar el motivo de requerimiento o gestor que debe firmar."}
-			Form reabrirVerificacion permiso=requerimientoRequerirFirma {
+			Form reabrirVerificacion permiso=modificarRequerimiento {
 				Boton botonReabrirVerificacion titulo="Modificar la Verificación" type=warning
             }
 		}

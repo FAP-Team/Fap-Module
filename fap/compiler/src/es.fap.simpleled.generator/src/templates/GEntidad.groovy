@@ -95,13 +95,13 @@ public class GEntidad extends GElement{
 		
 		String attributesCode = """// Código de los atributos""";
 		for(Attribute attr : entity.attributes){
-			attributesCode += generate(attr);
+			attributesCode += generateAttr(attr);
 		}
 		String gettersAttrMonedaType = "";
 		if (attributosAdd != null) {
 			for (Attribute attr : attributosAdd) {
 				gettersAttrMonedaType += getMonedaType(attr);
-				attributesCode += generate(attr);
+				attributesCode += generateAttr(attr);
 			}
 			entity.getAttributes().addAll(attributosAdd);
 		}
@@ -163,7 +163,7 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 		"""
 	}
 	
-	private String generate(Attribute attribute){
+	private String generateAttr(Attribute attribute){
 	
 		if (attribute.name.equals("id")){
 			return "";

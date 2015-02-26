@@ -76,12 +76,18 @@ public class DescargasAedController extends GenericController {
 	public static void descargarFirmado(String k){
 		String uri= AedUtils.desencriptarUri(k);
         Documento documento = buscarDocumentoAed(uri);
-        es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = buscarDocumentoPlatinoAed(uri,documento);
-        if (documentoPlatino.getContenido() != null){
-            generarPdfResponse(documentoPlatino.getContenido(),"");
-		} else if(uri != null){
-            BinaryResponse bresp = buscarDocumentoFirmadoAed(uri, documento);
-            generarPdfResponse(bresp.contenido, bresp.nombre);
+        if (uri != null) {
+        	try {
+        		 es.gobcan.platino.servicios.sgrde.Documento documentoPlatino = buscarDocumentoPlatinoAed(uri,documento);
+    	        if (documentoPlatino.getContenido() != null){
+    	            generarPdfResponse(documentoPlatino.getContenido(),"");
+    			} else if(uri != null){
+    	            BinaryResponse bresp = buscarDocumentoFirmadoAed(uri, documento);
+    	            generarPdfResponse(bresp.contenido, bresp.nombre);
+    			}
+        	} catch (Exception e){
+        		play.Logger.error(e, "Se produjo un error recuperando el documento firmado del AED");
+        	}
         }else {
             forbidden("No tiene permisos para acceder a este documento");
 		}

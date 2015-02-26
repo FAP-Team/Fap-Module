@@ -1,16 +1,19 @@
 package models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.PreRemove;
-import javax.persistence.Transient;
-
-import org.joda.time.DateTime;
-
+import java.util.*;
+import javax.persistence.*;
 import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.data.validation.*;
+import org.joda.time.DateTime;
+import models.*;
+import messages.Messages;
+import validation.*;
+import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 // === IMPORT REGION START ===
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
@@ -88,7 +91,6 @@ public class Documento extends FapModel {
 		init();
 	}
 
-	@Override
 	public void init() {
 
 		if (clasificado == null)

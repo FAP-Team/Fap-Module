@@ -105,24 +105,24 @@ public class Verificacion extends FapModel {
 		play.Logger.error("Eliminando de la Verificación " + this.id + " la Lista Verificacion Tipos Documentos: " + this.verificacionTiposDocumentos.toString());
 		this.verificacionTiposDocumentos = null;
 	}
-	
+
 	//Método que nos permite ordenar las verificaciones mediante la fecha de última actualización.
 	public static Comparator<Verificacion> VerificacionComparator = new Comparator<Verificacion>() {
 		public int compare(Verificacion v1, Verificacion v2) {
-		   DateTime x = v1.fechaUltimaActualizacion;
-		   DateTime y = v2.fechaUltimaActualizacion;
-	
-//         De forma ascendente
-//		   return x.compareTo(y);
-	
-//         De forma descendente
-		   if (y == null)
-			   return (x == null) ? 0 : -1;
-		   
-		   if (x == null)
-			   return 1;
-		   
-		   return y.compareTo(x);
+			DateTime x = v1.fechaUltimaActualizacion;
+			DateTime y = v2.fechaUltimaActualizacion;
+
+			//         De forma ascendente
+			//		   return x.compareTo(y);
+
+			//         De forma descendente
+			if (y == null)
+				return (x == null) ? 0 : -1;
+
+			if (x == null)
+				return 1;
+
+			return y.compareTo(x);
 		}
 	};
 

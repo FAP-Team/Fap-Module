@@ -19,7 +19,7 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import utils.AedUtils;
 import utils.DocumentosUtils;
-import properties.FapProperties;
+import validation.ValueFromTable;
 import config.InjectorConfig;
 
 // === IMPORT REGION END ===
@@ -136,10 +136,8 @@ public class Documento extends FapModel {
 
 	public String getEnlaceDescargaFirmado() {
 		if (uri != null) {
-			GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			try {
-				String firma = gestorDocumental.getDocumentoFirmaByUri(uri, this.clasificado);
-				if (firma != null && !firma.isEmpty()) {
+				if (this.firmado) {
 					String ret = "<a href=\"";
 					ret += AedUtils.crearUrlConInformeDeFirma(uri);
 					ret += "\" target=\"_blank\">Descargar Firmado</a>";
@@ -221,7 +219,7 @@ public class Documento extends FapModel {
 
 	/**
 	 * Transformamos la entidad Documento del gestor documental del Gobierno de Canarias en una entidad Documento de FAP.
-	 * 
+	 *
 	 */
 	public void docAed2Doc(es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento propiedadesDoc, String tipoDocumento) {
 		uri = propiedadesDoc.getUri();
@@ -275,7 +273,7 @@ public class Documento extends FapModel {
 
 	/*
 	 * Duplicamos todos los campos de un documento (no hacemos doc1 = doc2 porque también duplica el id)
-	 * 
+	 *
 	 */
 	public void duplicar(Documento doc) {
 		uri = doc.uri;

@@ -449,7 +449,7 @@ public class GFirmaMasiva extends GElement{
 
 				//Calcula los firmantes del documento
 				play.Logger.info("Calculando firmantes del documento " + documento.uri + " de la Solicitud " + solicitud.id);
-				documento.firmantes.todos = calcularFirmantesdocumentos(solicitud.id);
+				documento.firmantes.todos = calcularFirmantes${id()}(solicitud.id);
 				documento.firmantes.save();
 
 				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);

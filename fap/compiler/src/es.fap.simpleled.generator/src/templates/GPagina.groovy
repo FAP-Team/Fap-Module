@@ -28,7 +28,7 @@ public class GPagina extends GGroupElement{
 		this.pagina = pagina;
 		this.name = pagina.name;
 		this.formulario = pagina.eContainer();
-		this.campo = CampoUtils.create(LedCampoUtils.getCampoPaginaPopup(pagina));
+		this.campo = CampoUtils.create(LedCampoUtils.getCampoPaginaPopup(pagina) as Campo);
 		this.hasForm = this.campo != null && !pagina.noForm && !hayForm(pagina);
 		this.mensajeFinal = pagina.mensajeFinal;
 		elementos = pagina.getElementos();

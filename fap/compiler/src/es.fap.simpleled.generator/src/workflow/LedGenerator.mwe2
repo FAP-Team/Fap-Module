@@ -58,7 +58,7 @@ Workflow {
 		outlet = {
 			path = targetPath
 		}
-		// fileEncoding = fileEncoding
+		//fileEncoding = fileEncoding
 	}
 
 	//Expande las entidades
@@ -67,7 +67,7 @@ Workflow {
 		outlet = {
 			path = targetPath	
 		}
-		// fileEncoding = fileEncoding
+		//fileEncoding = fileEncoding
 	}
 	
 	//Expande las listas
@@ -76,7 +76,7 @@ Workflow {
 		outlet = {
 			path = targetPath	
 		}
-		// fileEncoding = fileEncoding
+		//fileEncoding = fileEncoding
 	}
 	
 	//Expande los Servicios Web
@@ -85,7 +85,7 @@ Workflow {
 		outlet = {
 			path = targetPath	
 		}
-		// fileEncoding = fileEncoding
+		//fileEncoding = fileEncoding
 	}
 	
 	component = wfcomponent.End {

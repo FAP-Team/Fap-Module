@@ -14,6 +14,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/diffutils-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/es.fap.simpleled"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/es.fap.simpleled.ui"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

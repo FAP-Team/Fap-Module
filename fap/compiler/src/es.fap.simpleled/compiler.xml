@@ -39,6 +39,7 @@
 			<fileset dir="${src.gen.dir}">
 				<include name="**/*.ecore" />
 				<include name="**/*.genmodel" />
+				<include name="**/*.xtextbin" />
 				<include name="**/*.xmi" />
 				<include name="**/*.xtextbin" />
 				<include name="**/*.tokens" />

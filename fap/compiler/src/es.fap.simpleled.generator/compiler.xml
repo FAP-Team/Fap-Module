@@ -30,12 +30,13 @@
 			<classpath>
 				<path refid="classpath" />
 			</classpath>
-			<javac source="1.5" target="1.5" debug="on" />
+			<javac source="1.7" target="1.7" debug="on" />
 		</groovyc>
 		
 		<copy todir="${build.dir}">
 		    <fileset dir="${src.dir}">
 		    	<include name="**/*.mwe2"/>
+		    	<include name="**/*.xtextbin" />
 		    	<include name="**/*.xpt"/>
 		    	<include name="**/*.ext"/>
 			</fileset>

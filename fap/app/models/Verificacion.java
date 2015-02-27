@@ -1,22 +1,18 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
+import java.util.*;
+import javax.persistence.*;
+import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.data.validation.*;
 import org.joda.time.DateTime;
-
-import validation.ValueFromTable;
+import models.*;
+import messages.Messages;
+import validation.*;
+import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 
@@ -70,7 +66,6 @@ public class Verificacion extends FapModel {
 		init();
 	}
 
-	@Override
 	public void init() {
 
 		if (tramiteNombre != null)

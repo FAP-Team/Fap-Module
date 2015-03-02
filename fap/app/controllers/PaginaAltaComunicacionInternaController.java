@@ -88,7 +88,7 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 		
 		if (!Messages.hasErrors()) {
 			try {
-					RespuestaCIFap respuesta = ciService.crearNuevoAsiento(dbComunicacionInterna.asiento);
+					RespuestaCIFap respuesta = ciService.crearNuevoAsiento(dbComunicacionInterna.asientoAmpliado);
 					if (respuesta != null) {
 						if (dbComunicacionInterna.respuesta == null)
 							dbComunicacionInterna.respuesta = new RespuestaCIFap();	
@@ -135,19 +135,19 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 	public static void frmNuevoAsientoValidateCopy(String accion, ComunicacionInterna dbComunicacionInterna, ComunicacionInterna comunicacionInterna) {
 		CustomValidation.clearValidadas();
 
-		CustomValidation.valid("comunicacionInterna.asiento", comunicacionInterna.asiento);
+		CustomValidation.valid("comunicacionInterna.asientoAmpliado", comunicacionInterna.asientoAmpliado);
 		CustomValidation.valid("comunicacionInterna", comunicacionInterna);
-		CustomValidation.required("comunicacionInterna.asiento.userId", comunicacionInterna.asiento.userId);
-		dbComunicacionInterna.asiento.userId = comunicacionInterna.asiento.userId;
-		CustomValidation.required("comunicacionInterna.asiento.password", comunicacionInterna.asiento.password);
-		dbComunicacionInterna.asiento.password = comunicacionInterna.asiento.password;
-		dbComunicacionInterna.asiento.observaciones = comunicacionInterna.asiento.observaciones;
+		CustomValidation.required("comunicacionInterna.asientoAmpliado.userId", comunicacionInterna.asientoAmpliado.userId);
+		dbComunicacionInterna.asientoAmpliado.userId = comunicacionInterna.asientoAmpliado.userId;
+		CustomValidation.required("comunicacionInterna.asientoAmpliado.password", comunicacionInterna.asientoAmpliado.password);
+		dbComunicacionInterna.asientoAmpliado.password = comunicacionInterna.asientoAmpliado.password;
+		dbComunicacionInterna.asientoAmpliado.observaciones = comunicacionInterna.asientoAmpliado.observaciones;
 	}
 
 	
 	public static void tablatblDocAdicionales(Long idSolicitud, Long idComunicacionInterna) {
 
-		java.util.List<ListaUris> uriDocPrincipal = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+		java.util.List<ListaUris> uriDocPrincipal = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asientoAmpliado.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
 		java.util.List<Documento> rows = Documento.find("select documento from SolicitudGenerica solicitud join solicitud.documentacion.documentos documento where solicitud.id=?", idSolicitud).fetch();
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
@@ -200,13 +200,13 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 			} 
 		
 			if (!Messages.hasErrors() && !lstUri.isEmpty()) {
-				java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+				java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asientoAmpliado.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
 				ListaUris lstUriDocPrincipal = null;
 				if (rows != null && !rows.isEmpty()){
 					lstUriDocPrincipal = rows.get(0);
 					lstUri.add(0, lstUriDocPrincipal);
-					comunicacionInterna.asiento.uris = lstUri;
-					comunicacionInterna.asiento.numeroDocumentos = lstUri.size();
+					comunicacionInterna.asientoAmpliado.uris = lstUri;
+					comunicacionInterna.asientoAmpliado.numeroDocumentos = lstUri.size();
 					comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 					comunicacionInterna.save(); 
 				} else {
@@ -226,7 +226,7 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 	
 	public static void tabladocumentosCI(Long idComunicacionInterna) {
 
-		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asientoAmpliado.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
 
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Documento> rowsFiltered = new ArrayList<Documento>();

@@ -75,7 +75,7 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 	
 	public static void tablatblDocPrincipalSelect(Long idComunicacionInterna) {
 
-		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asientoAmpliado.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Documento> rowsFiltered = new ArrayList<Documento>();
 		for (ListaUris lsturi: rows){
@@ -125,8 +125,8 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 			}
 		
 			if (!Messages.hasMessages() && !lstUri.isEmpty()) {
-				comunicacionInterna.asiento.uris = lstUri;
-				comunicacionInterna.asiento.numeroDocumentos = lstUri.size();
+				comunicacionInterna.asientoAmpliado.uris = lstUri;
+				comunicacionInterna.asientoAmpliado.numeroDocumentos = lstUri.size();
 				comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 				comunicacionInterna.save(); 
 			} 
@@ -157,8 +157,8 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 
 		if (!Messages.hasErrors()) {
 			ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
-			if( comunicacionInterna != null && comunicacionInterna.asiento != null){
-				comunicacionInterna.asiento.uris = null;
+			if( comunicacionInterna != null && comunicacionInterna.asientoAmpliado != null){
+				comunicacionInterna.asientoAmpliado.uris = null;
 				comunicacionInterna.save();
 			}
 		}

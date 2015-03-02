@@ -1,10 +1,15 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import messages.Messages;
 import messages.Messages.MessageType;
@@ -18,6 +23,7 @@ import models.ReturnUnidadOrganicaFap;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import properties.FapProperties;
+import services.BDOrganizacionService;
 import services.ServiciosGenericosService;
 import services.platino.PlatinoBDOrganizacionServiceImpl;
 import tags.ComboItem;
@@ -26,6 +32,7 @@ import utils.ServiciosGenericosUtils;
 import validation.CustomValidation;
 
 import com.google.gson.Gson;
+import com.google.inject.spi.Message;
 
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
@@ -33,8 +40,12 @@ import controllers.gen.PaginaDatosNuevaComunicacionInternaControllerGen;
 import enumerado.fap.gen.EstadosComunicacionInternaEnum;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 import es.gobcan.platino.servicios.organizacion.DatosBasicosPersonaItem;
+import es.gobcan.platino.servicios.organizacion.UnidadOrganicaItem;
 
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
+	
+	@Inject
+	static BDOrganizacionService platinoDBOrgPort;
 	
 	public static void index(String accion, Long idSolicitud, Long idComunicacionInterna) {
 		if (accion == null)
@@ -50,8 +61,8 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		if ("crear".equals(accion)) {
 			comunicacionInterna = PaginaDatosNuevaComunicacionInternaController.getComunicacionInterna();
 			
-			if (comunicacionInterna.asiento == null)
-				comunicacionInterna.asiento = new AsientoCIFap();
+			if (comunicacionInterna.asientoAmpliado == null)
+				comunicacionInterna.asientoAmpliado = new AsientoAmpliadoCIFap();
 			
 			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
 
@@ -95,22 +106,29 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 	public static void PaginaDatosNuevaComunicacionInternaValidateCopy(String accion, ComunicacionInterna dbComunicacionInterna, ComunicacionInterna comunicacionInterna) {
 		CustomValidation.clearValidadas();
 
-		CustomValidation.valid("comunicacionInterna.asiento", comunicacionInterna.asiento);
+		CustomValidation.valid("comunicacionInterna.asientoAmpliado", comunicacionInterna.asientoAmpliado);
 		CustomValidation.valid("comunicacionInterna", comunicacionInterna);
 		
-		if (dbComunicacionInterna.asiento == null)
-			dbComunicacionInterna.asiento = new AsientoCIFap();
+		if (dbComunicacionInterna.asientoAmpliado == null)
+			dbComunicacionInterna.asientoAmpliado = new AsientoAmpliadoCIFap();
 		
-		dbComunicacionInterna.asiento.interesado = comunicacionInterna.asiento.interesado;
-		CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaDestino", comunicacionInterna.asiento.unidadOrganicaDestino);
-		CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaDestino.codigo", comunicacionInterna.asiento.unidadOrganicaDestino.codigo);
-		Long codigoUODestino = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;
-		if (codigoUODestino != null) {
-			dbComunicacionInterna.asiento.unidadOrganicaDestino = getUnidadOrganicaFAP(codigoUODestino);
-			dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = codigoUODestino;
+		dbComunicacionInterna.asientoAmpliado.interesado = comunicacionInterna.asientoAmpliado.interesado;
+		CustomValidation.valid("comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen", comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen);
+		CustomValidation.required("comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo", comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo);
+		Long codigoUOOrigen = comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo;
+		if (codigoUOOrigen != null) {
+			dbComunicacionInterna.asientoAmpliado.unidadOrganicaOrigen = getUnidadOrganicaFAP(codigoUOOrigen);
+			dbComunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo = codigoUOOrigen;
 		}
-		CustomValidation.required("comunicacionInterna.asiento.resumen", comunicacionInterna.asiento.resumen);
-		dbComunicacionInterna.asiento.resumen = comunicacionInterna.asiento.resumen;
+		CustomValidation.valid("comunicacionInterna.asientoAmpliado.unidadOrganicaDestino", comunicacionInterna.asientoAmpliado.unidadOrganicaDestino);
+		CustomValidation.required("comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo", comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo);
+		Long codigoUODestino = comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo;
+		if (codigoUODestino != null) {
+			dbComunicacionInterna.asientoAmpliado.unidadOrganicaDestino = getUnidadOrganicaFAP(codigoUODestino);
+			dbComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo = codigoUODestino;
+		}
+		CustomValidation.required("comunicacionInterna.asientoAmpliado.resumen", comunicacionInterna.asientoAmpliado.resumen);
+		dbComunicacionInterna.asientoAmpliado.resumen = comunicacionInterna.asientoAmpliado.resumen;
 		dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
 	}
 	
@@ -132,7 +150,7 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 				
 				if (lstUOSubNivel != null) {
 					for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
-						lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " "  + unidad.descripcion));
+						lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " - " + unidad.descripcion));
 						
 					resultados = new Gson().toJson(lstCombo);
 				}
@@ -155,25 +173,40 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		}
 		return unidad;
 	}
-	
-//	private static void obtenerUoOrigen(ComunicacionInterna comunicacionInterna, Agente agente){
-//		PlatinoBDOrganizacionServiceImpl platinoDBOrgPort = InjectorConfig.getInjector().getInstance(PlatinoBDOrganizacionServiceImpl.class);
-//		try {
-//			String uri = platinoDBOrgPort.recuperarURIPersona(agente.usuarioldap);		
-//			DatosBasicosPersonaItem persona = platinoDBOrgPort.recuperarDatosPersona(uri);
-//			ReturnUnidadOrganicaFap unidad = null;
-//			Long id = (long) 9938;
-		
-//			if (persona != null && persona.getCodigoUnidadOrg() != null && !persona.getCodigoUnidadOrg().isEmpty()){
-//				Long codigobdorganizacion = Long.parseLong(persona.getCodigoUnidadOrg());
-//				unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", id).first();
+
+	public static List<ComboItem> uoOrigen(){
+		List<ComboItem> lstCombo = new ArrayList<ComboItem>();
+		try {
+			Agente agente = AgenteController.getAgente();
+			String uri = platinoDBOrgPort.recuperarURIPersona(agente.usuarioldap);		
 			
-//				if (unidad != null)
-//					comunicacionInterna.asiento.unidadOrganicaOrigen = unidad;
-//			}
-//		} catch (DBOrganizacionException_Exception e) {
-//			log.error("No se puede obtener la unidad orgánica de origen del solicitante: " + e.getMessage());
-//		}
-//	}
+			Date today = new Date();
+			GregorianCalendar gregory = new GregorianCalendar();
+			gregory.setTime(today);
+			XMLGregorianCalendar fecha = null;
+			fecha = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory);
+
+			List<UnidadOrganicaItem> lstUO = platinoDBOrgPort.consultarPertenenciaUnidad(uri, fecha);			
+			for (UnidadOrganicaItem uo: lstUO){
+				ReturnUnidadOrganicaFap unidad = null;
+				if ((uo != null) && (uo.getCodigoUnidadOrg() != null))
+					unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigoBDOrganizacion = ?", uo.getCodigoUnidadOrg()).first();
+				
+				if (unidad != null)
+					lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " - " + unidad.descripcion));
+				else
+					play.Logger.error("No se tiene equivalencia en HiperReg para la unidad orgánica: (codigo: " + uo.getCodigoUnidadOrg() + ", descripcion: " + uo.getDescripcionUnidadOrg() + ")");
+			}
+		} catch (DBOrganizacionException_Exception e) {
+			play.Logger.error("No se pueden obtener la unidades orgánicas de origen del solicitante: " + e.getMessage());
+			Messages.error("No se pueden obtener las unidades orgánicas de origen del solicitante");
+		} catch (DatatypeConfigurationException e) {
+			play.Logger.error("Error calculando la fecha para obtener las unidades orgánicas del solicitante: " + e.getMessage());
+			Messages.error("No se pueden obtener las unidades orgánicas de origen del solicitante");
+	    } 
+		
+		Messages.keep();
+		return lstCombo;
+	}
 	
 }

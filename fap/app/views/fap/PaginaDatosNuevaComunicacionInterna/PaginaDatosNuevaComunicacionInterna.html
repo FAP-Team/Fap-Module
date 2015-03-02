@@ -24,21 +24,23 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
     
             #{fap.grupo titulo:'Datos de la Comunicacion Interna'}
                 
-            #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', titulo:'Nombre completo del interesado' /}     
+            #{fap.texto campo:'comunicacionInterna.asientoAmpliado.interesado', id:'interesado', titulo:'Nombre completo del interesado' /}     
         
-            #{fap.areaTexto campo:'comunicacionInterna.asiento.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
+            #{fap.areaTexto campo:'comunicacionInterna.asientoAmpliado.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
+        
+            #{fap.combo campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo', id:'uoOrigen', titulo:'Unidad Orgánica de origen' /}       
         
             #{fap.grupo titulo:'Unidad Orgánica de destino'}
                 
-            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoRaiz', id:'uoDestinoRaiz', searchable:true, titulo:'Nivel 1' /}      
+            #{fap.combo campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoRaiz', id:'uoDestinoRaiz', searchable:true, titulo:'Nivel 1' /}      
         
-            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel1', id:'uoDestinoSubNivel1', searchable:true, titulo:'Nivel 2' /}        
+            #{fap.combo campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel1', id:'uoDestinoSubNivel1', searchable:true, titulo:'Nivel 2' /}        
         
-            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel2', id:'uoDestinoSubNivel2', searchable:true, titulo:'Nivel 3' /}        
+            #{fap.combo campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel2', id:'uoDestinoSubNivel2', searchable:true, titulo:'Nivel 3' /}        
         
-            #{fap.combo campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3', id:'uoDestinoSubNivel3', searchable:true, titulo:'Nivel 4' /}        
+            #{fap.combo campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel3', id:'uoDestinoSubNivel3', searchable:true, titulo:'Nivel 4' /}        
         
-            #{fap.texto campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', id:'uoDestino', requerido:true, titulo:'Código de unidad' /}      
+            #{fap.texto campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo', id:'uoDestino', requerido:true, titulo:'Código de unidad' /}      
         
             #{/fap.grupo}
         

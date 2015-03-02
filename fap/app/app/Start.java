@@ -85,6 +85,7 @@ import play.test.Fixtures;
 import play.vfs.VirtualFile;
 import properties.FapProperties;
 import properties.Properties;
+import services.BDOrganizacionService;
 import services.BaremacionService;
 import services.CertificadosService;
 import services.CertificadosServiceException;
@@ -241,6 +242,9 @@ public class Start extends Job {
 		
 		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 		registroService.mostrarInfoInyeccion();
+		
+		BDOrganizacionService bdOrganizacionService = InjectorConfig.getInjector().getInstance(BDOrganizacionService.class);
+		bdOrganizacionService.mostrarInfoInyeccion();
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();

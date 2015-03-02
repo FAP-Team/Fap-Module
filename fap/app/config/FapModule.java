@@ -6,6 +6,7 @@ import properties.PropertyPlaceholderImpl;
 import security.Secure;
 import security.SecureFap;
 import security.SecureFapGen;
+import services.BDOrganizacionService;
 import services.CertificadosService;
 import services.ComunicacionesInternasService;
 import services.ConversorService;
@@ -20,6 +21,7 @@ import services.TercerosService;
 import services.MensajeService;
 import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.VerificarDatosService;
+import services.filesystem.FileSystemBDOrganizacionServiceImpl;
 import services.filesystem.FileSystemCertificadosImpl;
 import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
@@ -50,6 +52,7 @@ public class FapModule extends PlayAbstractModule {
 		gestorDocumental();
 		firma();
 		registro();
+		dborganizacion();
 		notificacion();
 		portafirma();
 		publicar();
@@ -90,6 +93,10 @@ public class FapModule extends PlayAbstractModule {
 	   
 	protected void registro(){
 		bindLazySingletonOnDev(RegistroService.class, FileSystemRegistroService.class);
+	}
+	
+	protected void dborganizacion(){
+		bindLazySingletonOnDev(BDOrganizacionService.class, FileSystemBDOrganizacionServiceImpl.class);
 	}
 	
 	protected void publicar() {

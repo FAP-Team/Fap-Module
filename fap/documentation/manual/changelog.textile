@@ -2,6 +2,15 @@ h2. Changelog
 
 h3. Versión 2.5.6RC2
 
+* Añadida nueva property para seleccionar si mostrar mensajes de información de la sessión o no.
+* Se modifica la comprobación que permite que se muestre o no el link descargar firmado de un documento.
+* Se corrige que un documento quede clasificado tanto en el AED como en la BD.
+* Se agrega permiso para modificar un requerimiento en Verificación.
+* Se añaden mayor control de errores e la firma masiva de documentos.
+* Se modifica la generación de la firma masiva de documentos.
+* Se elimina el vaciado de datos de sessión al loguearse, pueden hacer falta esos datos.
+* Se cambian todas las referencias de la variable session por Spope.Session.current().
+* FixedBug se elimina el parámetro syncronized de la firma de documentos.
 * Se eliminan los documentos, no clasificados del AED además de en la base de datos, al borrarlos de las aplicaciones.
 * Se añade control de concurrencia en la firma de documentos de la solicitud.
 * Se añade al log más información de la sesión de un usuario.

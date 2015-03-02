@@ -18,6 +18,7 @@ import play.mvc.Finally;
 import play.mvc.Scope.Session;
 import play.mvc.Util;
 import play.mvc.Scope.Flash;
+import properties.FapProperties;
 import validation.CustomValidation;
 
 public class AgenteController extends Controller {
@@ -38,8 +39,9 @@ public class AgenteController extends Controller {
 			findAgente();
 		} 
 		
-		if (a != null)
-			play.Logger.info("Recuperando agente local, Método getAgente: Agente: " + a.username);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			if (a != null)
+				play.Logger.debug("Recuperando agente local, Método getAgente: Agente: " + a.username);
 		
 		return agente.get();
 	}
@@ -56,10 +58,12 @@ public class AgenteController extends Controller {
 	@Util
 	@Transactional
 	public static void findAgente() {
-		play.Logger.info("Metodo findAgente: Obteniendo de la sesion: " + Session.current().getId() + " el agente: " + Session.current().get("username"));
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Metodo findAgente: Obteniendo de la sesion: " + Session.current().getId() + " el agente: " + Session.current().get("username"));
 		String username = Session.current().get("username");
 		Agente a = Agente.find("byUsername", username).first();
-		play.Logger.info("Agente encontrado: " + a.username);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Agente encontrado: " + a.username);
 		agente.set(a);
 		MDC.put("username", a.username);
 	}

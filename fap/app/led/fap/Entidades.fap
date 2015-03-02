@@ -986,9 +986,9 @@ Entidad JsonPeticionModificacion{
 // -----------------------------------------------------------------------
 
 Entidad ComunicacionInterna{
-   AsientoCIFap asiento noConstruct
-   RespuestaCIFap respuesta noConstruct
-	AsientoAmpliadoCIFap asientoApmliado noConstruct
+    AsientoCIFap asiento noConstruct
+    RespuestaCIFap respuesta noConstruct
+	AsientoAmpliadoCIFap asientoAmpliado noConstruct
 	RespuestaCIAmpliadaFap respuestaAmpliada noConstruct
 	Lista estadosComunicacionInterna estado
 }

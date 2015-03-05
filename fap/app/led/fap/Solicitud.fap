@@ -9,7 +9,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
             Columna campo=Documento.tipo titulo="Tipo Documento"expandir
             Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
             Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
-            Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+            Columna campo=Documento.firmadoVisibleLocal titulo="Firmado" expandir
         }
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{

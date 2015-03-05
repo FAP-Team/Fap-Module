@@ -1,0 +1,148 @@
+
+%{ 
+    def controllerName = _controllerName != null ? play.mvc.Router.reverse(_controllerName + ".handlerComboUO") : "";
+    def id = _id ?: play.libs.Codec.UUID();
+    def titulo = _titulo ?: false;
+    def requerido = _requerido != null? _requerido : false;
+    def searchable = _searchable != null? _searchable : false;
+    def entidad = _entidad != null? _entidad : "";
+    def idnivel1 = id+"Nivel1";
+    def idnivel2 = id+"Nivel2";
+    def idnivel3 = id+"Nivel3";
+    def idnivel4 = id+"Nivel4";
+}%
+
+#{if entidad=="ReturnUnidadOrganicaFap"}
+    #{if titulo} 
+	    #{fap.grupo titulo:"${titulo}"}
+		#{fap.combo id:"${idnivel1}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoRaiz', titulo:'Nivel 1:'/}      
+		#{fap.combo id:"${idnivel2}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel1', titulo:'Nivel 2:'/}      
+		#{fap.combo id:"${idnivel3}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel2', titulo:'Nivel 3:'/}      
+		#{fap.combo id:"${idnivel4}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel3', titulo:'Nivel 4:'/} 
+		#{fap.texto campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo', id:'uoDestino', titulo:'Código de unidad:' /}      
+		#{/fap.grupo} 
+	#{/if}
+	#{else}
+	    #{fap.combo id:"${idnivel1}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoRaiz', titulo:'Nivel 1:'/}      
+        #{fap.combo id:"${idnivel2}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel1', titulo:'Nivel 2:'/}      
+        #{fap.combo id:"${idnivel3}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel2', titulo:'Nivel 3:'/}      
+        #{fap.combo id:"${idnivel4}", campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel3', titulo:'Nivel 4:'/} 
+        #{fap.texto campo:'comunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo', id:'uoDestino', titulo:'Código de unidad:' /}   
+	#{/else}
+#{/if}
+#{else}
+   
+#{/else}
+
+<script>
+
+function peticionUO(combo, codigoUO, subnivelUO){
+    var resultado;
+    $.ajax({
+        type: "POST",
+        url: "${controllerName}",
+                data: {
+                    codigo: codigoUO,
+                    subnivel: subnivelUO
+                },
+                async: false,
+                success: function(data) {
+                   rellenarCombo(combo, data);
+                },
+                error: function(data) {
+                   resetCombo(combo);
+                }
+        });
+    }
+    
+    $( document ).ready(function() {
+       $('#uoDestino').prop('readonly', true);
+       
+       var comboRaiz = $("#${idnivel1}");
+       peticionUO(comboRaiz, 0, 0);
+    });
+
+    $( "#${idnivel1}" ).change(function() {
+        var combo = $("#${idnivel1}");   
+        var comboHijo = $("#${idnivel2}");
+   
+        almacenarUODestino(null, combo);
+        obtenerSubnivel(combo, comboHijo, 1);
+        comboHijo.change();
+    });
+    
+    $( "#${idnivel2}" ).change(function() {  
+        var comboPadre = $("#${idnivel1}");     
+        var combo = $("#${idnivel2}");  
+        var comboHijo = $("#${idnivel3}");
+        
+        almacenarUODestino(comboPadre, combo);
+        obtenerSubnivel(combo, comboHijo, 2);
+        comboHijo.change();  
+    });
+    
+    $( "#${idnivel3}" ).change(function() {
+        var comboPadre = $("#${idnivel2}");
+        var combo = $("#${idnivel3}");
+        var comboHijo = $("#${idnivel4}");
+        
+        almacenarUODestino(comboPadre, combo);
+        obtenerSubnivel(combo, comboHijo, 3);
+        comboHijo.change();        
+    });
+    
+    $( "#${idnivel4}" ).change(function() {
+        var comboPadre = $("#${idnivel3}");
+        var combo = $("#${idnivel4}");
+        
+        almacenarUODestino(comboPadre, combo);    
+    });
+       
+    function obtenerSubnivel(comboPadre, comboHijo, subnivel){
+        var codigo = comboPadre.val();
+        peticionUO(comboHijo, codigo, subnivel);      
+    }
+    
+    function rellenarCombo(combo, data){
+    
+            if (data != null) {
+                var json = jQuery.parseJSON(data);
+        
+                combo.empty();
+                combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));
+                $.each(json, function(i, item) {
+                    combo.append($('<option>', { 
+                    value: item.key,
+                    text : item.value
+                }));        
+                });
+           
+                combo.trigger("liszt:updated");
+            } else
+               resetCombo(combo);
+           
+    }
+    
+    function resetCombo(combo){ 
+       combo.empty();                     
+       combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
+       combo.trigger("liszt:updated"); 
+    }
+    
+    function almacenarUODestino(comboPadre, combo) {
+        var uoDestino = $( "#uoDestino" );
+        var codigo = combo.val();
+                     
+        if ((codigo >= 0) || (comboPadre == null))
+           if (codigo >= 0)
+              uoDestino.val(codigo);
+           else
+              uoDestino.val('');
+        else {
+           var codigoPadre = comboPadre.val();
+           if (codigoPadre >= 0)
+              uoDestino.val(codigoPadre);
+        }
+    }
+
+</script>

@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION START ===
 
 import play.db.jpa.JPABase;
+import properties.FapProperties;
 import controllers.fap.SecureController;
 import com.google.gson.Gson;
 import utils.PeticionModificacion;
@@ -344,7 +345,8 @@ public class SolicitudGenerica extends FapModel {
 			return;
 		}
 
-		play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
 
 		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).fetch();
 
@@ -397,7 +399,8 @@ public class SolicitudGenerica extends FapModel {
 			return;
 		}
 
-		play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
 
 		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=? and participacion.tipo=?", user, this.id, TiposParticipacionEnum.representante.name()).first();
 		if (p == null) {

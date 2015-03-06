@@ -293,17 +293,17 @@ public class ReflectionUtils {
 
     /**
      * Llama al método de un controlador Manual si existe
-     * El método debe ser estático, accesible y sin parámetros
+     * El método debe ser estático, accesible
      * @param method
      * @return
      */
-    public static Object callControllerMethodIfExists(String method) {
+    public static Object callControllerMethodIfExists(final String method) {
         return callControllerMethodIfExists(method, null);
     }
     
     /**
      * Llama al método de un controlador Manual si existe
-     * El método debe ser estático, accesible y sin parámetros
+     * El método debe ser estático, accesible, con o sin parámetros
      * @param method
      * @param args
      * @return
@@ -311,10 +311,19 @@ public class ReflectionUtils {
     public static Object callControllerMethodIfExists(final String method, final Map<String, Object> args) {
         Method m = getControllerMethod(method, args);
         
+        // Se realiza un segundo intento sin parámetros por mantener la compatibilidad en las aplicaciones antiguas
+        boolean noArgs = false;
+        if (m == null && args != null) {
+            m = getControllerMethod(method, null);
+            noArgs = true;
+            Logger.warn("Definición del método %s obsoleto. La nueva definición \"public static void %s(Map<String, Object> args)\"", method, method);
+        }
+
         Object o = null;
         if (m != null) {
             try {
-                o = m.invoke(null, args);
+                // Se realiza la llamada al método dependiendo de si está definido con o sin parámetros
+                o = (noArgs) ? m.invoke(null, (Object []) null) : m.invoke(null, args);
             } catch (Exception e) {
                 // No se ha podido invocar al método
             }
@@ -328,18 +337,21 @@ public class ReflectionUtils {
      * @param method Nombre del metodo
      * @return true en caso de que existe
      */
-    public static boolean existsControllerMethod(String method) {
+    public static boolean existsControllerMethod(final String method) {
     	return existsControllerMethod(method, null);
     }
 
     /**
-     * Comprueba si existe el método 'method' en el controlador
+     * Comprueba si existe el método 'method' en el controlador con o sin parámetros
      * @param method
      * @param args
      * @return
      */
     public static boolean existsControllerMethod(final String method, final Map<String, Object> args) {
-        return getControllerMethod(method, args) != null;
+        boolean ret = getControllerMethod(method, args) != null;
+        
+        // Se realiza un segundo intento sin parámetros por mantener la compatibilidad en las aplicaciones antiguas
+        return (!ret && args != null) ? getControllerMethod(method, null) != null : ret;
     }
 	
     /**
@@ -347,7 +359,7 @@ public class ReflectionUtils {
      * @param method
      * @return El método o null si no lo se encuentra
      */
-    public static Method getControllerMethod(String method) {
+    private static Method getControllerMethod(final String method) {
         return getControllerMethod(method, null);
     }
     
@@ -357,7 +369,7 @@ public class ReflectionUtils {
      * @param args
      * @return
      */
-    public static Method getControllerMethod(final String method, final Map<String, Object> args) {
+    private static Method getControllerMethod(final String method, final Map<String, Object> args) {
         String controller = (String) play.mvc.Scope.RenderArgs.current().get("controllerName");
         
         //Elimina el sufijo Gen del nombre del controlador, para llamar al controlador manual
@@ -382,7 +394,7 @@ public class ReflectionUtils {
                  */
                 Class<?> parameters [] = { Map.class };
                 // Se intenta tomar una instancia del método
-                ret = clazz.getMethod(method, parameters);
+                ret = clazz.getMethod(method, (args != null) ? parameters : null);
             } catch (Exception e) {
                 // Method not found
             }

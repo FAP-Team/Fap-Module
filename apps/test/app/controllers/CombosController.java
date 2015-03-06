@@ -22,10 +22,17 @@ public class CombosController extends CombosControllerGen {
         return (Object) lst;
     }
     
-    private static Long cuadrado(Long val) {
-        return val * val;
+    // Prueba de compatibilidad con código antiguo
+    public static Object solicitud_comboTest_sinParametros() {
         
+        List<ComboItem> lst = new ArrayList<ComboItem>();
+        for (int i = 0; i < 10; i++) {
+            ComboItem cmb = new ComboItem(i, String.format("Key: %s, Value: %s.", i, i));
+            lst.add(cmb);
+        }
+        
+        return (Object) lst;
     }
-
+    
 }
 		

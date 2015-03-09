@@ -3,6 +3,7 @@ package controllers;
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Agente;
+import models.ParametroSVD;
 import models.SolicitudGenerica;
 import models.SolicitudTransmisionSVDFAP;
 import play.mvc.Util;
@@ -118,17 +119,18 @@ public class EditarSolicitudTransmisionSVDIdentidadController extends EditarSoli
 			dbSolicitudTransmisionSVDFAP.datosGenericos = solicitudTransmisionSVDFAP.datosGenericos;
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = solicitud.solicitante.numeroId;
 
-			String nombre = solicitud.solicitante.fisica.nombre;
-			String apellido1 = solicitud.solicitante.fisica.primerApellido;
-			String apellido2 = solicitud.solicitante.fisica.segundoApellido;
-
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombre = nombre;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido1 = apellido1;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido2 = apellido2;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
+			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.identificadorSolicitante = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "identificadorSolicitante").first();
+//			String nombre = solicitud.solicitante.fisica.nombre;
+//			String apellido1 = solicitud.solicitante.fisica.primerApellido;
+//			String apellido2 = solicitud.solicitante.fisica.segundoApellido;
+//
+//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombre = nombre;
+//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido1 = apellido1;
+//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido2 = apellido2;
+//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
 
 			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion = solicitud.solicitante.fisica.nip.tipo;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.id.toString(); //Id expediente = Id solicitud?
+//			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.id.toString(); //Id expediente = Id solicitud?
 
 			dbSolicitudTransmisionSVDFAP.datosEspecificos = solicitudTransmisionSVDFAP.datosEspecificos;
 

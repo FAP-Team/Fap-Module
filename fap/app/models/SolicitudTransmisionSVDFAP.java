@@ -45,6 +45,9 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaCreacion;
 
+	@Transient
+	public String descargarPDF;
+
 	public SolicitudTransmisionSVDFAP() {
 		init();
 	}

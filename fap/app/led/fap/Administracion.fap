@@ -9,6 +9,7 @@ Formulario Administracion permiso=administrador{
 			Enlace "Gestor Documental" pagina=Aed
 			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
+			Enlace "Configuración SVD" permiso=adminOrGestor pagina=ConfiguracionSVD
 			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
@@ -648,4 +649,30 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
 	}
 
+	
+    Pagina ConfiguracionSVD titulo="Configuración SVD" perteneceA="Administracion" {
+       Tabla tablaPropiedadesGenerales titulo="Tabla de parámetros Generales de Configuración" campo=ParametroSVD popup=PopupParametrosSVD {
+            Columna campo=ParametroSVD.descripcion titulo="Descripción"
+            Columna campo=ParametroSVD.clave titulo="Clave" ancho="120"
+            Columna campo=ParametroSVD.valor titulo="Valor" expandir
+        }
+        
+        Tabla tablaPropiedadesEspecificas titulo="Tabla de parámetros Específicos por Servicio" campo=ParametrosServicio popup=PopupParametrosServicio {
+            Columna campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio"
+            Columna campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" ancho="120"
+            Columna campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley" expandir
+        }
+	}
+	
+	Popup PopupParametrosSVD campo=ParametroSVD titulo="Parámetros Generales SVD"{
+        Texto campo=ParametroSVD.descripcion titulo="Descripción"
+        Texto campo=ParametroSVD.clave titulo="Clave" requerido
+        Texto campo=ParametroSVD.valor titulo="Valor" requerido
+    }
+    
+    Popup PopupParametrosServicio campo=ParametrosServicio titulo="Parámetros Específicos Servicio"{
+        Texto campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio" requerido
+        Texto campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" requerido
+        Check campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley"
+    }
 }

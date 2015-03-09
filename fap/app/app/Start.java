@@ -14,6 +14,8 @@ import models.Consulta;
 import models.Convocatoria;
 import models.ExpedienteAed;
 import models.Mail;
+import models.ParametroSVD;
+import models.ParametrosServicio;
 import models.SemillaExpediente;
 import models.SolicitudGenerica;
 import models.TableKeyValue;
@@ -81,6 +83,13 @@ public class Start extends Job {
             String consultasFile = "listas/initial-data/consultasSQL.yml";
             Logger.info("Cargando consultas desde %s", consultasFile);
             play.test.Fixtures.loadModels(consultasFile);
+        }
+
+		if (ParametroSVD.count() == 0 && ParametrosServicio.count() == 0){
+            Fixtures.delete();
+            String parametrosSVDFile = "listas/initial-data/parametrosSVD.yml";
+            Logger.info("Cargando parámetros SVD desde %s", parametrosSVDFile);
+            play.test.Fixtures.loadModels(parametrosSVDFile);
         }
 
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml

@@ -19,14 +19,13 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ComboNombreServicioSVDFAP extends Singleton {
+public class ComboFiltroExpedientes extends FapModel {
 	// Código de los atributos
 
-	@ValueFromTable("NombreServicioSVDFAP")
-	public String nombreServicio;
+	@ValueFromTable("FiltroExpedientes")
+	public String filtroExpedientes;
 
 	public void init() {
-		super.init();
 
 		postInit();
 	}

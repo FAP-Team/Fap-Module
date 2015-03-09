@@ -1,21 +1,16 @@
 package models;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.data.validation.*;
-
 import org.joda.time.DateTime;
-
 import models.*;
 import messages.Messages;
 import validation.*;
 import audit.Auditable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -29,22 +24,19 @@ public class FuncionarioSVDFAP extends FapModel {
 
 	public String nombreCompletoFuncionario;
 
-	public String nifFuncionario;
-
 	public void init() {
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-	
-	public FuncionarioSVDFAP(){
+
+	public FuncionarioSVDFAP() {
 		init();
 	}
-	
-	public FuncionarioSVDFAP(String nifFuncionario, String nombreCompleto){
+
+	public FuncionarioSVDFAP(String nombreCompleto) {
 		init();
-		this.setNifFuncionario(nifFuncionario);
 		this.setNombreCompletoFuncionario(nombreCompleto);
 	}
 
@@ -56,14 +48,6 @@ public class FuncionarioSVDFAP extends FapModel {
 		this.nombreCompletoFuncionario = nombreCompletoFuncionario;
 	}
 
-	public String getNifFuncionario() {
-		return nifFuncionario;
-	}
-
-	public void setNifFuncionario(String nifFuncionario) {
-		this.nifFuncionario = nifFuncionario;
-	}
-	
 	// === MANUAL REGION END ===
 
 }

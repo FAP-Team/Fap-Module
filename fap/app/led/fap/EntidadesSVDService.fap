@@ -2,9 +2,11 @@
 
 Entidad PeticionSVDFAP{
    String uidUsuario
+   String nifFuncionario
    AtributosSVDFAP atributos
    OneToMany SolicitudTransmisionSVDFAP solicitudesTransmision
    Lista tipoEstadoPeticionSVDFAP estadoPeticion
+   Lista NombreServicioSVDFAP nombreServicio
 }
 
 
@@ -18,6 +20,7 @@ Entidad SolicitudTransmisionSVDFAP{
    Lista NombreServicioSVDFAP nombreServicio
    String estado
    DateTime fechaCreacion
+   String descargarPDF transient
 }
 
 Entidad DatosGenericosPeticionSVDFAP{
@@ -43,7 +46,6 @@ Entidad ProcedimientoSVDFAP {
 
 Entidad FuncionarioSVDFAP{
    String nombreCompletoFuncionario
-   String nifFuncionario
 }
 
 Entidad TitularSVDFAP{
@@ -234,8 +236,10 @@ Entidad UltimaVariacionSVDFAP{
 Lista tipoEstadoPeticionSVDFAP crearEnumerado {
    creada: "Creada"
    enviada : "Enviada"
-   recibida: "Recibida"
+   preparada: "Preparada"
+   recibida: "Respondida"
    cancelada: "Cancelada"
+   caducada: "Caducada"
 }
 
 Lista NombreServicioSVDFAP crearEnumerado {
@@ -243,11 +247,37 @@ Lista NombreServicioSVDFAP crearEnumerado {
 	residencia: "Residencia"
 }
 
-Entidad ComboNombreServicioSVDFAP  {
+Entidad ComboNombreServicioSVDFAP extends Singleton  {
 	Lista NombreServicioSVDFAP nombreServicio
 }
 
 Lista Espanol crearEnumerado {
 	s: "Sí"
 	n: "No"
+}
+
+Lista FiltroExpedientes crearEnumerado {
+    caducados: "Caducados"
+    un_dia: "Caduca en un día"
+    una_semana: "Caduca en una semana"
+    un_mes: "Caduca en un mes"
+}
+
+Entidad ComboFiltroExpedientes {
+    Lista FiltroExpedientes filtroExpedientes
+}
+
+
+/******* Para los parámetros de Administración *******/
+
+Entidad ParametroSVD {
+    String descripcion
+    String clave
+    String valor
+}
+
+Entidad ParametrosServicio {
+    String nombreServicio
+    String codigoCertificado
+    Boolean consentimientoLey
 }

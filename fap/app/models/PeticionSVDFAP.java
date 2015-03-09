@@ -26,6 +26,8 @@ public class PeticionSVDFAP extends FapModel {
 
 	public String uidUsuario;
 
+	public String nifFuncionario;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public AtributosSVDFAP atributos;
 
@@ -35,6 +37,9 @@ public class PeticionSVDFAP extends FapModel {
 
 	@ValueFromTable("tipoEstadoPeticionSVDFAP")
 	public String estadoPeticion;
+
+	@ValueFromTable("NombreServicioSVDFAP")
+	public String nombreServicio;
 
 	public PeticionSVDFAP() {
 		init();

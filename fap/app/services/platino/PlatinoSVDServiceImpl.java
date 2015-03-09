@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import messages.Messages;
+import models.ParametroSVD;
+import models.ParametrosServicio;
 import models.PeticionSVDFAP;
 import models.SolicitudTransmisionSVDFAP;
 
@@ -21,6 +24,7 @@ import es.gobcan.platino.servicios.svd.RespuestaPdf;
 import es.gobcan.platino.servicios.svd.ScspwsService;
 import es.gobcan.platino.servicios.svd.ScspwsService_Service;
 import es.gobcan.platino.servicios.svd.SvdException;
+import es.gobcan.platino.servicios.svd.peticionpeticionpdf.PeticionPdf;
 import es.gobcan.platino.servicios.svd.peticionpeticionsincrona.PeticionSincrona;
 
 public class PlatinoSVDServiceImpl implements SVDService {
@@ -58,11 +62,20 @@ public class PlatinoSVDServiceImpl implements SVDService {
 
 
 	@Override
-	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes) {
+	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio) {
 
-		peticion.uidUsuario = "CODSVDR_GCA_20120608";
-		peticion.atributos.codigoCertificado = "CDISFWS01";
+		//peticion.uidUsuario = "dgonmor";
+
+		peticion.uidUsuario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "uidUsuario").first();
+		peticion.nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
+
 		peticion.solicitudesTransmision = solicitudes;
+
+		peticion.atributos.codigoCertificado = ParametrosServicio.find("select codigoCertificado from ParametrosServicio parametrosServicio where nombreServicio=?", tipoServicio).first();
+		peticion.nombreServicio = tipoServicio;
+		peticion.estadoPeticion = "creada";
+
+		peticion.save();
 
 		play.Logger.info("Se ha creado la petición SVD correctamente");
 	}
@@ -94,8 +107,20 @@ public class PlatinoSVDServiceImpl implements SVDService {
 	}
 
 	@Override
-	public RespuestaPdf generarPDFRespuesta() throws SVDServiceException {
-		// TODO Auto-generated method stub
+	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException {
+
+		PeticionPdf peticionPDF = new PeticionPdf();
+
+		peticionPDF.setUidUsuario(uidUsuario);
+		peticionPDF.setIdPeticion(idPeticion);
+		peticionPDF.setIdTransmision(idTransmision);
+
+		try {
+			return svdPort.peticionPdf(peticionPDF);
+		} catch (SvdException e) {
+			Messages.error("Se ha producido un error recuperando el PDF");
+			e.printStackTrace();
+		}
 		return null;
 	}
 

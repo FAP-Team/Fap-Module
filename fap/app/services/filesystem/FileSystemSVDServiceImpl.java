@@ -25,7 +25,7 @@ public class FileSystemSVDServiceImpl implements SVDService {
 			play.Logger.info("El servicio de SVD ha sido inyectado con FileSystem y NO está operativo.");
 	}
 	@Override
-	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes) {
+	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio) {
 		// TODO Auto-generated method stub
 
 	}
@@ -49,7 +49,7 @@ public class FileSystemSVDServiceImpl implements SVDService {
 	}
 
 	@Override
-	public RespuestaPdf generarPDFRespuesta() throws SVDServiceException {
+	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

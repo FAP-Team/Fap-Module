@@ -13,7 +13,7 @@ public interface SVDService {
 
 	public void mostrarInfoInyeccion();
 
-	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes);
+	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio);
 
 	public Respuesta enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException;
 
@@ -21,7 +21,7 @@ public interface SVDService {
 
 	public Respuesta solicitarRespuestaAsincrona(String idRespuesta) throws SVDServiceException;
 
-	public RespuestaPdf generarPDFRespuesta() throws SVDServiceException;
+	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException;
 
 	public Respuesta peticionRecover() throws SVDServiceException;
 }

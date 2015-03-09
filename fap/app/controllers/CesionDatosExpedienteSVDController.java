@@ -72,9 +72,6 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 	}
 
 	public static void enviarSolicitudesIdentidad(Long id, List<Long> idsSeleccionados) {
-		//Sobreescribir para incorporar funcionalidad
-		//No olvide asignar los permisos
-		//index();
 
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
 
@@ -86,15 +83,16 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 			listaSolicitudesTransmision.add(solicitudTransmision);
 		}
 
-		svdService.crearPeticion(peticion, listaSolicitudesTransmision);
-
 		try {
+			svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
 			Respuesta respuesta = svdService.enviarPeticionSincrona(peticion);
 			if (!Messages.hasErrors()) {
 				SVDUtils.respuestaSincronaPlatinoToRespuestaFAP(respuesta, peticion);
+				peticion.estadoPeticion = "recibida";
 			}
 		} catch (SVDServiceException e) {
-			// TODO Auto-generated catch block
+			Messages.error("Error al enviar la petición síncrona");
+			play.Logger.error("Error al enviar la petición síncrona: " + e);
 			e.printStackTrace();
 		}
 
@@ -103,9 +101,6 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 	}
 
 	public static void enviarSolicitudesResidencia(Long id, List<Long> idsSeleccionados) {
-		//Sobreescribir para incorporar funcionalidad
-		//No olvide asignar los permisos
-		//index();
 
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
 
@@ -117,7 +112,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 			listaSolicitudesTransmision.add(solicitudTransmision);
 		}
 
-		svdService.crearPeticion(peticion, listaSolicitudesTransmision);
+		svdService.crearPeticion(peticion, listaSolicitudesTransmision, "residencia");
 
 		try {
 			Respuesta respuesta = svdService.enviarPeticionSincrona(peticion);
@@ -125,11 +120,24 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 				SVDUtils.respuestaSincronaPlatinoToRespuestaFAP(respuesta, peticion);
 			}
 		} catch (SVDServiceException e) {
-			// TODO Auto-generated catch block
+			Messages.error("Error al enviar la petición síncrona");
+			play.Logger.error("Error al enviar la petición síncrona: " + e);
 			e.printStackTrace();
 		}
 
 		CesionDatosExpedienteSVDController.editarRender(peticion.solicitudesTransmision.get(0).solicitud.id);
+	}
+
+	public static void crearIdentidad(Long idSolicitud) {
+
+		SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idSolicitud);
+		CesionDatosExpedienteSVDController.editarRender(idSolicitud);
+	}
+
+	public static void crearResidencia(Long idSolicitud) {
+
+		SVDUtils.crearSolicitudTransmisionSVDFAP("residencia", idSolicitud);
+		CesionDatosExpedienteSVDController.editarRender(idSolicitud);
 	}
 
 }

@@ -1,5 +1,49 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC2
+
+* Se eliminan los documentos, no clasificados del AED además de en la base de datos, al borrarlos de las aplicaciones.
+* Se añade control de concurrencia en la firma de documentos de la solicitud.
+* Se añade al log más información de la sesión de un usuario.
+* Se modifica el proceso de comprobación de la firma de documentos en documentación y aportación sin utilizar las participaciones.
+* Se corrigen errores en la asignación de participaciones en una solicitud.
+* Se añaden mejoras y más información en el log referente a los accesos a las aplicaciones.
+* Se permite una segunda verificación de un trámite.
+* Se eliminan las migas de pan a no ser que se indique la property fap.login.type.ticketing=false en la aplicación.
+* Incorporación de página Logout para ticketing indicar en la property:fap.logout.ticketing.url
+* Actualizaciones de reports asociados a la notificación de resoluciones.
+* Corregidos errores en la autorización de usuarios en una solicitud.
+
+h3. Versión 2.5.6RC1
+
+* Corregido, se crean usuarios vacíos.
+* Comentado tiempo de caducidad de sesión en el módulo. Utilizar en las aplicaciones.
+* Cambio en la versión de Play en comando winservice.
+* Cambios en los servicios de Comunicaciones Internas y Genéricos.
+* Mejora en la carga de los javascript de firma en función de url y entorno.
+* Se establece una duración de caducidad de 5 minutos a la sesión de usuario.
+* Se calculan siempre los totales de CEconomicos Evaluados.
+* Añadido boton copiar PCEconomicos propuestos a concedidos.
+* Correcciones varias en PCEconomicos.
+* Corregido, errores en la descarga de las resoluciones.
+* Corregido, errores en la firma de documentos.
+
+h3. Versión 2.5.5RC5
+
+* Corregido, redireccionar a url en el cierre de la sesión.
+* Corregido, problema de visualización de la Baremación.
+* Corregido, descargar documentos firmados no registrados.
+* Se mejora la comprobación de la versión del navegador.
+* Se mejora la seguridad de acceso mediante ticketing.
+* Se mejora la comprobación del estado del proxy en Comunicaciones Internas.
+* Se añade mensaje de estado en los botones de acción en los Popups.
+* Corregido, se muestra página de Baremación en blanco.
+* Corregido, duplicación de nombres en los tags de firma.
+* Se modifica la información mostrada en el log.
+* Corregido, actualizar estado de la Verificación.
+* No se limita la fecha tope de firma en el Portafirma.
+* Se añade implementación para mantener la selección de registros en tablas.
+
 h3. Versión 2.5.5RC4
 
 * Se corrige la selección de varios expedientes en Resolución.

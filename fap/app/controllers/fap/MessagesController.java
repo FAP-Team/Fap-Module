@@ -8,6 +8,7 @@ import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
+import play.mvc.Scope.Session;
 
 public class MessagesController extends Controller {
 
@@ -30,7 +31,7 @@ public class MessagesController extends Controller {
     
     @Before
 	static void flashedParamsFromCache() {
-		Map<String, String[]> par = (Map<String, String[]>) Cache.get(session.getId());
+		Map<String, String[]> par = (Map<String, String[]>) Cache.get(Session.current().getId());
 		if (par == null){
 			return;
 		}
@@ -50,7 +51,7 @@ public class MessagesController extends Controller {
 				flash.now(key, par.get(key)[0]);
 			}
 		}
-		Cache.delete(session.getId());
+		Cache.delete(Session.current().getId());
 	}
 
 }

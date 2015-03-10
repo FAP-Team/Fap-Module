@@ -1,56 +1,93 @@
 <html>
+	<head>
+	<style media="print">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 12px;
+		}
+
+		p {
+			line-height:150%;
+			text-align: justify;
+		}
+		ol {
+    		list-style-type: lower-alpha;
+		}
+		ul {
+    		list-style-type: disc;
+		}
+		body {
+			margin-left:10%;
+			width: 80%;
+		}
+	</style>
+
+	</head>
 	<body>
 		<h2 style="text-align: center;"><!-- Titulo --></h2>
 		<h3 style="text-align: center;"><!-- Subtitulo --></h3>
+		<br/>
+		<br/>
 		<div id="divDatosPersonalesSolicitante">
 		<!-- SOLICITANTE -->
 			<table id="tblDatosPersonalesSolicitante" class="table-datos" >
-				<caption>SOLICITANTE:</caption>
-				<tr><td colspan="2"><br></td></tr>
-				<tr><th>NIF/CIF:</th><td>${solicitud.solicitante.getNumeroId()?.toUpperCase()}</td></tr>
-				<tr><th>Nombre/Razón Social:</th><td>${solicitud.solicitante.getNombreCompleto()?.toUpperCase()}</td></tr>	
+				<tr><td style="width:30%;"></td>
+				<td style="width:70%;text-align: right;">${solicitud.solicitante.getNombreCompleto()}</td></tr>
 			</table>
 		</div>
-		</br>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
 		<div>
 			%{
-				def num = resolucion.numero
-				def dia = resolucion.fechaRegistroResolucion.toDate().format('dd')
-				def mes = resolucion.fechaRegistroResolucion.toDate().format('MM')
-				def anio = resolucion.fechaRegistroResolucion.toDate().format('yyyy')
-				def sint = resolucion.sintesis
+				//NOTA IMPORTANTE: este documento tiene que ir al modulo
+				def num = resolucion.numero;
+				//def dia = resolucion.fechaRegistroResolucion.toDate().format('dd');
+				//def mes = resolucion.fechaRegistroResolucion.toDate().format('MM');
+				//def anio = resolucion.fechaRegistroResolucion.toDate().format('yyyy');
+				def formateador = new java.text.SimpleDateFormat("dd 'de' MMMM 'de' yyyy", new java.util.Locale("es","ES"));
+				def fecha = formateador.format(resolucion.fechaRegistroResolucion.toDate());
+				def sint = resolucion.sintesis;
                 def agente = resolucion.getAgenteSolicitadoFirmaOficiosRemision();
 			}%
 			<p>
-				<b>Asunto:</b> Remisión de la Resolución Nº ${num} de fecha ${dia} de ${mes} de ${anio}
+				<b>Asunto:</b> Remisión de la Resolución Nº ${num} de fecha ${fecha}
 			</p>
-			</br>
+			<br/>
 			<p>
-				Adjunto a este escrito se remite, a los efectos legales oportunos la Resolución Nº ${num} del Director de la Agencia Canaria de Investigación Innovación y Sociedad de la Información
+				Adjunto a este escrito se remite, a los efectos legales oportunos la ${sint}
 			</p>
-			</br>
-			<p>
-				${sint}
-			</p>
-			
+
 			<p>
 				${resolucion.textoResolucionReintegro}
 			</p>
 		</div>
-		
-		<div>		
+
+		<div>
 			<p>Disponen de un plazo de QUINCE (15) DÍAS HÁBILES para presentar las alegaciones que estime pertinentes con carácter previo a la Resolución definitiva, pudiendo asimismo voluntariamente y con carácter previo a la Resolución que acuerde la procedencia del reintegro, efectuar el ingreso de la cantidad indicada por cualquiera de los siguientes medios:</p>
-			 
-			<p>a) En el Servicio de Caja de los órganos de recaudación de la Consejería de Economía y Hacienda, en metálico o cheque conformado a nombre de la Tesorería de la Comunidad Autónoma de Canarias.</p>
-			<p>b) A través de Bancos o Cajas de Ahorros, en los que no se precisa tener cuenta abierta (Entidad BANKIA nº de cuenta: 2038 0972 11 6400004185, Provincia de Las Palmas).</p>
-			<p>c) Por Internet a través del dominio http://www.gobiernodecanarias.org/tributos.</p>
-			 
+
+			<ol>
+			 	<li><p>En el Servicio de Caja de los órganos de recaudación de la Consejería de Economía y Hacienda, en metálico o cheque conformado a nombre de la Tesorería de la Comunidad Autónoma de Canarias.</p></li>
+				<li>A través de Bancos o Cajas de Ahorros, en los que no se precisa tener cuenta abierta:
+					<ul>
+						<li>BANKIA nº de cuenta: 2038 0972 11 6400004185, Provincia de Las Palmas.</li>
+						<li>CAIXABANK nº de cuenta: 2100 9169 06 2200041428, Provincia de Santa Cruz de Tenerife.</li>
+					</ul>
+				</li>
+				<li><p>Por Internet a través del dominio http://www.gobiernodecanarias.org/tributos.</p></li>
+			</ol>
 			<p>A tal fin se indicará claramente en el documento de ingreso el concepto de reintegro y se remitirá a esta entidad el citado documento mecanizado, para posteriormente informarle del importe de los intereses devengados a esa fecha y poner fin al expediente</p>
 		</div>
+		<br/>
+		<br/>
+		<br/>
 
+		<div>
         <ul style="list-style-type: none">
-            <li>${agente.name}</li>
+            <li>${agente.name?.toLowerCase().capAll()}</li>
             <li>${agente.cargo}</li>
         </ul>
+        </div>
 	</body>
 </html>

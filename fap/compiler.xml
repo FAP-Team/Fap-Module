@@ -193,7 +193,7 @@
 		</condition>
 		<exec executable="${play.exe}">
 			<arg value="build-module" />
-			<arg value="--require=1.2.4" />
+			<arg value="--require=1.2.5" />
 		</exec>
 	</target>
 
@@ -201,7 +201,7 @@
 	<target name="build-module-windows" if="isWindows">
 		<exec executable="play.bat">
 			<arg value="build-module" />
-			<arg value="--require=1.2.4" />
+			<arg value="--require=1.2.5" />
 		</exec>
 	</target>
 

@@ -372,6 +372,7 @@ Boton:
 		& ('ayuda' '=' ayuda=STRING (tipoAyuda=TipoDeAyuda)?)?
 		& (claveIdFijo?="claveIdFijo")?	
 		& (noSubmit?="noSubmit")?
+		& ('style' '=' style=STRING)? 
 	)
 ;
 

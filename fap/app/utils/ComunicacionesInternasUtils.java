@@ -3,8 +3,11 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.InjectorConfig;
+import org.hibernate.Hibernate;
+import org.hibernate.dialect.function.SQLFunctionTemplate;
+import org.mockito.internal.invocation.UnusedStubsFinder;
 
+import config.InjectorConfig;
 import es.gobcan.platino.servicios.procedimientos.UnidadOrganicaWSItem;
 import services.ComunicacionesInternasService;
 import services.FirmaService;
@@ -123,7 +126,8 @@ public class ComunicacionesInternasUtils {
 	public static List<ReturnUnidadOrganicaFap> returnUnidadOrganica2returnUnidadOrganicaFap (ArrayOfReturnUnidadOrganica uo){
 		List<ReturnUnidadOrganica> unidades = uo.getReturnUnidadOrganica();
 		List<ReturnUnidadOrganicaFap> unidadesFap = new ArrayList<ReturnUnidadOrganicaFap>();
-		for (ReturnUnidadOrganica unidad:unidades){
+		for (ReturnUnidadOrganica unidad : unidades){
+			
 			ReturnUnidadOrganicaFap unidadOrganica = new ReturnUnidadOrganicaFap();
 			unidadOrganica.codigo = unidad.getCodigo();
 			unidadOrganica.codigoCompleto = unidad.getCodigoCompleto();
@@ -132,10 +136,8 @@ public class ComunicacionesInternasUtils {
 			unidadOrganica.esReceptora = unidad.getEsReceptora();
 			unidadOrganica.codigoReceptora = unidad.getCodigoUOReceptora();
 			unidadOrganica.error = error2errorFap(unidad.getError()); //Este ReturnError es del Services.amx no del CIServices.amx
-			//esta comprobación estaba hecha en la implementación anterior, habrá que preguntar por qué
-			if (unidadOrganica.esReceptora.equals("S")){
-				unidadesFap.add(unidadOrganica);
-			}
+			
+			unidadesFap.add(unidadOrganica);
 		}
 		return unidadesFap;
 	}
@@ -151,17 +153,4 @@ public class ComunicacionesInternasUtils {
 //		return resultado;
 //	}
 
-	public static List<ComboItem> unidadesOrganicas2Combo (String userId, String password){
-		List<ComboItem> resultado = new ArrayList<ComboItem>();
-		ComunicacionesInternasService comunicacionesService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
-		List<ReturnUnidadOrganicaFap> unidades = comunicacionesService.obtenerUnidadesOrganicas(userId, password);
-		for (ReturnUnidadOrganicaFap unidad : unidades) {
-			ReturnUnidadOrganicaFap unidadOrganica = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", unidad.codigo).first();
-			if (unidadOrganica  == null && unidad != null)
-				unidad.save();
-			resultado.add(new ComboItem(unidad.codigo, unidad.codigo + " "  + unidad.descripcion));
-			System.out.println("key 0: " + resultado.get(resultado.size()-1).getKey().toString());
-		}
-		return resultado;
-	}
 }

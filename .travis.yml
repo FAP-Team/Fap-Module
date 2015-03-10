@@ -1,24 +1,19 @@
 language: java
-
 jdk:
 - oraclejdk7
-
 python:
-  - "3.3"
-
+- '3.3'
 env:
   global:
-    - PLAY_VERSION=1.2.4
-    - FAPSDK=${TRAVIS_BUILD_DIR}
-    - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
-    - DIR_CASPERJS=${FAPSDK}/CasperJS
-    - CASPERJS=${DIR_CASPERJS}/bin/casperjs
-
+  - PLAY_VERSION=1.2.4
+  - FAPSDK=${TRAVIS_BUILD_DIR}
+  - PLAY=${FAPSDK}/play-${PLAY_VERSION}/play
+  - DIR_CASPERJS=${FAPSDK}/CasperJS
+  - CASPERJS=${DIR_CASPERJS}/bin/casperjs
 before_script:
 - wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
 - git clone git://github.com/n1k0/casperjs.git ${DIR_CASPERJS}
-
 script:
 - echo FAPSDK=${FAPSDK}
 - cd fap
@@ -34,4 +29,6 @@ script:
 - sleep 30
 - ${CASPERJS} test `pwd`/test/CasperJS/*.test.js
 - kill $casper_pid
-
+notifications:
+  slack:
+    secure: IOwxzPIHl54xr9+/K59AvXEn0tnPGmiOqk/E8EiZY4REfDNJd2Qp3yVZsS98cin6o7Rw/QIXPxO0Zf/VciS1sZS1ensZQSg3X32Z6F/CQ1AMYGxz1k5XxFm3fgVVlzjiF6m2wEJqyfrvwgqJLkhppA221bkK8l1PXSdLKUmTMXY=

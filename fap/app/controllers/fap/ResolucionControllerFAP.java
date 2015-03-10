@@ -118,12 +118,19 @@ public class ResolucionControllerFAP extends InvokeClassController {
 	 * envía al portafirma, aunque la "usa" como guía)
 	 * Se devuelve -1 si no hay un plazo máximo especificado
 	 * @param idResolucion
+	 * @param oficios: indica si se va a calcular la fecha límite para la firma de los oficios de remisión
 	 * @return plazoMaximo
 	 */
-	public static int getDiasLimiteFirma (Long idResolucion) {
+	public static int getDiasLimiteFirma (Long idResolucion, Boolean oficios) {
 		
 		int plazoMaximo;
-		String plazoMaximoDefinido = properties.FapProperties.get("fap.platino.portafirma.plazoMaximo");
+		String plazoMaximoDefinido;
+		
+		if (!oficios){
+			plazoMaximoDefinido = properties.FapProperties.get("fap.platino.portafirma.plazoMaximo");
+		} else {
+			plazoMaximoDefinido = properties.FapProperties.get("fap.platino.portafirma.plazoMaximoOficios");
+		}
 		
 		if ((plazoMaximoDefinido != null) && (plazoMaximoDefinido.compareTo("undefined") != 0))
 			 plazoMaximo = Integer.parseInt(plazoMaximoDefinido);

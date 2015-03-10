@@ -103,9 +103,9 @@ public class BaremacionService {
 			List<CEconomico>sinHijos = new ArrayList<CEconomico>();
 			for(int i = sortedCEconomicos.size()-1; i >= 0; i--){
 				for(CEconomico ceconomico : sortedCEconomicos.get(i)){
-					play.Logger.info("Calculando automático %", ceconomico.tipo.jerarquia);
+					play.Logger.info("Calculando automático %s", ceconomico.tipo.jerarquia);
 					if(ceconomico.tipo.clase.equals("auto")){
-						play.Logger.info("Calculando automático de ceconomicos %", ceconomico.tipo.jerarquia);
+						play.Logger.info("Calculando automático de ceconomicos %s", ceconomico.tipo.jerarquia);
 						if (i == sortedCEconomicos.size()-1){ // Para los nodos hojas
 							invokeEval(ceconomico.tipo.jerarquia, ceconomico, sinHijos);
 						} else {

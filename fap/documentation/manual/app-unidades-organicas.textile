@@ -1,0 +1,12 @@
+h1. Unidades Orgánicas
+
+Permite almacenar y mostrar todas las unidades orgánicas disponibles.
+
+!images/app-unidades-organicas!
+
+h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
+
+FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar las Unidades Orgánicas que trae implementada el módulo FAP. 
+Concretamente:
+
+* *UnidadesOrganicas*: Esta es la página que se encarga de cargar, y ver los datos de las unidades orgánicas.

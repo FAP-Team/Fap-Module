@@ -9,6 +9,7 @@ import models.CEconomico;
 import models.Criterio;
 import models.Evaluacion;
 import models.TipoEvaluacion;
+import models.CEconomicosManuales;
 
 public class Evaluador {
 
@@ -48,8 +49,30 @@ public class Evaluador {
 				ceconomico.valores.get(i).valorConcedido = sumatorio("valores",i,"valorConcedido", childs);
 				ceconomico.valores.get(i).valorEstimado = sumatorio("valores",i,"valorEstimado", childs);
 				ceconomico.valores.get(i).valorSolicitado = sumatorio("valores",i,"valorSolicitado", childs);
+			} else if (ceconomico.tipo.tipoOtro) {
+				ceconomico.valores.get(i).valorPropuesto = sumaOtros(ceconomico, i, "valorPropuesto");
+				ceconomico.valores.get(i).valorEstimado = sumaOtros(ceconomico, i, "valorEstimado");
+				ceconomico.valores.get(i).valorConcedido = sumaOtros(ceconomico, i, "valorConcedido");
+				ceconomico.valores.get(i).valorSolicitado = sumaOtros(ceconomico, i, "valorSolicitado");
 			}
 		}
+	}
+
+	private static Double sumaOtros(CEconomico ceconomico, int i, String fieldName) {
+		Double sum = 0D;
+		for ( CEconomicosManuales c : ceconomico.otros) {
+			try {
+				Object o = c.valores.get(i);
+				Field field = o.getClass().getField(fieldName);
+				sum += (Double)field.get(o);
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return sum;
 	}
 
 	static Double sumatorio(String fieldName, List<?> list) {

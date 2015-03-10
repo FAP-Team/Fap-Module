@@ -15,7 +15,7 @@ public class FilesystemTicketingServiceImpl implements TicketingService {
 
 		String urlTicketing = FapProperties.get("fap.login.mock.ticketing.url");
 		
-    	HttpResponse wsResponse = WS.url(urlTicketing + "/" + asunto + "/" + ticket).get();
+    	HttpResponse wsResponse = WS.url(urlTicketing + "/" + asunto + "/ticketing?ticketing=" + ticket).get();
     	if (wsResponse.getStatus() != 200) {
     		if (wsResponse.getStatus() == 404) {
     			play.Logger.error("FS: Ticket no encontrado: "+wsResponse);

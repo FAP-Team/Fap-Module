@@ -323,6 +323,9 @@ public class GFirmaMasiva extends GElement{
 		Entidad entidadRaiz = campo.entidad;
 		entidadRaiz.singletonsId = true;
 		
+		//Consulta para obtener la solicitud de los documentos de firmaMasiva
+		String querySolicitud = """${entidadRaiz.clase}.find("select ${entidadRaiz.variable} from ${entidadRaiz.clase} ${entidadRaiz.variable} join ${campo.firstLower()} ${entidad.variable} where ${entidad.variable}.id=?", ${entidad.id}).first()""";
+		
 		//La consulta depende de si se listan todas las entidades de una clase, o se accede a un campo
 		String query = null;
 		String param = "";
@@ -372,93 +375,126 @@ public class GFirmaMasiva extends GElement{
     static GestorDocumentalService gestorDocumentalService;
 
 	public static String obtenerFirmadoDocumento${id()}(Long idDocumento) {
-        if (!permiso("leer")) {
-            HashMap error = new HashMap();
-            error.put("error", "No tiene permisos suficientes");
-            return new Gson().toJson(error);
-        }
+      	if (!permiso("leer")) {
+			HashMap error = new HashMap();
+			error.put("error", "No tiene permisos suficientes");
+			return new Gson().toJson(error);
+		}
 		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
 		if (documento != null) {
 			play.Logger.info("El documento " + documento.id + " tiene la uri " + documento.uri + " y  firmado a " + documento.firmado);
-            HashMap json = new HashMap();
-			if (documento.firmado != null && documento.firmado == true) {
-                json.put("firmado", true);
-                return new Gson().toJson(json);
-            } else {
-                List<String> firmantes = new ArrayList<String>();
-                for(Firmante firmante : documento.firmantes.todos) {
-                    firmantes.add(firmante.idvalor);
-                }
-                Firma firma = null;
-                try {
-                    firma = gestorDocumentalService.getFirma(documento);
-                } catch (GestorDocumentalServiceException e) {
-                    e.printStackTrace();
-                }
-                json.put("id", documento.id);
-                json.put("firmado", false);
-                if (firma != null) {
-                    json.put("firma", firma.getContenido());
-                }
-                json.put("firmantes", firmantes);
-                json.put("url", FirmaUtils.obtenerUrlDocumento(documento.id));
-                return new Gson().toJson(json);
-            }
+			HashMap json = new HashMap();
+			if (FirmaUtils.hanFirmadoTodos(documento.firmantes.todos)) {
+				json.put("firmado", true);
+				json.put("descripcion", documento.descripcion);
+				json.put("refAed", documento.refAed);
+				return new Gson().toJson(json);
+			} else {
+				List<String> firmantes = new ArrayList<String>();
+				for (Firmante firmante : documento.firmantes.todos) {
+					firmantes.add(firmante.idvalor);
+				}
+				Firma firma = null;
+				try {
+					firma = gestorDocumentalService.getFirma(documento);
+				} catch (GestorDocumentalServiceException e) {
+					e.printStackTrace();
+				}
+				json.put("id", documento.id);
+				json.put("firmado", false);
+				if (firma != null) {
+					json.put("firma", firma.getContenido());
+				}
+				json.put("refAed", documento.refAed);
+				json.put("descripcion", documento.descripcion);
+				json.put("firmantes", firmantes);
+				json.put("url", FirmaUtils.obtenerUrlDocumento(documento.id));
+				return new Gson().toJson(json);
+			}
 		}
-		play.Logger.info("Error al obtener el documento "+idDocumento);
+		play.Logger.info("Error al obtener el documento " + idDocumento);
 		return null;
 	}
 
 	@Util
 	public static String firmar${id()}(Long idDocumento, String firma) {
 
-		Documento documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
         Map<String, Object> json = new HashMap<String, Object>();
-        List<String> errores = new ArrayList<String>();
+		ArrayList<String> errores = new ArrayList<String>();
+		ArrayList<String> aciertos = new ArrayList<String>();
+		Documento documento = null;
+		SolicitudGenerica solicitud = null;
 		
-		if (documento != null) {
-			play.Logger.info("Firmando documento " + documento.uri);
+		EntityTransaction tx = JPA.em().getTransaction();
+		try {
+			if (tx.isActive())
+		    	tx.commit();
+		    tx.begin();
+		    
+			documento = Documento.find("select documento from Documento documento where documento.id=?", idDocumento).first();
+			solicitud = ${querySolicitud};
+		
+			if (documento != null && solicitud != null) {
+				Messages.clear();
+
+				play.Logger.info("Firmando documento " + documento.uri + " de la Solicitud " + solicitud.id);
 	
-			Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
-			Map<String, Object> vars = new HashMap<String, Object>();
-            json.put("idDocumento", idDocumento);
-            json.put("firmado", false);
-			if (secure.checkAcceso("editarFirmaDocumento", "editar", ids, vars)) {
-				if (documento.firmantes == null) {
+				json.put("idDocumento", idDocumento);
+				json.put("firmado", false);
+				
+			    if (documento.firmantes == null) {
 					documento.firmantes = new Firmantes();
 					documento.save();
 				}
-				if (documento.firmantes.todos == null || documento.firmantes.todos.size() == 0) {
-					Long idSolicitud = ids.get("idSolicitud");
-					documento.firmantes.todos = calcularFirmantes${id()}(idSolicitud);
-					documento.firmantes.save();
-				}
+
+				//Calcula los firmantes del documento
+				play.Logger.info("Calculando firmantes del documento " + documento.uri + " de la Solicitud " + solicitud.id);
+				documento.firmantes.todos = calcularFirmantes${id()}(solicitud.id);
+				documento.firmantes.save();
+
 				FirmaUtils.firmarDocumento(documento, documento.firmantes.todos, firma, null);
-			} else {
-				//ERROR
-                String error = "No tiene permisos suficientes para realizar la acción";
-                Messages.error(error);
-                errores.add(error);
-			}
 	
-			if (!Messages.hasErrors()) {
-				play.Logger.info("Firma de documento " + documento.uri + " con éxito");
-                json.put("firmado", true);
-                return new Gson().toJson(json);
+				if (!Messages.hasErrors()) {
+					play.Logger.info("Firma de documento " + documento.uri + " con éxito");
+					if (documento.firmantes.todos.size() > 0 && FirmaUtils.hanFirmadoTodos(documento.firmantes.todos))
+						json.put("firmado", true);
+					else
+						json.put("firmado", false);
+				}
+
+			} else {
+				String errorDocumento = "";
+				String errorSolicitud = "";
+				if (documento == null) {
+					errorDocumento = "Error al obtener el documento " + idDocumento;
+					errores.add(errorDocumento);
+				}
+				if (solicitud == null) {
+					errorSolicitud = "Error al obtener la solicitud";
+					errores.add(errorSolicitud);
+				}
 			}
-            String error = "Firma de documento " + documento.uri + " sin éxito";
-            play.Logger.info(error);
-            errores.add(error);
-		} else {
-            String error = "Error al obtener el documento " + idDocumento;
-			play.Logger.info(error);
-            errores.add(error);
+		    
+			tx.commit();
+	 	}catch (RuntimeException e) {
+		    if ( tx != null && tx.isActive() ) tx.rollback();
+		    play.Logger.error("Se ha producido un error en el proceso de firma: " + documento.descripcion + " de la solicitud: " + solicitud.id);
+		    Messages.error("Error en el proceso de firma");
+		    e.printStackTrace();
 		}
-        for(String mensaje : Messages.messages(MessageType.ERROR)) {
-            errores.add(mensaje);
-        }
-        json.put("errores", errores );
-        return new Gson().toJson(json);
+		tx.begin();
+
+		for (String mensaje : Messages.messages(MessageType.OK)) {
+			aciertos.add(mensaje);
+		}
+
+		for (String mensaje : Messages.messages(MessageType.ERROR)) {
+			errores.add(mensaje);
+		}
+
+		json.put("errores", errores);
+		json.put("aciertos", aciertos);
+		return new Gson().toJson(json);
 	}
 	
 	public static List<Firmante> calcularFirmantes${id()}(Long idSolicitud) {

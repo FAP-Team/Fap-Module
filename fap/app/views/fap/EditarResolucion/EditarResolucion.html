@@ -242,7 +242,11 @@
 		
 			#{fap.combo campo:'resolucionFAP.solicitudFirmaPortafirma.prioridad', id:'selectPrioridadFirma', requerido:true, titulo:'Prioridad Firma' /}		
 		
-			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirma.plazoMaximo', requerido:true, titulo:'Fecha Tope Firma' /}		
+			#{fap.grupo borde:false, mostrarSi:((properties.FapProperties.get("fap.platino.portafirma.plazoMaximo") != null) && (properties.FapProperties.get("fap.platino.portafirma.plazoMaximo") != "undefined"))}
+				
+			#{fap.fecha campo:'resolucionFAP.solicitudFirmaPortafirma.plazoMaximo', id:'fechaTopeFirma', requerido:true, titulo:'Fecha Tope Firma' /}		
+		
+			#{/fap.grupo}
 		
 			#{fap.texto ayuda:tags.TagAyuda.popover('Número de folios del documento de la resolución'), campo:'resolucionFAP.numero_folios', requerido:true, titulo:'Nº Folios' /}
 			

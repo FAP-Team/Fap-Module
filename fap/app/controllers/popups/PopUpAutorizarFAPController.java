@@ -128,15 +128,16 @@ public class PopUpAutorizarFAPController extends PopUpAutorizarFAPControllerGen 
 		boolean encontrado = false;
 		List<Agente> listaAgentes = Agente.findAll();
 		for (Agente ag : listaAgentes) {
-			if (ag.username.toUpperCase().equals(autorizaciones.numeroIdentificacion.toUpperCase())){
-				encontrado = true;
-				Participacion p = new Participacion();
-				p.agente = ag;
-				p.solicitud = getSolicitudGenerica(idSolicitud);
-				p.tipo = TiposParticipacionEnum.autorizado.name();
-				p.save();
-				break;
-			}
+			if (ag != null && ag.username != null)
+				if (ag.username.toUpperCase().equals(autorizaciones.numeroIdentificacion.toUpperCase())){
+					encontrado = true;
+					Participacion p = new Participacion();
+					p.agente = ag;
+					p.solicitud = getSolicitudGenerica(idSolicitud);
+					p.tipo = TiposParticipacionEnum.autorizado.name();
+					p.save();
+					break;
+				}
 		}
 		if (!encontrado){
 			Agente ag = new Agente();

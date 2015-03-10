@@ -21,6 +21,7 @@ import models.TipoEvaluacion;
 import controllers.gen.PaginaCEconomicosEvaluadosControllerGen;
 import enumerado.fap.gen.EstadosEvaluacionEnum;
 import format.FapFormat;
+import utils.BaremacionUtils;
 
 public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvaluadosControllerGen {
 	
@@ -55,6 +56,7 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 		boolean noPuedeEditar = true;
 		Evaluacion evaluacion = Evaluacion.find("select evaluacion from Evaluacion evaluacion where evaluacion.solicitud.id=?", idSolicitud).first();
 		if (evaluacion != null){
+			BaremacionUtils.calcularTotales(solicitud);
 			if ((evaluacion.tipo.estado.equals("evaluada")) && (evaluacion.estado.equals(EstadosEvaluacionEnum.evaluada.name()))){
 				noPuedeEditar = false;
 			}
@@ -89,36 +91,37 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 			 Double totalesEstimado = 0.0;
 			 Double totalAuxConcedido = 0.0;
 			 Double totalAuxPropuesto = 0.0;
+			 Double totalAuxEstimado = 0.0;
 			 for (int i=0; i<tipoEvaluacion.duracion; i++){
 				totalAuxConcedido = 0.0;
+				 totalAuxPropuesto = 0.0;
 				if (cEconomico.otros.isEmpty()) {
 					totalAuxConcedido = cEconomico.valores.get(i).valorConcedido;
-				} else {
-					for(CEconomicosManuales cem: cEconomico.otros)
-						totalAuxConcedido += cem.valores.get(i).valorConcedido;
-				}
-				totalesConcedidoAnio.set(i, totalesConcedidoAnio.get(i)+totalAuxConcedido);
-				totalesConcedido += totalAuxConcedido;
-				columna.put("valorConcedido"+i, FapFormat.formatMoneda(totalAuxConcedido));
-				
-				totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i)+cEconomico.valores.get(i).valorSolicitado);
-				totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
-				columna.put("valorSolicitado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorSolicitado));
-				
-				totalAuxPropuesto = 0.0;
-				if (cEconomico.otros.isEmpty()) {
 					totalAuxPropuesto = cEconomico.valores.get(i).valorPropuesto;
+					totalAuxEstimado = cEconomico.valores.get(i).valorEstimado;
 				} else {
-					for(CEconomicosManuales cem: cEconomico.otros)
+					for(CEconomicosManuales cem: cEconomico.otros) {
+						totalAuxConcedido += cem.valores.get(i).valorConcedido;
 						totalAuxPropuesto += cem.valores.get(i).valorPropuesto;
+						totalAuxEstimado += cem.valores.get(i).valorEstimado;
+					}
 				}
-				totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i)+totalAuxPropuesto);
-				totalesPropuesto += totalAuxPropuesto;
-				columna.put("valorPropuesto"+i, FapFormat.formatMoneda(totalAuxPropuesto));
-				
-				totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
-				totalesEstimado += cEconomico.valores.get(i).valorEstimado;
-				columna.put("valorEstimado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorEstimado));
+				 if (!(cEconomico.tipo.clase.equals("auto") && !cEconomico.tipo.tipoOtro)) {
+					 totalesConcedidoAnio.set(i, totalesConcedidoAnio.get(i) + totalAuxConcedido);
+					 totalesSolicitadoAnio.set(i, totalesSolicitadoAnio.get(i) + cEconomico.valores.get(i).valorSolicitado);
+					 totalesPropuestoAnio.set(i, totalesPropuestoAnio.get(i) + totalAuxPropuesto);
+					 totalesEstimadoAnio.set(i, totalesEstimadoAnio.get(i)+cEconomico.valores.get(i).valorEstimado);
+				 }
+				 columna.put("valorConcedido" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorConcedido));
+				 columna.put("valorSolicitado" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorSolicitado));
+				 columna.put("valorPropuesto" + i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorPropuesto));
+				 columna.put("valorEstimado"+i, FapFormat.formatMoneda(cEconomico.valores.get(i).valorEstimado));
+
+				 totalesConcedido += totalAuxConcedido;
+				 totalesPropuesto += totalAuxPropuesto;
+				 totalesSolicitado += cEconomico.valores.get(i).valorSolicitado;
+				 totalesEstimado += cEconomico.valores.get(i).valorEstimado;
+
 			 }
 		  	 columna.put("nombre", cEconomico.tipo.nombre);
 		  	 columna.put("jerarquia", cEconomico.tipo.jerarquia);
@@ -230,7 +233,11 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 	public static void botonCopiarValoresGuardar(Long idSolicitud) {
 		SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 		for (CEconomico ceco : solicitud.ceconomicos) {
-			ceco.valores.get(0).valorConcedido = ceco.valores.get(0).valorPropuesto; 
+			if (ceco.tipo.tipoOtro) {
+				copiarValoresOtrosCEconomico(ceco);
+			} else {
+				copiarValoresCEconomico(ceco);
+			}
 			ceco.save();
 		}
 		if (!Messages.hasErrors()) {
@@ -238,6 +245,20 @@ public class PaginaCEconomicosEvaluadosController extends PaginaCEconomicosEvalu
 		} else
 			log.info("Acción Editar de página: " + "fap/PaginaCEconomicosEvaluados/PaginaCEconomicosEvaluados.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaCEconomicosEvaluadosController.guardarRender(idSolicitud);
+	}
+
+	private static void copiarValoresCEconomico(CEconomico ceco) {
+		for (int i = 0; i < ceco.valores.size(); i++) {
+			ceco.valores.get(i).valorConcedido = ceco.valores.get(i).valorPropuesto;
+		}
+	}
+
+	private static void copiarValoresOtrosCEconomico(CEconomico ceco) {
+		for (int j = 0; j < ceco.otros.size(); j++) {
+			for (int i = 0; i < ceco.otros.get(j).valores.size(); i++) {
+				ceco.otros.get(j).valores.get(i).valorConcedido = ceco.otros.get(j).valores.get(i).valorPropuesto;
+			}
+		}
 	}
 	
 }

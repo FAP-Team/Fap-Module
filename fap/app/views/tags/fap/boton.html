@@ -18,12 +18,14 @@
 	def label = _titulo
 	def ayuda = _ayuda
 	def id_help = id+"-help"
-	String style = '';
 	def waitPopup = _waitPopup
 	def stackDisabled = tags.TagMapStack.top("editable")
 	def disabled = stackDisabled == null || stackDisabled? '' : 'disabled="disabled"'	
+	String style = '';
+	if (_style != null)
+	   style += _style;
 	if(_ancho != null)
-		style += 'width: ' + _ancho + ';'
+	   style += 'width: ' + _ancho + ';'
 	String type = _type 
 	def fondo = _fondo
 	def noSubmit = _noSubmit

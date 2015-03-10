@@ -8,6 +8,7 @@ import security.SecureFap;
 import security.SecureFapGen;
 import services.CertificadosService;
 import services.ComunicacionesInternasService;
+import services.ConversorService;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeService;
@@ -17,10 +18,13 @@ import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.SVDService;
+import services.ServiciosGenericosService;
 import services.TercerosService;
+import services.MensajeService;
+import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
 import services.VerificarDatosService;
 import services.filesystem.FileSystemCertificadosImpl;
-import services.filesystem.FileSystemComunicacionesInternasServiceImpl;
+import services.filesystem.FileSystemConversor;
 import services.filesystem.FileSystemFirmaServiceImpl;
 import services.filesystem.FileSystemGestorDocumentalServiceImpl;
 import services.filesystem.FileSystemMensajeServiceImpl;
@@ -30,10 +34,16 @@ import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
 import services.filesystem.FileSystemSVDServiceImpl;
+import services.filesystem.FileSystemServicioGenericosImpl;
 import services.filesystem.FileSystemTercerosServiceImpl;
 import services.filesystem.FileSystemVerificarDatosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
+import services.notificacion.NotificacionServiceImpl;
+import services.openofice.OpenOfficeConversor;
+import services.platino.PlatinoTercerosServiceImpl;
+import services.platino.PlatinoMensajeServiceImpl;
 import services.ticketing.TicketingService;
+import services.NotificacionService;
 
 public class FapModule extends PlayAbstractModule {
 
@@ -51,6 +61,7 @@ public class FapModule extends PlayAbstractModule {
 		terceros();
 		ticketing();
 		mensaje();
+		serviciosGenericos();
 		comunicacionesInternas();
 		verificarDatos();
 		certificados();
@@ -101,7 +112,10 @@ public class FapModule extends PlayAbstractModule {
 	protected void mensaje() {
 		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
 	}
-
+	
+	protected void serviciosGenericos(){
+		bindLazySingletonOnDev(ServiciosGenericosService.class, FileSystemServicioGenericosImpl.class);
+	}
 
 	protected void comunicacionesInternas(){
 		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);

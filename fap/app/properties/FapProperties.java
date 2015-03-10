@@ -51,10 +51,7 @@ public class FapProperties extends PlayPlugin {
 	}
 	
 	public static void setBoolean(String key, boolean bool) {
-		if (bool) 
-			configuration.setInt(key, 1);
-		else
-			configuration.setInt(key, 0);
+	    configuration.put(key, bool ? "true" : "false");
 	}
 	
 	/**

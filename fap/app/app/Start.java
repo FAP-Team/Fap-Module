@@ -1,52 +1,116 @@
 package app;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Query;
 
-import models.AdministracionFapJobs;
-import models.Agente;
-import models.ConfigurarMensaje;
-import models.Consulta;
-import models.Convocatoria;
-import models.ExpedienteAed;
-import models.Mail;
-import models.ParametroSVD;
-import models.ParametrosServicio;
-import models.SemillaExpediente;
-import models.SolicitudGenerica;
-import models.TableKeyValue;
-import models.TableKeyValueDependency;
-import models.Tramite;
-import models.TramitesVerificables;
-
+import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.PropertyConfigurator;
+import org.h2.constant.SysProperties;
+import org.hibernate.ejb.EntityManagerImpl;
+import org.joda.time.DateTime;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.inject.Inject;
+
+import config.InjectorConfig;
+import controllers.AedController;
+import emails.Mails;
+import enumerado.fap.gen.EstadosSolicitudEnum;
+import enumerado.fap.gen.EstadosVerificacionEnum;
+import es.gobcan.aciisi.portafirma.ws.dominio.PrioridadEnumType;
+import es.gobcan.aciisi.portafirma.ws.dominio.TipoSolicitudEnumType;
+import es.gobcan.certificados.Areas;
+import es.gobcan.certificados.AreasFuncionales;
+import es.gobcan.certificados.CertificadosResult;
+import es.gobcan.certificados.Materias;
+import es.gobcan.certificados.Tipos;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.ArrayOfMensajeType;
+import es.gobcan.platino.servicios.edmyce.dominio.mensajes.MensajeCriteriaType;
+import es.gobcan.platino.servicios.svd.Respuesta;
+import es.gobcan.platino.servicios.svd.RespuestaPdf;
+import es.gobcan.certificados.Firmas;
+import messages.Messages;
+import models.*;
 import play.Logger;
 import play.Play;
+import play.classloading.ApplicationClassloader;
+import play.data.binding.Binder;
+import play.data.binding.ParamNode;
+import play.data.binding.RootParamNode;
+import play.data.binding.types.DateBinder;
+import play.db.DB;
+import play.db.Model;
 import play.db.jpa.JPA;
+import play.db.jpa.JPAPlugin;
+import play.db.jpa.Transactional;
+import play.exceptions.YAMLException;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import play.modules.guice.InjectSupport;
 import play.mvc.Router;
+import models.SolicitudGenerica;
 import play.test.Fixtures;
+import play.vfs.VirtualFile;
 import properties.FapProperties;
+import properties.Properties;
+import services.BaremacionService;
 import services.CertificadosService;
+import services.CertificadosServiceException;
 import services.ComunicacionesInternasService;
+import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeService;
 import services.NotificacionService;
 import services.PortafirmaFapService;
+import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.SVDService;
 import services.TercerosService;
+import services.ServiciosGenericosService;
+import services.TercerosService;
+import services.MensajeService;
+import services.genericos.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
+import services.VerificarDatosServiceException;
+import swhiperreg.ciservices.ArrayOfString;
+import services.responses.PortafirmaCrearSolicitudResponse;
 import utils.BaremacionUtils;
+import utils.JsonUtils;
 import utils.ModelUtils;
 import config.InjectorConfig;
 import emails.Mails;
@@ -207,11 +271,13 @@ public class Start extends Job {
 
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
+		
+		ServiciosGenericosService serviciosGenericos = InjectorConfig.getInjector().getInstance(ServiciosGenericosService.class);
+		serviciosGenericos.mostrarInfoInyeccion();
 
 		ComunicacionesInternasService comunicacionInternaService = InjectorConfig.getInjector().getInstance(ComunicacionesInternasService.class);
 		comunicacionInternaService.mostrarInfoInyeccion();
-
-
+		
 		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 		verificarDatosService.mostrarInfoInyeccion();
 

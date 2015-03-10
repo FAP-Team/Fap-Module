@@ -1053,6 +1053,10 @@ Entidad ReturnUnidadOrganicaFap{
 	String esReceptora
 	Long codigoReceptora
 	ReturnErrorFap error
+	Long codigoRaiz transient
+	Long codigoSubNivel1 transient
+	Long codigoSubNivel2 transient
+	Long codigoSubNivel3 transient
 }	
 
 Entidad ReturnErrorFap {
@@ -1088,7 +1092,7 @@ Entidad SolicitudFirmaPortafirma {
 	String solicitudEstadoComentario		// ACISII: comentario - Platino: Comentario realizado en el cambio de estado.
 	OneToMany Documento documentosFirma		// ACIISI: ListaDocumentosAedType
 	OneToMany Documento documentosConsulta	// ACIISI: ListaDocumentosAedType
-	Agente agenteHaceSolicitud
+	Agente agenteHaceSolicitud noConstruct
 	// -------------------- Portafirma ACIISI --------------------
 	String tipoSolicitud					// TipoSolicitudEnumType
 	String prioridad						// PrioridadEnumType

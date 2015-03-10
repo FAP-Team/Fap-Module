@@ -1,5 +1,8 @@
 package services.aed;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 import javax.xml.ws.Holder;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
@@ -31,17 +34,11 @@ import models.ResolucionFAP;
 import models.SolicitudGenerica;
 import models.Tramite;
 
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import controllers.fap.AgenteController;
-
 import platino.PlatinoProxy;
-import play.db.jpa.GenericModel.JPAQuery;
+import play.db.jpa.JPA;
 import play.libs.MimeTypes;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
@@ -51,39 +48,30 @@ import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
 import services.filesystem.TipoDocumentoEnTramite;
 import services.filesystem.TipoDocumentoGestorDocumental;
-import tramitacion.Documentos;
 import utils.BinaryResponse;
 import utils.StreamUtils;
 import utils.WSUtils;
+import controllers.fap.AgenteController;
 import enumerado.fap.gen.TipoCrearExpedienteAedEnum;
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedExcepcion;
 import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.eadmon.aed.ws.dominio.DocumentoEnUbicacion;
 import es.gobcan.eadmon.aed.ws.dominio.Expediente;
-import es.gobcan.eadmon.aed.ws.dominio.Solicitud;
 import es.gobcan.eadmon.aed.ws.dominio.Ubicaciones;
 import es.gobcan.eadmon.aed.ws.excepciones.CodigoErrorEnum;
-import es.gobcan.eadmon.aed.ws.servicios.ObtenerDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Contenido;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Documento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firma;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAdministrativas;
-import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesAvanzadas;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.PropiedadesDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.RegistroDocumento;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Resolucion;
 import es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.TipoPropiedadAvanzadaEnum;
-import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.TiposDocumentosExcepcion;
-import es.gobcan.eadmon.gestordocumental.ws.tiposdocumentos.dominio.TipoDocumento;
-import es.gobcan.eadmon.procedimientos.ws.ProcedimientosExcepcion;
-import es.gobcan.eadmon.verificacion.ws.dominio.ListaDocumentosVerificacion;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
- * 
+ *
  */
 @InjectSupport
 public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
@@ -93,11 +81,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	protected final PropertyPlaceholder propertyPlaceholder;
 
 	protected final ProcedimientosService procedimientosService;
-	
+
 	private static final Logger log = Logger.getLogger(AedGestorDocumentalServiceImpl.class);
 
     protected final TiposDocumentosService tiposDocumentos;
-	
+
     @Inject
     protected static FirmaService firmaService;
 
@@ -109,9 +97,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
 	public AedGestorDocumentalServiceImpl(PropertyPlaceholder propertyPlaceholder, AedPortType aedPort){
 		play.Logger.info("gestorDocumentalServiceImpl constructor");
-		
+
 	    this.propertyPlaceholder = propertyPlaceholder;
-		
+
         URL wsdlURL = Aed.class.getClassLoader().getResource("wsdl/aed/aed.wsdl");
         if(aedPort == null) {
             this.aedPort = new Aed(wsdlURL).getAed(new MTOMFeature());
@@ -128,10 +116,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     protected String getEndPoint() {
         return propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".url");
     }
-	
+
     /**
      * Configura el servicio
-     * 
+     *
      * Crea la carpeta para almacenar los documentos temporales
      */
     @Override
@@ -144,20 +132,20 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw serviceExceptionFrom(e);
         }
     }
-    
+
     protected AedPortType getAedPort(){
     	return this.aedPort;
     }
-    
+
     /**
      * Comprueba que el servicio esté configurado
-     * 
+     *
      * El servicio está configurado si tiene conexión con el servicio web
      * y está la carpeta temporal creada
      */
     @Override
 	public boolean isConfigured(){
-	    boolean isConfigured; 
+	    boolean isConfigured;
 	    try {
 	        isConfigured =  hasConnection() && existeCarpetaTemporal();
 	    }catch(AedExcepcion e){
@@ -165,7 +153,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    }
 	    return isConfigured;
 	}
-    
+
     @Override
     public void mostrarInfoInyeccion() {
 		if (isConfigured())
@@ -173,7 +161,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		else
 			play.Logger.info("El servicio de Gestor Documental ha sido inyectado con el AED y NO está operativo.");
     }
-		
+
 	protected boolean hasConnection(){
         boolean hasConnection = false;
         try {
@@ -183,26 +171,26 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
 		return hasConnection;
 	}
-	
+
 	protected String getVersion() throws AedExcepcion {
         Holder<String> version = new Holder<String>();
         Holder<String> revision = new Holder<String>();
         aedPort.obtenerVersionServicio(version, revision);
         return version.value + " - " + revision.value;
 	}
-	
+
 	/**
 	 * Crea el expediente para la solicitud
-	 * 
+	 *
 	 * Al expediente se le asignaran como interesados el solicitante
 	 * y todos sus representantes.
-	 * 
+	 *
 	 * @param  solicitud
 	 * @return número de expediente asignado
-	 * 
-	 * @throws NullPointerException El solicitante o alguno de sus representantes no tiene los campos 
+	 *
+	 * @throws NullPointerException El solicitante o alguno de sus representantes no tiene los campos
 	 *                              nombreCompleto o númeroId
-	 * @throws GestorDocumentalServiceException Si el servicio web dio error                             
+	 * @throws GestorDocumentalServiceException Si el servicio web dio error
 	 */
 	@Override
     public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
@@ -227,7 +215,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         expediente.setValorModalidad(convocatoria);
         expediente.getInteresados().addAll(interesados.getDocumentos());
         expediente.getInteresadosNombre().addAll(interesados.getNombres());
-        
+
         try {
             aedPort.crearExpediente(expediente);
             log.info("Creado expediente " + expedienteIdExterno + " para la solicitud " + solicitud.id);
@@ -245,7 +233,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         //Representantes
         if(solicitud.solicitante.isPersonaFisica() && representado){
             interesados.add(solicitud.solicitante.representante);
-        } 
+        }
         else if(solicitud.solicitante.isPersonaJuridica()){
             for(RepresentantePersonaJuridica representante: solicitud.solicitante.representantes){
                 interesados.add(representante);
@@ -253,13 +241,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return interesados;
     }
-    
+
     /**
      * Devuelve el interesado por defecto que se indica en las properties:
-     * 
+     *
      * 	<b>fap.aed.documentonoclasificado.interesado.nif</b>
      *  <b>fap.aed.documentonoclasificado.interesado.nombre</b>
-     *  
+     *
      * @return Lista con el interesado
      */
     private Interesados getInteresadosPorDefecto(){
@@ -267,16 +255,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         String nombre = FapProperties.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nombre");
         String documento = FapProperties.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nif");
         interesados.add(nombre, documento);
-        
+
         return interesados;
     }
-    
-    
+
+
     /**
      * Recupera las uris de los documentos que están en un expediente
-     * 
+     *
      * @return Lista de uris
-     * 
+     *
      * @throws GestorDocumentalServiceException si el servicios web da error
      */
     @Override
@@ -292,18 +280,18 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return uris;
     }
-    
+
     /**
-     * Obtiene la lista de documentos que se corresponden a un determinado tipo y 
+     * Obtiene la lista de documentos que se corresponden a un determinado tipo y
      * donde el interesado es el agente logueado.
-     * @throws AedExcepcion 
-     * 
+     * @throws AedExcepcion
+     *
      */
     @Override
     public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws GestorDocumentalServiceException {
     	if (tipoDocumento == null || tipoDocumento.isEmpty())
     		return Collections.emptyList();
-    	
+
     	Agente agente = AgenteController.getAgente();
     	String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
     	// Conjunto de documentos donde su tipo es 'tipoDocumento' y el interesado es el usuario logueado
@@ -317,7 +305,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    	// En la interfaz GestorDocumentalService tengo que poner qué entidad retorna esta función. Puedo elegir entre la entidad
 	    	// Documento de FAP (models.Documento) y la entidad Documento del Gobierno de Canarias. Elegimos la entidad de FAP.
 	    	// Con la función docAed2Doc, transformamos la entidad del Gobierno (devuelto en aedPort.buscarDocumentos) por la de FAP.
-	    	
+
 	    	for (PropiedadesDocumento propiedadesDoc : listaDocs) {
 	    		models.Documento doc = new models.Documento();
 	    		doc.docAed2Doc(propiedadesDoc, tipoDocumento);
@@ -327,11 +315,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
 		} catch (AedExcepcion e) {
 			throw new GestorDocumentalServiceException("Error extrayendo los documentos por tipo", e);
-			
+
 		}
     	    	return listaDocumentos;
     }
-    
+
     private List<PropiedadesDocumento> obtenerPropiedadesDocumentos(String expediente) throws AedExcepcion {
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
         List<PropiedadesDocumento> lista = aedPort.buscarDocumentos(procedimiento, expediente, null, null, null, null, null, null, null);
@@ -339,17 +327,17 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             lista = Collections.emptyList();
         return lista;
     }
-	
+
     /**
      * Recupera el contenido de un documento
-     * 
+     *
      * El documento puede estar clasificado o no clasificado
-     * 
+     *
      * @param documento
      * @return Contenido y nombre del fichero
-     * 
+     *
      * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
-     * 
+     *
      */
     @Override
     public BinaryResponse getDocumento(models.Documento documento) throws GestorDocumentalServiceException {
@@ -360,7 +348,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             	doc = aedPort.obtenerDocumentoNoClasificado(documento.uri);
             }
             catch(Exception e){
-            	play.Logger.info("El documento no está entre los documentos 'no clasificados'. Se procede a obtener " +
+            	log.info("El documento no está entre los documentos 'no clasificados'. Se procede a obtener " +
             			"de documentos clasificados...", e);
                 doc = aedPort.obtenerDocumento(documento.uri);
             }
@@ -369,21 +357,21 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         } catch (AedExcepcion e) {
             throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + documento.uri + " clasificado= "
                     + documento.clasificado + " - error: " + getLogMessage(e), e);
-        }        
+        }
         log.info("Documento recuperado del aed " + documento.uri);
         return response;
     }
-    
+
     /**
      * Recupera el contenido de un documento
-     * 
+     *
      * El documento puede estar clasificado o no clasificado
-     * 
+     *
      * @param documento
      * @return Contenido y nombre del fichero
-     * 
+     *
      * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
-     * 
+     *
      */
     @Override
     public BinaryResponse getDocumentoConInformeDeFirma(models.Documento documento) throws GestorDocumentalServiceException {
@@ -395,28 +383,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 contenido = aedPort.obtenerDocumentoNoClasificadoConInformeFirma(documento.uri);
             else
                 contenido = aedPort.obtenerDocumentoConInformeFirma(documento.uri);
-            
+
             response.contenido = contenido.getFichero();
             response.nombre = contenido.getNombre();
         } catch (AedExcepcion e) {
             throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + documento.uri + " clasificado= "
                     + clasificado + " - error: " + getLogMessage(e), e);
-        }        
+        }
         log.info("Documento recuperado del aed " + documento.uri);
         return response;
     }
-    
-    
+
+
     /**
      * Recupera el contenido de un documento dado su uri
-     * 
+     *
      * El documento puede estar clasificado o no clasificado
-     * 
+     *
      * @param uriDocumento
      * @return Contenido y nombre del fichero
-     * 
+     *
      * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
-     * 
+     *
      */
     @Override
     public BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException {
@@ -430,31 +418,31 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
              response.propiedades = (PropiedadesAdministrativas)doc.getPropiedades().getPropiedadesAvanzadas();
              obtuveDocumento = true;
         } catch (AedExcepcion e) { ; }
-        
+
         if (!obtuveDocumento) {
 	        try {
-	        	doc = aedPort.obtenerDocumento(uriDocumento);	            
+	        	doc = aedPort.obtenerDocumento(uriDocumento);
 	            response.contenido = doc.getContenido().getFichero();
 	            response.nombre = doc.getContenido().getNombre();
 	            response.propiedades = (PropiedadesAdministrativas)doc.getPropiedades().getPropiedadesAvanzadas();
 	        } catch (AedExcepcion e) {
 	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
-	        }     
+	        }
         }
         log.info("Documento recuperado del aed " + uriDocumento);
         return response;
     }
-    
+
     /**
      * Recupera el contenido de un documento Firmado dado su uri
-     * 
+     *
      * El documento puede estar clasificado o no clasificado
-     * 
+     *
      * @param uriDocumento
      * @return Contenido y nombre del fichero
-     * 
+     *
      * @throws GestorDocumentalServiceException Si se produjo un error al recuperar un documento
-     * 
+     *
      */
     @Override
     public BinaryResponse getDocumentoConInformeDeFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
@@ -467,25 +455,25 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             response.nombre = contenido.getNombre();
             obtuveDocumento = true;
         } catch (AedExcepcion e) { ; }
-        
+
         if (!obtuveDocumento) {
 	        try {
-	        	contenido = aedPort.obtenerDocumentoConInformeFirma(uriDocumento);	            
+	        	contenido = aedPort.obtenerDocumentoConInformeFirma(uriDocumento);
 	            response.contenido = contenido.getFichero();
 	            response.nombre = contenido.getNombre();
 	        } catch (AedExcepcion e) {
 	            throw new GestorDocumentalServiceException("No se ha podido cargar el documento " + uriDocumento + " - error: " + getLogMessage(e), e);
-	        }     
+	        }
         }
         log.info("Documento recuperado del aed " + uriDocumento);
         return response;
     }
-    
+
     private boolean isClasificado(models.Documento documento) throws GestorDocumentalServiceException {
         if(documento.clasificado == null){
             throw new GestorDocumentalServiceException("No se tiene información de si el documento con uri " + documento.uri + " está o no clasificado");
         }
-        return documento.clasificado;        
+        return documento.clasificado;
     }
 
     /**
@@ -498,45 +486,45 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         checkNotNull(documento.descripcionVisible, "descripcion del documento no puede ser null");
         checkNotNull(contenido, "contenido no puede ser null");
         checkNotNull(filename, "filename del documento no puede ser null");
-        
+
         checkArgument(!documento.tipo.isEmpty(), "El tipo de documento no puede estar vacío");
         checkArgument(!documento.descripcionVisible.isEmpty(), "La descripción del documento no puede estar vacía");
         checkArgument(!filename.isEmpty(), "El filename no puede estar vacío");
-        
+
         checkDocumentoNotInGestorDocumental(documento);
         //checkNotEmptyImputStream(contenido); // Falla cuando viene en 'contenido' el Justificante de Platino (el getJustificantePDF)
-		
+
 		Documento documentoAed = crearDocumentoTemporal(documento.tipo, documento.descripcionVisible, filename, contenido);
-		
+
 		String ruta = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".temporales");
 		String uri = null;
 		try {
     		uri = aedPort.crearDocumentoNoClasificado(ruta, documentoAed);
-    
+
     		documento.uri = uri;
     		documento.fechaSubida = new DateTime();
     		documento.clasificado = false;
-    		documento.refAed = false;					
-    		
+    		documento.refAed = false;
+
     		// Almacena el Hash del documento
     		documento.hash=getHash(uri);
-    		
+
     		//Guarda el documento
     		documento.save();
     		log.debug("Documento temporal creado uri=" + uri);
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
         }
-		
-		return uri;		
+
+		return uri;
 	}
-	
+
     private void checkDocumentoNotInGestorDocumental(models.Documento documento) throws GestorDocumentalServiceException {
         if(documento.uri != null){
             throw new GestorDocumentalServiceException("El documento ya tiene uri, ya está subido al gestor documental");
-        }        
+        }
     }
-    
+
     private void checkNotEmptyImputStream(InputStream is) throws GestorDocumentalServiceException {
         try {
             if(is.available() <= 0){
@@ -546,7 +534,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new GestorDocumentalServiceException("Error al comprobar si el fichero está disponible", e);
         }
     }
-	
+
 	@Override
     public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException {
         try {
@@ -555,10 +543,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new GestorDocumentalServiceException("File not found", e);
         }
     }
-	
+
 	protected Documento crearDocumentoTemporal(String tipo, String descripcion, String filename, InputStream is){
         Documento documento = new Documento();
-        
+
         // Propiedades básicas
         documento.setPropiedades(new PropiedadesDocumento());
         documento.getPropiedades().setDescripcion(descripcion);
@@ -570,13 +558,13 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         documento.getPropiedades().setPropiedadesAvanzadas(propiedadesAdministrativas);
         propiedadesAdministrativas.getInteresados().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nombre"));
         propiedadesAdministrativas.getInteresadosNombre().add(propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".documentonoclasificado.interesado.nif"));
-       
+
         // Contenido
         Contenido contenido = new Contenido();
         contenido.setNombre(filename);
         String mime = MimeTypes.getMimeType(filename, "application/octet-stream");
         contenido.setFichero(StreamUtils.getDataHandler(is, mime));
-        contenido.setTipoMime(mime);        
+        contenido.setTipoMime(mime);
         documento.setContenido(contenido);
         return documento;
 	}
@@ -584,16 +572,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	protected String getHash(String uri) throws AedExcepcion {
         PropiedadesDocumento pro  = aedPort.obtenerDocumentoPropiedadesNoClasificado(uri);
         String hash = ((PropiedadesAdministrativas)pro.getPropiedadesAvanzadas()).getSellado().getHash();
-        return hash;   
+        return hash;
 	}
-	
+
     @Override
     public void updateDocumento(models.Documento documento) throws GestorDocumentalServiceException {
 
         try {
             boolean clasificado = isClasificado(documento);
             PropiedadesDocumento props = obtenerPropiedades(documento.uri, clasificado);
-            
+
             props.setDescripcion(documento.descripcionVisible);
             props.setUriTipoDocumento(documento.tipo);
             if(clasificado){
@@ -603,7 +591,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 documento.save();
             }else{
                 aedPort.actualizarDocumentoPropiedadesNoClasificado(props);
-            }    
+            }
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
         }
@@ -619,7 +607,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return result;
 	}
-	
+
 	protected PropiedadesDocumento obtenerPropiedades(String uri, boolean clasificado) throws AedExcepcion {
 		PropiedadesDocumento propiedades;
 		if(clasificado){
@@ -628,45 +616,45 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			propiedades = aedPort.obtenerDocumentoPropiedadesNoClasificado(uri);
 		}
 		return propiedades;
-		
+
 	}
-	
+
     @Override
     public void deleteDocumento(models.Documento documento) throws GestorDocumentalServiceException {
         if(documento == null || documento.uri == null || documento.clasificado == null){
             throw new NullPointerException();
         }
-        
+
         log.debug("Borrando documento con uri " + documento.uri);
         if(documento.clasificado){
             throw new GestorDocumentalServiceException("Los documentos clasificados no se pueden eliminar");
         }
-        
+
         try {
             aedPort.suprimirDocumentoNoClasificado(documento.uri);
         }catch(AedExcepcion e){
             throw serviceExceptionFrom(e);
         }
-    }	
-	
+    }
+
     private static String getLogMessage(AedExcepcion e){
         return e.getFaultInfo().getDescripcion();
     }
-	
+
     protected static GestorDocumentalServiceException serviceExceptionFrom(AedExcepcion e){
         return new GestorDocumentalServiceException(getLogMessage(e), e);
     }
-    
+
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, InformacionRegistro informacionRegistro, boolean notificable) throws GestorDocumentalServiceException {
     	 log.debug("Clasificando documentos");
          String idAed = solicitud.expedienteAed.idAed;
-         
+
          if(idAed == null)
              throw new NullPointerException();
-         
+
          Interesados interesados = getInteresados(solicitud);
-         
+
          boolean todosClasificados = true;
          String errores = "";
          for(models.Documento documento : documentos){
@@ -676,7 +664,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                          clasificarDocumentoSinRegistro(idAed, documento, interesados, notificable);
                      }else{
                          //TODO: Pasar parámetro notificable ¿Hecho?
-                         clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, notificable); 
+                         clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, notificable);
                      }
                  }catch(AedExcepcion e){
                      todosClasificados = false;
@@ -690,10 +678,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                  log.warn("El documento " + documento.uri + " ya está clasificado");
              }
          }
-         
+
         // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
         for (models.Documento doc: solicitud.documentacion.documentos) {
- 			if ((doc.refAed != null) && (doc.refAed == true)) {	
+ 			if ((doc.refAed != null) && (doc.refAed == true)) {
  				idAed = solicitud.expedienteAed.idAed;
  				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
  				Ubicaciones ubicacion = new Ubicaciones();
@@ -712,28 +700,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
  				doc.save();
  			}
         }
-         
+
          if(!todosClasificados){
              throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos : " + errores);
          }
     }
-    
+
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException {
     	play.Logger.info("Clasificando documentos");
         String idAed = solicitud.expedienteAed.idAed;
-        
+
         if(idAed == null)
             throw new NullPointerException();
-        
+
         Interesados interesados = getInteresados(solicitud);
-        
+
         boolean todosClasificados = true;
         String errores = "";
         for(models.Documento documento : documentos){
             if(!documento.clasificado){
             	 // Clasificación de los documentos que ya estaban subidos en otro expediente y queremos duplicar en este expediente
-            	if ((documento.refAed != null) && (documento.refAed == true)) {	
+            	if ((documento.refAed != null) && (documento.refAed == true)) {
     				idAed = solicitud.expedienteAed.idAed;
     				String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
     				Ubicaciones ubicacion = new Ubicaciones();
@@ -760,7 +748,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	                    }else{
 	                        //TODO: Pasar parámetro notificable
 	                    	play.Logger.info("Clasificando documentos con registro para la solicitud: "+solicitud.id);
-	                        clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false); 
+	                        clasificarDocumentoConRegistro(idAed, documento, interesados, informacionRegistro, false);
 	                    }
 	                }catch(AedExcepcion e){
 	                    todosClasificados = false;
@@ -775,22 +763,22 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 log.warn("El documento " + documento.uri + " ya está clasificado");
             }
         }
-        
+
         if(!todosClasificados){
             throw new GestorDocumentalServiceException("No se pudieron clasificar todos los documentos : " + errores);
         }
     }
-    
+
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos) throws GestorDocumentalServiceException {
         clasificarDocumentos(solicitud, documentos, null);
     }
-    
+
     @Override
     public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, boolean notificable) throws GestorDocumentalServiceException {
         clasificarDocumentos(solicitud, documentos, null, notificable);
     }
-    
+
     protected void clasificarDocumentoSinRegistro(String idAed, models.Documento documento, Interesados interesados, boolean notificable) throws AedExcepcion {
     	play.Logger.info("Método clasificarDocumentosSinRegistro");
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
@@ -800,7 +788,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
-    
+
     protected void clasificarDocumentoConRegistroDeResolucion(String idAed, models.Documento documento, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
         PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
         PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
@@ -822,17 +810,17 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	propAdmin.setNotificable(true);
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
-    
+
 
     protected void clasificarDocumentosConsultaResolucion(String idAed, Interesados interesados, ResolucionFAP resolucion, boolean notificable) throws AedExcepcion {
-        
+
     	for (models.Documento documento : resolucion.docConsultaPortafirmasResolucion){
 	    	PropiedadesDocumento propiedades = obtenerPropiedades(documento.uri, documento.clasificado);
 	        PropiedadesAdministrativas propAdmin = (PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas();
 	        // Marca como notificable
 	        if (notificable)
 	        	propAdmin.setNotificable(true);
-	        
+
 	        if(!documento.clasificado){
 	        	try {
 					if (!existeDocumentoClasificado(documento.uri)){ //Si no existe lo clasifico -> Doc. nuevo
@@ -878,7 +866,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         play.Logger.info("Llamada a clasificarDocumento");
         clasificarDocumento(idAed, documento, propiedades, interesados);
     }
-    
+
     protected void clasificarDocumento(String idAed, models.Documento documento, PropiedadesDocumento propiedadesDocumento, Interesados interesados) throws AedExcepcion {
     	play.Logger.info("Método del AED de clasificarDocumento, obtención de datos");
     	// Registro de entrada
@@ -900,40 +888,47 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
         // Clasificar documento al expediente
         play.Logger.info("Clasificando el documento "+documento.uri+" en el AED");
-        try {
-        	  aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
-              documento.clasificado = true;
-              documento.save();
+		EntityTransaction tx = JPA.em().getTransaction();
+		try {
+			if (tx.isActive())
+		    	tx.commit();
+		    tx.begin();
+			aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
+			documento.clasificado = true;
+			documento.save();
+			tx.commit();
         } catch(AedExcepcion e){
+        	if (tx.isActive())
+        		tx.rollback();
         	play.Logger.info("Error Clasificando el documento "+e.getMessage()+" en el AED");
         }
-      
-        
+		tx.begin();
+
         log.info("Documento temporal clasificado: Expediente: " + idAed + ", Documento: " + documento.uri);
     }
-	
+
     @Override
     public void agregarFirma(models.Documento documento, models.Firma firma) throws GestorDocumentalServiceException {
         if(firma.getContenido() == null)
             throw new GestorDocumentalServiceException("La firma está vacia");
-        
+
         try {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
             Firma firmaActual = propiedadesAdministrativas.getFirma();
-            
+
 			boolean clasificado = isClasificado(documento);
-            
+
             models.Firmante firmante = firma.getFirmantes().get(0);
     		if (propiedadesAdministrativas.getFirma() == null) {
     			firmaActual = new Firma();
     			firmaActual.setContenido(firma.getContenido());
     			firmaActual.setTipoMime("text/xml");
                 asignarFirmante(firmaActual, firmante);
-    			
+
     			propiedadesAdministrativas.setFirma(firmaActual);
     			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
-    			
+
     			String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
 
     		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())) {
@@ -941,10 +936,10 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                     throw new GestorDocumentalServiceException("La firma no contiene a los firmantes anteriores");
                 }
     			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-            	
+
             	propiedadesAdministrativas.setFirma(firmaNueva);
             	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
-            	
+
             	String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
             }
             else {
@@ -966,19 +961,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
         return true;
     }
-    
+
 
 	@Override
 	public void agregarFirma(models.Documento documento, String firmaStr)
 			throws GestorDocumentalServiceException {
         if(firmaStr == null || firmaStr.isEmpty())
             throw new GestorDocumentalServiceException("La firma está vacia");
-        
+
         try {
-        	
+
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
-            Firma firmaActual = propiedadesAdministrativas.getFirma();            
+            Firma firmaActual = propiedadesAdministrativas.getFirma();
     		if (firmaActual == null) {
     			firmaActual = new Firma();
     			firmaActual.setContenido(firmaStr);
@@ -986,7 +981,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     			firmaActual.setContenido(firmaParalela(firmaActual, firmaStr).getContenido());
     		}
 			firmaActual.setTipoMime("text/xml");
-    			
+
 			boolean clasificado = isClasificado(documento);
             es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
     		firmanteAed.setFirmanteNombre(FapProperties.get("fap.platino.firmante.nombre"));
@@ -1002,9 +997,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			
+
 			firmaActual.getFirmantes().add(firmanteAed);
-			
+
 			propiedadesAdministrativas.setFirma(firmaActual);
             String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
 
@@ -1036,28 +1031,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         asignarFirmante(firmaNueva, firmante);
         return firmaNueva;
     }
-    
+
     protected Firma firmaSimple(String nueva){
         Firma firma = new Firma();
         firma.setContenido(nueva);
         firma.setTipoMime("text/plain");
         return firma;
     }
-    
+
     protected Firma firmaParalela(Firma firmaActual, String contenidoNueva){
         firmaActual.setContenido(contenidoNueva);
         firmaActual.setTipoMime("text/plain");
         return firmaActual;
     }
-	
+
     protected void asignarFirmante(Firma firma, models.Firmante firmante){
         es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante firmanteAed = new es.gobcan.eadmon.gestordocumental.ws.gestionelementos.dominio.Firmante();
         firmanteAed.setFirmanteNombre(firmante.nombre);
         firmanteAed.setFirmanteNif(firmante.idvalor);
         firmanteAed.setFecha(firmante.fechaFirma.toDate());
-        firma.getFirmantes().add(firmanteAed); // puede haber firmas anteriores        
+        firma.getFirmantes().add(firmanteAed); // puede haber firmas anteriores
     }
-    
+
 	private String actualizarPropiedades(PropiedadesDocumento propiedades, boolean clasificado, models.Documento documento) throws AedExcepcion {
         String uriToRet = "";
 		if(clasificado){
@@ -1081,7 +1076,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return uriToRet;
 	}
-	
+
 	/**
 	 * Recupera la firma de un documentos
 	 * @throws GestorDocumentalServiceException si no se pueden recuperar las propiedades del documento
@@ -1092,11 +1087,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     	Firma firmaAed = null;
     	PropiedadesDocumento propiedades = null;
     	PropiedadesAdministrativas propsAdmin = null;
-    	
+
     	if (documento.refAed){
     		docFirma = obtenerDocumentoFirma(documento);
     	}else {
-    		
+
     		    try {
     	            propiedades = obtenerPropiedades(documento.uri, isClasificado(documento));
     	            propsAdmin = ((PropiedadesAdministrativas) propiedades.getPropiedadesAvanzadas());
@@ -1105,19 +1100,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
     	            throw serviceExceptionFrom(e);
     	        }
     	}
-    	
+
         if(firmaAed != null){
             docFirma = toFirmaModel(firmaAed);
         }
-        
+
         return docFirma;
     }
-    
+
 	@Override
 	public models.Firma obtenerDocumentoFirma(models.Documento documento) throws GestorDocumentalServiceException {
-		
+
 		models.Firma docFirma = null;
-		
+
 		if ((documento != null) && (documento.uri != null)){
 			try {
 				Firma aedFirma = aedPort.obtenerDocumentoFirma(documento.uri);
@@ -1126,7 +1121,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 				throw serviceExceptionFrom(e);
 			}
 		}
-		
+
 		return docFirma;
 	}
 
@@ -1134,7 +1129,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         models.Firma result = new models.Firma(firmaAed.getContenido(), toModelFirmantes(firmaAed.getFirmantes()));
         return result;
     }
-    
+
     private List<models.Firmante> toModelFirmantes(List<Firmante> firmantesAed){
         List<models.Firmante> firmantes = new ArrayList<models.Firmante>();
         for(Firmante firmanteAed : firmantesAed){
@@ -1157,16 +1152,16 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         List<Tramite> tramites = procedimientosService.getTramites();
         return tramites;
     }
-    
+
     @Override
     public void actualizarCodigosExclusion() {
         procedimientosService.actualizarCodigosExclusion();
     }
-    
+
     /**
      * Crea la carpeta temporal en el aed que está configurada
      * en la property "fap.aed.temporales"
-     * 
+     *
      * @throws AedExcepcion
      */
     protected void crearCarpetaTemporal() throws AedExcepcion {
@@ -1177,15 +1172,15 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         crearCarpetaTemporal(carpeta);
     }
-	
+
 
     /**
      * Crea una carpeta donde se van a almacenar los documentos temporales
      * que su suban en el archivo.
-     * 
+     *
      * El método del servicio no crea carpeta en varios niveles de profundidad
      * hay que ir creando la carpeta de cada nivel.
-     * 
+     *
      * @param carpeta
      * @throws AedExcepcion
      */
@@ -1194,11 +1189,11 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new NullPointerException();
         if(carpeta.isEmpty())
             throw new IllegalArgumentException();
-        
+
         String[] splits = carpeta.split("/");
         String ruta = "";
         String ruta2 = "";
-        
+
         for(String s : splits){
         	ruta2 = ruta2.isEmpty() ? s  : ruta2 + "/" + s;
         	if (!existeCarpetaTemporal(ruta2)) {
@@ -1208,7 +1203,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         	ruta = ruta.isEmpty() ? s  : ruta + "/" + s;
         }
     }
-    
+
     /**
      * Comprueba si existe la carpeta temporal definida en la property
      * "fap.aed.temporales"
@@ -1227,7 +1222,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new NullPointerException();
         if(carpeta.isEmpty())
             throw new IllegalArgumentException();
-        
+
         boolean result = false;
         try {
             aedPort.obtenerCarpetasNoClasificadas(carpeta);
@@ -1242,7 +1237,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return result;
     }
-    
+
     /**
      * Borra una carpeta temporal
      * @param carpeta
@@ -1253,7 +1248,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new NullPointerException();
         if(carpeta.isEmpty())
             throw new IllegalArgumentException();
-        
+
         String path, folder;
         if(carpeta.contains("/")){
             int index = carpeta.lastIndexOf('/');
@@ -1270,19 +1265,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
                 throw e;
         }
     }
-    
+
 	/**
-	 * Crea un expediente, que unicamente tendrá 
-	 * 
+	 * Crea un expediente, que unicamente tendrá
+	 *
 	 * Al expediente se le asignaran como interesado el interesado por defecto de la aplicación
-	 * 
+	 *
 	 * @param  expedienteAed
 	 * @return número de expediente asignado
-	 * 
-	 * @throws GestorDocumentalServiceException Si el servicio web dió error                             
+	 *
+	 * @throws GestorDocumentalServiceException Si el servicio web dió error
 	 */
 	@Override
-    public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {        
+    public String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException {
         String expedienteIdExterno = expedienteAed.asignarIdAed();
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
 		try {
@@ -1295,7 +1290,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		} catch (AedExcepcion e) {
 			play.Logger.error("Error al buscar los expedientes en el AED.", e);
 		}
-		
+
 		Interesados interesados = getInteresadosPorDefecto();
         String convocatoria = Convocatoria.getIdentificadorConvocatoria(this.propertyPlaceholder);
 
@@ -1305,7 +1300,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         expediente.setValorModalidad(convocatoria);
         expediente.getInteresados().addAll(interesados.getDocumentos());
         expediente.getInteresadosNombre().addAll(interesados.getNombres());
-        
+
         try {
             aedPort.crearExpediente(expediente);
             log.info("Creado expediente " + expedienteIdExterno + " para el expediente local " + expedienteAed.id);
@@ -1314,7 +1309,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return expedienteIdExterno;
     }
-	
+
 	/**
 	 * Actualizará los interesados de un expediente, a partir de la solicitud
 	 * @param expedienteAed
@@ -1325,7 +1320,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	public String modificarInteresados (ExpedienteAed expedienteAed, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
         if ((expedienteAed.idAed == null) || (expedienteAed.idAed.trim().equals("")))
         	throw new GestorDocumentalServiceException("Error modificando expediente para el expediente (id: " + expedienteAed.id+"): No tiene idAed");
-        
+
         Interesados interesados = getInteresados(solicitud);
         String numeroExpediente = expedienteAed.idAed;
         String procedimiento = propertyPlaceholder.get("fap."+propertyPlaceholder.get("fap.defaultAED")+".procedimiento");
@@ -1337,7 +1332,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         expediente.setValorModalidad(convocatoria);
         expediente.getInteresados().addAll(interesados.getDocumentos());
         expediente.getInteresadosNombre().addAll(interesados.getNombres());
-        
+
         try {
             aedPort.actualizarExpediente(expediente);
             log.info("Actualizado expediente " + numeroExpediente + " para el expediente local " + expedienteAed.id);
@@ -1346,46 +1341,51 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
 		return numeroExpediente;
 	}
-	
+
+	@Override
 	public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
 		return  TipoDocumentoEnTramite.conversorTipoDocumentoEnTramite(procedimientosService.getTiposDocumentosAportadosCiudadano(tramite));
 	}
-	
+
+	@Override
 	public List<TipoDocumentoGestorDocumental> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite) {
 		return TipoDocumentoGestorDocumental.ConversorTipoDocumento(procedimientosService.getListTiposDocumentosAportadosCiudadano(tramite));
 	}
-	
+
 	@Override
 	public String getExpReg(){
 		String expresionRegular="TRP\\d+";
 		return expresionRegular;
 	}
-	
+
+	@Override
 	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
 		duplicarDocumentoSubido(uriDocumento);
 	}
-	
+
+	@Override
 	@Deprecated
 	public void duplicarDocumentoSubido(String uriDocumento, String descripcionDocumento, models.Documento dbDocumento, SolicitudGenerica solicitud) throws GestorDocumentalServiceException {
 		duplicarDocumentoSubido(uriDocumento, descripcionDocumento, dbDocumento);
 	}
-		
+
 	/*
-	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado). 
-	 * Esta función marca en ese documento (campos documento.RefAed y documento.expedienteReferenciado) que 
+	 * Al subir un documento, se da la posibilidad de seleccionar uno ya subido previamente (y clasificado).
+	 * Esta función marca en ese documento (campos documento.RefAed y documento.expedienteReferenciado) que
 	 * debe estar en el expediente correspondiente. En el proceso de clasificación es cuando realmente este
 	 * documento pasa a formar parte a todos los efectos del expediente.
-	 * 
+	 *
 	 */
+	@Override
 	public void duplicarDocumentoSubido(String uriDocumento) throws GestorDocumentalServiceException {
-		models.Documento doc = new models.Documento(); 
+		models.Documento doc = new models.Documento();
 		doc.refAed = true;
 		doc.uri = uriDocumento;
         doc.fechaSubida = new DateTime();
 		doc.save();
 	}
-	
+
 	private boolean containsFirmante (models.Firmante firmante, List<Firmante> listaFirmantes) {
 		for (Firmante f : listaFirmantes) {
 			if (firmante.idvalor.equalsIgnoreCase(f.getFirmanteNif()))
@@ -1402,67 +1402,68 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		dbDocumento.fechaSubida = new DateTime();
 		dbDocumento.save();
 	}
-	
+
 	/**
 	 * Funcion que nos sirve para duplicar ciertos atributos de un documento a otro.
 	 * En concreto con los documentos adjuntador por uri desde un gestor documental.
-	 * 
-	 * @param documento 
+	 *
+	 * @param documento
 	 * @param dbdocumento
 	 */
 	@Override
 	public void duplicarDocumentoSubido(models.Documento documento, models.Documento dbDocumento)
 			throws GestorDocumentalServiceException {
-		
+
 		dbDocumento.refAed = true;
 		dbDocumento.anexo = true;
 		dbDocumento.uri = documento.uri;
 		dbDocumento.descripcion = documento.descripcion;
 		dbDocumento.fechaSubida = new DateTime();
-		
+
 		Documento docAed = obtenerDocumento(dbDocumento.uri);
 		BinaryResponse response = new BinaryResponse();
 		response.propiedades = (PropiedadesAdministrativas)docAed.getPropiedades().getPropiedadesAvanzadas();
-		
-		if (response.propiedades.getRegistro().getFechaRegistro() != null) 
+
+		if (response.propiedades.getRegistro().getFechaRegistro() != null)
 			dbDocumento.fechaRegistro = new DateTime(response.propiedades.getRegistro().getFechaRegistro());
 
 		if (response.propiedades.getSellado().getHash() != null)
 			dbDocumento.hash = response.propiedades.getSellado().getHash();
-		
+
 		dbDocumento.save();
-		
+
 	}
 
 	@Override
 	public void clasificarDocumentoResolucion(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		log.debug("Clasificando documento resolución");
-		
+
         Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
         String idAed = convocatoria.expedienteAed.idAed;
-        
+
         if(idAed == null)
             throw new NullPointerException();
-        
+
         Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
-        
+
         try {
         	clasificarDocumentoConRegistroDeResolucion(idAed, resolucionFap.registro.oficial, interesados, resolucionFap, false);
         } catch (AedExcepcion e) {
         	throw new GestorDocumentalServiceException("Error clasificando documento de resolucion sin registro.", e);
 		}
-		
+
 	}
-	
+
+	@Override
 	public void clasificarDocumentosConsulta(ResolucionFAP resolucionFap) throws GestorDocumentalServiceException {
 		log.debug("Clasificando documento de consulta");
-		
+
 	    Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
 	    String idAed = convocatoria.expedienteAed.idAed;
-	    
+
 	    if(idAed == null)
 	        throw new NullPointerException();
-	    
+
 	    //Interesados interesados = Interesados.getListaInteresados(resolucionFap.getInteresados(resolucionFap.id));
 	    Interesados interesados = new Interesados();
 	    PersonaJuridica aciisi = new PersonaJuridica();
@@ -1471,7 +1472,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 	    aciisi.entidad = FapProperties.get("fap.docConsulta.portaFirma.interesado.nombre");
 	    aciisi.cif = FapProperties.get("fap.docConsulta.portaFirma.interesado.cif");
 	    interesados.add(aciisi);
-	    
+
 	    try {
 	    	clasificarDocumentosConsultaResolucion(idAed, interesados, resolucionFap, false);
 	    } catch (AedExcepcion e) {
@@ -1481,9 +1482,9 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 
 	@Override
 	public String crearExpedienteConvocatoria() throws GestorDocumentalServiceException {
-		
+
 		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
-				
+
 		convocatoria.expedienteAed.selectCrearExpedienteAed = TipoCrearExpedienteAedEnum.convocatoria.name();
 		String expedienteIdExterno = convocatoria.expedienteAed.asignarIdAed();
 		convocatoria.save();
@@ -1508,7 +1509,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         expediente.setValorModalidad(strConvocatoria);
         expediente.getInteresados().add(FapProperties.get("fap.aed.expediente.convocatoria.interesado.nip"));
         expediente.getInteresadosNombre().add(FapProperties.get("fap.aed.expediente.convocatoria.interesado.nombre"));
-        
+
         try {
             aedPort.crearExpediente(expediente);
             log.info("Creado expediente " + expedienteIdExterno + " para la convocatoria ");
@@ -1517,18 +1518,19 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
             throw new GestorDocumentalServiceException("Error creando expediente " + expedienteIdExterno + " para la convocatoria ", e);
         }
 		return expedienteIdExterno;
-		
+
 	}
 
-	
 
+
+	@Override
 	public String getDocumentoFirmaByUri(String uriDocumento, boolean clasificado) throws GestorDocumentalServiceException {
         String response = null;
         try{
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(uriDocumento, clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
             Firma firmaActual = propiedadesAdministrativas.getFirma();
-            
+
             if (firmaActual != null)
             	response = firmaActual.getContenido();
         }
@@ -1538,6 +1540,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         return response;
     }
 
+	@Override
 	public String getDocumentoFirmaByUri(String uriDocumento) throws GestorDocumentalServiceException {
         return getDocumentoFirmaByUri(uriDocumento, true);
 	}
@@ -1555,7 +1558,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         }
         return doc;
     }
-	
+
 	/**
 	 * Copiamos el documento en cada uno de los expedientes que se le pasen
 	 * @param uri
@@ -1581,7 +1584,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			new GestorDocumentalServiceException("Error al copiar el documento en los expedientes", e);
 		}
 	}
-	
+
 	/**
 	 * Copiamos el documento en cada uno de los expedientes que se le pasen
 	 * @param uris
@@ -1597,7 +1600,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			play.Logger.info("Añado la ubicación: "+exp.idAed);
 			ubicacion.getExpedientes().add(exp.idAed);
 		}
-		
+
 		List<Ubicaciones> ubicaciones = new ArrayList<Ubicaciones>();
 		ubicaciones.add(ubicacion);
 		try {
@@ -1630,7 +1633,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 		}
 		return descripcion;
 	}
-	
+
 	/**
 	 * Comprueba si el documento está clasificado en el gestor documental
 	 * @param uriDocumento
@@ -1647,7 +1650,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			//e.printStackTrace();
 			return false;
 		}
-	}	
+	}
 
 	/**
 	 * Obtiene el tipo de documento de un documento clasificado

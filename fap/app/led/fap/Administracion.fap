@@ -212,6 +212,9 @@ Formulario Administracion permiso=administrador{
 	    		Boton actualizarBaremacionBoton titulo="Actualizar Baremación"
 	    	}
 	    }
+	    Grupo EvaluacionesFinalizadas titulo="Estado de las evaluaciones" mostrarSiExpresion"((models.TipoEvaluacion != null) && (models.TipoEvaluacion.comprobarEstadoTipoEvaluacion(\"evaluada\")))" {
+	       Wiki{ "La evaluaciones ya han sido finalizadas" }
+	    }
     }
 	
 	Pagina Usuarios titulo="Administración de Usuarios" perteneceA="Administracion"{
@@ -647,6 +650,33 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		}
 		//Boton btnVolver titulo="Volver"
 		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
+	}
+	
+	Pagina UnidadesOrganicas titulo="Cargar Unidades Orgánicas" noForm{
+	   
+	   Tabla tblUO campo=ReturnUnidadOrganicaFap titulo="Unidades Orgánicas" popupLeer=PopupDatosLeerUnidadesOrganicas {
+            Columna campo=ReturnUnidadOrganicaFap.codigo titulo="Código" expandir
+            Columna campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción" expandir
+            Columna campo=ReturnUnidadOrganicaFap.esBaja titulo="Alta/Baja" expandir
+            Columna campo=ReturnUnidadOrganicaFap.esReceptora titulo="Receptora" expandir
+      }
+      
+      Form frmUO {
+         Grupo grpUO titulo="Cargar Unidades Orgánicas" {
+            Boton btnCargarUO titulo="Cargar" waitPopup
+            
+            Wiki {"Nota: La operación de carga puede tardar varios minutos."}
+         }
+      }
+	}
+	
+	Popup PopupDatosLeerUnidadesOrganicas campo=ReturnUnidadOrganicaFap titulo="Unidad Orgánica" {
+	   Texto codigo campo=ReturnUnidadOrganicaFap.codigo titulo="Codigo"
+	   Texto codigoCompleto campo=ReturnUnidadOrganicaFap.codigoCompleto titulo="Codigo Completo"
+	   Texto descripcion campo=ReturnUnidadOrganicaFap.descripcion titulo="Descripción"
+	   Texto esBaja campo=ReturnUnidadOrganicaFap.esBaja titulo="Diponibilidad"
+	   Texto esReceptora campo=ReturnUnidadOrganicaFap.esReceptora titulo="Receptora"
+	   Texto codigoReceptora campo=ReturnUnidadOrganicaFap.codigoReceptora titulo="Codigo Receptora"
 	}
 
 	

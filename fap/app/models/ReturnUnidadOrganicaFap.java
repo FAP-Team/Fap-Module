@@ -37,6 +37,18 @@ public class ReturnUnidadOrganicaFap extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnErrorFap error;
 
+	@Transient
+	public Long codigoRaiz;
+
+	@Transient
+	public Long codigoSubNivel1;
+
+	@Transient
+	public Long codigoSubNivel2;
+
+	@Transient
+	public Long codigoSubNivel3;
+
 	public ReturnUnidadOrganicaFap() {
 		init();
 	}

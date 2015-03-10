@@ -125,11 +125,6 @@ public class SolicitudFirmaPortafirma extends FapModel {
 		if (documentosConsulta == null)
 			documentosConsulta = new ArrayList<Documento>();
 
-		if (agenteHaceSolicitud == null)
-			agenteHaceSolicitud = new Agente();
-		else
-			agenteHaceSolicitud.init();
-
 		if (documento == null)
 			documento = new Documento();
 		else

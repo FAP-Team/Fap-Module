@@ -362,6 +362,8 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 				PortafirmaCrearSolicitudResponse response = portafirmaService.crearSolicitudFirma(dbResolucionFAP);
 				portafirmaService.entregarSolicitudFirma(dbResolucionFAP.solicitudFirmaPortafirma.idSolicitante, response.getIdSolicitud(), response.getComentarios());
 				tx.begin();
+				if (dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud == null)
+					dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = new Agente();
 				dbResolucionFAP.solicitudFirmaPortafirma.agenteHaceSolicitud = agenteActual;
 				dbResolucionFAP.solicitudFirmaPortafirma.uriSolicitud = response.getIdSolicitud();
 				dbResolucionFAP.solicitudFirmaPortafirma.solicitudEstadoComentario = response.getComentarios();
@@ -410,8 +412,6 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 		CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.prioridad", resolucionFAP.solicitudFirmaPortafirma.prioridad);
 		CustomValidation.validValueFromTable("resolucionFAP.solicitudFirmaPortafirma.prioridad", resolucionFAP.solicitudFirmaPortafirma.prioridad);
 		dbResolucionFAP.solicitudFirmaPortafirma.prioridad = resolucionFAP.solicitudFirmaPortafirma.prioridad;
-		CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.plazoMaximo", resolucionFAP.solicitudFirmaPortafirma.plazoMaximo);
-		dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo = resolucionFAP.solicitudFirmaPortafirma.plazoMaximo;
 		CustomValidation.required("resolucionFAP.numero_folios", resolucionFAP.numero_folios);
 		dbResolucionFAP.numero_folios = resolucionFAP.numero_folios;
 		
@@ -435,9 +435,13 @@ public class EditarResolucionController extends EditarResolucionControllerGen {
 			int dias = 0;
 			// Comprobar la fecha de tope de firma con el ResolucionBase
 			try {
-				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id);
+				dias = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getDiasLimiteFirma", dbResolucionFAP.id, false);
 				//Si hay un plazo límite, se calcula si la fecha seleccionada está dentro del rango 
 				if (dias != -1) {
+					//Es requerido sólo si existe la property y tiene valor
+					CustomValidation.required("resolucionFAP.solicitudFirmaPortafirma.plazoMaximo", resolucionFAP.solicitudFirmaPortafirma.plazoMaximo);
+					dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo = resolucionFAP.solicitudFirmaPortafirma.plazoMaximo;
+					
 					DateTime diaLimite = new DateTime();
 					diaLimite = diaLimite.plusDays(dias);
 					if (diaLimite.isBefore(dbResolucionFAP.solicitudFirmaPortafirma.plazoMaximo)) {

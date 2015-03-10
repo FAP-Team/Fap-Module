@@ -114,7 +114,7 @@
 	firmaService = config.InjectorConfig.getInjector().getInstance(services.FirmaService.class)
     miniApplet = firmaService.getInfoInyeccion().toLowerCase().matches(".*platino.*")
 	
-%}
+}%
 
 	#{doBody /}
 	
@@ -403,7 +403,7 @@
                         popup_open(
                             "${popupEditar}_popup",
                             replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
-                            reload
+                            reload${id}
                         );
                     #{/if}
                     #{else}
@@ -431,7 +431,7 @@
                         popup_open(
                             "${popupEditar}_popup",
                             replaceId("${urlEditar}", "_${_idEntidad}_", selected_id),
-                            reload
+                            reload${id}
                         );
 
                     #{/if}
@@ -462,7 +462,7 @@
                         popup_open(
                             "${popupBorrar}_popup",
                             replaceId("${urlBorrar}", "_${_idEntidad}_", selected_id),
-                            reload
+                            reload${id}
                         );
                     #{/if}
                     #{else}
@@ -484,10 +484,13 @@
 // ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 	function convertirAJSON(json) {
-		return JSON && JSON.parse(json) || $.parseJSON(json);
+	   if (json != null)
+	      return JSON && JSON.parse(json) || $.parseJSON(json);
+	   else
+	      return json;
 	}
 
-	function obtenerUrlsDocumentos(selected, errores) {
+	function obtenerUrlsDocumentos${id}(selected, errores) {
 		var resultado;
 		var idDocumento;
 		var firmadoDocumento;
@@ -498,31 +501,28 @@
 			resultado = "false";
 			firma = null;
 			idDocumento = selected[i].data.id;
-			var firmadoDocumentoJSON =  obtenerFirmadoDocumento(idDocumento);
+			var firmadoDocumentoJSON =  obtenerFirmadoDocumento${id}(idDocumento);
 			firmadoDocumento = convertirAJSON(firmadoDocumentoJSON);
 			if ((idDocumento != null) && (firmadoDocumento != null)) {
-			
 			    if ((firmadoDocumento.refAed == null) || (firmadoDocumento.refAed === false)) {
 					if (firmadoDocumento.firmado === false) {
-						//alert("Firmando documento "+j+" de "+selected.length+" seleccionados | id: "+idDocumento);
-						if (firmadoDocumento.url != null) {
+						if (firmadoDocumento.url != null && firmadoDocumento.url != "") {
 							listaDocumentos[selected[i].data.id] = firmadoDocumento;
 						} else {
-							//alert("Error al obtener urlDocumento");
-							break;
+							errores["DOC_URL_AED"+i] = "El documento " + firmadoDocumento.descripcion + " no se ha podido recuperar del AED.";
 						}
 					} else if (firmadoDocumento.firmado) {
 						resultado = "true";
-	                    errores["DOC_YA_FIRMADO"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido firmado por todos los interesados";
-						//alert("El documento: "+j+" ya está firmado | id: "+idDocumento);
+	                    errores["DOC_YA_FIRMADO"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido firmado por todos los interesados.";
 				    }
 				} else {
-                     errores["DOC_REF_AED"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo";
+                     errores["DOC_REF_AED"+i] = "El documento " + firmadoDocumento.descripcion + " ya ha sido registrado de entrada, no es posible firmarlo.";
                 }
                 
 			} else {
-				//alert("Error al obtener idDocumento o firmadoDocumento");
-				break;
+			   errores["SERVICE_AED"+i] = "Error al obtener los datos referentes a los documentos seleccionados.";
+			   listaDocumentos = {};
+			   break;
 			}
 		} // for
 		return listaDocumentos;
@@ -540,28 +540,30 @@
 		return idDocumento;
 	}
 
-	var firmaRealizada = function(resultadoFirma, listaDocumentos, errores, aciertos) {
+	var firmaRealizada${id} = function(resultadoFirma, listaDocumentos, errores, aciertos) {
 		var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
 		if (resultadoFirma.firma != null) {
-			resultado = convertirAJSON(firmar(idDocumento, resultadoFirma.firma));
+			resultado = convertirAJSON(firmar${id}(idDocumento, resultadoFirma.firma));
 			if (resultado.errores) {
 				$.each(resultado.errores , function(i, elem) {
-					errores["error-firma" + Object.keys(errores).length] = elem;
+					errores["error-firmando" + Object.keys(errores).length] = elem;
 				});
 				
 				if (resultado.aciertos) {
 				    $.each(resultado.aciertos , function(i, elem) {
-                       aciertos["acierto-firma" + Object.keys(aciertos).length] = elem;
+                       aciertos["acierto-firmando" + Object.keys(aciertos).length] = elem;
                     });
 				}
 			}
 			
 		} else if (resultadoFirma.error != null) {
-			errores[idDocumento] = resultadoFirma.error;
+			errores["error-firma"+idDocumento] = resultadoFirma.error;
+		} else {
+		    errores["error-inesperado"+idDocumento] = "Ha ocurrido un error inesperado.";
 		}
 	}
 
-	var todasFirmasRealizadas = function(errores, aciertos) {
+	var todasFirmasRealizadas${id} = function(errores, aciertos) {
 		if (Object.keys(errores).length == 0) {
 		    ocultarAllMensajesTipo("alert-error");
 			mensajes.ok("Documento/s firmado/s correctamente");
@@ -597,7 +599,7 @@
 		peticionJSON${id}();
 	}
 	
-	var boton_firmar_handler = function(callback){
+	var boton_firmar_handler${id} = function(callback){
           
 	    var i;
         var selected = sm${id}.getSelection();
@@ -606,39 +608,38 @@
         var resultado;
         var errores = {};
         var aciertos = {};
+        var indexError = 0;
 
         mensajes.clear();
         if (selected.length == 0) {
             mensajes.error('No hay documentos seleccionados para firmar.');
         } else {                        
-            listaDocumentos = obtenerUrlsDocumentos(selected, errores);
+            listaDocumentos = obtenerUrlsDocumentos${id}(selected, errores);
             
              if (Object.keys(listaDocumentos).length > 0) {
                 // Se llama a initFirma antes de realizar la firma de forma sincrona
                 // y se comprueba si ya estaba inicializado
                 #{if miniApplet}
-                   if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
+                  // if ((clienteFirmaInicializado == null) || (!clienteFirmaInicializado)){
                       callback();
-                   }
+                  // } 
                 #{/if}
                 
 	            var firmas = Firma.firmarVariosDocumentos('#${id_cert}certificado', listaDocumentos, "", {mensajes: mensajes}, errores);
 	                for (var key in listaDocumentos) {
 	                    if (listaDocumentos.hasOwnProperty(key)){
 	                        $.when(firmas[key]).done(function(resultadoFirma){
-	                            firmaRealizada(resultadoFirma, listaDocumentos, errores, aciertos);
+	                            firmaRealizada${id}(resultadoFirma, listaDocumentos, errores, aciertos);
 	                         });
 	
-	                        $.when(firmas[key]).fail(function(resultadoFirma){
-	                            var idDocumento = getIdByObjectUrls(resultadoFirma.url, listaDocumentos);
-	                            errores[idDocumento] = resultadoFirma.error;
+	                        $.when(firmas[key]).fail(function(resultadoFirma){	                
+	                            errores["error-obteniendo-firma"+(++indexError)] = resultadoFirma.error;
 	                        });
-	
 	                    }
 	                }
 	
 	                $.when.apply($, firmas).always(function() {
-                        todasFirmasRealizadas(errores, aciertos); 
+                        todasFirmasRealizadas${id}(errores, aciertos);
                     });
                } else {
                   
@@ -661,7 +662,7 @@
     	disabled:true,
     	handler : function(){ 
     	                      popupWait_open();
-    	                      setTimeout(function(){ boton_firmar_handler( initFirma ); }, 100); }
+    	                      setTimeout(function(){ boton_firmar_handler${id}( initFirma ); }, 100); }
     });
     #{/if}
     
@@ -683,7 +684,7 @@
                             popup_open(
                                 "${popupCrear}_popup",
                                 urlCrearRedirigir,
-                                reload
+                                reload${id}
                             );
                         #{/if}
                         #{else}
@@ -765,7 +766,7 @@
 		    	}
 		    });
 
-            function cambiarEstadoActivoBotonBorrar(numeroSeleccionados, permiso) {
+            function cambiarEstadoActivoBotonBorrar${id}(numeroSeleccionados, permiso) {
                 if (numeroSeleccionados == 1) {
                     boton_borrar.setDisabled(permiso || false);
                 } else {
@@ -795,7 +796,7 @@
 			        boton_firmar.setDisabled(false);
                     #{/if}
 			        boton_editar.setDisabled(false);
-                    cambiarEstadoActivoBotonBorrar(this.selectedRecords.length);
+                    cambiarEstadoActivoBotonBorrar${id}(this.selectedRecords.length);
 			    },
 			    delSelected: function(recordToDelete) {
 			    	Ext.Array.remove(this.selectedRecords, recordToDelete);
@@ -941,7 +942,7 @@
 		    		}
 			    	#{/if}
                     #{if urlBorrar}
-                        cambiarEstadoActivoBotonBorrar(grid.getSelectionModel().getSelection().length, !registro.get("permisoBorrar"))
+                        cambiarEstadoActivoBotonBorrar${id}(grid.getSelectionModel().getSelection().length, !registro.get("permisoBorrar"))
                     #{/if}
                     #{if urlEditar}
                     if (grid.getSelectionModel().getSelection().length == 1) {
@@ -968,7 +969,7 @@
 		    	}
 		    });
 
-			function reload(){
+			function reload${id}(){
 				peticionJSON${id}();
 				#{if recargarPagina}
 					window.location.reload();
@@ -1009,7 +1010,7 @@
 			}
 		});
 
-	function obtenerUrlDocumento(id) {
+	function obtenerUrlDocumento${id}(id) {
 		var url;
 		$.ajax({
 			type: "GET",
@@ -1025,7 +1026,7 @@
 		return url;
 	}
 
-	function obtenerFirmadoDocumento(id) {
+	function obtenerFirmadoDocumento${id}(id) {
 		var firmado;
 		$.ajax({
 			type: "GET",
@@ -1041,7 +1042,7 @@
 		return firmado;
 	}
 #{if botonFirmar}
-	function firmar(id, firma) {
+	function firmar${id}(id, firma) {
 		var resultado;
 		$.ajax({
 			type: "POST",

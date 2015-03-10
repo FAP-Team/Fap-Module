@@ -234,10 +234,30 @@
         </script>
         
 		<script type="text/javascript">
+		
+		function getInternetExplorerVersion() {
+			var version = -1;
+		  	var userAgent = navigator.userAgent;
+		  	var expRegular;
+		  	
+		  	if (navigator.appName == 'Microsoft Internet Explorer') {
+		    	expRegular  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+		  	}
+		  	else if (navigator.appName == 'Netscape') {
+		    	expRegular  = new RegExp("Trident/.*version:([0-9]{1,}[\.0-9]{0,})");
+		  	}
+		  	
+  			if (expRegular.exec(userAgent) != null)
+		    	version = parseFloat( RegExp.$1 );
+		    
+		  	return version;
+		}
+		
         //Permite detectar cuando IE corre con Vista de Compatibilidad
-        $(function(){    
-        	 if (jQuery.browser.msie && jQuery.browser.version <= 8){ //IE8 o inferior
-        	 	$('#infoCompatibilidad').children(0).append('<span class="label label-warning">Atención: Está usando IE8 o anterior, se recomienda actualizar a IE9 </span>')
+        $(function(){ 
+			 var IEVersion = getInternetExplorerVersion();
+        	 if (IEVersion != -1 && IEVersion <= 8){ //IE8 o inferior
+        	 	$('#infoCompatibilidad').children(0).append('<span class="label label-warning">Atención: Está usando IE8 o anterior, se recomienda actualizar a la última versión </span>')
 					return;
         	 }  
         	if (document.documentMode) {

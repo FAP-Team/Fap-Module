@@ -95,8 +95,8 @@
 
 			%{
 				def mostrarCaptcha = false
-				if (session.get("accesoFallido") != null) {
-					mostrarCaptcha = (new Integer(session.get("accesoFallido")) > 2)
+				if (play.mvc.Scope.Session.current().get("accesoFallido") != null) {
+					mostrarCaptcha = (new Integer(play.mvc.Scope.Session.current().get("accesoFallido")) > 2)
 				} 
 			%}
 			

@@ -5,15 +5,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
-
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.tools.corba.common.WSDLUtils;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import es.gobcan.platino.servicios.sfst.FirmaService;
@@ -30,6 +27,7 @@ import models.ReturnComunicacionInternaFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
+import services.ServiciosGenericosService;
 import services.VerificarDatosServiceException;
 import services.platino.PlatinoFirmaServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
@@ -41,6 +39,7 @@ import swhiperreg.ciservices.ReturnComunicacionInterna;
 import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
 import swhiperreg.entradaservices.EntradaServices;
 import swhiperreg.entradaservices.ReturnEntrada;
+import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 import utils.GestorDocumentalUtils;
@@ -49,11 +48,16 @@ import utils.GestorDocumentalUtils;
 public class ComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
 
 	private CIServicesSoap comunicacionesServices;
-	private ServiciosGenericosServiceImpl genericosService;
 	private PropertyPlaceholder propertyPlaceholder;
 	private PlatinoGestorDocumentalService platinoGestorDocumental;
 	
+	@Inject
+	private ServiciosGenericosService genericosService;
+	
 	private final String URIPROCEDIMIENTO;
+	private final String TIPO_TRANSPORTE;
+	public final String USUARIOHIPERREG;
+	public final String PASSWORDHIPERREG;
 	
 	@Inject
 	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
@@ -62,7 +66,11 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
 		WSUtils.configureEndPoint(comunicacionesServices, getEndPoint());
 		
+		USUARIOHIPERREG = FapProperties.get("fap.platino.registro.username");
+		PASSWORDHIPERREG = FapProperties.get("fap.platino.registro.password");
 		URIPROCEDIMIENTO = FapProperties.get("fap.platino.security.procedimiento.uri");
+		TIPO_TRANSPORTE = FapProperties.get("fap.platino.registro.tipoTransporte");
+		
 	    Map<String, String> headers = null;
         
         if ((URIPROCEDIMIENTO != null) && (URIPROCEDIMIENTO.compareTo("undefined") != 0)) {
@@ -74,18 +82,41 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		
         //El servicio de comunicaciones internas y servicios genéricos no funciona con proxy, entra en conflicto.
         //Por esto hay que ponerlo a falso, antes de configurar sus políticas.
-        if (FapProperties.getBoolean("fap.proxy.enable")){
-        	FapProperties.setBoolean("fap.proxy.enable", false);
-        }
+        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
+        FapProperties.setBoolean("fap.proxy.enable", false);
+
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
         
 		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
-		genericosService = new ServiciosGenericosServiceImpl(propertyPlaceholder);
-		genericosService.mostrarInfoInyeccion();
 		
-		if (!FapProperties.getBoolean("fap.proxy.enable")){
-			FapProperties.setBoolean("fap.proxy.enable", true);
+		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
+	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);
+
+	}
+	
+	private String getEndPoint() {
+		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
+	}
+	
+	// TODO: revisar que no está completo.
+	private boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
+			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
+		}catch(Exception e){
+			e.printStackTrace();
+			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
 		}
+		return hasConnection; 
+	}
+	
+	private String encriptarPassword(String password){
+        try {
+            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
+        } catch (Exception e) {
+            throw new RuntimeException("Error encriptando la contraseña");
+        }	    
 	}
 	
 	public boolean isConfigured(){
@@ -99,27 +130,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		else
 			play.Logger.info("El servicio de Comunicaciones Internas ha sido inyectado con Hiperreg y NO está operativo.");
     }
-	
-	
-	// TODO: revisar que no está completo.
-	private boolean hasConnection() {
-		boolean hasConnection = false;
-		try {
-			String usuario = FapProperties.get("fap.platino.registro.username");
-			String password = FapProperties.get("fap.platino.registro.password");
-			hasConnection = genericosService.validarUsuario(usuario, password);
-			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
-		}catch(Exception e){
-			e.printStackTrace();
-			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
-		}
-		return hasConnection; 
-	}
-	
-	private String getEndPoint() {
-		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
-	}
-
 
 	@Override
 	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
@@ -134,19 +144,27 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 		
 		try{
-		ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
-				asientoFap.resumen,
-				asientoFap.numeroDocumentos,
-				asientoFap.interesado,
-				asientoFap.unidadOrganicaDestino.codigo,
-				asientoFap.asuntoCodificado,
-				asientoFap.userId,
-				asientoFap.password,
-				asientoFap.tipoTransporte,
-				listaUris);
-		System.out.println(respuesta.getUsuario().toString());
+			String tipoTransporte;
+	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
+	        	tipoTransporte = TIPO_TRANSPORTE;
+	        } else
+	        	tipoTransporte = null;
+	        
+	        asientoFap.tipoTransporte = tipoTransporte;
+	        asientoFap.save();
+	        	        
+			ReturnComunicacionInterna respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
+					asientoFap.resumen,
+					asientoFap.numeroDocumentos,
+					asientoFap.interesado,
+					asientoFap.unidadOrganicaDestino.codigo,
+					asientoFap.asuntoCodificado,
+					asientoFap.userId,
+					encriptarPassword(asientoFap.password),
+					tipoTransporte,
+					listaUris);
 		
-		return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+			return ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
 		}
 		catch(Exception e){
 			play.Logger.error("Se ha producido el error: " + e.getMessage(), e);
@@ -167,6 +185,16 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 		
 		try{
+			
+			String tipoTransporte;
+	        if ((TIPO_TRANSPORTE.compareTo("undefined") != 0) && (TIPO_TRANSPORTE != null)){
+	        	tipoTransporte = TIPO_TRANSPORTE;
+	        } else
+	        	tipoTransporte = null;
+			
+	        asientoAmpliadoFap.tipoTransporte = tipoTransporte;
+	        asientoAmpliadoFap.save();
+	        
 			ReturnComunicacionInternaAmpliada respuesta = comunicacionesServices.nuevoAsientoAmpliado(
 					asientoAmpliadoFap.observaciones, 
 					asientoAmpliadoFap.resumen,
@@ -175,7 +203,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 					asientoAmpliadoFap.unidadOrganicaDestino.codigo,
 					asientoAmpliadoFap.asuntoCodificado,
 					asientoAmpliadoFap.userId,
-					asientoAmpliadoFap.password,
+					encriptarPassword(asientoAmpliadoFap.password),
 					asientoAmpliadoFap.tipoTransporte,
 					listaUris,
 					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
@@ -188,17 +216,4 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		}
 	}
 
-	@Override
-	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicas(String userId, String password){
-		return this.genericosService.consultaUnidadesOrganicas(userId, encriptarPassword(password));
-	}
-	
-	//TODO poner privado y quitar del service
-	public String encriptarPassword(String password){
-        try {
-            return PlatinoSecurityUtils.encriptarPasswordComunicacionesInternas(password);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encriptando la contraseña");
-        }	    
-	}
 }

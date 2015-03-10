@@ -22,36 +22,45 @@ Firma._firmarDocumento = function(documento, certificado){
 	formatoFirmaPlatino = "CAdES";
 	var firma;
 	var url = documento.url || documento;
-	firma = documento.firma ? peticionContraFirma(documento) : peticionFirma(url);
+	var contraFirma = (documento.firma && documento.firma != "null")
+	firma = contraFirma ? peticionContraFirma(documento) : peticionFirma(url);
     return firma;
 }
 
 function peticionFirma(url) {
-    var deferred = $.Deferred();
+   //console.log("Firmando documento con url: " + url);
+   var deferred = $.Deferred();
 	signFile(url,
         function (firma) {
-            deferred.resolve({url: url, firma: firma});
+           //console.log("Se obtiene la firma: " + firma);
+           deferred.resolve({url: url, firma: firma});
         },
         function(tipo, desc) {
-        	deferred.reject({url: url, firma:null, error:desc});
+           //console.log("Se ha producido un error al obtener la firma, error: " + desc);
+           deferred.reject({url: url, firma:null, error:desc});
         },
-        function(){});
+        function(loaded, total){
+           //console.log("Descargados " + ~~(loaded/1024) + "Kb de " + ~~(total/1024) + "Kb");
+        });
 
     return deferred.promise();
 }
 
 function peticionContraFirma(documento) {
+   //console.log("Contrafirmando el documento url: " + documento.url + " con la firma: " + documento.firma);
 	var deferred = $.Deferred();
 	signSequential(documento.firma,
 		function(firma) {
+		   //console.log("Se obtiene la firma: " + firma);
 			deferred.resolve({url: documento.url, firma: firma})
-			console.log("Contrafirmado con firma: " + firma);
 		},
 		function(tipo, desc) {
+		   //console.log("Se ha producido un error al obtener la firma, error: " + desc);
 			deferred.reject({url: documento.url, firma: null, error:desc})
 		},
-		function(){}
-		);
+		function(loaded, total){
+		   //console.log("Descargados " + ~~(loaded/1024) + "Kb de " + ~~(total/1024) + "Kb");
+		});
 	return deferred.promise();
 }
 

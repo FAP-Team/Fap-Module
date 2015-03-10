@@ -2,6 +2,7 @@ package verificacion;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,17 +15,14 @@ import org.joda.time.DateTime;
 
 import play.libs.F.Promise;
 import properties.FapProperties;
-
 import reports.Report;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.aed.ProcedimientosService;
 import services.filesystem.TipoDocumentoEnTramite;
 import services.VerificarDatosService;
-
 import config.InjectorConfig;
 import controllers.fap.VerificacionFapController;
-
 import messages.Messages;
 import models.AtributosRespuesta;
 import models.DatosEspecificos;
@@ -88,11 +86,18 @@ public class VerificacionUtils {
 		GestorDocumentalService gestorDocumental = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		
 		/// Comprobamos si existenVerificaciones de este mismo trámite anteriormente
+		/// Debido a que es posible que un trátime tenga más de una verificación, se ordenan las verificaciones anteriores
+		/// de forma descendente desde la última actualización. Si el estado de la última actulizacion es distinta de verificación positiva
+		/// se recupera la verificación anterior, en caso contrario, se deja a null y tratamos la nueva verificación como si fuera la primera.
 		Verificacion verificacionAnterior = null;
 		if (verificacionesBefore != null && !verificacionesBefore.isEmpty()) {
+			Collections.sort(verificacionesBefore, Verificacion.VerificacionComparator);
 			for (Verificacion auxVerificacion : verificacionesBefore) {
 				if (auxVerificacion.uriTramite.equals(uriTramite)) {
-					verificacionAnterior = auxVerificacion;
+					if (!auxVerificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva.name())) {
+						verificacionAnterior = auxVerificacion;
+						break;
+					}
 				}
 			}
 		}

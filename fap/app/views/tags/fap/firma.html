@@ -72,12 +72,12 @@
             Firma.listarCertificados(elCertificado, {mensajes: mensajes});
             #{/if}
 
-            $firma = $("input:hidden#${id_firma}")
+            $firma${id} = $("input:hidden#${id_firma}")
 
             $('#${id_boton}').click(function(e){
                 e.stopPropagation();
                 e.preventDefault(); 
-                $firma.siblings("input:submit").submit();
+                $firma${id}.siblings("input:submit").submit();
                 mensajes.clear();
                 var documento = {
                     "url" : "${url}",
@@ -92,8 +92,8 @@
                 }
             });
 
-            $($firma.change(function() {
-                $firma.parents("form").submit();
+            $($firma${id}.change(function() {
+                $firma${id}.parents("form").submit();
             }))
         });
 </script>

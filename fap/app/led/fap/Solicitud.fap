@@ -1837,13 +1837,14 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
          Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asientoAmpliado.interesado
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asientoAmpliado.resumen requerido
          Combo uoOrigen titulo="Unidad Orgánica de origen" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaOrigen.codigo requerido
-         Grupo titulo="Unidad Orgánica de destino"{
-            Combo uoDestinoRaiz titulo="Nivel 1" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoRaiz busqueda
-            Combo uoDestinoSubNivel1 titulo="Nivel 2" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel1 busqueda 
-            Combo uoDestinoSubNivel2 titulo="Nivel 3" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel2 busqueda 
-            Combo uoDestinoSubNivel3 titulo="Nivel 4" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel3 busqueda 
-            Texto uoDestino titulo="Código de unidad" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo requerido          
-         }
+         ComboUO uoDestino titulo="Unidad Orgánica de destino" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo requerido
+//         Grupo titulo="Unidad Orgánica de destino"{
+//            Combo uoDestinoRaiz titulo="Nivel 1" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoRaiz busqueda
+//            Combo uoDestinoSubNivel1 titulo="Nivel 2" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel1 busqueda 
+//            Combo uoDestinoSubNivel2 titulo="Nivel 3" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel2 busqueda 
+//            Combo uoDestinoSubNivel3 titulo="Nivel 4" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigoSubNivel3 busqueda 
+//            Texto uoDestino titulo="Código de unidad" campo=ComunicacionInterna.asientoAmpliado.unidadOrganicaDestino.codigo requerido          
+//         }
   
        }
    } 

@@ -2,7 +2,15 @@ package templates
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
+import messages.Messages;
+import messages.Messages.MessageType;
+import models.ReturnUnidadOrganicaFap;
+
 import com.google.gson.Gson;
+
 import es.fap.simpleled.led.ComboUO;
 import es.fap.simpleled.led.Combo;
 import es.fap.simpleled.led.Grupo;
@@ -26,11 +34,16 @@ class GComboUO extends GElement{
 	
 	public String view(){
 		TagParameters params = new TagParameters();
+		params.putStr("campo", campo.firstLower());
 		
 		Entidad entidad = null;
 		if (campo.getUltimaEntidad() != null) {
 			entidad = Entidad.create(campo.getUltimaEntidad())
-			params.putStr("entidad", entidad.clase);
+			//params.putStr("entidad", entidad.clase);
+			
+			if (!entidad.clase.equals("ReturnUnidadOrganicaFap")){
+				throw new Exception("Error generando combo en cascada para unidades orgánicas, la entidad de destino debe ser del tipo ReturnUnidadOrganicaFap");
+			}
 		}
 		
 		String controllerName = gPaginaPopup.controllerFullName();
@@ -80,6 +93,27 @@ class GComboUO extends GElement{
 				
 				return resultados;
 			}
+
+			public static ReturnUnidadOrganicaFap getUnidadOrganicaFAP(Long codUnidadOrganica){
+				ReturnUnidadOrganicaFap unidad = null;
+				if (codUnidadOrganica == null) {
+					if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro codUnidadOrganica"))
+						Messages.fatal("Falta parÃ¡metro codUnidadOrganica");
+				} else {
+					unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", codUnidadOrganica).first();
+					if (unidad == null) {
+						Messages.fatal("Error al recuperar Unidad Orgánica");
+					}
+				}
+				return unidad;
+			}
 		""";
+	}
+	
+	public String validateCopy(Stack<Set<String>> validatedFields){
+		String validation = super.validate(validatedFields);
+		if (combo.requerido)
+			validation += "CustomValidation.required(\"${campo.firstLower()}\", ${campo.firstLower()});\n";
+		return validation;
 	}
 }

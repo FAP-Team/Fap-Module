@@ -73,9 +73,17 @@
 							}							
 							items.add(new tags.ComboItem(ik, iv));
 						}
-					}else
+					} else {
 						//Opciones desde tabla de tablas
-						items = tags.ComboItem.listFromTableOfTable(field.table)
+                        def enumInfo = tags.ReflectionUtils.getFapEnumValue(_campo);
+                        if (enumInfo != null) {
+                            // La lista ES de tipo enumerado
+                            items = tags.ComboItem.listFromEnumerado(enumInfo);
+                        } else {
+                            // La lista NO es de tipo enumerado
+						    items = tags.ComboItem.listFromTableOfTable(field.table)
+                        }
+					}
 				}
 			}
 			

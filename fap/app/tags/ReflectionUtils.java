@@ -2,6 +2,7 @@ package tags;
 
 import static play.templates.JavaExtensions.capFirst;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,16 +17,26 @@ import java.util.regex.Pattern;
 import models.Nip;
 import models.PersonaFisica;
 import models.Solicitante;
-
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.templates.JavaExtensions;
+import validation.FapEnum;
 import validation.ValueFromTable;
 
 public class ReflectionUtils {
 
+    public static String getFapEnumValue(String fieldName) {
+        FapEnum enumInfo = getFieldByName(fieldName).getAnnotation(FapEnum.class);
+        if (enumInfo == null) {
+            return null;
+        }
+        
+        return enumInfo.value();
+    }
+    
+    
 	public static Field getFieldByName(String fieldname) {
 		String[] pieces = fieldname.split("\\.");
 

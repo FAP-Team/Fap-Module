@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -244,8 +245,8 @@ public class ReflectionUtils {
 			Class clazz = Class.forName(sClass);
 			Object object = clazz.newInstance();
 			_method = routeToMethod.substring(routeToMethod.lastIndexOf(".")+1, routeToMethod.lastIndexOf("("));
-			Method m1 = clazz.getMethod(_method, null);
-			return m1.invoke(object, null);
+			Method m1 = clazz.getMethod(_method);
+			return m1.invoke(object);
 		} catch (Exception e) {
 			System.out.println("El método no se pudo ejecutar"+routeToMethod+" class=\""+sClass+"\" method=\""+_method+"\"");
 		}
@@ -254,8 +255,8 @@ public class ReflectionUtils {
 	
 	public static Object getValueFromMethodFromClass (Object object, String method) {
 		try {
-			Method m1 = object.getClass().getMethod(method, null);
-			return m1.invoke(object, null);
+			Method m1 = object.getClass().getMethod(method);
+			return m1.invoke(object);
 		} catch (Exception e) {
 			System.out.println("El método no se pudo ejecutar "+method+" class= "+object.getClass());
 		}
@@ -294,42 +295,6 @@ public class ReflectionUtils {
 		return null;
 	}
 	
-	/**
-	 * Llama al método de un controlador Manual si existe
-	 * El método debe ser estático, accesible y sin parámetros
-	 * @param method
-	 * @return
-	 */
-	public static Object callControllerMethodIfExists(String method){
-		String controller = (String)play.mvc.Scope.RenderArgs.current().get("controllerName");
-		
-		//Elimina el sufijo Gen del nombre del controlador, para llamar al controlador manual
-		if(controller.endsWith("Gen"))
-			controller = controller.substring(0, controller.length() - 3);
-		
-		//Busca la clase del contorllador, puede ser un controlador de página o de popup
-		String pageController = "controllers." + controller;
-		String popupController = "controllers.popups." + controller;
-		Class clazz = null;
-		clazz = Play.classloader.getClassIgnoreCase(pageController);
-		if(clazz == null){
-			clazz = Play.classloader.getClassIgnoreCase(popupController);
-		}
-				
-		//Si encuentra la clase, invoca el método si existe en la clase
-		if(clazz != null){
-			try {
-				Method m = clazz.getMethod(method);
-				Object o = m.invoke(null);
-				return o;
-			} catch (Exception e){
-				//Method not found
-			}
-		}
-		
-		return null;
-	}
-	
 	public static String getNameClass (Object o){
 		String clase = o.getClass().getName();
 		String[] parser = clase.split("\\.");
@@ -337,39 +302,117 @@ public class ReflectionUtils {
 			return parser[parser.length-1];
 		return null;
 	}
+
+    /**
+     * Llama al método de un controlador Manual si existe
+     * El método debe ser estático, accesible
+     * @param method
+     * @return
+     */
+    public static Object callControllerMethodIfExists(final String method) {
+        return callControllerMethodIfExists(method, null);
+    }
+    
+    /**
+     * Llama al método de un controlador Manual si existe
+     * El método debe ser estático, accesible, con o sin parámetros
+     * @param method
+     * @param args
+     * @return
+     */
+    public static Object callControllerMethodIfExists(final String method, final Map<String, Object> args) {
+        Method m = getControllerMethod(method, args);
+        
+        // Se realiza un segundo intento sin parámetros por mantener la compatibilidad en las aplicaciones antiguas
+        boolean noArgs = false;
+        if (m == null && args != null) {
+            m = getControllerMethod(method, null);
+            noArgs = true;
+            Logger.warn("Definición del método %s obsoleto. La nueva definición \"public static void %s(Map<String, Object> args)\"", method, method);
+        }
+
+        Object o = null;
+        if (m != null) {
+            try {
+                // Se realiza la llamada al método dependiendo de si está definido con o sin parámetros
+                o = (noArgs) ? m.invoke(null, (Object []) null) : m.invoke(null, args);
+            } catch (Exception e) {
+                // No se ha podido invocar al método
+            }
+        }
+        
+        return o;
+    }
+    
+    /**
+     * Comprueba si existe el método 'method' en el controlador
+     * @param method Nombre del metodo
+     * @return true en caso de que existe
+     */
+    public static boolean existsControllerMethod(final String method) {
+    	return existsControllerMethod(method, null);
+    }
+
+    /**
+     * Comprueba si existe el método 'method' en el controlador con o sin parámetros
+     * @param method
+     * @param args
+     * @return
+     */
+    public static boolean existsControllerMethod(final String method, final Map<String, Object> args) {
+        boolean ret = getControllerMethod(method, args) != null;
+        
+        // Se realiza un segundo intento sin parámetros por mantener la compatibilidad en las aplicaciones antiguas
+        return (!ret && args != null) ? getControllerMethod(method, null) != null : ret;
+    }
 	
-	/**
-	 * Comprueba si existe el método 'method' en el controlador
-	 * @param method Nombre del metodo
-	 * @return true en caso de que existe
-	 */
-	public static boolean existsControllerMethod(String method){
-		String controller = (String)play.mvc.Scope.RenderArgs.current().get("controllerName");
-
-		//Elimina el sufijo Gen del nombre del controlador, para llamar al controlador manual
-		if(controller.endsWith("Gen"))
-			controller = controller.substring(0, controller.length() - 3);
-
-		//Busca la clase del contorllador, puede ser un controlador de página o de popup
-		String pageController = "controllers." + controller;
-		String popupController = "controllers.popups." + controller;
-		Class clazz = null;
-		clazz = Play.classloader.getClassIgnoreCase(pageController);
-		if(clazz == null){
-			clazz = Play.classloader.getClassIgnoreCase(popupController);
-		}
-
-		//Si encuentra la clase, invoca el método si existe en la clase
-		if(clazz != null){
-			try {
-				Method m = clazz.getMethod(method);
-				return true;
-			} catch (Exception e){
-				//Method not found
-			}
-		}
-
-		return false;
-	}
+    /**
+     * Devuelve el método que está definido en el controlador
+     * @param method
+     * @return El método o null si no lo se encuentra
+     */
+    private static Method getControllerMethod(final String method) {
+        return getControllerMethod(method, null);
+    }
+    
+    /**
+     * Devuelve el método que está definido en el controlador
+     * @param method
+     * @param args
+     * @return
+     */
+    private static Method getControllerMethod(final String method, final Map<String, Object> args) {
+        String controller = (String) play.mvc.Scope.RenderArgs.current().get("controllerName");
+        
+        //Elimina el sufijo Gen del nombre del controlador, para llamar al controlador manual
+        if (controller.endsWith("Gen"))
+            controller = controller.substring(0, controller.length() - 3);
+    
+        //Busca la clase del contorllador, puede ser un controlador de página o de popup
+        String pageController = "controllers." + controller;
+        String popupController = "controllers.popups." + controller;
+        Class clazz = null;
+        clazz = Play.classloader.getClassIgnoreCase(pageController);
+        if (clazz == null) {
+            clazz = Play.classloader.getClassIgnoreCase(popupController);
+        }
+    
+        // Si encuentra la clase, invoca el método si existe en la clase
+        Method ret = null;
+        if (clazz != null) {
+            try {
+                /* TODO: realizar un análisis de los parámetros pasados al método a través del parámetro args
+                 * por lo pronto se simplifica invocando al método con el map
+                 */
+                Class<?> parameters [] = { Map.class };
+                // Se intenta tomar una instancia del método
+                ret = clazz.getMethod(method, (args != null) ? parameters : null);
+            } catch (Exception e) {
+                // Method not found
+            }
+        }
+    
+        return ret;
+    }
 	
 }

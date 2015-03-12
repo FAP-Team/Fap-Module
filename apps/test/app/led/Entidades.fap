@@ -128,6 +128,8 @@ Entidad ComboTest {
 	Lista islasTipoCentroCide islasTipoCentroCide
 
 	Lista ComboTestList list
+	Lista ComboTestList sinParametros
+	Lista ComboTestList parametros
 	Lista Numeritos listNumber 
 	Lista ComboTestList listSinDuplicados
 	Lista multiple ComboTestList listMultiple

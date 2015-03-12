@@ -2,7 +2,8 @@
 
 #{fap.field _campo, obj:obj}
 
-%{ 
+%{
+    def parametros = _parametros + ['obj':obj]
 	def id = _id ?: field.id
 	def oldId = _oldId ?: field.id
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
@@ -80,11 +81,11 @@
 			if(_items != null){
 				items = _items.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")}
 			}else{
-				if (tags.ReflectionUtils.existsControllerMethod(id)){
-					items = tags.ReflectionUtils.callControllerMethodIfExists(id) // Devuelve null si no existe el método
-				} else if (tags.ReflectionUtils.existsControllerMethod(oldId)){
+				if (tags.ReflectionUtils.existsControllerMethod(id, parametros)){
+					items = tags.ReflectionUtils.callControllerMethodIfExists(id, parametros) // Devuelve null si no existe el método
+				} else if (tags.ReflectionUtils.existsControllerMethod(oldId, parametros)){
 					// Mantenemos la antigua llamada (por compatibilidad)
-					items = tags.ReflectionUtils.callControllerMethodIfExists(oldId) // Devuelve null si no existe el método
+					items = tags.ReflectionUtils.callControllerMethodIfExists(oldId, parametros) // Devuelve null si no existe el método
 				} else {
 					items = _itemsModificables.collect{ new tags.ComboItem(it."$comboValue", it."$comboText")} // Devuelve lista vacia si no existe _itemsModificable
 					// Este IF antes iba por fuera del ELSE, pero como los métodos sobreescritos que devuelven los valores de los combos pueden devolver listas vacías, podía entrar por este IF cuando no debería

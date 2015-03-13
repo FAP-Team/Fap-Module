@@ -477,71 +477,78 @@ public class ResolucionBase {
 		ResolucionBase resolucion = null;
 		try {
 			resolucion = ResolucionControllerFAP.invoke(ResolucionControllerFAP.class, "getResolucionObject", idResolucion);
+			play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
 		}catch (Throwable e) {
 			new Exception ("No se ha podido obtener el objeto resolución", e);
 		}
 
-		play.Logger.info("Resolución: "+resolucion.resolucion.id+" tiene "+resolucion.resolucion.lineasResolucion.size()+" líneas de resolución");
-		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
+		try {
+			if (!notificacionService.isConfigured()){
+				Messages.error("No se tiene acceso al servicio de notificaciones");
+				play.Logger.info("No se tiene acceso al servicio de notificaciones");
+			}
+		} catch (Exception e) {
+			Messages.error("Se ha producido un error de acceso al servicio de notificaciones");
+			play.Logger.info("Se ha producido un error de acceso al servicio al servicio de notificaciones: " + e.getMessage());
+		}
 		
 		boolean notificacionCorrecta = true;
-		
-		for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
-
-			if (!linea.notificada){
-				SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
-	
-				// Se crea la notificación y se añade a la solicitud correspondiente
-				
+		if (!Messages.hasErrors()){
+			EntityTransaction tx = JPA.em().getTransaction();
+			if (tx.isActive())
+		    	tx.commit();
+			for (LineaResolucionFAP linea: resolucion.resolucion.lineasResolucion) {
 				Notificacion notificacion = new Notificacion();
-				DocumentoNotificacion documentoResolucion = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
-				DocumentoNotificacion documentoJustificanteRegistroSalidaOficioRemisión = new DocumentoNotificacion(linea.registro.justificante.uri);
-				notificacion.documentosANotificar.add(documentoJustificanteRegistroSalidaOficioRemisión);
-				notificacion.documentosANotificar.add(documentoResolucion);
-				notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
-				notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
-				notificacion.plazoAcceso = fapNotificacionPlazoacceso;
-				notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
-				notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
-				notificacion.frecuenciaRecordatorioRespuesta = fapNotificacionFrecuenciarecordatoriorespuesta;
-				notificacion.estado = EstadoNotificacionEnum.creada.name();
-				notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
-				notificacion.asunto = "Notificación de resolución";
-				notificacion.save();
-				solicitud.notificaciones.add(notificacion);
-				solicitud.save();
-	
-				// Se envía la notificación
-				
 				try {
-					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
-					notificacion.fechaPuestaADisposicion = new DateTime();
-					notificacion.save();
-					linea.notificada = true;
-					play.Logger.info("Notificada la linea de resolución de la solicitud "+linea.solicitud.id);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					tx.begin();
+					if (!linea.notificada){
+						SolicitudGenerica solicitud = SolicitudGenerica.findById(linea.solicitud.id);
+						DocumentoNotificacion documentoResolucion = new DocumentoNotificacion(resolucion.resolucion.registro.oficial.uri);
+						DocumentoNotificacion documentoJustificanteRegistroSalidaOficioRemisión = new DocumentoNotificacion(linea.registro.justificante.uri);
+						notificacion.documentosANotificar.add(documentoJustificanteRegistroSalidaOficioRemisión);
+						notificacion.documentosANotificar.add(documentoResolucion);
+						notificacion.interesados.addAll(solicitud.solicitante.getAllInteresados());
+						notificacion.descripcion = FapProperties.get("fap.resoluciones.descripcionNotificacion");
+						notificacion.plazoAcceso = fapNotificacionPlazoacceso;
+						notificacion.plazoRespuesta = fapNotificacionPlazorespuesta;
+						notificacion.frecuenciaRecordatorioAcceso = fapNotificacionFrecuenciarecordatorioacceso;
+						notificacion.frecuenciaRecordatorioRespuesta = fapNotificacionFrecuenciarecordatoriorespuesta;
+						notificacion.estado = EstadoNotificacionEnum.creada.name();
+						notificacion.idExpedienteAed = solicitud.expedienteAed.idAed;
+						notificacion.asunto = "Notificación de resolución";
+						notificacion.save();
+						solicitud.notificaciones.add(notificacion);
+						solicitud.save();
+			
+						// Se envía la notificación
+						notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
+						notificacion.fechaPuestaADisposicion = new DateTime();
+						notificacion.save();
+						linea.notificada = true;
+						play.Logger.info("Notificada la linea de resolución de la solicitud: "+linea.solicitud.id);
+					}
+					tx.commit();
+				}catch (Exception e){
+					if ( tx != null && tx.isActive() ) tx.rollback();
 					notificacionCorrecta = false;
-					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
-					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
+					Messages.error("No se ha podido enviar la notificación: " + notificacion.descripcion);
+					play.Logger.error("No se ha podido enviar la notificación: "+notificacion.descripcion+": "+e.getMessage());
+					e.printStackTrace();
 				}
+			}
+			
+			if (notificacionCorrecta) {
+				tx.begin();
+				resolucion.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
+				if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
+					resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
+				else
+					resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
+				tx.commit();
 			}
 		}
 		
-		if (notificacionCorrecta) {
-			EntityTransaction tx = JPA.em().getTransaction();
-			tx.commit();
-			tx.begin();
-			resolucion.resolucion.estadoNotificacion = EstadoResolucionEnum.notificada.name();
-			if (EstadoResolucionEnum.publicada.name().equals(resolucion.resolucion.estado))
-				resolucion.avanzarFase_Registrada_PublicadaYNotificada(resolucion.resolucion);
-			else
-				resolucion.avanzarFase_Registrada_Notificada(resolucion.resolucion);
-			tx.commit();
-			tx.begin();
-		}
 		return notificacionCorrecta;
 	}
 	 

@@ -351,10 +351,9 @@
 				popupWait_close();
 				if (msg == "true") {
  	 				location.href = "${urlEditarResolucion}";
-					alert("Notificación con éxito");
  				}
  				else {
-					alert("Notificación sin éxito");
+					location.reload();
 				}
 			});
 		}

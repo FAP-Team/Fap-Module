@@ -79,7 +79,7 @@
 					     urlTabla:@NotificacionVerController.tablalistaDocumentosNotificados(idNotificacion)
 					}
 					#{fap.columna alignPosition:'left', ancho:100, cabecera:'Descripcion', expandir:true, campo: 'descripcion' /}
-					#{fap.columna alignPosition:'left', ancho:110, cabecera:'Descargar Firmado', expandir:true, campo: 'enlaceDescargaFirmado' /}
+                    #{fap.columna alignPosition:'left', ancho:110, cabecera:'Descargar Firmado', funcion:'${enlaceDescargaFirmado}' /}
 
 				#{/fap.tabla}
 

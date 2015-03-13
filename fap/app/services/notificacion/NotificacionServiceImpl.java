@@ -306,6 +306,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			} catch (Exception e){
 				play.Logger.error("Fallo al intentar recuperar la URI del Documento Notificacion. Error: "+e.getMessage());
 				play.Logger.error("Ojo, la URI del documento puesta a disposicion de la notificacion "+uriNotificacion+" se seteará a NULL en la BBDD local de la aplicación");
+				throw new NotificacionException("Fallo al intentar recuperar la URI del documento puesta a disposicion de la notificacion, error: "+e.getMessage());
 			}
 			
 			// Cumplimentar los campos del documento
@@ -316,6 +317,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			docPuestaADisposicion.fechaSubida = DateTime.now();
 			docPuestaADisposicion.tipo = this.getTipoDocPuestaADisposicion();
 			docPuestaADisposicion.uri = uriDoc;
+			docPuestaADisposicion.firmado = obtenerFirmadoDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
 			docPuestaADisposicion.estadoDocumento = EstadoNotificacionEnum.puestaadisposicion.name();
 		
 			docPuestaADisposicion.save();
@@ -450,12 +452,19 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			// Se procede a la actualización de la notificación de acuse de recibo
 			// Se obtiene la uri del documento de notificación
-			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
-			play.Logger.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			String uriDoc = null;
+			try {
+				uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+				play.Logger.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			} catch (Exception e){
+				play.Logger.error("Fallo al intentar recuperar la URI del Documento de acuse de recibo de la Notificacion. Error: "+e.getMessage());
+				throw new NotificacionException("Fallo al intentar recuperar la URI del documento de acuse de recibo de la notificacion, error: "+e.getMessage());
+			}
 			
 			// Se actualizan las propiedades del documento			
 			dbNotificacion.documentoAcuseRecibo.uri = uriDoc;
 			dbNotificacion.documentoAcuseRecibo.clasificado = true;
+			dbNotificacion.documentoAcuseRecibo.firmado = obtenerFirmadoDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 			dbNotificacion.documentoAcuseRecibo.save();
 
 			// TODO: ¿Cambiar el estado de la notificacion?
@@ -857,6 +866,19 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	protected String getTipoDocAcuseRecibo() {
 		return TIPO_DOC_ACUSERECIBO;
+	}
+	
+	public boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento){
+		boolean result = false;
+		
+		try {
+			DocumentoType documentoType = notificacionPort.obtenerDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+			result =  documentoType.getFirmaXmlSignature() != null && !documentoType.getFirmaXmlSignature().isEmpty() ? true : false;
+		} catch (NotificacionException e) {
+			play.Logger.error("Hubo un error al intentar comnprobar la firma del documento de notificación con uri "+uriNotificacion+" : "+e.getMessage());
+		}
+		
+		return result;
 	}
 
 }

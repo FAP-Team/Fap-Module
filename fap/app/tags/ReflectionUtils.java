@@ -316,7 +316,7 @@ public class ReflectionUtils {
         if (m == null && args != null) {
             m = getControllerMethod(method, null);
             noArgs = true;
-            Logger.warn("Definición del método %s obsoleto. La nueva definición \"public static void %s(Map<String, Object> args)\"", method, method);
+            Logger.warn("Definición del método %s obsoleto. La nueva definición \"public static List<ComboItem> %s(Map<String, Object> args)\"", method, method);
         }
 
         Object o = null;

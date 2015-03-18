@@ -3,6 +3,10 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
+import messages.Messages;
+import messages.Messages.MessageType;
 import models.MapeoUOBDOrganizacionHiperreg;
 import models.ReturnErrorFap;
 import models.ReturnUnidadOrganicaFap;
@@ -331,6 +335,59 @@ public class ServiciosGenericosUtils {
 	 */
 	private static String esBaja(boolean esBaja){
 		return esBaja ? "S" : "N";
+	}
+	
+	/**
+	 * 
+	 * @param codUnidadOrganica
+	 * @return
+	 */
+	public static ReturnUnidadOrganicaFap getUnidadOrganicaFAP(Long codUnidadOrganica){
+		ReturnUnidadOrganicaFap unidad = null;
+		if (codUnidadOrganica == null) {
+			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro codUnidadOrganica"))
+				Messages.fatal("Falta parámetro codUnidadOrganica");
+		} else {
+			unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", codUnidadOrganica).first();
+			if (unidad == null) {
+				Messages.fatal("Error al recuperar Unidad Orgánica");
+			}
+		}
+		return unidad;
+	}
+	
+	/**
+	 * 
+	 * @param codigo
+	 * @param subnivel
+	 * @return
+	 */
+	public static String handlerComboUO(int codigo, int subnivel){
+		List<ReturnUnidadOrganicaFap> lstUO = null;
+		List<ReturnUnidadOrganicaFap> lstUOSubNivel = null;
+		List<ComboItem> lstCombo = new ArrayList<ComboItem>();
+		String resultados = null;
+		
+		if (!Messages.hasErrors()) {
+			lstUO = obtenerUnidadesOrganicasBD((long) codigo);
+			if (lstUO != null){
+				cargarUnidadesOrganicas(lstUO);
+				lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
+				for (ReturnUnidadOrganicaFap unidad : lstUO){
+					if (calcularNivelUO(unidad) == subnivel)
+						lstUOSubNivel.add(unidad);
+				}
+				
+				if (lstUOSubNivel != null) {
+					for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
+						lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " - " + unidad.descripcion));
+						
+					resultados = new Gson().toJson(lstCombo);
+				}
+			}
+		}
+		
+		return resultados;
 	}
 
 }

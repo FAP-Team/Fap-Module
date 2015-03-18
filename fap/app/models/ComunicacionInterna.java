@@ -28,12 +28,6 @@ public class ComunicacionInterna extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public RespuestaCIFap respuesta;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public AsientoAmpliadoCIFap asientoAmpliado;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public RespuestaCIAmpliadaFap respuestaAmpliada;
-
 	@ValueFromTable("estadosComunicacionInterna")
 	public String estado;
 

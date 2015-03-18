@@ -59,14 +59,9 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		
 		List<Documento> rowsFiltered = new ArrayList<Documento>();
-		try {
-			for (Documento doc : rows){
-				String firma = doc.getFirma();
-				if (firma != null && !firma.isEmpty())
-					rowsFiltered.add(doc);
-			}
-		}catch(Exception e){
-			log.error("Se ha producido un error obteniendo la firma de los documentos: "+e.getMessage());
+		for (Documento doc : rows){
+			if (doc.firmado)
+				rowsFiltered.add(doc);
 		}
 		
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
@@ -75,7 +70,7 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 	
 	public static void tablatblDocPrincipalSelect(Long idComunicacionInterna) {
 
-		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asientoAmpliado.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
+		java.util.List<ListaUris> rows = ListaUris.find("select listaUris from ComunicacionInterna comunicacionInterna join comunicacionInterna.asiento.uris listaUris where comunicacionInterna.id=?", idComunicacionInterna).fetch();
 		Map<String, Long> ids = (Map<String, Long>) tags.TagMapStack.top("idParams");
 		List<Documento> rowsFiltered = new ArrayList<Documento>();
 		for (ListaUris lsturi: rows){
@@ -125,8 +120,8 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 			}
 		
 			if (!Messages.hasMessages() && !lstUri.isEmpty()) {
-				comunicacionInterna.asientoAmpliado.uris = lstUri;
-				comunicacionInterna.asientoAmpliado.numeroDocumentos = lstUri.size();
+				comunicacionInterna.asiento.uris = lstUri;
+				comunicacionInterna.asiento.numeroDocumentos = lstUri.size();
 				comunicacionInterna.estado = EstadosComunicacionInternaEnum.docAdjuntos.name();
 				comunicacionInterna.save(); 
 			} 
@@ -157,8 +152,8 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 
 		if (!Messages.hasErrors()) {
 			ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
-			if( comunicacionInterna != null && comunicacionInterna.asientoAmpliado != null){
-				comunicacionInterna.asientoAmpliado.uris = null;
+			if( comunicacionInterna != null && comunicacionInterna.asiento != null){
+				comunicacionInterna.asiento.uris = null;
 				comunicacionInterna.save();
 			}
 		}

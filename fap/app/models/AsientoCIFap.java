@@ -33,6 +33,15 @@ public class AsientoCIFap extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnUnidadOrganicaFap unidadOrganicaDestino;
 
+	@Transient
+	public Boolean unidadOrganicaDestinoDefecto;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public ReturnUnidadOrganicaFap unidadOrganicaOrigen;
+
+	@Transient
+	public Boolean unidadOrganicaOrigenDefecto;
+
 	public String asuntoCodificado;
 
 	public String userId;

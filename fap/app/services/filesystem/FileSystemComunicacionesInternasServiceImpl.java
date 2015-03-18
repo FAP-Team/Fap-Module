@@ -12,7 +12,6 @@ import com.sun.star.util.Date;
 import com.sun.star.util.DateTime;
 import models.AsientoCIFap;
 import models.ListaUris;
-import models.RespuestaCIAmpliadaFap;
 import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoFap;
@@ -20,7 +19,6 @@ import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
 import services.ComunicacionesInternasServiceException;
 import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
-import models.AsientoAmpliadoCIFap;
 import tags.ComboItem;
 
 public class FileSystemComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
@@ -65,8 +63,8 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		return respuesta;
 	}
 	
-	public RespuestaCIAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
-		RespuestaCIAmpliadaFap respuesta = new RespuestaCIAmpliadaFap();
+	public RespuestaCIFap crearNuevoAsientoAmpliado(AsientoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
+		RespuestaCIFap respuesta = new RespuestaCIFap();
 		respuesta.usuario = asientoAmpliadoFap.userId;
 		respuesta.resumen = asientoAmpliadoFap.resumen;
 		respuesta.observaciones = asientoAmpliadoFap.observaciones;

@@ -988,8 +988,6 @@ Entidad JsonPeticionModificacion{
 Entidad ComunicacionInterna{
     AsientoCIFap asiento noConstruct
     RespuestaCIFap respuesta noConstruct
-	AsientoAmpliadoCIFap asientoAmpliado noConstruct
-	RespuestaCIAmpliadaFap respuestaAmpliada noConstruct
 	Lista estadosComunicacionInterna estado
 }
 
@@ -999,6 +997,9 @@ Entidad AsientoCIFap {
 	Integer numeroDocumentos  //No ob
 	String interesado //No ob
 	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
+	Boolean unidadOrganicaDestinoDefecto transient
+	ReturnUnidadOrganicaFap unidadOrganicaOrigen noConstruct  // AsientoAmpliado
+    Boolean unidadOrganicaOrigenDefecto transient
 	String asuntoCodificado  //No ob
 	String userId
 	String password transient//String utf-16 unicode
@@ -1006,9 +1007,6 @@ Entidad AsientoCIFap {
 	OneToMany ListaUris uris  //Array de uris  //No ob
 }
 
-Entidad AsientoAmpliadoCIFap extends AsientoCIFap {
-	ReturnUnidadOrganicaFap unidadOrganicaOrigen
-}
 	
 Entidad RespuestaCIFap {
 	String usuario
@@ -1027,14 +1025,11 @@ Entidad RespuestaCIFap {
 	ReturnInteresadoCIFap interesado noConstruct
 	String tipoTransporte
 	OneToMany ListaUris uris
+	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna. (RespuestaAmpliada)
+    String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora. (RespuestaAmpliada)
 	//Lista listaReturnErrorFap error	//Lo tenía Yure, no se por qué habrá que preguntar
 	ReturnErrorFap error noConstruct
 }	
-
-Entidad RespuestaCIAmpliadaFap extends RespuestaCIFap {
-	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna.
-	String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora.
-}
 
 Entidad ReturnInteresadoCIFap {
 	String nombre
@@ -1060,34 +1055,18 @@ Entidad ReturnUnidadOrganicaFap{
 	Long codigoBDOrganizacion //Código que nos permite realizar el mapeo con la BDOrganización si fuera necesario
 }	
 
-Entidad MapeoUOBDOrganizacionHiperreg nonPersist {
-   Long codigo
-   String descripcion
-   Long unidadhiperreg
-}
-
 Entidad ReturnErrorFap {
 	Integer codigo
 	String descripcion
 }
-	
-	
-	
-//	String referenciaCantidadDocumentos  //Hacerle un ToString cuando lo devuelva el servicio
-//	Integer tipoDocumento //lista Tipos de documentos
-//	String numeroDocumento
-//	String letraDocumento
-//	String nombreInteresado
-//	Integer numeroAsientoAsociado
-//	String userId
-//	String password //UTF16 Unicode!!
-//	String tipoTransporte
-//	OneToMany ListaUris uris  //Array de uris
-//}
 
 Entidad ListaUris {
 	String uri
 }
+
+// -----------------------------------------------------------------------
+//   Entidades necesarias para el servicio de PortaFirmas
+// -----------------------------------------------------------------------
 
 Entidad SolicitudFirmaPortafirma {
 	// -------------------- Común --------------------

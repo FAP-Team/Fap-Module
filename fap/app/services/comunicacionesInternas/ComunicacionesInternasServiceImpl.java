@@ -29,10 +29,8 @@ import properties.FapProperties;
 import properties.PropertyPlaceholder;
 import messages.Messages;
 import models.Agente;
-import models.AsientoAmpliadoCIFap;
 import models.AsientoCIFap;
 import models.ListaUris;
-import models.RespuestaCIAmpliadaFap;
 import models.RespuestaCIFap;
 import models.ReturnUnidadOrganicaFap;
 import services.ComunicacionesInternasService;
@@ -144,6 +142,8 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 
 	/**
 	 * Método que crea un nuevo asiento de una comunicación interna.
+	 * Parámetros obligatorios: (userId, password, resumen y si se especifica asunto no es necesario
+	 * especificar unidad orgánica de destino en caso contrario si es obligatorio.  
 	 */
 	@Override
 	public RespuestaCIFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
@@ -183,10 +183,12 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	}
 	
 	/**
-	 * Método que crea un nueva asiento de una comunicación interna con el añadido de la unidad orgánica de origen.
+	 * Método que crea un nuevo asiento de una comunicación interna.
+	 * Parámetros obligatorios: (userId, password, resumen, si se especifica asunto no es necesario
+	 * especificar unidad orgánica de destino en caso contrario si es obligatorio y unidad orgánica de origen.  
 	 */
 	@Override
-	public RespuestaCIAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
+	public RespuestaCIFap crearNuevoAsientoAmpliado(AsientoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
 		
 		ArrayOfString listaUris = null;
 		try{
@@ -198,7 +200,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		
 		try{
 			ReturnComunicacionInternaAmpliada respuesta = null;
-			RespuestaCIAmpliadaFap respuestafap = null;
+			RespuestaCIFap respuestafap = null;
 			if (!Messages.hasErrors()) {
 					comunicacionesServices.nuevoAsientoAmpliado(
 						asientoAmpliadoFap.observaciones, 

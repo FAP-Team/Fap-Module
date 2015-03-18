@@ -20,7 +20,6 @@ import swhiperreg.service.ReturnUnidadOrganica;
 import tags.ComboItem;
 import models.ComunicacionInterna;
 import models.ListaUris;
-import models.RespuestaCIAmpliadaFap;
 import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoCIFap;
@@ -77,8 +76,8 @@ public class ComunicacionesInternasUtils {
 	 * @param respuesta
 	 * @return
 	 */
-	public static RespuestaCIAmpliadaFap respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap (ReturnComunicacionInternaAmpliada respuesta){
-		RespuestaCIAmpliadaFap respuestaFap = new RespuestaCIAmpliadaFap();
+	public static RespuestaCIFap respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap (ReturnComunicacionInternaAmpliada respuesta){
+		RespuestaCIFap respuestaFap = new RespuestaCIFap();
 		if (respuesta.getError().getDescripcion() == null){
 			respuestaFap.usuario = respuesta.getUsuario();
 			respuestaFap.resumen = respuesta.getResumen();
@@ -99,7 +98,8 @@ public class ComunicacionesInternasUtils {
 				respuestaFap.interesado = interesadoFAP;
 			}
 			respuestaFap.tipoTransporte = respuesta.getTipoTransporte();
-			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); //Falta
+			respuestaFap.uris = urisCI2UrisFap (respuesta.getUris()); 
+			respuestaFap.unidadOrganicaPropuesta = respuesta.getUnidadOrganicaPropuesta();
 		}
 		else {
 			ReturnErrorFap errorFAP = errorCI2errorFap(respuesta.getError());

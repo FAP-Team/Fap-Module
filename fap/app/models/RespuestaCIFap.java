@@ -55,6 +55,10 @@ public class RespuestaCIFap extends FapModel {
 	@JoinTable(name = "respuestacifap_uris")
 	public List<ListaUris> uris;
 
+	public String unidadOrganicaOrigen;
+
+	public String unidadOrganicaPropuesta;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnErrorFap error;
 

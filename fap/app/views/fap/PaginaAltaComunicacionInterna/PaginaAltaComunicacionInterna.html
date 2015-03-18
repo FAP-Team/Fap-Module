@@ -21,9 +21,9 @@
                     
             #{fap.grupo titulo:'Credenciales de la comunicación'}
                 
-            #{fap.texto campo:'comunicacionInterna.asientoAmpliado.userId', id:'userID', requerido:true, titulo:'Usuario' /}        
+            #{fap.texto campo:'comunicacionInterna.asiento.userId', id:'userID', requerido:true, titulo:'Usuario' /}        
         
-            #{fap.texto campo:'comunicacionInterna.asientoAmpliado.password', id:'passwd', password:true, requerido:true, titulo:'Clave' /}     
+            #{fap.texto campo:'comunicacionInterna.asiento.password', id:'passwd', password:true, requerido:true, titulo:'Clave' /}     
         
             #{/fap.grupo}
         
@@ -62,7 +62,7 @@
             #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Documentación aportada en la comunicación'}
                 
 #{fap.tabla 
-     campo:'ComunicacionInterna.asientoAmpliado.uris', 
+     campo:'ComunicacionInterna.asiento.uris', 
      id:'documentosCI', 
      idEntidad:'idListaUris', 
      saveEntity:false, 
@@ -78,7 +78,7 @@
         
             #{fap.grupo titulo:'Comentarios'}
                 
-            #{fap.areaTexto campo:'comunicacionInterna.asientoAmpliado.observaciones', id:'observaciones', titulo:'Observaciones' /}        
+            #{fap.areaTexto campo:'comunicacionInterna.asiento.observaciones', id:'observaciones', titulo:'Observaciones' /}        
         
             #{/fap.grupo}
         

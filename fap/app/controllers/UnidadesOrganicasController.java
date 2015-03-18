@@ -102,10 +102,6 @@ public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen 
 				Messages.error("Ha ocurrido un error en la carga de Unidades Orgánicas");
 			}
 		}
-		
-		if (!Messages.hasErrors()) {
-			mapearUOHiperrregBDOrganizacion();
-		}
 	}
 	
 	@Util
@@ -148,36 +144,6 @@ public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen 
 			play.Logger.info("No se puede leer el fichero que contiene los parámetros de las Unidades Orgánicas (/conf/initial-data/unidadesOrganicas.json)");
 			Messages.error("No se encuentra o no existe el fichero que contiene los parámetros de las Unidades Orgánicas (/conf/initial-data/unidadesOrganicas.json)");
 		}
-		
-		if (!Messages.hasErrors()) {
-			mapearUOHiperrregBDOrganizacion();
-		}
 	}
-	
-	/**
-	 * Método que realiza el mapeo de las unidades orgánicas de la BDOrganiazación a las correspondientes en HiperReg
-	 * mediante un fichero previamente configurado en formato json.
-	 * Este metodo se realizó porque era necesario saber cuál es la unidad orgánica a la que pertenece un determinado usuario y
-	 * para ello se utiliza la BDOrganización, el problema es que los códigos de las unidades orgánicas no coinciden con los que
-	 * tienen en HiperReg y por ello el mapeo. 
-	 * Si se quisiera realizar una comunicación interna ampliada en la que se utilice la unidad orgánica de origen sería necesario
-	 * este mapeo. 
-	 */
-	private static void mapearUOHiperrregBDOrganizacion(){
-		Type type;
-		if (new File(Play.applicationPath+"/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json").exists()) {
-			try {
-				type = new TypeToken<ArrayList<MapeoUOBDOrganizacionHiperreg>>(){}.getType();
-				List<MapeoUOBDOrganizacionHiperreg> lstMapeo = JsonUtils.loadObjectFromJsonFile("conf/initial-data/mapeoUOBDOrganizacionHiperreg.json", type);
-				ServiciosGenericosUtils.mapearUnidadesOrganicasBDOrganizacionHiperreg(lstMapeo);
-			}catch(Exception e){
-				play.Logger.error("No se puede leer el fichero que contiene el mapeo de Unidades Orgánicas de Hiperreg con BDOrganización (/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json)"+e);
-				Messages.error("No se puede leer el fichero que contiene el mapeo de Unidades Orgánicas de Hiperreg con BDOrganización (/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json)");
-			}
-		} else {
-			play.Logger.info("No se puede leer el que contiene el mapeo de Unidades Orgánicas de Hiperreg con BDOrganización (/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json)");
-			Messages.error("No se encuentra o no existe el fichero que contiene el mapeo de Unidades Orgánicas de Hiperreg con BDOrganización (/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json)");
-		}
-	}
-	
+
 }

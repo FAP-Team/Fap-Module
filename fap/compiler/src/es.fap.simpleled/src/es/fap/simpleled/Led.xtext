@@ -404,9 +404,8 @@ Combo:
 ;
 
 ComboUO:
-    elemento='ComboUO' (name=ID)? (
+    elemento='ComboUO' (name=ID) (
         ('campo' '=' campo=Campo)
-        & ('titulo' '=' titulo=STRING)?
         & (requerido?='requerido')?
         & (busqueda?="busqueda")?
     )

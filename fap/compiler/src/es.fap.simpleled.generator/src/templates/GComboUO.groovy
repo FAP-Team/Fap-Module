@@ -5,10 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import messages.Messages;
-import messages.Messages.MessageType;
-import models.ReturnUnidadOrganicaFap;
-
 import com.google.gson.Gson;
 
 import es.fap.simpleled.led.ComboUO;
@@ -34,13 +30,13 @@ class GComboUO extends GElement{
 	
 	public String view(){
 		TagParameters params = new TagParameters();
+		params.putStr("id", combo.name);
 		params.putStr("campo", campo.firstLower());
 		
 		Entidad entidad = null;
 		if (campo.getUltimaEntidad() != null) {
 			entidad = Entidad.create(campo.getUltimaEntidad())
-			//params.putStr("entidad", entidad.clase);
-			
+
 			if (!entidad.clase.equals("ReturnUnidadOrganicaFap")){
 				throw new Exception("Error generando combo en cascada para unidades orgánicas, la entidad de destino debe ser del tipo ReturnUnidadOrganicaFap");
 			}
@@ -49,11 +45,6 @@ class GComboUO extends GElement{
 		String controllerName = gPaginaPopup.controllerFullName();
 		if (controllerName != null)
 			params.putStr("controllerName", controllerName);
-
-		if(combo.name != null)
-			params.putStr("id", combo.name);
-		if(combo.titulo != null)
-			params.putStr("titulo", combo.titulo);
 		if(combo.requerido)
 			params.put "requerido", true;
 		if(combo.busqueda)
@@ -66,54 +57,24 @@ class GComboUO extends GElement{
 	
 	public String controller(){
 		return """
-			public static String handlerComboUO(int codigo, int subnivel){
-				List<ReturnUnidadOrganicaFap> lstUO = null;
-				List<ReturnUnidadOrganicaFap> lstUOSubNivel = null;
-				List<ComboItem> lstCombo = new ArrayList<ComboItem>();
-				String resultados = null;
-				
-				if (!Messages.hasErrors()) {
-					lstUO = ServiciosGenericosUtils.obtenerUnidadesOrganicasBD((long) codigo);
-					if (lstUO != null){
-						ServiciosGenericosUtils.cargarUnidadesOrganicas(lstUO);
-						lstUOSubNivel = new ArrayList<ReturnUnidadOrganicaFap>();
-						for (ReturnUnidadOrganicaFap unidad : lstUO){
-							if (ServiciosGenericosUtils.calcularNivelUO(unidad) == subnivel)
-								lstUOSubNivel.add(unidad);
-						}
-						
-						if (lstUOSubNivel != null) {
-							for (ReturnUnidadOrganicaFap unidad: lstUOSubNivel)
-								lstCombo.add(new ComboItem(unidad.codigo, unidad.codigoCompleto + " - " + unidad.descripcion));
-								
-							resultados = new Gson().toJson(lstCombo);
-						}
-					}
-				}
-				
-				return resultados;
-			}
-
-			public static ReturnUnidadOrganicaFap getUnidadOrganicaFAP(Long codUnidadOrganica){
-				ReturnUnidadOrganicaFap unidad = null;
-				if (codUnidadOrganica == null) {
-					if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro codUnidadOrganica"))
-						Messages.fatal("Falta parÃ¡metro codUnidadOrganica");
-				} else {
-					unidad = ReturnUnidadOrganicaFap.find("Select unidadOrganica from ReturnUnidadOrganicaFap unidadOrganica where unidadOrganica.codigo = ?", codUnidadOrganica).first();
-					if (unidad == null) {
-						Messages.fatal("Error al recuperar Unidad Orgánica");
-					}
-				}
-				return unidad;
+			public static String ${combo.name}handlerComboUO(int codigo, int subnivel){
+				return ServiciosGenericosUtils.handlerComboUO(codigo, subnivel);
 			}
 		""";
 	}
 	
 	public String validateCopy(Stack<Set<String>> validatedFields){
+		Entidad entidadRaiz = campo.getEntidad();
 		String validation = super.validate(validatedFields);
+		validation += "CustomValidation.valid(\"${campo.sinUltimoAtributo()}\", ${campo.sinUltimoAtributo()});\n";
 		if (combo.requerido)
 			validation += "CustomValidation.required(\"${campo.firstLower()}\", ${campo.firstLower()});\n";
+		validation += """   Long ${combo.name}codigoUO = ${campo.firstLower()};
+							if (${combo.name}codigoUO != null) {
+								${entidadRaiz.variableDb}.${campo.sinEntidad(campo.sinUltimoAtributo())} = ServiciosGenericosUtils.getUnidadOrganicaFAP(${combo.name}codigoUO);
+								${entidadRaiz.variableDb}.${campo.sinEntidad()} = ${combo.name}codigoUO;
+							} 
+		              """;
 		return validation;
 	}
 }

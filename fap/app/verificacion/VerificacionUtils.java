@@ -96,8 +96,8 @@ public class VerificacionUtils {
 				if (auxVerificacion.uriTramite.equals(uriTramite)) {
 					if (!auxVerificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva.name())) {
 						verificacionAnterior = auxVerificacion;
-						break;
 					}
+					break;
 				}
 			}
 		}

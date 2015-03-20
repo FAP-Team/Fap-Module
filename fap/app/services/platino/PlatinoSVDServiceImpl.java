@@ -64,8 +64,6 @@ public class PlatinoSVDServiceImpl implements SVDService {
 	@Override
 	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio) {
 
-		//peticion.uidUsuario = "dgonmor";
-
 		peticion.uidUsuario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "uidUsuario").first();
 		peticion.nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
 

@@ -57,15 +57,25 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
 
-		PeticionSVDFAP peticion = new PeticionSVDFAP();
-		List<SolicitudTransmisionSVDFAP> listaSolicitudesTransmision = new ArrayList<SolicitudTransmisionSVDFAP>();
+		try {
+			PeticionSVDFAP peticion = new PeticionSVDFAP();
+			List<SolicitudTransmisionSVDFAP> listaSolicitudesTransmision = new ArrayList<SolicitudTransmisionSVDFAP>();
 
-		for (Long idExpediente: idsSeleccionados) {
-			SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
-			listaSolicitudesTransmision.add(solicitudTransmision);
+			for (Long idExpediente: idsSeleccionados) {
+				SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
+				listaSolicitudesTransmision.add(solicitudTransmision);
+			}
+
+			svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
+
+			for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
+				solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
+			}
+
+		} catch (Exception e) {
+			Messages.error("Error creando la petición");
+			play.Logger.error("Se ha producido un error al crear la petición");
 		}
-
-		svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
 
 		crearRender("editar");
 	}

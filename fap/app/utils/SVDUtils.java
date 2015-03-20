@@ -31,8 +31,8 @@ import es.gobcan.platino.servicios.svd.Residencia;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.SolicitanteDatos;
 import es.gobcan.platino.servicios.svd.Solicitud;
-import es.gobcan.platino.servicios.svd.SolicitudTransmisionIdResi;
-import es.gobcan.platino.servicios.svd.SolicitudesIdResi;
+import es.gobcan.platino.servicios.svd.SolicitudTransmision;
+import es.gobcan.platino.servicios.svd.Solicitudes;
 import es.gobcan.platino.servicios.svd.TransmisionDatos;
 import es.gobcan.platino.servicios.svd.Transmisiones;
 import es.gobcan.platino.servicios.svd.peticionatributos.Atributos;
@@ -54,39 +54,34 @@ public class SVDUtils {
 
 		//uidUsuario y NifFuncionario
 		peticionPlatino.setUidUsuario(peticion.uidUsuario);
+		String nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
+		peticionPlatino.setNifFuncionario(nifFuncionario);
 
 		//Atributos
 		es.gobcan.platino.servicios.svd.peticionatributos.Atributos atributosPlatino = setAtributosPlatino(peticion.atributos.codigoCertificado);
 		peticionPlatino.setAtributos(atributosPlatino);
 
 		//Solicitudes
-		SolicitudesIdResi solicitudesPlatino = new SolicitudesIdResi();
-		SolicitudTransmisionIdResi solicitudTransmision = solicitudTransmisionFAPToSolicitudTransmisionPlatino(peticion, peticion.solicitudesTransmision.get(0));
+		Solicitudes solicitudesPlatino = new Solicitudes();
+		SolicitudTransmision solicitudTransmision = solicitudTransmisionFAPToSolicitudTransmisionPlatino(peticion, peticion.solicitudesTransmision.get(0));
 		solicitudesPlatino.getSolicitudTransmision().add(solicitudTransmision);
 
 		peticionPlatino.setSolicitudes(solicitudesPlatino);
-		peticionPlatino.setUidUsuario(peticion.uidUsuario);
 
 		return peticionPlatino;
 	}
 
 
 	//Mapeo de una solicitud de transmision de FAP a una de Platino (de Identidad o de Residencia)
-	public static SolicitudTransmisionIdResi solicitudTransmisionFAPToSolicitudTransmisionPlatino(PeticionSVDFAP peticion, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
+	public static SolicitudTransmision solicitudTransmisionFAPToSolicitudTransmisionPlatino(PeticionSVDFAP peticion, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
 
-		SolicitudTransmisionIdResi solicitudTransmisionPlatino = new SolicitudTransmisionIdResi();
+		SolicitudTransmision solicitudTransmisionPlatino = new SolicitudTransmision();
 
 		//Datos Genericos
 		DatosGenericos datosGenericos = new DatosGenericos();
 		datosGenericos.setSolicitante(setSolicitante(peticion, solicitudTransmisionSVDFAP.datosGenericos));
 		datosGenericos.setTitular(setTitular(solicitudTransmisionSVDFAP.datosGenericos.titular));
 		solicitudTransmisionPlatino.setDatosGenericos(datosGenericos);
-
-		//Datos Especificos
-//		DatosEspecificosIdResi datosEspecificos = new DatosEspecificosIdResi();
-//		datosEspecificos.setSolicitanteDatos(setSolicitanteDatos(solicitudTransmisionSVDFAP.datosEspecificos.tipoSolicitante));
-//		datosEspecificos.setSolicitud(setSolicitud(solicitudTransmisionSVDFAP.datosEspecificos.solicitud));
-//		solicitudTransmisionPlatino.setDatosEspecificos(datosEspecificos);
 
 		return solicitudTransmisionPlatino;
 	}
@@ -102,11 +97,32 @@ public class SVDUtils {
 	public static Titularpet setTitular (TitularSVDFAP titularSVDFAP){
 
 		Titularpet titular = new Titularpet();
-		titular.setDocumentacion(titularSVDFAP.getDocumentacion());
-		titular.setNombreCompleto(titularSVDFAP.getNombreCompleto());
-		titular.setNombre(titularSVDFAP.getNombre());
-		titular.setApellido1(titularSVDFAP.getApellido1());
-		titular.setApellido2(titularSVDFAP.getApellido2());
+
+		if (titularSVDFAP.getDocumentacion() != null)
+			titular.setDocumentacion(titularSVDFAP.getDocumentacion());
+		else
+			titular.setDocumentacion("");
+
+		if (titularSVDFAP.getNombreCompleto() != null)
+			titular.setNombreCompleto(titularSVDFAP.getNombreCompleto());
+		else
+			titular.setNombreCompleto("");
+
+		if (titularSVDFAP.getNombre() != null)
+			titular.setNombre(titularSVDFAP.getNombre());
+		else
+			titular.setNombre("");
+
+		if (titularSVDFAP.getApellido1() != null)
+			titular.setApellido1(titularSVDFAP.getApellido1());
+		else
+			titular.setApellido1("");
+
+		if (titularSVDFAP.getApellido2() != null)
+			titular.setApellido2(titularSVDFAP.getApellido2());
+		else
+			titular.setApellido2("");
+
 		titular.setTipoDocumentacion(setTipoDocumentacion(titularSVDFAP.getTipoDocumentacion()));
 
 		return titular;
@@ -151,9 +167,9 @@ public class SVDUtils {
 		solicitante.setFinalidad(datosGenericos.getSolicitante().getFinalidad());
 		solicitante.setUnidadTramitadora(datosGenericos.getSolicitante().getUnidadTramitadora());
 		solicitante.setIdExpediente(datosGenericos.getSolicitante().getIdExpediente());
-		solicitante.setConsentimiento(setConsentimiento(datosGenericos.solicitante.consentimiento));
-		solicitante.setProcedimiento(setProcedimiento(peticion.atributos.getCodigoCertificado(), "motivo petición"));
-		solicitante.setFuncionario(setFuncionario(datosGenericos.getSolicitante().funcionario.nombreCompletoFuncionario));
+		solicitante.setConsentimiento(setConsentimiento(datosGenericos.getSolicitante().getConsentimiento()));
+		solicitante.setProcedimiento(setProcedimiento(datosGenericos.getSolicitante().getProcedimiento().getCodigoProcedimiento(), datosGenericos.getSolicitante().getProcedimiento().getNombreProcedimiento()));
+		solicitante.setFuncionario(setFuncionario(datosGenericos.getSolicitante().getFuncionario().getNombreCompletoFuncionario()));
 
 		return solicitante;
 	}
@@ -362,7 +378,6 @@ public class SVDUtils {
 		try {
 			date = format.parse(fecha);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -413,15 +428,14 @@ public class SVDUtils {
 
 		if (!Messages.hasErrors()) {
 
-			//Se asignan los datos de la solicitud, del titular y del funcionario que está haciendo la petición
 			solicitudTransmisionSVDFAP.solicitud = solicitud;
 			solicitudTransmisionSVDFAP.nombreServicio = tipoServicio;
 
-			solicitudTransmisionSVDFAP.datosGenericos = solicitudTransmisionSVDFAP.datosGenericos;
+			//Se asigna la documentación del titular directamente de la solicitud
+			//Se pasa provisionalmente para testeo el NIF que aparece en la documentación de Platino
 //			solicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = solicitud.solicitante.numeroId;
-			solicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = "10000322Z";
+			solicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = "77779221Y";
 			solicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion = solicitud.solicitante.fisica.nip.tipo;
-
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.identificadorSolicitante = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "identificadorSolicitante").first();
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.nombreSolicitante = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nombreSolicitante").first();
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.finalidad = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "finalidad").first();
@@ -429,6 +443,9 @@ public class SVDUtils {
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.codigoProcedimiento = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "codProcedimiento").first();
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.nombreProcedimiento = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nombreProcedimiento").first();
 
+			//CONSULTAR idExpediente
+			//Provisional idExpediente de documentación de Platino
+			solicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente="EXP22/05/2012";
 
 			//Comprobar si existe Consentimiento por Ley o si el Solicitante ha autorizado
 			String consentimiento = null;
@@ -455,7 +472,9 @@ public class SVDUtils {
 
 			solicitudTransmisionSVDFAP.datosGenericos.solicitante.consentimiento = consentimiento;
 
-			solicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario = agente.name;
+			//PROVISIONAL PRUEBAS, CAMBIAR POR AGENTE ACTUAL
+//			solicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario = agente.name;
+			solicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario = "Daniel";
 
 			solicitudTransmisionSVDFAP.save();
 		}

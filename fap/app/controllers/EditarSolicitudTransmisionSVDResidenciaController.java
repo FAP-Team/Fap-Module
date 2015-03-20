@@ -1,12 +1,11 @@
 package controllers;
 
 import messages.Messages;
-import messages.Messages.MessageType;
 import models.Agente;
-import models.ParametroSVD;
 import models.SolicitudGenerica;
 import models.SolicitudTransmisionSVDFAP;
 import play.mvc.Util;
+import utils.SVDUtils;
 import controllers.fap.AgenteController;
 import controllers.gen.EditarSolicitudTransmisionSVDResidenciaControllerGen;
 
@@ -14,7 +13,7 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 
 	public static void index(String accion, Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
 
-		SolicitudGenerica solicitud = EditarSolicitudTransmisionSVDIdentidadController.getSolicitud(idSolicitud);
+		SolicitudGenerica solicitud = SVDUtils.getSolicitud(idSolicitud);
 
 		if (accion == null)
 			accion = getAccion();
@@ -76,95 +75,13 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 
 	public static void crear(Long idSolicitud, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
 
-		SolicitudGenerica solicitud = EditarSolicitudTransmisionSVDResidenciaController.getSolicitud(idSolicitud);
+		SolicitudGenerica solicitud = SVDUtils.getSolicitud(idSolicitud);
 		solicitudTransmisionSVDFAP.solicitud = solicitud;
 
-		Long idSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.crearLogica(idSolicitud, solicitudTransmisionSVDFAP);
-		EditarSolicitudTransmisionSVDResidenciaController.crearRender(idSolicitud, idSolicitudTransmisionSVDFAP);
+		SVDUtils.crearLogica("residencia", idSolicitud, solicitudTransmisionSVDFAP);
+		EditarSolicitudTransmisionSVDResidenciaController.crearRender(idSolicitud, solicitudTransmisionSVDFAP.getId());
 	}
 
-	@Util
-	public static Long crearLogica(Long idSolicitud, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
-		checkAuthenticity();
-		if (!permiso("crear")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
-		SolicitudTransmisionSVDFAP dbSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.getSolicitudTransmisionSVDFAP();
-
-		EditarSolicitudTransmisionSVDResidenciaController.EditarSolicitudTransmisionSVDResidenciaBindReferences(solicitudTransmisionSVDFAP);
-
-		if (!Messages.hasErrors()) {
-
-			EditarSolicitudTransmisionSVDResidenciaController.EditarSolicitudTransmisionSVDResidenciaValidateCopy("crear", dbSolicitudTransmisionSVDFAP, solicitudTransmisionSVDFAP);
-
-		}
-
-		if (!Messages.hasErrors()) {
-			EditarSolicitudTransmisionSVDResidenciaController.crearValidateRules(dbSolicitudTransmisionSVDFAP, solicitudTransmisionSVDFAP);
-		}
-
-		SolicitudGenerica solicitud = EditarSolicitudTransmisionSVDResidenciaController.getSolicitud(idSolicitud);
-		Long idSolicitudTransmisionSVDFAP = null;
-		Agente logAgente = AgenteController.getAgente();
-
-		if (!Messages.hasErrors()) {
-
-			dbSolicitudTransmisionSVDFAP.solicitud = solicitud;
-			dbSolicitudTransmisionSVDFAP.nombreServicio = "residencia";
-
-			dbSolicitudTransmisionSVDFAP.datosGenericos = solicitudTransmisionSVDFAP.datosGenericos;
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.documentacion = solicitud.solicitante.numeroId;
-
-			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.identificadorSolicitante = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "identificadorSolicitante").first();
-//			String nombre = solicitud.solicitante.fisica.nombre;
-//			String apellido1 = solicitud.solicitante.fisica.primerApellido;
-//			String apellido2 = solicitud.solicitante.fisica.segundoApellido;
-//
-//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombre = nombre;
-//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido1 = apellido1;
-//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.apellido2 = apellido2;
-//			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto = nombre + " " + apellido1 + " " + apellido2;
-
-			dbSolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion = solicitud.solicitante.fisica.nip.tipo;
-//			dbSolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.id.toString(); //Id expediente = Id solicitud?
-
-			dbSolicitudTransmisionSVDFAP.datosEspecificos = solicitudTransmisionSVDFAP.datosEspecificos;
-
-			dbSolicitudTransmisionSVDFAP.save();
-			idSolicitudTransmisionSVDFAP = dbSolicitudTransmisionSVDFAP.id;
-
-			log.info("Acción Crear de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada con éxito" + " Agente: " + logAgente);
-		} else {
-			log.info("Acción Crear de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
-		}
-		return idSolicitudTransmisionSVDFAP;
-	}
-
-	public static void borrar(Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
-		checkAuthenticity();
-		if (!permiso("borrar")) {
-			Messages.error("No tiene permisos suficientes para realizar la acción");
-		}
-		SolicitudTransmisionSVDFAP dbSolicitudTransmisionSVDFAP = EditarSolicitudTransmisionSVDResidenciaController.getSolicitudTransmisionSVDFAP(idSolicitudTransmisionSVDFAP);
-
-		if (!Messages.hasErrors()) {
-			EditarSolicitudTransmisionSVDResidenciaController.borrarValidateRules(dbSolicitudTransmisionSVDFAP);
-		}
-
-		if (!Messages.hasErrors()) {
-
-		}
-		Agente logAgente = AgenteController.getAgente();
-		if (!Messages.hasErrors()) {
-
-			dbSolicitudTransmisionSVDFAP.delete();
-
-			log.info("Acción Borrar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada con éxito" + " Agente: " + logAgente);
-		} else {
-			log.info("Acción Borrar de página: " + "fap/EditarSolicitudTransmisionSVDResidencia/EditarSolicitudTransmisionSVDResidencia.html" + " , intentada sin éxito (Problemas de Validación)" + " Agente: " + logAgente);
-		}
-		EditarSolicitudTransmisionSVDResidenciaController.borrarRender(idSolicitud, idSolicitudTransmisionSVDFAP);
-	}
 
 	@Util
 	public static void editarRender(Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
@@ -188,33 +105,6 @@ public class EditarSolicitudTransmisionSVDResidenciaController extends EditarSol
 		}
 		Messages.keep();
 		redirect("EditarSolicitudTransmisionSVDResidenciaController.index", "crear", idSolicitud, idSolicitudTransmisionSVDFAP);
-	}
-
-
-	@Util
-	public static void borrarRender(Long idSolicitud, Long idSolicitudTransmisionSVDFAP) {
-		if (!Messages.hasMessages()) {
-			Messages.ok("Página borrada correctamente");
-			Messages.keep();
-			redirect("CesionDatosExpedienteSVDController.index", "editar", idSolicitud);
-		}
-		Messages.keep();
-		redirect("EditarSolicitudTransmisionSVDResidenciaController.index", "borrar", idSolicitud, idSolicitudTransmisionSVDFAP);
-	}
-
-	@Util
-	public static SolicitudGenerica getSolicitud(Long idSolicitud) {
-		SolicitudGenerica solicitud = null;
-		if (idSolicitud == null) {
-			if (!Messages.messages(MessageType.FATAL).contains("Falta parámetro idSolicitud"))
-				Messages.fatal("Falta parámetro idSolicitud");
-		} else {
-			solicitud = SolicitudGenerica.findById(idSolicitud);
-			if (solicitud == null) {
-				Messages.fatal("Error al recuperar SolicitudTransmisionSVDFAP");
-			}
-		}
-		return solicitud;
 	}
 
 }

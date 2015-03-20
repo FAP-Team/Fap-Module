@@ -29,30 +29,30 @@
      seleccionable:'Enviar Solicitudes Identidad',  
      tipoContainer:'pagina', 
      titulo:'Solicitudes de Transmisión Identidad', 
-     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
-     urlBorrar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
-     urlCrear:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.crearIdentidad" , ['idSolicitud':solicitud?.id]), 
-     urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']),
+     urlCrear:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.crearIdentidad" , ['idSolicitud':solicitud?.id]),
      urlLeer:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlSeleccionable:'CesionDatosExpedienteSVDController.enviarSolicitudesIdentidad', 
      urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionIdentidad(idSolicitud)
 }
 	
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Id', campo:'id', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'datosGenericos.solicitante.nombreSolicitante', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'datosGenericos.solicitante.idExpediente', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de creación', campo:'fechaCreacion', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de respuesta', campo:'respuesta.datosGenericos.transmision.fechaGeneracion', expandir:true /}
-	
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+	#{fap.columna alignPosition:'left', ancho:30, cabecera:'Id', campo:'id' /}
+        
+    #{fap.columna alignPosition:'left', ancho:60, cabecera:'Solicitante', campo:'datosGenericos.solicitante.nombreSolicitante' /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'datosGenericos.solicitante.idExpediente', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:30, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento' /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de creación', campo:'fechaCreacion', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de respuesta', campo:'respuesta.datosGenericos.transmision.fechaGeneracion', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar PDF Respuesta', campo:'descargarPDF', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:60, cabecera:'Estado', campo:'estado' /}
 		
 #{/fap.tabla}
 
@@ -70,29 +70,29 @@
      tipoContainer:'pagina', 
      titulo:'Solicitudes de Transmisión Residencia', 
      urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.beforeOpenPageTable" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'irDespuesDeValidar':'']), 
-     urlBorrar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlCrear:play.mvc.Router.reverse("CesionDatosExpedienteSVDController.crearResidencia" , ['idSolicitud':solicitud?.id]),
-     urlEditar:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDResidenciaController.index" , ['accion':'editar', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlLeer:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'leer', 'idSolicitud':solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlSeleccionable:'CesionDatosExpedienteSVDController.enviarSolicitudesResidencia',
      urlTabla:@CesionDatosExpedienteSVDController.tablasolicitudesPeticionResidencia(idSolicitud)
 }
 	
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Id', campo:'id', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Solicitante', campo:'datosGenericos.solicitante.nombreSolicitante', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'datosGenericos.solicitante.idExpediente', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de creación', campo:'fechaCreacion', expandir:true /}
-		
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de respuesta', campo:'respuesta.datosGenericos.transmision.fechaGeneracion', expandir:true /}
-	
-	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estado', expandir:true /}
+	#{fap.columna alignPosition:'left', ancho:30, cabecera:'Id', campo:'id' /}
+        
+    #{fap.columna alignPosition:'left', ancho:60, cabecera:'Solicitante', campo:'datosGenericos.solicitante.nombreSolicitante' /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Unidad tramitadora', campo:'datosGenericos.solicitante.unidadTramitadora', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Expediente', campo:'datosGenericos.solicitante.idExpediente', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:30, cabecera:'Consentimiento', campo:'datosGenericos.solicitante.consentimiento' /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de creación', campo:'fechaCreacion', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Fecha de respuesta', campo:'respuesta.datosGenericos.transmision.fechaGeneracion', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar PDF Respuesta', campo:'descargarPDF', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:60, cabecera:'Estado', campo:'estado' /}
 		
 #{/fap.tabla}
 

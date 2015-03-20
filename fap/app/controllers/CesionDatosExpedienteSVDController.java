@@ -89,6 +89,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 			if (!Messages.hasErrors()) {
 				SVDUtils.respuestaSincronaPlatinoToRespuestaFAP(respuesta, peticion);
 				peticion.estadoPeticion = "recibida";
+				Messages.info("Respuesta recibida con éxito");
 			}
 		} catch (SVDServiceException e) {
 			Messages.error("Error al enviar la petición síncrona");

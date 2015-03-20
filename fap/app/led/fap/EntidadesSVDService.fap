@@ -280,4 +280,10 @@ Entidad ParametrosServicio {
     String nombreServicio
     String codigoCertificado
     Boolean consentimientoLey
+    Lista CaducidadCertificados caducidadCertificados
+}
+
+Lista CaducidadCertificados crearEnumerado {
+    seis_meses: "6 meses"
+    un_anio: "1 año"
 }

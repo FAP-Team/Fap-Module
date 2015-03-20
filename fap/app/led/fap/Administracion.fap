@@ -691,6 +691,7 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
             Columna campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio"
             Columna campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" ancho="120"
             Columna campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley" expandir
+            Columna campo=ParametrosServicio.caducidadCertificados titulo="Vigencia certificado" expandir
         }
 	}
 	
@@ -704,5 +705,6 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
         Texto campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio" requerido
         Texto campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" requerido
         Check campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley"
+        Combo campo=ParametrosServicio.caducidadCertificados titulo="Vigencia certificado"
     }
 }

@@ -28,6 +28,9 @@ public class ParametrosServicio extends FapModel {
 
 	public Boolean consentimientoLey;
 
+	@ValueFromTable("CaducidadCertificados")
+	public String caducidadCertificados;
+
 	public void init() {
 
 		postInit();

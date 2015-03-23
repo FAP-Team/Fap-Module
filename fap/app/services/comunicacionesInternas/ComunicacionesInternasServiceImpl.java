@@ -87,7 +87,8 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
         
-		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+//		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
+		this.platinoGestorDocumental = new PlatinoGestorDocumentalService(propertyPlaceholder);
 		
 		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
 	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);

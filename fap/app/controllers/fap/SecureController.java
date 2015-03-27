@@ -260,6 +260,8 @@ public class SecureController extends GenericController{
 			}
 		}
 		
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.certificado.name();
 		agente.save();
@@ -392,6 +394,8 @@ public class SecureController extends GenericController{
             loginFap();
     	}
         
+    	//Genera un hash de firma de sesion
+    	agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.usuario.name();
 		agente.save();
@@ -421,12 +425,13 @@ public class SecureController extends GenericController{
 	    	boolean logoutPorTicketing = logoutPorTicketing();
 	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
 	    	String usuarioSesion = null;
+	    	
 	    	if (Session.current().contains("username"))
 	    		usuarioSesion = Session.current().get("username");	    	
-	    	log.info("Logout del usuario: "+ usuarioSesion);
-	    	Cache.delete(Session.current().getId());
-	    	Session.current().clear();
-	        response.removeCookie("rememberme");
+		    log.info("Logout del usuario: "+ usuarioSesion);
+		    
+	        cleaningSession();	    
+	       
 	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
 	        Messages.keep();
 	        
@@ -624,6 +629,8 @@ public class SecureController extends GenericController{
 			agente.roles.add("usuario");
 			agente.cambiarRolActivo("usuario");
 		}
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		agente.save();
 		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username + ")");
 
@@ -633,6 +640,16 @@ public class SecureController extends GenericController{
 
 		// Redirect to the original URL (or /)
 		redirectToOriginalURL();
-    }    
+    }
+
+    /**
+     * Método que limpia los datos de la caché, sesión y cookie.
+     */
+    @Util
+	public static void cleaningSession() {
+		Cache.delete(Session.current().getId());
+    	Session.current().clear();
+        response.removeCookie("rememberme");
+	}    
         
 }

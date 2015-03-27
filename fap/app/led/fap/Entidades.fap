@@ -105,6 +105,7 @@ Entidad Agente inheritance=joined auditable {
 	String verificacion transient		// campo auxiliar para el cambio de password
 	String cargo length=500
 	String usuarioldap
+	String sessionHash
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica

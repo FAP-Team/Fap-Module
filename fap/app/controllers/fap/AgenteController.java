@@ -50,7 +50,7 @@ public class AgenteController extends Controller {
 	}
 
 	/**
-	 * Recupera el identificador de agente conectado, lo descifra, lo busca en base de datos y lo devuelve.
+	 * Recupera el identificador de agente conectado, lo busca en base de datos y lo devuelve.
 	 * 
 	 * En el caso que se produzca algún tipo de error se genera una excepción.
 	 * 

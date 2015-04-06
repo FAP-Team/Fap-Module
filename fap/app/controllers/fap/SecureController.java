@@ -48,6 +48,7 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 import utils.RoutesUtils;
+import validation.CustomValidation;
 
 
 public class SecureController extends GenericController{
@@ -267,7 +268,7 @@ public class SecureController extends GenericController{
 		agente.save();
 
 		//Almacena el usuario en la sesion
-		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
 		
 		redirectToOriginalURL();
@@ -403,8 +404,10 @@ public class SecureController extends GenericController{
 		Session.current().put("accesoFallido", 0);
 
         // Mark user as connected
+		play.Logger.info("Asignando a la sesion: " + Session.current().getId() + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
-        // Remember if needed
+      
+		// Remember if needed
         if(remember) {
             response.setCookie("rememberme", Crypto.sign(agente.username) + "-" + username, "30d");
         }
@@ -431,8 +434,9 @@ public class SecureController extends GenericController{
 		    log.info("Logout del usuario: "+ usuarioSesion);
 		    
 	        cleaningSession();	    
-	       
-	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
+
+	        CustomValidation.validAgentSession("unAuthorized", play.i18n.Messages.get("fap.login.error.unAuthorized"));
+	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));		       
 	        Messages.keep();
 	        
 	    	if (redireccion != null){
@@ -635,7 +639,7 @@ public class SecureController extends GenericController{
 		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username + ")");
 
 		// Mark user as connected
-		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ")");
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
 
 		// Redirect to the original URL (or /)

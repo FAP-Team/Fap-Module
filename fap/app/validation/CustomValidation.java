@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import antlr.StringUtils;
-
 import messages.Messages;
 import models.CCC;
 import models.Direccion;
@@ -31,6 +30,7 @@ import play.data.validation.ValidCheck;
 import play.data.validation.Validation;
 import play.data.validation.Validation.ValidationResult;
 import play.exceptions.UnexpectedException;
+import play.mvc.Scope.Flash;
 import properties.FapProperties;
 import tags.ReflectionUtils;
 
@@ -528,6 +528,17 @@ public class CustomValidation {
         String[] variables = new String[0];  
         Validation.addError(field, message, variables);
 		result.ok = false;
+		return result;
+	}
+	
+	public static ValidationResult validAgentSession(String key, String msg) {
+		ValidationResult result = new ValidationResult();
+		if (Flash.current().contains("unAuthorized")) {
+        	error(play.i18n.Messages.get("fap.login.error.unAuthorized") , "unAuthorized", null);
+        	Flash.current().remove("unAuthorized");
+        	result.ok = false;
+		}
+		
 		return result;
 	}
 }

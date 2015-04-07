@@ -155,6 +155,12 @@ public class SolicitudGenerica extends FapModel {
 	@JoinTable(name = "solicitudgenerica_registros")
 	public List<Registro> registros;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DeclaracionSubvenciones declaracionSubvenciones;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public HistoricoDeclaracionSubvenciones historicoDeclaracionSubvenciones;
+
 	public SolicitudGenerica() {
 		init();
 	}
@@ -287,6 +293,16 @@ public class SolicitudGenerica extends FapModel {
 
 		if (registros == null)
 			registros = new ArrayList<Registro>();
+
+		if (declaracionSubvenciones == null)
+			declaracionSubvenciones = new DeclaracionSubvenciones();
+		else
+			declaracionSubvenciones.init();
+
+		if (historicoDeclaracionSubvenciones == null)
+			historicoDeclaracionSubvenciones = new HistoricoDeclaracionSubvenciones();
+		else
+			historicoDeclaracionSubvenciones.init();
 
 		postInit();
 	}

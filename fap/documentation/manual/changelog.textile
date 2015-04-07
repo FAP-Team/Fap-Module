@@ -1,5 +1,18 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC4
+
+* Actualizada documentación para la creación y distribución del módulo.
+* Actualizada documentación para generar las librerías.
+* Actualizada librería de platino-pre a la versión v20150331.
+* FixedBug Se sube a la versión 1.2.6 de Play Framework para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se añade hash de sesión para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se puede realizar más de una verificación.
+* Se marca una solicitud como verificada cuando una verificación no es positiva.
+* FixedBug Se evita que se envíen notificaciones duplicadas.
+* FixedBug Se corrige las referencias a los documentos de las notificaciones.
+* Se añade información para el uso de subvenciones.
+
 h3. Versión 2.5.6RC3
 
 * Se modifican los reports de notificación de los oficios de remisión.

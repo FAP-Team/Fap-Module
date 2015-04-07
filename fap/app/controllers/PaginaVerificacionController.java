@@ -723,6 +723,13 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 						solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
 						// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
 						VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
+						
+						//Se marca la solicitud como verificada
+						if (solicitud.verificacion.tramiteNombre.nombre.equalsIgnoreCase("Solicitud")) { 
+							if ((solicitud.registro.oficial != null) && (!solicitud.registro.oficial.uri.isEmpty()) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))) 
+								VerificacionUtils.setVerificadoDocumento(solicitud.verificacion.documentos, solicitud.registro.oficial); 
+						}
+						
 						// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
 						solicitud.verificaciones.add(solicitud.verificacion);
 						solicitud.save();

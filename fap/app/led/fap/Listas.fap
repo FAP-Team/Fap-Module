@@ -9160,3 +9160,18 @@ Lista estadosComunicacionInterna crearEnumerado{
 	datosCompletos: "Asiento completo"
 	enviada: "Enviada"
 }
+
+// -----------------------------------------------------------------------
+//   Listas necesarias para las Subvenciones
+// -----------------------------------------------------------------------
+
+//Se ampliará esta lista en la aplicación con el tipo minimis cuando así lo requiera el procedimiento
+Lista tiposSubvencion crearEnumerado {
+       privada: "Privada"
+       publica: "Pública"
+}
+ 
+Lista estadosSubvenciones{
+       solicitada:"Solicitada"
+       concedida:"Concedida"
+}

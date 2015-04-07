@@ -141,47 +141,47 @@ public class DeclaracionSubvenciones extends FapModel {
 	}
 
 	// === MANUAL REGION START ===
-	
+
 	private Double obtenerTotalPorTipoYEstado(String tipo, String estado) {
-        double total = 0.0;
-        for (SubvencionFap sub : this.subvenciones) {
-               if (sub.situacion.equals(estado) && sub.tipo.equals(tipo))
-                      total += sub.importe;
-        }
-        return total;
-	 }
-	
-	 public Double getTotalSolicitadasPublicas() {
-		 return obtenerTotalPorTipoYEstado("publica", "solicitada");
-	 }
-	
-	 public Double getTotalConcedidasPublicas() {
-	     return obtenerTotalPorTipoYEstado("publica", "concedida");
-	 }
-	
-	 public Double getTotalSolicitadasPrivadas() {
-	     return obtenerTotalPorTipoYEstado("privada", "solicitada");
-	 }
-	
-	 public Double getTotalConcedidasPrivadas() {
-	     return obtenerTotalPorTipoYEstado("privada", "concedida");
-	 }
-	
-	 public Double getTotalSolicitadasMinimis() {
-	     return obtenerTotalPorTipoYEstado("minimis", "solicitada");
-	 }
-	
-	 public Double getTotalConcedidasMinimis() {
-	     return obtenerTotalPorTipoYEstado("minimis", "concedida");
-	 }
-	
-	 public Double getTotalSolicitadas() {
-	     return this.totalSolicitadasPublicas + this.totalSolicitadasPrivadas + this.totalSolicitadasMinimis;
-	 }
-	
-	 public Double getTotalConcedidas() {
-	     return this.totalConcedidasPublicas + this.totalConcedidasPrivadas + this.totalConcedidasMinimis;
-	 }
+		double total = 0.0;
+		for (SubvencionFap sub : this.subvenciones) {
+			if (sub.situacion.equals(estado) && sub.tipo.equals(tipo))
+				total += sub.importe;
+		}
+		return total;
+	}
+
+	public Double getTotalSolicitadasPublicas() {
+		return obtenerTotalPorTipoYEstado("publica", "solicitada");
+	}
+
+	public Double getTotalConcedidasPublicas() {
+		return obtenerTotalPorTipoYEstado("publica", "concedida");
+	}
+
+	public Double getTotalSolicitadasPrivadas() {
+		return obtenerTotalPorTipoYEstado("privada", "solicitada");
+	}
+
+	public Double getTotalConcedidasPrivadas() {
+		return obtenerTotalPorTipoYEstado("privada", "concedida");
+	}
+
+	public Double getTotalSolicitadasMinimis() {
+		return obtenerTotalPorTipoYEstado("minimis", "solicitada");
+	}
+
+	public Double getTotalConcedidasMinimis() {
+		return obtenerTotalPorTipoYEstado("minimis", "concedida");
+	}
+
+	public Double getTotalSolicitadas() {
+		return this.totalSolicitadasPublicas + this.totalSolicitadasPrivadas + this.totalSolicitadasMinimis;
+	}
+
+	public Double getTotalConcedidas() {
+		return this.totalConcedidasPublicas + this.totalConcedidasPrivadas + this.totalConcedidasMinimis;
+	}
 
 	// === MANUAL REGION END ===
 

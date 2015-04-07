@@ -1,15 +1,65 @@
 h1. Creación y distribución de una nueva versión del módulo
 
-* Para crear una nueva versión del módulo, lo primero que debemos hacer es comprobar que todo está funcionando correctamente.
+Para crear una nueva versión del módulo, lo primero que debemos hacer es comprobar que todo está funcionando correctamente.
 
-* Modifica el fichero @conf/dependencies.yml@ y aumenta el número de versión del módulo
+Modifica el fichero @conf/dependencies.yml@ y aumenta el número de versión del módulo.
 
-bc. self: play -> fap 2.0
+bc. self: play -> fap @<version>@
 
-* El siguiente comando genera la gramática, compila los fuentes, genera los plugin de la gramatica y los añade al módulo, empaqueta la nueva versión, sube la nueva versión y la documentación correspondiente al ftp, a la carpeta *public/fap-sdk2/*, y crea los tag del generador y del modulo para poder tener un control del estado del código en una versión concreta. Para ejecutarlo debe tener instaladas una serie de "librerias":ant-configuracion.
+fn1. Si se ha cambiado alguna librería, hacer @play deps@ en el módulo.
 
-bc. ant -f compiler.xml
+Enuncia las nuevas modificaciones en el fichero @fap/documentacion/manual/changelog@.
 
+fn2. Normalmente, se expone una versión resumida de los commits realizados desde la última versión del módulo.
 
+Modifica la versión en el fichero @fap/README@.
+Genera la documentación, dentro de la aplicacion de test:
 
+bc. play fap:javadoc
+play fap:documentation
+
+fn3. En realidad deberíamos hacer un @play javadoc@ en el módulo FAP, pero en Windows al tener tantos ficheros aparece un error en el tamaño del parámetro que se le pasa al subprocess call de python (demasiado largo por la cantidad de ficheros .java que hay en fap).
+
+Realizar en el compiler.xml del módulo: 
+
+# @get-version@ (Asegúrate que la versión que muestra es la que se deseaba).
+# @dist@ (Se genera un zip con la distro): Después de generar la distro y antes de subirla es recomendable probarla en alguna aplicación y ver que está todo correcto.
+# @ftp-upload-doc@ (Se sube la distro y la documentación al ftp)
+
+fn4. Para subir una distribución al ftp se deben configurar una serie de parámetros en el compiler.xml:
+
+bc. <!-- FTP Tasks properties -->
+    <condition property="ftp.server" value="${ftpservernightly}" else="undefined">
+        <isset property="ftpservernightly" />
+    </condition>
+    <condition property="ftp.fap.dir" value="${ftpdirnightly}" else="undefined">
+        <isset property="ftpdirnightly" />
+    </condition>
+    <condition property="ftp.user" value="${ftpusernightly}" else="undefined">
+        <isset property="ftpusernightly" />
+    </condition>
+    <condition property="ftp.pass" value="${ftppassnightly}" else="undefined">
+        <isset property="ftppassnightly" />
+    </condition>
+    <condition property="zip.dir" value="dist-nightly" else="dist">
+        <isset property="versionnightly" />
+    </condition>
+    <!-- FTP Tasks properties -->
+
+@<ftpservernightly>@: Debe contener la url del servidor, o poner valor en su defecto.
+@<ftpdirnightly>@: Debe contener la carpeta dónde se alojaría las distro, o poner valor en su defecto.
+@<ftpusernightly>@: Nombre de usuario con permisos, o poner valor en su defecto.
+@<ftppassnightly>@: Pass del usuario con permisos,o poner valor en su defecto.
+
+fn5. A veces es necesario añadir una variable que haga referencia a PLAY,
+
+bc. <property name="play_home" value="${env.PLAY}" />
+
+y añadirla en la regla @build-module-windows@:
+
+bc. <target name="build-module-windows" if="isWindows">
+    <exec executable="${play_home}/play.bat">
+        ...
+    </exec>
+</target>
 

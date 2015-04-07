@@ -1,5 +1,9 @@
 h1. Generación de librerías a partir de WSDL
 
+El proyecto para la regeneración de la librerías tiene el nombre WS-lib y está alojado en GitLab.
+
+La regeneración de librerías de Platino es necesario cuando se especifique que se deben regenerar los clientes.
+
 Para crear las librerías a partir del WSDL del servicio web utilizamos CXF.
 Creamos una nueva carpeta con la siguiente estructura:
 
@@ -13,6 +17,7 @@ bc..
                 ├── firma.wsdl
                 ├── registro.wsdl
                 └── sgrde.wsdl
+                ...
 
 p. Dentro de la carpeta src/main/resources/wsdl colocamos los ficheros wsdl del servicio para el que queramos generar las clases.
 
@@ -21,88 +26,114 @@ El contenido del fichero pom.xml debe ser el siguiente
 bc.. 
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>es.gobcan.platino</groupId>
+    <artifactId>platino.pre</artifactId>
+    <name>Platino</name>
+    <version>v20150331</version>
+    
+    <properties>
+        <cxf-version>2.7.7</cxf-version>
+        <jaxb-api-version>2.2.7</jaxb-api-version>
+        <jaxb-commons-lang-plugin-version>2.3</jaxb-commons-lang-plugin-version>
+    </properties>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>es.gobcan.platino</groupId>
-	<artifactId>platino.pre</artifactId>
-	<name>Platino</name>
-	<version>1.0</version>
-	
-	<properties>
-		<cxf-version>2.2.2</cxf-version>
-		<jaxb-api-version>2.1</jaxb-api-version>
-		<jaxb-commons-lang-plugin-version>2.1.3</jaxb-commons-lang-plugin-version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>${jaxb-api-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-databinding-jaxb</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-source-plugin</artifactId>
-			  <executions>
-				<execution>
-				  <id>attach-sources</id>
-				  <goals>
-					<goal>jar</goal>
-				  </goals>
-				</execution>
-			  </executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>${cxf-version}</version>
-				<executions>
-					<execution>
-						<id>generate-sources</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<!--<sourceRoot>target/generated/</sourceRoot>-->
-							<wsdlOptions>
-								<wsdlOption>
-									<wsdl>src/main/resources/wsdl/firma.wsdl</wsdl>
-								</wsdlOption>
-								<wsdlOption>
-									<wsdl>src/main/resources/wsdl/registro.wsdl</wsdl>
-								</wsdlOption>
-								<wsdlOption>
-									<wsdl>src/main/resources/wsdl/sgrde.wsdl</wsdl>
-								</wsdlOption>
-							</wsdlOptions>
-						</configuration>
-						<goals>
-							<goal>wsdl2java</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-databinding-jaxb</artifactId>
+            <version>${cxf-version}</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf-version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!--<sourceRoot>target/generated/</sourceRoot>-->
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/firma.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/registro.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/sgrde.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/mensaje.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/listaDistribucion.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/areas.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/dbprocedimientos.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/svd.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/portafirmas/solicitudfirma.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/dborganizacion.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/enotificaciones/notificacion.wsdl</wsdl>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/enotificaciones/suscripcion.wsdl</wsdl>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-	
-	<distributionManagement>
+    
+    <distributionManagement>
         <repository>
                 <id>releases</id>
                 <url>http://fap-devel.etsii.ull.es/nexus/content/repositories/releases</url>
@@ -113,17 +144,29 @@ bc..
                 <name>Internal Snapshots</name>
                 <url>http://fap-devel.etsii.ull.es/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
-	</distributionManagement>
-	
+    </distributionManagement>
+    
 </project>
 
-p. Para darle un nombre a la librería debemos cambiar los parámetros @<groupId>@, @<artifactId>@ y @<name>@. En @<wsdlOptiones>@ debemos especificar los nombres de nuestros ficheros .wsdl.
-Por último en <distributionManagement> se especifica la ruta del repositorio donde se va a subir la librería creada.
+p. En el caso de añadir una nueva librería habría que cambiar los parámetros @<groupId>@, @<artifactId>@, @<name>@ y @<version>@. 
+
+En el caso de regenerar una librería bastaría con cambiar el parámetro @<version>@. El formato debe seguir el patrón v(fecha oficial de modificación de la librería)
+
+En @<wsdlOptiones>@ debemos especificar los nombres de nuestros ficheros .wsdl.
+
+Por último en @<distributionManagement>@ se especifica la ruta del repositorio donde se va a subir la librería creada.
 
 Para generar la librería
 
 bc. mvn package
 
-Para subir la aplicación al repositorio maven
+!images/librerias-package!
+
+Para subir la librería al repositorio
 
 bc. mvn deploy 
+
+!images/librerias-deploy!
+
+p. Para subir la librería al servidor puede ser necesario la configuración de un fichero settings.xml, ubicado en la carpeta de maven, dónde se especifiquen las credenciales para poder subir dicha librería al repositorio especificado.
+   

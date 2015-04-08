@@ -1,11 +1,11 @@
 # Application dependencies
 
-self: play -> fap 2.5.6RC1
+self: play -> fap 2.5.6RC4
 
 
 
 require:
-    - play 1.2.5 :
+    - play 1.2.6 :
          exclude: 
           - junit
     - play -> pdf 0.6
@@ -73,7 +73,7 @@ require:
 
     - es.gobcan.eadmon -> aed 2.1.0:
         transitive: false
-    - es.gobcan.platino -> platino.pre 2.0.0.20141028b:
+    - es.gobcan.platino -> platino.pre v20150331:
         transitive: false   
     - es.gobcan.hiperreg -> comunicaciones.internas v20131209b:
        transitive: false

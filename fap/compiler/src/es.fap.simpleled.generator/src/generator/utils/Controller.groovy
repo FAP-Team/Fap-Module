@@ -150,7 +150,7 @@ package ${packageGenName};
 
 import play.*;
 import play.mvc.*;
-import play.db.jpa.Model;
+import play.db.jpa.*;
 import controllers.fap.*;
 import validation.*;
 import messages.Messages;
@@ -177,6 +177,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import es.mityc.facturae32.Facturae;
 import com.google.gson.Gson;
+import javax.persistence.*;
 
 import services.FirmaService;
 import services.GestorDocumentalService;

@@ -56,6 +56,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Cesion cesion
 	//Comunicaciones Internas
 	OneToMany ComunicacionInterna comunicacionesInternas
+	//Comunicaciones Internas
 	Boolean activoModificacion transient
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
@@ -65,7 +66,10 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Respuesta respuestaSvd
 	PeticionSVD peticion
 	OneToMany Registro registros
-
+	//Subvenciones
+	DeclaracionSubvenciones declaracionSubvenciones
+    HistoricoDeclaracionSubvenciones historicoDeclaracionSubvenciones
+    //Subvenciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -105,6 +109,7 @@ Entidad Agente inheritance=joined auditable {
 	String verificacion transient		// campo auxiliar para el cambio de password
 	String cargo length=500
 	String usuarioldap
+	String sessionHash
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
@@ -1106,4 +1111,40 @@ Entidad SolicitudFirmaPortafirma {
 	Boolean firmaDelegada					// Indica si el destinatario de la solicitud es un destinatario por delegación de firma.
 	Boolean archivada						// Indica si la solicitud fue archivada por el solicitante.
 	String comentarioSolicitante			// Comentario que puede hacer el solicitante en varias operaciones (eliminar, validar...)
+}
+
+
+// -----------------------------------------------------------------------
+//   Entidades necesarias para las Subvenciones
+// -----------------------------------------------------------------------
+
+Entidad SubvencionFap{
+    Lista tiposSubvencion tipo
+    Lista estadosSubvenciones situacion
+    String entidad
+    String objeto length=2000
+    String fondo
+    String reglamento
+    String programa
+    DateTime fechaSolicitud
+    DateTime fechaAprobacion
+    Moneda importe
+}
+
+Entidad DeclaracionSubvenciones{
+    String nombreTramite //Solo se actualiza cuando se registra (en presentacion,aceptacion o justificacion)
+    OneToMany SubvencionFap  subvenciones
+    DateTime fecha //Fecha de registro de la declaracion ( f.reg.solicitud, f.reg.aceptacion, f.reg.justificacion)
+    Moneda totalSolicitadas transient
+    Moneda totalConcedidas transient
+    Moneda totalSolicitadasPublicas transient
+    Moneda totalConcedidasPublicas transient
+    Moneda totalSolicitadasPrivadas transient
+    Moneda totalConcedidasPrivadas transient
+    Moneda totalSolicitadasMinimis transient
+    Moneda totalConcedidasMinimis transient
+}
+
+Entidad HistoricoDeclaracionSubvenciones{
+    OneToMany DeclaracionSubvenciones declaraciones
 }

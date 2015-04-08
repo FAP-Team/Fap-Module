@@ -48,6 +48,7 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 import utils.RoutesUtils;
+import validation.CustomValidation;
 
 
 public class SecureController extends GenericController{
@@ -97,7 +98,7 @@ public class SecureController extends GenericController{
             String sign = remember.value.substring(0, remember.value.indexOf("-"));
             String username = remember.value.substring(remember.value.indexOf("-") + 1);
             if(Crypto.sign(username).equals(sign)) {
-                session.put("username", username);
+            	Session.current().put("username", username);
                 redirectToOriginalURL();
             }
         }
@@ -197,9 +198,13 @@ public class SecureController extends GenericController{
             Messages.keep();
             loginFap();   		
     	}
-    	
+ 
     	String sessionid = Session.current().getId();
     	String serverToken = (String)Cache.get(sessionid + "login.cert.token");
+    	String sessionuser = "anonimo";
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
+    	play.Logger.info("Antes de consultar certificado, identificador de sesión: " + sessionid + " usuario de sesion antes de : " + sessionuser);
     	
     	//Comprueba que el token firmado sea el correcto
     	if(!token.equals(serverToken)) validation.addError("login-certificado", "El token firmado no es correcto");
@@ -256,12 +261,15 @@ public class SecureController extends GenericController{
 			}
 		}
 		
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.certificado.name();
 		agente.save();
 
 		//Almacena el usuario en la sesion
-		session.put("username", agente.username);
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
+		Session.current().put("username", agente.username);
 		
 		redirectToOriginalURL();
     }    
@@ -312,8 +320,8 @@ public class SecureController extends GenericController{
     public static void authenticatePorDefecto(String username, String password, boolean remember){
 
         int accesosFallidos = 0;
-        if (session.get("accesoFallido") != null) {
-        	accesosFallidos = new Integer(session.get("accesoFallido"));
+        if (Session.current().get("accesoFallido") != null) {
+        	accesosFallidos = new Integer(Session.current().get("accesoFallido"));
         }
         
         if (accesosFallidos > 2) {
@@ -376,10 +384,10 @@ public class SecureController extends GenericController{
     		//Usuario no encontrado
     		log.warn("Intento de login fallido, user:"+ username+ ", pass:"+cryptoPassword+", IP:"+request.remoteAddress+", URL:"+request.url);
             accesosFallidos = 0;
-            if (session.get("accesoFallido") != null) {
-            	accesosFallidos = new Integer(session.get("accesoFallido"));
+            if (Session.current().get("accesoFallido") != null) {
+            	accesosFallidos = new Integer(Session.current().get("accesoFallido"));
             }
-            session.put("accesoFallido", accesosFallidos+1);
+            Session.current().put("accesoFallido", accesosFallidos+1);
 
             flash.keep("url");
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
@@ -387,15 +395,19 @@ public class SecureController extends GenericController{
             loginFap();
     	}
         
+    	//Genera un hash de firma de sesion
+    	agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.usuario.name();
 		agente.save();
 
-        session.put("accesoFallido", 0);
+		Session.current().put("accesoFallido", 0);
 
         // Mark user as connected
-        session.put("username", agente.username);
-        // Remember if needed
+		play.Logger.info("Asignando a la sesion: " + Session.current().getId() + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
+		Session.current().put("username", agente.username);
+      
+		// Remember if needed
         if(remember) {
             response.setCookie("rememberme", Crypto.sign(agente.username) + "-" + username, "30d");
         }
@@ -411,21 +423,35 @@ public class SecureController extends GenericController{
 
     @Util
     public static void logoutFap() throws Throwable{
-    	String redireccion = buscarRedireccionLogout();
-    	boolean logoutPorTicketing = logoutPorTicketing();
-    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
-    	Cache.delete(session.getId());
-        session.clear();
-        response.removeCookie("rememberme");
-        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
-        Messages.keep();
-    	if (redireccion != null){
-	        redirect(redireccion);
-        } else if(redireccionTicketing != null && logoutPorTicketing){
-            redirect(redireccionTicketing);
-        } else {
-        	redirect("fap.SecureController.loginFap");
-        }
+    	try {
+	    	String redireccion = buscarRedireccionLogout();
+	    	boolean logoutPorTicketing = logoutPorTicketing();
+	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
+	    	String usuarioSesion = null;
+	    	
+	    	if (Session.current().contains("username"))
+	    		usuarioSesion = Session.current().get("username");	    	
+		    log.info("Logout del usuario: "+ usuarioSesion);
+		    
+	        cleaningSession();	    
+
+	        CustomValidation.validAgentSession("unAuthorized", play.i18n.Messages.get("fap.login.error.unAuthorized"));
+	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));		       
+	        Messages.keep();
+	        
+	    	if (redireccion != null){
+	    		log.info(" Redirigiendo a url: " + redireccion);
+		        redirect(redireccion);
+	        } else if(redireccionTicketing != null && logoutPorTicketing){
+	        	log.info(" Ticketing redirigiendo a url: " + redireccionTicketing);
+	            redirect(redireccionTicketing);
+	        } else {
+	        	log.info(" Redirigiendo a login");
+	        	redirect("fap.SecureController.loginFap");
+	        }
+    	}catch (Exception e){
+    		new Throwable("Ha ocurrido un error fatal en Logout");
+    	}
     }
     
     @Util
@@ -501,7 +527,13 @@ public class SecureController extends GenericController{
     }
     
     @Util
-    public static void authenticateTicketingPorDefecto(String ticket) {
+    public static void authenticateTicketingPorDefecto(String ticket) throws Throwable {
+
+    	String sessionid = Session.current().getId();
+    	String sessionuser = "anonimo";
+		if (Session.current().contains("username"))
+			sessionuser = Session.current().get("username");
+    	play.Logger.info("Antes de consultar ticketing, (identificador de sesion: " + sessionid + ", usuario de sesion : " + sessionuser +")");
     	
     	if(!FapProperties.getBoolean("fap.login.type.ticketing")){
             flash.keep("url");
@@ -521,31 +553,33 @@ public class SecureController extends GenericController{
     
 		TicketingService ticketingService = InjectorConfig.getInjector().getInstance(TicketingService.class);
 		HttpResponse wsResponse = null;
+		String numDocumento = null;
+		String tipoDocumento = null;
+		String uriTercero = null;
 		try {
+			play.Logger.info("Consultando el servicio de ticketing: (asunto: " + asunto + ", " + "ticket: " + ticket + ")");
 			wsResponse = ticketingService.hazPeticion(asunto, ticket);
-		} catch (TicketingServiceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    	if (wsResponse == null || wsResponse.getStatus() != 200) {
-			try {
+			if (wsResponse == null || wsResponse.getStatus() != 200) {
 				flash.put("error_ticketing","Error obteniendo los datos de terceros");
 				flash.keep("error_ticketing");
 				logoutFap();
-			} catch (Throwable e) {
-				log.error("No se ha podido recuperar los datos de terceros: " + e.getMessage());
-				return;
-			}
-    	}
-    
-		String numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
-		String tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
-		String uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+	    	} else {
+	    		numDocumento = wsResponse.getJson().getAsJsonObject().get("numDoc").getAsString();
+	    		tipoDocumento = wsResponse.getJson().getAsJsonObject().get("tipoDoc").getAsString();
+	    		uriTercero = wsResponse.getJson().getAsJsonObject().get("uri").getAsString();
+	    		play.Logger.info("Datos recibidos de ticketing: (numero de documento:" + numDocumento + ", tipo de documento: " + tipoDocumento
+	    				+ ", uriTercero: " + uriTercero +")");
+	    	}
+		} catch (TicketingServiceException e1) {
+			play.Logger.error("Error fatal consultando el servicio de ticketing.");
+			new Throwable("Error fatal consultando el servicio de ticketing.");
+		}
 
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
-		Agente agente = new Agente();
+		Agente agente = null;
 		try {
+			play.Logger.info("Consultando el servicio de terceros: (numDocumento: " + numDocumento + ", " + "tipoDocumento: " + tipoDocumento + ")");
 			agente = tercerosService.buscarTercerosAgenteByNumeroIdentificacion (numDocumento,tipoDocumento);
 		} catch (TercerosServiceException e) {
 			play.Logger.error("No se ha podido recuperar el tercero con numDoc = " + numDocumento + " y uri = " + uriTercero);
@@ -566,37 +600,32 @@ public class SecureController extends GenericController{
             Messages.error(play.i18n.Messages.get("fap.login.error.user"));
             Messages.keep();
             loginFap();
-			// TODO: Los demás datos... no se pueden obtener
 		} else
-			if (session.contains("username") && agente.username != null && agente.username.compareTo(session.get("username")) != 0){
+			if (Session.current().contains("username") && agente.username != null && agente.username.compareTo(Session.current().get("username")) != 0){
 				try {
-					log.info("Intentando inicio de sesión mediante ticketig (ticket = "+ ticket + " y agente = " + agente.username + ")");
+					log.info("Intentando inicio de sesion mediante ticketing (ticket = "+ ticket + " y agente = " + agente.username + ")");
 					Messages.error("Error en la sesión de usuario.");
 					flash.put("error_ticketing","Error de autentificación por ticketing");
 					flash.keep("error_ticketing");
 					logoutFap();
 				} catch (Throwable e) {
-					e.printStackTrace();
+					play.Logger.error("Error fatal en la sesión de usuario.");
+					new Throwable("Error fatal en la sesión de usuario.");
 				}
 			}
     	
-    	
-     	log.info("Login con ticketing. User: "+agente.username);
      	// Check tokens
         Boolean allowed = false;
-     	
-     	log.debug("Agente encontrado " + agente);
-     	
      	if(agente != null){
      		if(Play.mode.isDev()){
      			//En modo desarrollo se permite hacer login a cualquier usuario
      			allowed = true;
+     			log.debug("Allowed " + allowed);
      		}else {
      	        // TODO: Comprobar algo?
      		}
      	}
-		log.debug("Allowed " + allowed);
-
+	
 		// Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.ticketing.name();
 		if (agente.getSortRoles().isEmpty()) {
@@ -604,13 +633,27 @@ public class SecureController extends GenericController{
 			agente.roles.add("usuario");
 			agente.cambiarRolActivo("usuario");
 		}
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		agente.save();
+		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username + ")");
 
 		// Mark user as connected
-		session.put("username", agente.username);
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
+		Session.current().put("username", agente.username);
 
 		// Redirect to the original URL (or /)
 		redirectToOriginalURL();
-    }    
+    }
+
+    /**
+     * Método que limpia los datos de la caché, sesión y cookie.
+     */
+    @Util
+	public static void cleaningSession() {
+		Cache.delete(Session.current().getId());
+    	Session.current().clear();
+        response.removeCookie("rememberme");
+	}    
         
 }

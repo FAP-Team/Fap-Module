@@ -10,6 +10,7 @@ fap.login.type.user=Acceso con usuario y contraseña
 fap.login.type.cert=Acceso con certificado
 fap.login.welcome=Bienvenido a %s
 fap.login.error.user=Usuario o contraseña inválidos
+fap.login.error.unAuthorized=Opss! Hubo un error en la sesión de usuario
 
 fap.logout.ok=Has salido de la aplicación
 

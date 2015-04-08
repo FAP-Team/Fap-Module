@@ -15,14 +15,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
+
+import play.db.jpa.JPABase;
+import properties.FapProperties;
 import controllers.fap.SecureController;
+import com.google.gson.Gson;
+import utils.PeticionModificacion;
 import enumerado.fap.gen.EstadosModificacionEnum;
 import enumerado.fap.gen.EstadosSolicitudEnum;
 import enumerado.fap.gen.TiposParticipacionEnum;
-import play.db.jpa.JPABase;
-import play.mvc.Http.Request;
-import utils.PeticionModificacion;
-import com.google.gson.Gson;
 
 // === IMPORT REGION END ===
 
@@ -153,6 +154,12 @@ public class SolicitudGenerica extends FapModel {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_registros")
 	public List<Registro> registros;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DeclaracionSubvenciones declaracionSubvenciones;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public HistoricoDeclaracionSubvenciones historicoDeclaracionSubvenciones;
 
 	public SolicitudGenerica() {
 		init();
@@ -287,6 +294,16 @@ public class SolicitudGenerica extends FapModel {
 		if (registros == null)
 			registros = new ArrayList<Registro>();
 
+		if (declaracionSubvenciones == null)
+			declaracionSubvenciones = new DeclaracionSubvenciones();
+		else
+			declaracionSubvenciones.init();
+
+		if (historicoDeclaracionSubvenciones == null)
+			historicoDeclaracionSubvenciones = new HistoricoDeclaracionSubvenciones();
+		else
+			historicoDeclaracionSubvenciones.init();
+
 		postInit();
 	}
 
@@ -338,32 +355,58 @@ public class SolicitudGenerica extends FapModel {
 	}
 
 	private void compruebaUsuarioParticipacion(String user, String name, String email) {
+
 		if (user == null) {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
-		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).first();
-		if (p == null) {
-			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
 
-			if (agente == null) {
-				agente = new Agente();
-				agente.username = user;
-				agente.name = name;
-				agente.email = email;
-				agente.roles = new HashSet<String>();
-				agente.roles.add("usuario");
-				agente.rolActivo = "usuario";
-				agente.save();
-				play.Logger.info("Creado el agente %s", user);
-			}
-			p = new Participacion();
-			p.agente = agente;
-			p.solicitud = this;
-			p.tipo = TiposParticipacionEnum.solicitante.name();
-			p.save();
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
+
+		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).fetch();
+
+		Participacion participacionSolicitante = null;
+
+		//Si el DNI del solicitante ya pertenece a una participacion de tipo solicitante
+		for (Participacion participacion : participaciones) {
+			if (participacion != null)
+				if (participacion.tipo.equals(TiposParticipacionEnum.solicitante.name().toString())) {
+					participacionSolicitante = Participacion.findById(participacion.id);
+					break;
+				}
+		}
+
+		Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
+
+		if (agente == null) {
+			agente = new Agente();
+			agente.username = user;
+			agente.name = name;
+			agente.email = email;
+			agente.roles = new HashSet<String>();
+			agente.roles.add("usuario");
+			agente.rolActivo = "usuario";
+			agente.save();
+			play.Logger.info("Creado el agente %s", user);
+		}
+
+		//Si se va a modificar la participación o crear una nueva
+		if (participacionSolicitante == null) {
+			//Si ya existía un solicitante, se recupera la participación para modificarla
+			participacionSolicitante = Participacion.find("select participacion from Participacion participacion where participacion.tipo=? and participacion.solicitud.id=?", TiposParticipacionEnum.solicitante.name(), this.id).first();
+			//Si no existía ningún solicitante se crea uno nuevo
+			if (participacionSolicitante == null)
+				participacionSolicitante = new Participacion();
+
+			//Se asignan/actualizan los campos de la participación
+			participacionSolicitante.agente = agente;
+			participacionSolicitante.solicitud = this;
+			participacionSolicitante.tipo = TiposParticipacionEnum.solicitante.name();
+			participacionSolicitante.save();
+
 			play.Logger.info("Asignada la participación del agente %s en la solicitud %s", agente.username, this.id);
-		} //end if p == null
+		}
 	}// end método
 
 	private void compruebaUsuarioParticipacionRepresentante(String user, String name, String email) {
@@ -371,8 +414,14 @@ public class SolicitudGenerica extends FapModel {
 			play.Logger.info("No se comprueba la participación, porque el usuario es: " + user);
 			return;
 		}
+
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
+
 		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=? and participacion.tipo=?", user, this.id, TiposParticipacionEnum.representante.name()).first();
 		if (p == null) {
+
+			play.Logger.info("No se han encontrado participaciones para este usuario en esta solicitud");
 			Agente agente = Agente.find("select agente from Agente agente where agente.username=?", user).first();
 
 			if (agente == null) {

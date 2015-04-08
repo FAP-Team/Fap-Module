@@ -1,5 +1,48 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC4
+
+* Actualizada documentación para la creación y distribución del módulo.
+* Actualizada documentación para generar las librerías.
+* Actualizada librería de platino-pre a la versión v20150331.
+* FixedBug Se sube a la versión 1.2.6 de Play Framework para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se añade hash de sesión para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se puede realizar más de una verificación.
+* Se marca una solicitud como verificada cuando una verificación no es positiva.
+* FixedBug Se evita que se envíen notificaciones duplicadas.
+* FixedBug Se corrige las referencias a los documentos de las notificaciones.
+* Se añade información para el uso de subvenciones.
+
+h3. Versión 2.5.6RC3
+
+* Se modifican los reports de notificación de los oficios de remisión.
+* Se optimiza la forma de comprobar si un documento está firmado.
+* Se comprueba la property "fap.debug.session.agente" para filtrar mensajes de participaciones en las solicitudes.
+* Se ponen mensajes de espera en varios procesos de las resoluciones.
+
+h3. Versión 2.5.6RC2
+
+* Añadida nueva property para seleccionar si mostrar mensajes de información de la sessión o no.
+* Se modifica la comprobación que permite que se muestre o no el link descargar firmado de un documento.
+* Se corrige que un documento quede clasificado tanto en el AED como en la BD.
+* Se agrega permiso para modificar un requerimiento en Verificación.
+* Se añaden mayor control de errores e la firma masiva de documentos.
+* Se modifica la generación de la firma masiva de documentos.
+* Se elimina el vaciado de datos de sessión al loguearse, pueden hacer falta esos datos.
+* Se cambian todas las referencias de la variable session por Spope.Session.current().
+* FixedBug se elimina el parámetro syncronized de la firma de documentos.
+* Se eliminan los documentos, no clasificados del AED además de en la base de datos, al borrarlos de las aplicaciones.
+* Se añade control de concurrencia en la firma de documentos de la solicitud.
+* Se añade al log más información de la sesión de un usuario.
+* Se modifica el proceso de comprobación de la firma de documentos en documentación y aportación sin utilizar las participaciones.
+* Se corrigen errores en la asignación de participaciones en una solicitud.
+* Se añaden mejoras y más información en el log referente a los accesos a las aplicaciones.
+* Se permite una segunda verificación de un trámite.
+* Se eliminan las migas de pan a no ser que se indique la property fap.login.type.ticketing=false en la aplicación.
+* Incorporación de página Logout para ticketing indicar en la property:fap.logout.ticketing.url
+* Actualizaciones de reports asociados a la notificación de resoluciones.
+* Corregidos errores en la autorización de usuarios en una solicitud.
+
 h3. Versión 2.5.6RC1
 
 * Corregido, se crean usuarios vacíos.

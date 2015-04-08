@@ -64,6 +64,8 @@ public class Agente extends FapModel {
 
 	public String usuarioldap;
 
+	public String sessionHash;
+
 	public Agente() {
 		init();
 	}

@@ -1,18 +1,22 @@
 package models;
 
-import java.util.*;
-import javax.persistence.*;
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.data.validation.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import org.joda.time.DateTime;
-import models.*;
-import messages.Messages;
-import validation.*;
-import audit.Auditable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+import validation.ValueFromTable;
 
 // === IMPORT REGION START ===
 
@@ -66,6 +70,7 @@ public class Verificacion extends FapModel {
 		init();
 	}
 
+	@Override
 	public void init() {
 
 		if (tramiteNombre != null)
@@ -105,6 +110,27 @@ public class Verificacion extends FapModel {
 		play.Logger.error("Eliminando de la Verificación " + this.id + " la Lista Verificacion Tipos Documentos: " + this.verificacionTiposDocumentos.toString());
 		this.verificacionTiposDocumentos = null;
 	}
+
+	//Método que nos permite ordenar las verificaciones mediante la fecha de última actualización.
+	public static Comparator<Verificacion> VerificacionComparator = new Comparator<Verificacion>() {
+		@Override
+		public int compare(Verificacion v1, Verificacion v2) {
+			DateTime x = v1.fechaUltimaActualizacion;
+			DateTime y = v2.fechaUltimaActualizacion;
+
+			//De forma ascendente
+			//return x.compareTo(y);
+
+			//De forma descendente
+			if (y == null)
+				return (x == null) ? 0 : -1;
+
+			if (x == null)
+				return 1;
+
+			return y.compareTo(x);
+		}
+	};
 
 	// === MANUAL REGION END ===
 

@@ -115,7 +115,7 @@ public class PlatinoVerificarDatosServiceImpl implements services.VerificarDatos
 	private Funcionario setFuncionario (String nombreCompletoFuncionario, String nif){
 		Funcionario funcionario = new Funcionario();
 		funcionario.setNombreCompletoFuncionario(nombreCompletoFuncionario);
-		funcionario.setNifFuncionario(nif);
+//		funcionario.setNifFuncionario(nif);
 		return funcionario;
 	}
 	

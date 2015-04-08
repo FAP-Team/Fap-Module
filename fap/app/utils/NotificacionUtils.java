@@ -193,7 +193,7 @@ public class NotificacionUtils {
 	public static Documento obtenerDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
 		Documento documento = null;
 		try {
-			documento = notificacionService.obtenerDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+			documento = notificacionService.obtenerDocumentoNotificacion(notificacion.agente.username.toString(), notificacion.uri, tipo);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -203,7 +203,7 @@ public class NotificacionUtils {
 	public static String obtenerUriDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
 		String uri = "";
 		try {
-			uri = notificacionService.obtenerUriDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+			uri = notificacionService.obtenerUriDocumentoNotificacion(notificacion.agente.username.toString(), notificacion.uri, tipo);
 			if(uri == null)
 				uri="";
 		} catch (Exception e) {

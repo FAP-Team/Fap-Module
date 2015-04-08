@@ -28,6 +28,7 @@ public class Convocatoria extends Singleton {
 	// Código de los atributos
 
 	@ValueFromTable("estadoConvocatoria")
+	@FapEnum("enumerado.fap.gen.EstadoConvocatoriaEnum")
 	public String estado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

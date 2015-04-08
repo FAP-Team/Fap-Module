@@ -278,6 +278,11 @@ ${FileUtils.addRegion(file, FileUtils.REGION_MANUAL)}
 					type = "String";
 				}
 				anotaciones.add("@ValueFromTable(\"${compuesto.lista.name}\")");
+                if (compuesto.lista.enumerado == true) {
+                    def enumName = 
+                        GLista.getEnumClassPackage() + "." + GLista.getEnumClassNameForLista(compuesto.lista.name);
+                    anotaciones.add("@FapEnum(\"${enumName}\")");
+                }
 			}else if (compuesto?.entidad?.embedded){
 				type = compuesto.entidad.name;
 				anotaciones.add "@Embedded";

@@ -37,6 +37,7 @@ public class PersonaFisica extends FapModel {
 	public String segundoApellido;
 
 	@ValueFromTable("sexo")
+	@FapEnum("enumerado.fap.gen.SexoEnum")
 	public String sexo;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaNacimiento"), @Column(name = "fechaNacimientoTZ") })

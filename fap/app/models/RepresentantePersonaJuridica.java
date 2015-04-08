@@ -24,6 +24,7 @@ public class RepresentantePersonaJuridica extends RepresentantePersonaFisica {
 	// Código de los atributos
 
 	@ValueFromTable("TiposRepresentantes")
+	@FapEnum("enumerado.fap.gen.TiposRepresentantesEnum")
 	public String tipoRepresentacion;
 
 	public void init() {

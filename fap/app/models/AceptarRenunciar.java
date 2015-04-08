@@ -23,6 +23,7 @@ public class AceptarRenunciar extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("seleccion")
+	@FapEnum("enumerado.fap.gen.SeleccionEnum")
 	public String seleccion;
 
 	@Column(columnDefinition = "LONGTEXT")

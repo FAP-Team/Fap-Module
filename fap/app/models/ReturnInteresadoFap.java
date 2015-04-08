@@ -23,6 +23,7 @@ public class ReturnInteresadoFap extends ReturnInteresadoCIFap {
 	// Código de los atributos
 
 	@ValueFromTable("tipoDocumentoCI")
+	@FapEnum("enumerado.fap.gen.TipoDocumentoCIEnum")
 	public String tipoDocumento;
 
 	public String numeroDocumento;

@@ -50,6 +50,7 @@ public class Direccion {
 	public String localidad;
 
 	@ValueFromTable("tipoDireccion")
+	@FapEnum("enumerado.fap.gen.TipoDireccionEnum")
 	public String tipo;
 
 	public Direccion() {

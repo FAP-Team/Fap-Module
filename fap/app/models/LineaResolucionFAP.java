@@ -26,6 +26,7 @@ public class LineaResolucionFAP extends FapModel {
 	public SolicitudGenerica solicitud;
 
 	@ValueFromTable("estadoLineaResolucion")
+	@FapEnum("enumerado.fap.gen.EstadoLineaResolucionEnum")
 	public String estado;
 
 	public Double puntuacionBaremacion;

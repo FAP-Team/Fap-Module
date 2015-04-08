@@ -37,10 +37,12 @@ public class SolicitudGenerica extends FapModel {
 	public String estadoAntesVerificacion;
 
 	@ValueFromTable("estadosSolicitud")
+	@FapEnum("enumerado.fap.gen.EstadosSolicitudEnum")
 	@Transient
 	public String estadoValue;
 
 	@ValueFromTable("estadosSolicitud")
+	@FapEnum("enumerado.fap.gen.EstadosSolicitudEnum")
 	@Transient
 	public String estadoUsuario;
 

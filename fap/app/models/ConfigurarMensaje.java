@@ -31,6 +31,7 @@ public class ConfigurarMensaje extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("tipoMensaje")
+	@FapEnum("enumerado.fap.gen.TipoMensajeEnum")
 	public String tipoMensaje;
 
 	public String tituloMensaje;
@@ -51,6 +52,7 @@ public class ConfigurarMensaje extends FapModel {
 	public String formularioNombreText;
 
 	@ValueFromTable("posicionMensaje")
+	@FapEnum("enumerado.fap.gen.PosicionMensajeEnum")
 	public String msjFinal;
 
 	public void init() {

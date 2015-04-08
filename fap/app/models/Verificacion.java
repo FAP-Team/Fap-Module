@@ -35,6 +35,7 @@ public class Verificacion extends FapModel {
 	public String expediente;
 
 	@ValueFromTable("estadosVerificacion")
+	@FapEnum("enumerado.fap.gen.EstadosVerificacionEnum")
 	public String estado;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

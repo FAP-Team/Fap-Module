@@ -1,3 +1,6 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
 
 %{ 
     def id = _id;
@@ -24,7 +27,7 @@
 #{fap.combo id:"${idnivel2}", campo:"${campoNivel2}", titulo:'Nivel 2:', searchable:"${searchable}" /}      
 #{fap.combo id:"${idnivel3}", campo:"${campoNivel3}", titulo:'Nivel 3:', searchable:"${searchable}" /}      
 #{fap.combo id:"${idnivel4}", campo:"${campoNivel4}", titulo:'Nivel 4:', searchable:"${searchable}" /} 
-#{fap.texto campo:"${campo}", id:"${idCodigo}", titulo:'Código de unidad:', requerido:"${requerido}" /}   
+#{fap.texto campo:"${campo}", obj:obj , id:"${idCodigo}", titulo:'Código de unidad:', requerido:"${requerido}" /}   
 
 <script>
 
@@ -52,7 +55,6 @@ function peticion${id}(combo, codigoUO, subnivelUO){
 
        var comboRaiz = $("#${idnivel1}");
        peticion${id}(comboRaiz, 0, 0);
-       comboRaiz.change();
     });
 
     $( "#${idnivel1}" ).change(function() {
@@ -120,18 +122,20 @@ function peticion${id}(combo, codigoUO, subnivelUO){
     
     function almacenarCodigo${id}(comboPadre, combo) {
         var uoCodigo = $("#${idCodigo}");
+        var codigoPadre = comboPadre != null ? comboPadre.val() : null;
         var codigo = combo.val();
                      
-        if ((codigo >= 0) || (comboPadre == null))
-           if (codigo >= 0)
-              uoCodigo.val(codigo);
-           else
-              uoCodigo.val('');
-        else {
-           var codigoPadre = comboPadre.val();
-           if (codigoPadre >= 0)
-              uoCodigo.val(codigoPadre);
-        }
+        if (codigo >= 0)
+           uoCodigo.val(codigo);
+        else
+            if (codigoPadre != null){
+               if (codigoPadre >= 0)
+                  uoCodigo.val(codigoPadre);
+            } else
+                  uoCodigo.val('');
     }
 
 </script>
+
+
+#{/fap.field}

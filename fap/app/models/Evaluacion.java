@@ -50,6 +50,7 @@ public class Evaluacion extends FapModel {
 	public TipoEvaluacion tipo;
 
 	@ValueFromTable("EstadosEvaluacion")
+	@FapEnum("enumerado.fap.gen.EstadosEvaluacionEnum")
 	public String estado;
 
 	@Column(columnDefinition = "LONGTEXT")

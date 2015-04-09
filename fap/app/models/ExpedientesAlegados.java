@@ -31,6 +31,7 @@ public class ExpedientesAlegados extends FapModel {
 	public DateTime fechaRegistro;
 
 	@ValueFromTable("estadoAlegacion")
+	@FapEnum("enumerado.fap.gen.EstadoAlegacionEnum")
 	public String estado;
 
 	public ExpedientesAlegados() {

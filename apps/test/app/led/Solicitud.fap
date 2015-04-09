@@ -212,6 +212,8 @@ Fecha campo=Solicitud.fechas.fecha titulo=\"Fecha\" requerido"
 	Pagina Combos inicial campo=Solicitud {
 
 		Grupo titulo="Campos sin sobreescribir los controladores manuales" {
+		    Combo campo=Solicitud.comboTest.sinParametros titulo="Combo con parámetros prototipado sin parámetros"
+		    Combo campo=Solicitud.comboTest.parametros titulo="Combo con parámetros"
 			Combo campo=Solicitud.comboTest.list titulo="Combo de Tabla de Tablas"
 			Combo campo=Solicitud.comboTest.listNumber titulo="Combo de numeritos" mostrarClave
 			Combo campo=Solicitud.comboTest.listSinDuplicados titulo="Combo de Tabla de Tablas sin elementos repetidos" eliminarDuplicados

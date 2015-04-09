@@ -35,6 +35,7 @@ public class VerificacionDocumento extends FapModel {
 	public String descripcion;
 
 	@ValueFromTable("estadosDocumentoVerificacion")
+	@FapEnum("enumerado.fap.gen.EstadosDocumentoVerificacionEnum")
 	public String estadoDocumentoVerificacion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPresentacion"), @Column(name = "fechaPresentacionTZ") })

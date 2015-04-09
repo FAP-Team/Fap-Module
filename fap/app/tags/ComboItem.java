@@ -1,10 +1,10 @@
 package tags;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import play.Logger;
-
 import models.TableKeyValue;
 import models.TableKeyValueDependency;
 
@@ -47,6 +47,22 @@ public class ComboItem {
 			items.add(new ComboItem(entry.key, entry.key + " - " + entry.value));
 		}
 		return items;
+	}
+	
+	public static List<ComboItem> listFromEnumerado(String enumName) {
+	    List<ComboItem> items = new ArrayList<ComboItem>();
+	    try {
+	        Class<?> clazz = Class.forName(enumName);
+	        List<Enum> enumValues = (List<Enum>)Arrays.asList(clazz.getEnumConstants());
+
+	        for (Enum enumValue : enumValues) {
+	            items.add(new ComboItem(enumValue.name(), enumValue.name()));
+	        }
+	    } catch (ClassNotFoundException ex) {
+	        throw new IllegalArgumentException("Nombre de enumerado no encontrado.");
+	    }
+	    
+	    return items;
 	}
 	
 	public Object getKey() {

@@ -64,7 +64,7 @@ public class GCombo extends GSaveCampoElement{
 		}
 				
 		return """
-			#{fap.combo ${params.lista()} /}		
+			#{fap.combo ${params.lista()}, parametros:[${params.lista()}] /}		
 		""";
 	}
 	

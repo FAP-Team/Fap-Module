@@ -29,6 +29,7 @@ public class Consulta extends FapModel {
 	public String consulta;
 
 	@ValueFromTable("tipoConsulta")
+	@FapEnum("enumerado.fap.gen.TipoConsultaEnum")
 	public String tipo;
 
 	public void init() {

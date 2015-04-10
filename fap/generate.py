@@ -42,7 +42,7 @@ def main():
     
     # app.java_path()
     cmd = ["java", "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
-    print ' '.join(cmd)
+    print (' '.join(cmd));
     subprocess.call(cmd);
 
 if __name__ == "__main__":

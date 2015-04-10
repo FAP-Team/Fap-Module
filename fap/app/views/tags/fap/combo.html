@@ -3,7 +3,12 @@
 #{fap.field _campo, obj:obj}
 
 %{
-    def parametros = _parametros + ['obj':obj]
+    def parametros  = [:] as HashMap<String, Object>
+    if (_parametros != null)
+       parametros.putAll(_parametros)
+    if (obj != null)
+       parametros.put('obj', obj)
+
 	def id = _id ?: field.id
 	def oldId = _oldId ?: field.id
 	def label = _titulo ?: play.i18n.Messages.get(field.name)
@@ -65,6 +70,10 @@
     
     <script>
     	var recupera${id} = ${recuperaDDBB};
+    	$( document ).ready(function() {
+    	    console.log( "${id}" );
+            console.log( "${parametros}" );
+        });
     </script>
     
 	#{fap.formrow id:id, label:label, ayuda:ayuda, visible:showRow, requerido:requerido, errores:field.error, anchoBloque:anchoBloque, anchoTitulo:anchoTitulo}

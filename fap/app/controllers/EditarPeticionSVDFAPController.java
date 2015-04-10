@@ -65,4 +65,25 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "descargarPDF"));
 	}
+
+
+	//Prepara una petición ya creada para poder enviarla
+	public static void prepararPeticion(Long idPeticionSVDFAP) {
+
+		PeticionSVDFAP peticionSVDFAP = EditarPeticionSVDFAPController.getPeticionSVDFAP(idPeticionSVDFAP);
+
+		try {
+			for (SolicitudTransmisionSVDFAP solicitudTransmision : peticionSVDFAP.solicitudesTransmision) {
+				solicitudTransmision.estado = "preparada";
+				solicitudTransmision.save();
+			}
+			peticionSVDFAP.estadoPeticion = "preparada";
+			peticionSVDFAP.save();
+			play.Logger.info("Solicitudes de transmisión y petición preparadas para su envío");
+		} catch (Exception ex) {
+			Messages.error("Una o más solicitudes de transmisión no han podido ser preparadas");
+		}
+
+		redirect("CesionDatosSVDListarController.index", "editar");
+	}
 }

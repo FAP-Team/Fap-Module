@@ -187,7 +187,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 }
 
 
-//CESIONES DE DATOS ASÍNCRONAS
+//CESIONES DE DATOS AS�?NCRONAS
 Formulario CesionDatos {
     
     Menu {
@@ -270,11 +270,10 @@ Formulario CesionDatos {
         }
         
         Grupo grupoTablaSolicitudesIdentidad mostrarSiExpresion "(peticionSVDFAP.nombreServicio == \"identidad\")" {
-            Tabla tablaSolicitudesTransmisionIdentidad titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP
-            paginaLeer=EditarSolicitudTransmisionSVDIdentidad {
+            Tabla tablaSolicitudesTransmisionIdentidad titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP {
                 Columna campo=SolicitudTransmisionSVDFAP.id titulo="ID" ancho="30"
                 Columna campo=SolicitudTransmisionSVDFAP.nombreServicio titulo="Tipo" ancho="100"
-                Columna campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.id titulo="ID Expediente" ancho="90"
+                Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="ID Expediente" ancho="90"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="80"
                 Columna campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion titulo="Fecha de respuesta" ancho="120"
@@ -284,8 +283,7 @@ Formulario CesionDatos {
         }
         
         Grupo grupoTablaSolicitudesResidencia mostrarSiExpresion "(peticionSVDFAP.nombreServicio == \"residencia\")" {
-            Tabla tablaSolicitudesTransmisionResidencia titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP
-            paginaLeer=EditarSolicitudTransmisionSVDResidencia {
+            Tabla tablaSolicitudesTransmisionResidencia titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP {
                 Columna campo=SolicitudTransmisionSVDFAP.id titulo="ID" ancho="30"
                 Columna campo=SolicitudTransmisionSVDFAP.nombreServicio titulo="Tipo" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.id titulo="ID Expediente" ancho="90"

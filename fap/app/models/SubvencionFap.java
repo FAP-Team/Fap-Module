@@ -23,6 +23,7 @@ public class SubvencionFap extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("tiposSubvencion")
+	@FapEnum("enumerado.fap.gen.TiposSubvencionEnum")
 	public String tipo;
 
 	@ValueFromTable("estadosSubvenciones")

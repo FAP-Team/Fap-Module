@@ -404,9 +404,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 				dbDocAcuseDeRecibo.uri = gestorDocumental.saveDocumentoTemporal(dbDocAcuseDeRecibo, docAcuseDeRecibo.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
 				play.Logger.info(String.format("Se guarda el acuse de recibo (%s) para la notificación (%s) en la carpeta temporal", dbDocAcuseDeRecibo.uri, uriNotificacion));
 				
-				dbNotificacion.documentoRespondida = dbDocAcuseDeRecibo;
+				dbNotificacion.documentoAcuseRecibo = dbDocAcuseDeRecibo;
 				dbNotificacion.documentosAuditoria.add(dbDocAcuseDeRecibo); // Añadir el documento a la collección de documentos de auditoría
-				dbNotificacion.preparadaRespondida = true;
 
 				dbDocAcuseDeRecibo.save();
 				dbNotificacion.save();

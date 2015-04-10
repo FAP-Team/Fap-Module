@@ -66,7 +66,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	PeticionSVD peticion
 	OneToMany Registro registros
 	Lista NombreServicioSVDFAP nombreServicio transient
-	Lista tipoEstadoPeticionSVDFAP estadoPeticionSVD transient
+	Lista tipoEstadoPeticionSVDFAP estadoPeticionSVD
 
 }
 

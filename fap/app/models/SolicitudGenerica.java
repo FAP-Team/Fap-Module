@@ -159,7 +159,6 @@ public class SolicitudGenerica extends FapModel {
 	public String nombreServicio;
 
 	@ValueFromTable("tipoEstadoPeticionSVDFAP")
-	@Transient
 	public String estadoPeticionSVD;
 
 	public SolicitudGenerica() {

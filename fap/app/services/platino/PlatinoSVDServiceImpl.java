@@ -64,18 +64,22 @@ public class PlatinoSVDServiceImpl implements SVDService {
 	@Override
 	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio) {
 
-		peticion.uidUsuario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "uidUsuario").first();
-		peticion.nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
+		try {
+			peticion.uidUsuario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "uidUsuario").first();
+			peticion.nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
 
-		peticion.solicitudesTransmision = solicitudes;
+			peticion.solicitudesTransmision = solicitudes;
 
-		peticion.atributos.codigoCertificado = ParametrosServicio.find("select codigoCertificado from ParametrosServicio parametrosServicio where nombreServicio=?", tipoServicio).first();
-		peticion.nombreServicio = tipoServicio;
-		peticion.estadoPeticion = "creada";
+			peticion.atributos.codigoCertificado = ParametrosServicio.find("select codigoCertificado from ParametrosServicio parametrosServicio where nombreServicio=?", tipoServicio).first();
+			peticion.nombreServicio = tipoServicio;
+			peticion.estadoPeticion = "creada";
 
-		peticion.save();
+			peticion.save();
 
-		play.Logger.info("Se ha creado la petición SVD correctamente");
+			play.Logger.info("Se ha creado la petición SVD correctamente");
+		} catch (Exception ex) {
+			play.Logger.info("Se ha producido un error creando la petición SVD");
+		}
 	}
 
 	@Override
@@ -108,15 +112,17 @@ public class PlatinoSVDServiceImpl implements SVDService {
 	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException {
 
 		PeticionPdf peticionPDF = new PeticionPdf();
+		RespuestaPdf respuestaPdf = new RespuestaPdf();
 
 		peticionPDF.setUidUsuario(uidUsuario);
 		peticionPDF.setIdPeticion(idPeticion);
 		peticionPDF.setIdTransmision(idTransmision);
 
 		try {
-			return svdPort.peticionPdf(peticionPDF);
+			respuestaPdf = svdPort.peticionPdf(peticionPDF);
+			return respuestaPdf;
 		} catch (SvdException e) {
-			Messages.error("Se ha producido un error recuperando el PDF");
+			Messages.error("Se ha producido un error recuperando el PDF: " + respuestaPdf.getError());
 			e.printStackTrace();
 		}
 		return null;

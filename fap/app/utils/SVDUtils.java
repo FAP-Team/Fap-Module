@@ -445,7 +445,8 @@ public class SVDUtils {
 
 			//CONSULTAR idExpediente
 			//Provisional idExpediente de documentación de Platino
-			solicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente="EXP22/05/2012";
+//			solicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente="EXP22/05/2012";
+			solicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente = solicitud.expedienteAed.idAed;
 
 			//Comprobar si existe Consentimiento por Ley o si el Solicitante ha autorizado
 			String consentimiento = null;

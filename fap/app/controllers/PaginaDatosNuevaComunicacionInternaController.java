@@ -114,8 +114,10 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 		dbComunicacionInterna.asiento.interesado = comunicacionInterna.asiento.interesado;
 		CustomValidation.required("comunicacionInterna.asiento.resumen", comunicacionInterna.asiento.resumen);
 		dbComunicacionInterna.asiento.resumen = comunicacionInterna.asiento.resumen;
-		dbComunicacionInterna.asiento.unidadOrganicaOrigenDefecto = comunicacionInterna.asiento.unidadOrganicaOrigenDefecto;
-		if (dbComunicacionInterna != null && dbComunicacionInterna.asiento != null && dbComunicacionInterna.asiento.unidadOrganicaOrigenDefecto != null && (comunicacionInterna.asiento.unidadOrganicaOrigenDefecto != null) && (comunicacionInterna.asiento.unidadOrganicaOrigenDefecto == true)) {
+		
+		dbComunicacionInterna.asiento.asientoAmpliado = comunicacionInterna.asiento.asientoAmpliado;
+		
+		if (dbComunicacionInterna.asiento.asientoAmpliado) {
 			CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaOrigen", comunicacionInterna.asiento.unidadOrganicaOrigen);
 			CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaOrigen.codigo", comunicacionInterna.asiento.unidadOrganicaOrigen.codigo);
 			Long uoOrigencodigoUO = comunicacionInterna.asiento.unidadOrganicaOrigen.codigo;
@@ -123,8 +125,10 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 				dbComunicacionInterna.asiento.unidadOrganicaOrigen = ServiciosGenericosUtils.getUnidadOrganicaFAP(uoOrigencodigoUO);
 				dbComunicacionInterna.asiento.unidadOrganicaOrigen.codigo = uoOrigencodigoUO;
 			}
+		} else
+			dbComunicacionInterna.asiento.unidadOrganicaOrigen = null;
 
-		}
+		
 		CustomValidation.valid("comunicacionInterna.asiento.unidadOrganicaDestino", comunicacionInterna.asiento.unidadOrganicaDestino);
 		CustomValidation.required("comunicacionInterna.asiento.unidadOrganicaDestino.codigo", comunicacionInterna.asiento.unidadOrganicaDestino.codigo);
 		Long uoDestinocodigoUO = comunicacionInterna.asiento.unidadOrganicaDestino.codigo;

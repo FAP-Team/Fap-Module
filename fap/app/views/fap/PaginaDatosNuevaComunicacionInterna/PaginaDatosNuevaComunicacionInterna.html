@@ -1,4 +1,3 @@
-
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -23,7 +22,7 @@
         
             #{fap.areaTexto campo:'comunicacionInterna.asiento.resumen', id:'resumen', requerido:true, titulo:'Resumen' /}      
         
-            #{fap.check ayuda:tags.TagAyuda.texto('En el caso de que no se especifique una unidad orgánica de origen se utilizará la asignada por defecto.'), campo:'comunicacionInterna.asiento.unidadOrganicaOrigenDefecto', id:'uoOrigenDefecto', titulo:'Especificar una unidad orgánica de origen' /}      
+            #{fap.check ayuda:tags.TagAyuda.texto('En el caso de que no se especifique una unidad orgánica de origen se utilizará la asignada por defecto.'), campo:'comunicacionInterna.asiento.asientoAmpliado', id:'uoOrigenDefecto', titulo:'Especificar una unidad orgánica de origen' /}      
         
             #{fap.grupo siCheck:'uoOrigenDefecto', siCheckValue:true, titulo:'Unidad Orgánica de origen'}
                 

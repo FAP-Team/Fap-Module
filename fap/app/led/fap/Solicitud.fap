@@ -1836,7 +1836,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
        Grupo titulo="Datos de la Comunicacion Interna"{
          Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
-         Check uoOrigenDefecto titulo="Especificar una unidad orgánica de origen" campo=ComunicacionInterna.asiento.unidadOrganicaOrigenDefecto 
+         Check uoOrigenDefecto titulo="Especificar una unidad orgánica de origen" campo=ComunicacionInterna.asiento.asientoAmpliado 
          ayuda = "En el caso de que no se especifique una unidad orgánica de origen se utilizará la asignada por defecto." 
          Grupo titulo="Unidad Orgánica de origen" mostrarSiCheck uoOrigenDefecto = true {
             ComboUO uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.codigo requerido busqueda 

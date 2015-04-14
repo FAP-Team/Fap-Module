@@ -1002,9 +1002,8 @@ Entidad AsientoCIFap {
 	Integer numeroDocumentos  //No ob
 	String interesado //No ob
 	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
-	Boolean unidadOrganicaDestinoDefecto transient
+	Boolean asientoAmpliado default = "false"                 // AsientoAmpliado
 	ReturnUnidadOrganicaFap unidadOrganicaOrigen noConstruct  // AsientoAmpliado
-    Boolean unidadOrganicaOrigenDefecto transient
 	String asuntoCodificado  //No ob
 	String userId
 	String password transient//String utf-16 unicode

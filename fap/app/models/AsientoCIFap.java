@@ -33,14 +33,10 @@ public class AsientoCIFap extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnUnidadOrganicaFap unidadOrganicaDestino;
 
-	@Transient
-	public Boolean unidadOrganicaDestinoDefecto;
+	public Boolean asientoAmpliado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnUnidadOrganicaFap unidadOrganicaOrigen;
-
-	@Transient
-	public Boolean unidadOrganicaOrigenDefecto;
 
 	public String asuntoCodificado;
 
@@ -60,6 +56,9 @@ public class AsientoCIFap extends FapModel {
 	}
 
 	public void init() {
+
+		if (asientoAmpliado == null)
+			asientoAmpliado = false;
 
 		if (uris == null)
 			uris = new ArrayList<ListaUris>();

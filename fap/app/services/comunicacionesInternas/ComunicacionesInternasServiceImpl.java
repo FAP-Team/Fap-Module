@@ -69,7 +69,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	public final String PASSWORDHIPERREG;
 	
 	@Inject
-	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder){
+	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder, PlatinoGestorDocumentalService platinoGestorDocumental){
 		this.propertyPlaceholder = propertyPlaceholder;
 		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/CIServices.wsdl");
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
@@ -88,26 +88,14 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
         }
 		
         WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder, headers);
-		
-        //El servicio de comunicaciones internas y servicios genéricos no funciona con proxy, entra en conflicto.
-        //Por esto hay que ponerlo a falso, antes de configurar sus políticas.
-        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
-        FapProperties.setBoolean("fap.proxy.enable", false);
-
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
-        
-		platinoGestorDocumental = InjectorConfig.getInjector().getInstance(PlatinoGestorDocumentalService.class);
-		
-		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
-	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);
-
+        this.platinoGestorDocumental = new PlatinoGestorDocumentalService(propertyPlaceholder);
 	}
 	
 	private String getEndPoint() {
 		return propertyPlaceholder.get("fap.services.comunicaciones.internas.url");
 	}
 	
-	// TODO: revisar que no está completo.
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
@@ -202,7 +190,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 			ReturnComunicacionInternaAmpliada respuesta = null;
 			RespuestaCIFap respuestafap = null;
 			if (!Messages.hasErrors()) {
-					comunicacionesServices.nuevoAsientoAmpliado(
+				respuesta =	comunicacionesServices.nuevoAsientoAmpliado(
 						asientoAmpliadoFap.observaciones, 
 						asientoAmpliadoFap.resumen,
 						asientoAmpliadoFap.numeroDocumentos,

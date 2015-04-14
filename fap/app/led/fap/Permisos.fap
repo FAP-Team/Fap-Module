@@ -1068,6 +1068,16 @@ Permiso requerimientoFirmado {
 	return all
 }
 
+Permiso requerimientoEnviado {
+    vars
+        Verificacion verificacion
+    when
+        verificacion?.requerimiento?.registro?.fasesRegistro?.firmada = true
+        and verificacion?.requerimiento?.notificacion?.estado != null
+        and verificacion?.requerimiento?.notificacion?.estado in ("enviada")
+    return all
+}
+
 Permiso requerimientoRequerirFirma {
 	vars
 		Verificacion verificacion
@@ -1097,6 +1107,15 @@ Permiso obtenerRequerimiento {
 		verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerido")
 	return
 		all
+}
+
+Permiso obtenerBorradorRequerimiento {
+    vars
+        Verificacion verificacion
+    when
+        verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerimientoFirmadaRegistrada")
+    return
+        all
 }
 
 /*

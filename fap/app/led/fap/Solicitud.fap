@@ -488,8 +488,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 
-		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=modificarRequerimiento{
-			Wiki {"Puede modificar la resolución si necesita cambiar el motivo de requerimiento o gestor que debe firmar."}
+		Grupo gModificarVerificacion titulo="Modificar la verificación" permiso=modificarRequerimiento{
+			Wiki {"Puede modificar la verificación si necesita cambiar el motivo de requerimiento o el gestor que debe firmar"}
 			Form reabrirVerificacion permiso=modificarRequerimiento {
 				Boton botonReabrirVerificacion titulo="Modificar la Verificación" type=warning
             }
@@ -587,7 +587,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				    Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
 				}		
 			
-				Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminar permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 				
@@ -631,7 +631,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
 				}
 			
-				Form gnuevoRequerimientoBorradorPreliminargR destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminargR permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 			}
@@ -647,8 +647,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				}
 				
 				Form gPonerADisposicion permiso=requerimientoFirmado {
-					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
+					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="btn"
 					Boton ponerADisposicion titulo="Notificar el requerimiento" waitPopup
+				}
+				
+				Form gDescargarNotificacionRequerimiento permiso=requerimientoEnviado {
+				    Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Obtener Requerimiento" destino="_blank" estilo="btn"
 				}
 			}
 			

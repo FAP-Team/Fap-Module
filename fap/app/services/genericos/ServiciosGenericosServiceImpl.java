@@ -63,14 +63,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
         }
 	    
         WSUtils.configureSecurityHeaders(genericosServices, propertyPlaceholder);
-        
-        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
-        FapProperties.setBoolean("fap.proxy.enable", false);
-
         PlatinoProxy.setProxy(genericosServices, propertyPlaceholder);
-		
-		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
-	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);    	
 	}
 	
 	private String getEndPoint() {
@@ -134,6 +127,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg con password: "+password);
 		String resultado = "";
 		try {
+			play.Logger.info("Usuario: " + userId + " Passwd: " + encriptarPassword(password));
 			resultado = genericosServices.validarUsuario(userId, encriptarPassword(password));
 		} catch (Exception e) {
 			play.Logger.error("Error comprobando la validez del usuario: "+userId+" en Hiperreg");

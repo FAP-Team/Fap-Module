@@ -53,7 +53,7 @@ abstract public class Secure {
         Method method = null;
 
         try {
-        	method = this.getClass().getDeclaredMethod(id, parameters);
+        	method = this.getClass().getDeclaredMethod(id + "Accion", parameters);
         	method.setAccessible(true);
         	return (ResultadoPermiso) method.invoke(this, ids, vars);
 		} catch (Exception e) {

@@ -453,7 +453,7 @@ public abstract class TramiteBase {
 	 * del id de la solicitud más la extensión del fichero
 	 * @return
 	 */
-	private final String getNombreFicheroPdf() {
+	protected final String getNombreFicheroPdf() {
 		return this.getPrefijoJustificantePdf() + this.solicitud.id + ".pdf";
 	}
 	

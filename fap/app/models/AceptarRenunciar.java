@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat;
 public class AceptarRenunciar extends FapModel {
 	// Código de los atributos
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DeclaracionSubvenciones declaracionSubvenciones;
+
 	@ValueFromTable("seleccion")
 	@FapEnum("enumerado.fap.gen.SeleccionEnum")
 	public String seleccion;
@@ -51,6 +54,11 @@ public class AceptarRenunciar extends FapModel {
 	}
 
 	public void init() {
+
+		if (declaracionSubvenciones == null)
+			declaracionSubvenciones = new DeclaracionSubvenciones();
+		else
+			declaracionSubvenciones.init();
 
 		if (borrador == null)
 			borrador = new Documento();

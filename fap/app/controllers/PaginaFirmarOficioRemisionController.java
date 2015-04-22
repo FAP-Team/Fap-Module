@@ -72,6 +72,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 	
 	@Util
 	public static void firmaFirmarOficioRemisionFormFirmarOficioRemision(Long idResolucionFAP, Long idLineaResolucionFAP, String firma) {
+		ResolucionFAP resolucionFAP = PaginaFirmarOficioRemisionController.getResolucionFAP(idResolucionFAP);
 		LineaResolucionFAP lineaResolucionFAP = PaginaFirmarOficioRemisionController.getLineaResolucionFAP(idResolucionFAP, idLineaResolucionFAP);
 		Messages.clear();
 		
@@ -86,24 +87,20 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		Map<String, Object> vars = new HashMap<String, Object>();
 		if (secure.checkAcceso("editarFirma", "editar", ids, vars)) {
 			tx.begin();
-			//if (lineaResolucionFAP.registro.firmantes.todos == null || lineaResolucionFAP.registro.firmantes.todos.size() == 0) {
 			
-			//Calculo que todos los firmantes sean Gestores.
-			List<Agente> agentes = Agente.find("select agente from Agente agente join agente.roles rol where rol = ?", RolesEnum.gestor.name()).fetch();
-			play.Logger.info("Lista de Gestores que pueden firmar el Oficio de Remision Generado");
-			lineaResolucionFAP.registro.firmantes.todos = new ArrayList<Firmante>();
-			for (int i = 0; i < agentes.size(); i++) {
-				Firmante firmante = new Firmante(agentes.get(i));
-				lineaResolucionFAP.registro.firmantes.todos.add(firmante);
-				play.Logger.info("Agente con gestor: "+firmante.nombre);
-			}
-			lineaResolucionFAP.registro.firmantes.save();
-			//}
+			play.Logger.info("Gestor que puede firmar el Oficio de Remision Generado");
+			lineaResolucionFAP.registro.oficial.firmantes.todos = new ArrayList<Firmante>();
+			Agente gestorSeleccionado = resolucionFAP.getAgenteSolicitadoFirmaOficiosRemision();
+			Firmante firmante = new Firmante(gestorSeleccionado);
+			//Se añade el firmante al documento Oficio de Remisión
+			lineaResolucionFAP.registro.oficial.firmantes.todos.add(firmante);
 			
-			ResolucionFAP resolucionFAP = PaginaFirmarOficioRemisionController.getResolucionFAP(idResolucionFAP);
+			play.Logger.info("Gestor: "+firmante.nombre);
+			
+			//ResolucionFAP resolucionFAP = PaginaFirmarOficioRemisionController.getResolucionFAP(idResolucionFAP);
 			if (!Messages.hasErrors()) {
 				if (!lineaResolucionFAP.registro.fasesRegistro.firmada) {
-					FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.firmantes.todos, firma, resolucionFAP.idSolicitudFirmaOficiosRemision);
+					FirmaUtils.firmar(lineaResolucionFAP.registro.oficial, lineaResolucionFAP.registro.oficial.firmantes.todos, firma, resolucionFAP.idSolicitudFirmaOficiosRemision);
 					if (!Messages.hasErrors()) {
 						lineaResolucionFAP.registro.fasesRegistro.firmada = true;
 						//Se sube el documento firmado a Platino
@@ -116,6 +113,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 			} else {
 				Messages.error("No se ha podido recuperar la resolución");
 			}
+			lineaResolucionFAP.save();
 			tx.commit();
 		} else {
 			//ERROR
@@ -123,15 +121,12 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 		}
 		
 		if (!Messages.hasErrors()) {
-			tx.begin();
-			lineaResolucionFAP.save();
-
 			SolicitudGenerica solicitud = SolicitudGenerica.findById(lineaResolucionFAP.solicitud.id);
 			RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 			GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 			
 			try  {
-				
+				tx.begin();
 				if (!lineaResolucionFAP.registro.fasesRegistro.registro){
 					play.Logger.info("Se inicia el proceso de Registro");
 					// Se obtiene el justificante de registro de salida del oficio de remisión
@@ -174,7 +169,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 					solicitud.save();
 					Messages.ok("Se realizó la clasificación correctamente");
 				}
-				
+				tx.commit();
 			} catch (RegistroServiceException reg)   {
 				Messages.error("Error realizando el proceso de registro");
 				play.Logger.error("Error realizando el proceso de registro");
@@ -183,8 +178,7 @@ public class PaginaFirmarOficioRemisionController extends PaginaFirmarOficioRemi
 				play.Logger.error("Error clasificando los documentos de oficio de remisión en el AED");
 			} catch (Throwable e){
 				play.Logger.error("Error en el metodo firmaOficioRemision: " + e.getMessage());
-			}
-			tx.commit();
+			}	
 		}
 		
 		if (!Messages.hasErrors()) {

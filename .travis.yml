@@ -11,7 +11,7 @@ env:
   - DIR_CASPERJS=${FAPSDK}/CasperJS
   - CASPERJS=${DIR_CASPERJS}/bin/casperjs
 before_script:
-- wget http://downloads.typesafe.com/releases/play-${PLAY_VERSION}.zip
+- wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
 - unzip -q play-${PLAY_VERSION}.zip
 - git clone git://github.com/n1k0/casperjs.git ${DIR_CASPERJS}
 script:

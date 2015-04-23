@@ -68,7 +68,7 @@
 							var parts = params[params.length-1].split('%->%');
 							if ((parts[0].replace("%&%", "") === "tipo") && ($('#${id.replace("Juridica","")}Direccion_tipo').val() === "")){
 	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').val(parts[1]);
-	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').trigger("liszt:updated");
+	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').trigger("chosen:updated");
 	 						 	$('#${id.replace("Juridica","")}Direccion_tipo').change();
 		 					}
 	
@@ -82,7 +82,7 @@
 		 						 			if ($('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
 		 						 				$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
 												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
-		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).trigger("chosen:updated");
 		 						 					$('#${id.replace("Juridica","")}Direccion_'+parts[0].replace("%&%", "")).change();
 		 						 					tiempoNuevo=1500;
 		 						 				}

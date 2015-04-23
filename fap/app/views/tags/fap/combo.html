@@ -225,7 +225,7 @@
 					
 					if ($combo.attr('disabled') != "disabled") {
 						#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
-						$combo.trigger("liszt:updated");
+						$combo.trigger("chosen:updated");
 						#{/if}
 					}	
 					
@@ -275,7 +275,7 @@
 						var $combo = $('#${id}');
 						if ($combo.attr('disabled') != "disabled") {
 							#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
-							$combo.trigger("liszt:updated");
+							$combo.trigger("chosen:updated");
 							#{/if}
 						}
 						// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
@@ -294,7 +294,7 @@
 					var $combo = $('#${id}');
 					if ($combo.attr('disabled') != "disabled") {
 						#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
-						$combo.trigger("liszt:updated");
+						$combo.trigger("chosen:updated");
 						#{/if}
 					}	
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro

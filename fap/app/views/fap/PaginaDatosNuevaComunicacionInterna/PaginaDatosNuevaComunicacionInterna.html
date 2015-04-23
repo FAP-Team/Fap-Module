@@ -129,7 +129,7 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
                 }));        
                 });
            
-                combo.trigger("liszt:updated");
+                combo.trigger("chosen:updated");
             } else
                resetCombo(combo);
            
@@ -138,7 +138,7 @@ def urlUOSubniveles = play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInter
     function resetCombo(combo){ 
        combo.empty();                     
        combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
-       combo.trigger("liszt:updated"); 
+       combo.trigger("chosen:updated"); 
     }
     
     function almacenarUODestino(comboPadre, combo) {

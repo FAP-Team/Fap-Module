@@ -23,6 +23,7 @@ public class Trabajador extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("codigosRegimen")
+	@FapEnum("enumerado.fap.gen.CodigosRegimenEnum")
 	public String regimen;
 
 	public String codigoCuenta;

@@ -252,6 +252,7 @@ public class PaginaNotificarResolucionController extends PaginaNotificarResoluci
 			CustomValidation.valid("resolucionFAP", resolucionFAP);
 			CustomValidation.required("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
 			CustomValidation.validValueFromTable("resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario", resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario);
+			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision = resolucionFAP.solicitudFirmaPortafirmaOficioRemision;
 			dbResolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario = resolucionFAP.solicitudFirmaPortafirmaOficioRemision.idDestinatario;
 			
 			if (properties.FapProperties.getBoolean("fap.platino.portafirma")) {

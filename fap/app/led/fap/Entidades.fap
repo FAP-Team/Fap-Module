@@ -632,6 +632,7 @@ Entidad ConfigurarMensaje {
 }
 
 Entidad AceptarRenunciar {
+    DeclaracionSubvenciones declaracionSubvenciones
 	Lista seleccion seleccion
 	LongText motivoRenuncia
 	Documento borrador

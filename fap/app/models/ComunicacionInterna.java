@@ -29,6 +29,7 @@ public class ComunicacionInterna extends FapModel {
 	public RespuestaCIFap respuesta;
 
 	@ValueFromTable("estadosComunicacionInterna")
+	@FapEnum("enumerado.fap.gen.EstadosComunicacionInternaEnum")
 	public String estado;
 
 	public void init() {

@@ -41,6 +41,7 @@ public class Notificacion extends FapModel {
 	public String todosInteresados;
 
 	@ValueFromTable("estadoNotificacion")
+	@FapEnum("enumerado.fap.gen.EstadoNotificacionEnum")
 	public String estado;
 
 	@Transient

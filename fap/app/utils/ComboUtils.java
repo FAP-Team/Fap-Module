@@ -1,10 +1,10 @@
 package utils;
 
-import models.Agente;
-import tags.ComboItem;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import models.Agente;
+import tags.ComboItem;
 
 public class ComboUtils {
 
@@ -13,13 +13,8 @@ public class ComboUtils {
         List<Agente> listaAgentes = Agente.findAll();
         if (listaAgentes != null){
             for (Agente ag : listaAgentes) {
-                List<String> roles = ag.getSortRoles();
-                if (roles != null){
-                    for(String rol : roles){
-                        if ((rol != null) && ((rol.equals("gestor") || rol.equals("gestorTenerife") || rol.equals("gestorLasPalmas")))){
-                            result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
-                        }
-                    }
+            	if (ag.roles.contains("gestor") || ag.roles.contains("gestorTenerife") || ag.roles.contains("gestorLasPalmas")) {
+        			result.add(new ComboItem(ag.username, ag.username +" - "+ag.name));
                 }
             }
         }

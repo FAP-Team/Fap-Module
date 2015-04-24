@@ -28,6 +28,7 @@ public class Busqueda extends Singleton {
 
 	@ElementCollection
 	@ValueFromTable("estadosSolicitud")
+	@FapEnum("enumerado.fap.gen.EstadosSolicitudEnum")
 	public Set<String> estadoSolicitud;
 
 	public Boolean mostrarTabla;

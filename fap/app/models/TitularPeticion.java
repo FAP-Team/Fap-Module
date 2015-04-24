@@ -34,6 +34,7 @@ public class TitularPeticion extends FapModel {
 	public String apellido2;
 
 	@ValueFromTable("TipoDocumentacion")
+	@FapEnum("enumerado.fap.gen.TipoDocumentacionEnum")
 	public String tipoDocumentacion;
 
 	public void init() {

@@ -175,11 +175,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
-			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
-			Columna campo=Documento.uri titulo="Uri"
+			Columna titulo="Tipo Documento" campo=Documento.tipo ancho="80"
+			Columna campo=Documento.descripcionVisible titulo="Descripción" ancho="80"
+			Columna campo=Documento.uri titulo="Uri" ancho="80"
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" expandir
 		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
@@ -488,8 +488,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 
-		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=modificarRequerimiento{
-			Wiki {"Puede modificar la resolución si necesita cambiar el motivo de requerimiento o gestor que debe firmar."}
+		Grupo gModificarVerificacion titulo="Modificar la verificación" permiso=modificarRequerimiento{
+			Wiki {"Puede modificar la verificación si necesita cambiar el motivo de requerimiento o el gestor que debe firmar"}
 			Form reabrirVerificacion permiso=modificarRequerimiento {
 				Boton botonReabrirVerificacion titulo="Modificar la Verificación" type=warning
             }
@@ -587,7 +587,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				    Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
 				}		
 			
-				Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminar permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 				
@@ -631,7 +631,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
 				}
 			
-				Form gnuevoRequerimientoBorradorPreliminargR destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminargR permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 			}
@@ -647,8 +647,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				}
 				
 				Form gPonerADisposicion permiso=requerimientoFirmado {
-					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
+					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="btn"
 					Boton ponerADisposicion titulo="Notificar el requerimiento" waitPopup
+				}
+				
+				Form gDescargarNotificacionRequerimiento permiso=requerimientoEnviado {
+				    Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Obtener Requerimiento" destino="_blank" estilo="btn"
 				}
 			}
 			
@@ -896,82 +900,104 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	// ACEPTAR/RENUNCIAR
 	// *******************************************************************************************
 	
-	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=resolucionAceptarRenunciar  perteneceA ="AceptarRenunciar"{
-		
-		Grupo titulo="Aceptación/Renuncia" {
-			Grupo permiso=editarAceptarRenunciar borde=false {
-				Grupo permiso=prepararAceptarRenunciar borde=false {
-					Form formAceptarRenunciar autoEnviar  {
-						Combo comboAceptarRenunciar campo=SolicitudGenerica.aceptarRenunciar.seleccion titulo="Acepta o Renuncia" requerido
-						Grupo titulo = "Renuncia" mostrarSiCombo comboAceptarRenunciar='renuncia' borde=false {
-				    		AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.aceptarRenunciar.motivoRenuncia filas=10
-			    		}
-					}
-					
-					Grupo titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
-						FirmaMasiva documentos titulo="Documentación Aceptación"
-				    	campo=SolicitudGenerica.aceptarRenunciar.documentos
-						popupBorrar=PopUpDocAceptacionRenuncia
-						popupEditar=PopUpDocAceptacionRenuncia
-						popupLeer=PopUpDocAceptacionRenuncia
-						paginaCrear=AportarDocumentacionAceptacionRenuncia
-						{
-							Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-							Columna titulo="Tipo Documento" campo=Documento.tipo
-							Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
-							Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-							Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
-						}
-					}
-					
-					Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de aceptación/renuncia" permiso=generarBorradorAceptarRenunciar/*permiso=presentacionPrepararParaFirmar*/ {
-                		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
-                  		Form prepararFirmar {
-                           Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
-                 		}
-            		}
-				}
-				
-				Grupo titulo="Paso 2. Obtener borrador de la solicitud de Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
-
-                	Wiki {"Puede obtener un borrador de la solicitud de aceptación/renuncia, no válido para su presentación y comprobar que la información introducida es correcta."}
-	                Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
-
-    	            Form deshacer redirigir=PaginaAceptacionRenuncia permiso=modificarAceptarRenunciar {
-        	        	Wiki {"Puede realizar cambios antes de su presentación definitiva."}
-            	    	Boton botonModificar titulo="Modificar aceptación/renuncia"
-                	}
-                  
-//                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-//                        Wiki estilo ="box-warn box" {
-//                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-//                        }
-//                  	}
-            	}
-			}
-            
-            Grupo grpPresentar titulo="Paso 3. Registrar Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {  
-				// Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado	
-				Form frmPresentar redirigir=AceptacionRenunciaPresentar {
-		 			Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
-				}
-			}
-		
-			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaAceptarRenunciar {
-				Wiki {"Puede obtener un recibo de la presentación de la aceptación/renuncia pulsando el enlace 'Obtener recibo'." }
-				Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton" 	
-			}
-		}
-		
-	}
+    Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm  permiso=resolucionAceptarRenunciar perteneceA ="AceptarRenunciar"{
+ 
+         Grupo titulo="Aceptación/Renuncia" {
+                Grupo permiso=editarAceptarRenunciar borde=false {
+                       Grupo permiso=prepararAceptarRenunciar borde=false {
+                              Form formAceptarRenunciar autoEnviar  {
+                                    Combo comboAceptarRenunciar campo=SolicitudGenerica.aceptarRenunciar.seleccion titulo="Acepta o Renuncia" requerido
+                                    Grupo titulo = "Renuncia" mostrarSiCombo comboAceptarRenunciar='renuncia' borde=false {
+                                       AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.aceptarRenunciar.motivoRenuncia filas=10
+                                    }
+                              }
+     
+                          Grupo grAceptacion titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
+                             Grupo grSubvencionesAceptarRenunciar titulo="Declaración de Subvenciones" {
+                                Tabla tblSubvencion titulo="Ayudas y subvenciones concedidas o solicitadas con el mismo objeto." campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones
+                                  popup=PopUpSubvencionAcepta recargarPagina {
+                                        Columna titulo="Tipo" campo=SubvencionFap.tipo  ancho="120"
+                                        Columna titulo="Admón. o Entidad" campo=SubvencionFap.entidad expandir
+                                        Columna titulo="F.Solicitud" campo=SubvencionFap.fechaSolicitud ancho="120"
+                                        Columna titulo="F.Aprobación" campo=SubvencionFap.fechaAprobacion ancho="120"
+                                        Columna titulo="Situación" campo=SubvencionFap.situacion ancho="100"
+                                        Columna titulo="Importe(€)" campo=SubvencionFap.importe ancho="100"
+                                                      }
+ 
+ 
+                                                          Wiki {
+                                                              "<div style=\"width:100%;padding:10px;align:right;background-color: #EEEEEE;\">"
+                                          "<table style=\"width:90%;text-align:right;align:center;\"><tr>"
+                                          "<tr><td><b><i>SUBVENCIÓN</i></b></td><td><b><i>SOLICITADO(€)</i></b></td><td><b><i>CONCEDIDO(€)</i></b></td><td><b><i>TOTAL(€)</i></b></td>"
+                                          "<tr><td><b><i>Pública:</i></b></td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPublicas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPublicas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPublicas + solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPublicas)}</td></tr>"
+                                          "<tr><td><b><i>Privada:</i></b></td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPrivadas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPrivadas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPrivadas + solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPrivadas)}</td></tr>"
+                                          "<tr><td><b><i>Minimis:</i></b></td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasMinimis)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasMinimis)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidasMinimis + solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasMinimis)}</td></tr>"
+                                          "<tr><td><b><i>Total:</i></b></td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidas)}</td><td>${format.FapFormat.formatMoneda(solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalConcedidas + solicitudGenerica.aceptarRenunciar.declaracionSubvenciones.totalSolicitadas)}</td></tr>"
+                                          "</table>"
+                                          "</div>"
+                                        }//end wiki
+                             }//end grSubvencionesAceptarRenunciar
+     
+     
+                             FirmaMasiva documentos titulo="Documentación Aceptación" campo=SolicitudGenerica.aceptarRenunciar.documentos
+                                popupBorrar=PopUpDocAceptacionRenuncia
+                                popupEditar=PopUpDocAceptacionRenuncia
+                                popupLeer=PopUpDocAceptacionRenuncia
+                                paginaCrear=AportarDocumentacionAceptacionRenuncia
+                                {
+                                   Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+                                   Columna titulo="Tipo Documento" campo=Documento.tipo
+                                   Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+                                   Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+                                   Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+                                }
+     
+     
+                          }//end grAceptacion
+     
+                           Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de aceptación/renuncia" permiso=generarBorradorAceptarRenunciar/*permiso=presentacionPrepararParaFirmar*/ {
+                              Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }
+                              Form prepararFirmar {
+                                 Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
+                              }
+                           }
+                       }//end grPrepararAceptarRenunciar
+     
+                       Grupo titulo="Paso 2. Obtener borrador de la solicitud de Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
+                          Wiki {"Puede obtener un borrador de la solicitud de aceptación/renuncia, no válido para su presentación y comprobar que la información introducida es correcta."}
+                          Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+     
+                          Form deshacer redirigir=PaginaAceptacionRenuncia permiso=modificarAceptarRenunciar{
+                              Wiki {"Puede realizar cambios antes de su presentación definitiva."}
+                              Boton botonModificar titulo="Modificar aceptación/renuncia"
+                          }
+                       }
+           }//end grEditarAceptarRenunciar
+     
+           Grupo grpPresentar titulo="Paso 3. Registrar Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
+               // Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado
+               Form frmPresentar redirigir=AceptacionRenunciaPresentar {
+                    Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
+                    Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
+               }
+           }
+ 
+           Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaAceptarRenunciar {
+               Wiki {"Puede obtener un recibo de la presentación de la aceptación/renuncia pulsando el enlace 'Obtener recibo'." }
+               Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
+           }
+           
+         }//end grAceptarRenunciar
+     
+       }// end paginaAceptarRenunciar
+ 
 	
-	/*
-	 * AportarDocumentacionAceptacionRenuncia
-	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
-		Accion crear redirigir=PaginaAceptacionRenuncia
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"	
+	 /*
+       * AportarDocumentacionAceptacionRenuncia
+       */
+    Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
+        Accion crear redirigir=PaginaAceptacionRenuncia
+        SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"
     }
     
     Popup PopUpDocAceptacionRenuncia titulo="Documentación" campo=SolicitudGenerica.aceptarRenunciar.documentos {
@@ -1065,6 +1091,32 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		}
 		
 	}
+	
+	Popup PopUpSubvencionAcepta titulo="Subvención o ayuda" campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones permiso=editarSolicitud {
+       Grupo titulo="Datos de Subvención"{
+           Combo cboTipoSubvencion titulo="Tipo Subvención" campo=SubvencionFap.tipo requerido
+           Texto titulo="Administración o Entidad" campo=SubvencionFap.entidad requerido
+           AreaTexto ancho="270px" titulo="Objeto" campo=SubvencionFap.objeto requerido
+           Combo cboSituacion titulo="Situación" campo=SubvencionFap.situacion requerido
+           Fecha titulo="Fecha de solicitud" campo=SubvencionFap.fechaSolicitud requerido
+ 
+           Grupo borde=false mostrarSiCombo cboSituacion="solicitada" {
+              Fecha fAprobacion titulo="Fecha de concesión" campo=SubvencionFap.fechaAprobacion
+           }
+ 
+           Grupo borde=false mostrarSiCombo cboSituacion="concedida" {
+              Fecha fAprobacionRequerida titulo="Fecha de concesión" campo=SubvencionFap.fechaAprobacion requerido
+           }
+ 
+           Grupo cboDatosAux borde=false mostrarSiCombo cboTipoSubvencion="minimis","publica" {
+               Texto titulo="Fondo"campo=SubvencionFap.fondo
+               Texto titulo="Reglamento" campo=SubvencionFap.reglamento
+               Texto titulo="Programa operativo" campo=SubvencionFap.programa
+           }
+ 
+           Texto titulo="Importe(€)" campo=SubvencionFap.importe requerido
+       }
+   }
 	
 	// ******************************************************************************************
 	// ALEGACIÓN

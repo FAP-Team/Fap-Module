@@ -655,7 +655,7 @@ Formulario Principal {
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.registroVisible titulo="Registrado"
 				Grupo borde=false mostrarSiCampo LineaResolucionFAP.registro.fasesRegistro.registro = "true" {
-					Enlace campo=LineaResolucionFAP.registro.justificante.enlaceDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
+					Enlace campo=LineaResolucionFAP.registro.justificante.urlDescarga titulo="Obtener justificante de oficio de remisión" destino="_blank"
 				}
 				Texto campo=LineaResolucionFAP.registro.fasesRegistro.clasificarAedVisible titulo="Clasificado"
 			}

@@ -41,8 +41,8 @@ def main():
     workflow = "workflow.LedGenerator";
     
     # app.java_path()
-    cmd = ["java", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
-    #print cmd
+    cmd = ["java", "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    print (' '.join(cmd));
     subprocess.call(cmd);
 
 if __name__ == "__main__":

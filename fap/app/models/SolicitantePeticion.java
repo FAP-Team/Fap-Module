@@ -39,6 +39,7 @@ public class SolicitantePeticion extends FapModel {
 	public Funcionario funcionario;
 
 	@ValueFromTable("TipoConsentimiento")
+	@FapEnum("enumerado.fap.gen.TipoConsentimientoEnum")
 	public String consentimiento;
 
 	public SolicitantePeticion() {

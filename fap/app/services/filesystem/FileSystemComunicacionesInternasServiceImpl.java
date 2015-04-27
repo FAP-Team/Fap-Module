@@ -52,14 +52,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.asunto = asientoFap.asuntoCodificado;
 		respuesta.unidadOrganica = "Descripcion de la unidad organica "+respuesta.contadorUO;
 		respuesta.interesado = new ReturnInteresadoFap();
-			respuesta.interesado.nombre = "Nombre del Interesado";
-			respuesta.interesado.save();
+		respuesta.interesado.nombre = "Nombre del Interesado";
+		respuesta.interesado.save();
 		respuesta.tipoTransporte = "Tipo de transporte";
 		respuesta.uris = new ArrayList<ListaUris>();
-			//¿Añadir uris de documentos o vacio para probar???
-		respuesta.error = new ReturnErrorFap();
-		respuesta.error.codigo = 0;
-		respuesta.error.descripcion = null;
 		return respuesta;
 	}
 	
@@ -79,12 +75,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.asunto = asientoAmpliadoFap.asuntoCodificado;
 		respuesta.unidadOrganica = "Descripcion de la unidad organica "+respuesta.contadorUO;
 		respuesta.interesado = new ReturnInteresadoFap();
-			respuesta.interesado.nombre = "Nombre del Interesado";
-			respuesta.interesado.save();
+		respuesta.interesado.nombre = "Nombre del Interesado";
+		respuesta.interesado.save();
 		respuesta.tipoTransporte = "Tipo de transporte";
 		respuesta.uris = new ArrayList<ListaUris>();
-			//¿Añadir uris de documentos o vacio para probar???
-		respuesta.error.descripcion = "0"; //Sin errores
 		return null;
 		
 	}

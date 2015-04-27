@@ -260,6 +260,14 @@ public class Notificacion extends FapModel {
 			play.Logger.info("Nuevo fichero de AcuseRecibo para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAcuseDeRecibo, this);
 			this.documentoAcuseRecibo.uri = uriAcuseDeRecibo;
+			this.documentoAcuseRecibo.firmado = NotificacionUtils.obtenerFirmadoDocumentoNotificacion("", this.uri, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+			this.documentoAcuseRecibo.clasificado = true;
+			try {
+				this.documentoAcuseRecibo.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriAcuseDeRecibo);
+				this.documentoAcuseRecibo.tipo = NotificacionUtils.obtenerTipoDocumento(uriAcuseDeRecibo);
+		    } catch (Exception ex) {
+				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriAcuseDeRecibo + "Excepción: " + ex.getMessage());
+			}
 		}
 
 		//Doc anulacion
@@ -268,6 +276,14 @@ public class Notificacion extends FapModel {
 			play.Logger.info("Nuevo fichero de Anulacion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriAnulacion, this);
 			this.documentoAnulacion.uri = uriAnulacion;
+			this.documentoAnulacion.firmado = NotificacionUtils.obtenerFirmadoDocumentoNotificacion("", this.uri, DocumentoNotificacionEnumType.ANULACION);
+			this.documentoAnulacion.clasificado = true;
+			try {
+				this.documentoAnulacion.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriAnulacion);
+				this.documentoAnulacion.tipo = NotificacionUtils.obtenerTipoDocumento(uriAnulacion);
+			} catch (Exception ex) {
+				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriAnulacion + "Excepción: " + ex.getMessage());
+			}
 		}
 
 		//DocPuestaADisposicion
@@ -276,6 +292,14 @@ public class Notificacion extends FapModel {
 			play.Logger.info("Nuevo fichero de PuestaADisposicion para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriPuestaADisposicion, this);
 			this.documentoPuestaADisposicion.uri = uriPuestaADisposicion;
+			this.documentoPuestaADisposicion.firmado = NotificacionUtils.obtenerFirmadoDocumentoNotificacion("", this.uri, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
+			this.documentoPuestaADisposicion.clasificado = true;
+			try {
+				this.documentoPuestaADisposicion.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriPuestaADisposicion);
+				this.documentoPuestaADisposicion.tipo = NotificacionUtils.obtenerTipoDocumento(uriPuestaADisposicion);
+			} catch (Exception ex) {
+				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriPuestaADisposicion + "Excepción: " + ex.getMessage());
+			}
 		}
 
 		//DocRespondida
@@ -289,6 +313,14 @@ public class Notificacion extends FapModel {
 			play.Logger.info("Nuevo fichero de Respondida para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriRespondida, this);
 			this.documentoRespondida.uri = uriRespondida;
+			this.documentoRespondida.firmado = NotificacionUtils.obtenerFirmadoDocumentoNotificacion("", this.uri, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
+			this.documentoRespondida.clasificado = true;
+			try {
+				this.documentoRespondida.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriRespondida);
+				this.documentoRespondida.tipo = NotificacionUtils.obtenerTipoDocumento(uriRespondida);
+			} catch (Exception ex) {
+				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriRespondida + "Excepción: " + ex.getMessage());
+			}
 		}
 
 		//DocNoAcceso
@@ -297,6 +329,14 @@ public class Notificacion extends FapModel {
 			play.Logger.info("Nuevo fichero de NoAcceso para " + this.idExpedienteAed);
 			NotificacionUtils.subirDocumentoNotificacionExpediente(uriNoAcceso, this);
 			this.documentoNoAcceso.uri = uriNoAcceso;
+			this.documentoNoAcceso.firmado = NotificacionUtils.obtenerFirmadoDocumentoNotificacion("", this.uri, DocumentoNotificacionEnumType.NO_ACCESO);
+			this.documentoNoAcceso.clasificado = true;
+			try {
+				this.documentoNoAcceso.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriNoAcceso);
+				this.documentoNoAcceso.tipo = NotificacionUtils.obtenerTipoDocumento(uriNoAcceso);
+			} catch (Exception ex) {
+				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriNoAcceso + "Excepción: " + ex.getMessage());
+			}
 		}
 
 		//Subida de los nuevos documentos de tipo DocumentoNotificacion (lista docs no es vacía)
@@ -307,10 +347,7 @@ public class Notificacion extends FapModel {
 	}
 
 	public void actualizar(Notificacion notificacion) {
-		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("Job");
-		if ((this.estado != notificacion.estado) || (this.fechaFinPlazo != notificacion.fechaFinPlazo)) {
-			//log.info("Viendo si hay que cambiar el estado de una notificacion. Antes: " + this.estado + " nuevo valor: " + notificacion.estado);
-			//log.info("Viendo si hay que cambiar la fecha de Acceso de una notificacion. Antes: " + this.fechaAcceso + " nuevo valor: " + notificacion.fechaAcceso);
+		if ((!this.estado.equals(notificacion.estado)) || (!this.fechaFinPlazo.equals(notificacion.fechaFinPlazo))) {
 			this.estado = notificacion.estado;
 			//this.fechaAcceso = notificacion.fechaAcceso;
 			this.fechaFinPlazo = notificacion.fechaFinPlazo;

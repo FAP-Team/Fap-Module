@@ -249,4 +249,8 @@ public class FileSystemNotificacionServiceImpl implements NotificacionService {
 		return "";
 	}
 	
+	public boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		return true;
+	}
+	
 }

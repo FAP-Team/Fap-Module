@@ -322,11 +322,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 		
 			docPuestaADisposicion.save();
 			
-			//Documento dbDoc = notificacion.documentoPuestaADisposicion;
 			notificacion.documentoPuestaADisposicion = null;
 			notificacion.save();
-			//dbDoc.delete();
-			//dbDoc = null;
 
 			notificacion.uri = uriNotificacion;
 			notificacion.documentoPuestaADisposicion = docPuestaADisposicion;
@@ -339,6 +336,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 			notificacion.agente = gestor;
 			
 			notificacion.save();
+			
+			//Se copia el documento de Puesta a Disposición al Expediente en el AED
+			NotificacionUtils.subirDocumentoNotificacionExpediente(docPuestaADisposicion.uri, notificacion);
 		}
 		catch (javax.xml.ws.soap.SOAPFaultException e) {
 			play.Logger.error("La notificación fue creada pero no se pudo enviar: "+e.getMessage());

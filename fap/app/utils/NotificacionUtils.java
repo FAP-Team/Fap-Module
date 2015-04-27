@@ -233,7 +233,13 @@ public class NotificacionUtils {
 	}
 	
 	public static boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
-		return notificacionService.obtenerFirmadoDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+		boolean firmado = false;
+		try {
+			firmado = notificacionService.obtenerFirmadoDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+		} catch (Exception e) {
+			play.Logger.error("Se ha producido un error comprobando si el documento está firmado");
+		}
+		return firmado;
 	}
 	
 }

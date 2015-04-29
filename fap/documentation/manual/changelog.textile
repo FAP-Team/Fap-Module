@@ -2,6 +2,13 @@ h2. Changelog
 
 h3. Versión 2.5.6RC4
 
+* Se corrige la copia del documentos al expediente en las notificaciones.
+* Se corrige la descarga de documentos en las notificaciones.
+* Se corrige la descarga del justificante en el PopUP de los oficios de remisión.
+* Se mejora la seguridad para evitar que se no se puedan modificar los permisos desde las aplicaciones.
+* Se evita que los gestores a firmar aparezcan duplicados en el apartado de Verificación.
+* Se corrige la descarga del requerimiento una vez notificado el mismo.
+* Se corrige acuse de recibo en notificaciones de la agencia.
 * Actualizada documentación para la creación y distribución del módulo.
 * Actualizada documentación para generar las librerías.
 * Actualizada librería de platino-pre a la versión v20150331.

@@ -82,7 +82,7 @@ ul {
 
 <h2 style="text-align: left; page-break-before: always;">Anexo</h2>
 
-#{if dbSolicitud.verificacion.requerimiento.motivo != null}
+#{if dbSolicitud.verificacion.requerimiento.motivo != null && !dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty()}
 	<div id="divMotivoGeneralRequerimiento">
     	<h2>Motivo General de Requerimiento:</h2> 
 		<p>${dbSolicitud.verificacion.requerimiento.motivo}</p>

@@ -26,7 +26,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="Expediente" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.consentimiento titulo="Consentimiento" ancho="30"
 				Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" expandir
-				Columna campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion titulo="Fecha de respuesta" expandir
+				Columna campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta titulo="Fecha de respuesta" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.descargarPDF titulo="Descargar PDF Respuesta" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="60"
 			}
@@ -42,7 +42,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="Expediente" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.consentimiento titulo="Consentimiento" ancho="30"
 				Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" expandir
-				Columna campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion titulo="Fecha de respuesta" expandir
+				Columna campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta titulo="Fecha de respuesta" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.descargarPDF titulo="Descargar PDF Respuesta" expandir
 				Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="60"
 			}
@@ -84,7 +84,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		
 		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" permiso=soloLeer{
 			Texto titulo="idTransmision" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.idTransmision
-			Fecha titulo="Fecha generación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion
+			Fecha titulo="Fecha respuesta" campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta
 			Texto titulo="Estado" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.estado.literalError
 			Combo titulo="Tipo documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.tipoDocumentacion
 			Texto titulo="Documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.documentacion
@@ -150,7 +150,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 		
 		Grupo respuesta titulo="Respuesta" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" permiso=soloLeer {
 			Texto titulo="idTransmision" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.idTransmision
-			Fecha titulo="Fecha generación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion
+			Fecha titulo="Fecha Respuesta" campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta
 			Texto titulo="Estado" campo=SolicitudTransmisionSVDFAP.respuesta.datosEspecificos.estado.literalError
 			Combo titulo="Tipo documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.tipoDocumentacion
 			Texto titulo="Documentación" campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.titular.documentacion
@@ -187,7 +187,7 @@ Formulario SolicitudTransmision campo=SolicitudGenerica {
 }
 
 
-//CESIONES DE DATOS AS�?NCRONAS
+//CESIONES DE DATOS AS�?NCRONAS
 Formulario CesionDatos {
     
     Menu {
@@ -216,7 +216,6 @@ Formulario CesionDatos {
                     Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="80"
                     Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
                     Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir   
-                    Columna campo=SolicitudGenerica.estadoPeticionSVD titulo="Petición SVD" ancho="80"    
                  }
            }     
            
@@ -229,8 +228,7 @@ Formulario CesionDatos {
                     Columna campo=SolicitudGenerica.estadoValue titulo="Estado" ancho="80" permiso=noVisibleUsuario
                     Columna campo=SolicitudGenerica.estadoUsuario titulo="Estado Usuario" ancho="80"
                     Columna campo=SolicitudGenerica.solicitante.numeroId titulo="ID Solicitante" expandir
-                    Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir   
-                    Columna campo=SolicitudGenerica.estadoPeticionSVD titulo="Petición SVD" ancho="80"      
+                    Columna campo=SolicitudGenerica.solicitante.nombreCompleto titulo="Nombre Solicitante" expandir        
                  }
            }   
        }
@@ -264,7 +262,7 @@ Formulario CesionDatos {
     Pagina EditarPeticionSVDFAP titulo="Petición de Cesión de Datos" campo=PeticionSVDFAP permiso=adminOrGestor {
         
         Grupo GrupoPeticionDatos titulo="Datos de la Petición" permiso=soloLeer {
-            Texto titulo="ID Petición" campo=PeticionSVDFAP.id
+            Texto titulo="ID Petición" campo=PeticionSVDFAP.atributos.idPeticion
             Combo titulo="Estado" campo=PeticionSVDFAP.estadoPeticion
             Texto titulo="Num Elementos" campo=PeticionSVDFAP.atributos.numElementos
         }
@@ -276,10 +274,15 @@ Formulario CesionDatos {
                 Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="ID Expediente" ancho="90"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="80"
-                Columna campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion titulo="Fecha de respuesta" ancho="120"
+                Columna campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
                 Columna campo=SolicitudTransmisionSVDFAP.descargarPDF titulo="Descargar PDF Respuesta" expandir
             }
-            Enlace prepararPeticion titulo="Preparar petición" estilo="btn" pagina=CesionDatosSVDListar
+            Grupo grupoPrepararPeticion borde=false permiso=prepararPeticionSVD {
+                Enlace prepararPeticion titulo="Preparar petición" estilo="btn" pagina=CesionDatosSVDListar
+            }
+            Grupo grupoSolicitarRespuesta borde=false permiso=solicitudRespuestaPeticionSVD {
+                Enlace solicitarRespuesta titulo="Solicitar Respuesta" estilo="btn" pagina=EditarPeticionSVDFAP
+            }
         }
         
         Grupo grupoTablaSolicitudesResidencia mostrarSiExpresion "(peticionSVDFAP.nombreServicio == \"residencia\")" {
@@ -289,7 +292,7 @@ Formulario CesionDatos {
                 Columna campo=SolicitudTransmisionSVDFAP.datosEspecificos.solicitud.id titulo="ID Expediente" ancho="90"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="80"
-                Columna campo=SolicitudTransmisionSVDFAP.respuesta.datosGenericos.transmision.fechaGeneracion titulo="Fecha de respuesta" ancho="120"
+                Columna campo=SolicitudTransmisionSVDFAP.respuesta.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
                 Columna campo=SolicitudTransmisionSVDFAP.descargarPDF titulo="Descargar PDF Respuesta" expandir
             }
             Enlace prepararPeticion titulo="Preparar petición" estilo="btn" pagina=CesionDatosSVDListar

@@ -1783,3 +1783,26 @@ Permiso menuConModificacion {
 	return
 		all
 }
+
+//Permisos SVD
+
+Permiso prepararPeticionSVD {
+    vars
+        PeticionSVDFAP peticion
+    when
+        agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas") and
+        (peticion.estadoPeticion = "creada")
+    return
+        all
+}
+
+
+Permiso solicitudRespuestaPeticionSVD {
+    vars
+        PeticionSVDFAP peticion
+    when
+        agente.rolActivo in ("administrador", "gestor", "gestorTenerife", "gestorLasPalmas") and
+        (peticion.estadoPeticion = "enviada")
+    return
+        all
+}

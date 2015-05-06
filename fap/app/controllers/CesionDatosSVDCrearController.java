@@ -67,27 +67,26 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
 					listaSolicitudesTransmision.add(solicitudTransmision);
 				}
+
+				svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
+
+				for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
+					solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
+					solicitudTransmision.solicitud.save();
+				}
+
+				peticion.atributos.numElementos = listaSolicitudesTransmision.size();
+				peticion.save();
 			} else {
 				Messages.error("Tiene que seleccionar al menos un expediente");
 				play.Logger.error("Error: no se ha seleccionado ningún expediente");
 			}
-
-			svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
-
-			for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
-				solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
-				solicitudTransmision.solicitud.save();
-			}
-
-			peticion.atributos.numElementos = listaSolicitudesTransmision.size();
-			peticion.save();
-
 		} catch (Exception e) {
 			Messages.error("Error creando la petición");
 			play.Logger.error("Se ha producido un error al crear la petición");
 		}
 
-		crearRender("editar");
+		CesionDatosSVDCrearController.crearRender("editar");
 	}
 
 
@@ -127,6 +126,38 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 	//Crear petición de Residencia a partir de los expedientes autorizados seleccionados
 	public static void crearpeticionResidencia(Long id, List<Long> idsSeleccionados) {
 
+		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
+
+		try {
+			PeticionSVDFAP peticion = new PeticionSVDFAP();
+			List<SolicitudTransmisionSVDFAP> listaSolicitudesTransmision = new ArrayList<SolicitudTransmisionSVDFAP>();
+
+			//Se comprueba que se haya seleccionado al menos un expediente
+			if (idsSeleccionados != null) {
+				for (Long idExpediente: idsSeleccionados) {
+					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
+					listaSolicitudesTransmision.add(solicitudTransmision);
+				}
+
+				svdService.crearPeticion(peticion, listaSolicitudesTransmision, "residencia");
+
+				for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
+					solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
+					solicitudTransmision.solicitud.save();
+				}
+
+				peticion.atributos.numElementos = listaSolicitudesTransmision.size();
+				peticion.save();
+			} else {
+				Messages.error("Tiene que seleccionar al menos un expediente");
+				play.Logger.error("Error: no se ha seleccionado ningún expediente");
+			}
+		} catch (Exception e) {
+			Messages.error("Error creando la petición");
+			play.Logger.error("Se ha producido un error al crear la petición");
+		}
+
+		CesionDatosSVDCrearController.crearRender("editar");
 	}
 
 	@Util

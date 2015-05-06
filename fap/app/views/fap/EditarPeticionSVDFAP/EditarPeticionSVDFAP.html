@@ -36,7 +36,7 @@
      tipoContainer:'pagina', 
      titulo:'Solicitudes de Transmisión', 
      urlBeforeOpenPageTable:play.mvc.Router.reverse("EditarPeticionSVDFAPController.beforeOpenPageTable" , ['accion':'editar', 'idPeticionSVDFAP':peticionSVDFAP?.id, 'irDespuesDeValidar':'']), 
-     urlLeer:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'leer', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
+     urlLeer:play.mvc.Router.reverse("EditarSolicitudTransmisionSVDIdentidadController.index" , ['accion':'leer', 'idSolicitud':solicitudTransmisionSVDFAP?.solicitud?.id, 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_', 'redirigir': 'anterior']), 
      urlTabla:@EditarPeticionSVDFAPController.tablatablaSolicitudesTransmisionIdentidad(idPeticionSVDFAP)
 }
     
@@ -44,7 +44,7 @@
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Tipo', campo:'nombreServicio' /}
         
-    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosEspecificos.solicitud.id' /}
+    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosGenericos.solicitante.idExpediente' /}
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
         
@@ -56,7 +56,17 @@
         
 #{/fap.tabla}
 
+            #{fap.grupo borde:false, permiso:'prepararPeticionSVD'}
+                
             #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.prepararPeticion" , ['idPeticionSVDFAP':peticionSVDFAP?.id, 'redirigir': 'anterior']), estilo:'btn', id:'prepararPeticion', titulo:'Preparar petición' /}
+        
+            #{/fap.grupo}
+        
+            #{fap.grupo borde:false, permiso:'solicitudRespuestaPeticionSVD'}
+                
+            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.solicitarRespuesta" , ['idPeticionSVDFAP':peticionSVDFAP?.id, 'redirigir': 'anterior']), estilo:'btn', id:'solicitarRespuesta', titulo:'Solicitar Respuesta' /}
+        
+            #{/fap.grupo}
         
             #{/fap.grupo}
         
@@ -78,7 +88,7 @@
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Tipo', campo:'nombreServicio' /}
         
-    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosEspecificos.solicitud.id' /}
+    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosGenericos.solicitante.idExpediente' /}
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
         

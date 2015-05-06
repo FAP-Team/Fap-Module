@@ -7,6 +7,8 @@ import messages.Messages;
 import models.Agente;
 import models.PeticionSVDFAP;
 import models.SolicitudTransmisionSVDFAP;
+import services.SVDService;
+import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.EditarPeticionSVDFAPControllerGen;
 
@@ -85,5 +87,21 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 		}
 
 		redirect("CesionDatosSVDListarController.index", "editar");
+	}
+
+
+	//Solicita Respuesta de una petición Asíncrona
+	public static void solicitarRespuesta(Long idPeticionSVDFAP) {
+
+		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
+
+		PeticionSVDFAP peticionSVDFAP = EditarPeticionSVDFAPController.getPeticionSVDFAP(idPeticionSVDFAP);
+
+		try {
+			svdService.solicitarRespuestaAsincrona(peticionSVDFAP);
+		} catch (Exception ex) {
+			play.Logger.error("Se ha producido un error realizando la solicitud de respuesta asíncrona");
+			Messages.error("Error solicitando respuesta");
+		}
 	}
 }

@@ -19,13 +19,16 @@ import services.SVDService;
 import services.SVDServiceException;
 import utils.SVDUtils;
 import utils.WSUtils;
+import es.gobcan.platino.servicios.svd.ConfirmacionPeticion;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
 import es.gobcan.platino.servicios.svd.ScspwsService;
 import es.gobcan.platino.servicios.svd.ScspwsService_Service;
 import es.gobcan.platino.servicios.svd.SvdException;
+import es.gobcan.platino.servicios.svd.peticionpeticionasincrona.PeticionAsincrona;
 import es.gobcan.platino.servicios.svd.peticionpeticionpdf.PeticionPdf;
 import es.gobcan.platino.servicios.svd.peticionpeticionsincrona.PeticionSincrona;
+import es.gobcan.platino.servicios.svd.solicitudrespuestasolicitudrespuesta.SolicitudRespuesta;
 
 public class PlatinoSVDServiceImpl implements SVDService {
 
@@ -83,29 +86,71 @@ public class PlatinoSVDServiceImpl implements SVDService {
 	}
 
 	@Override
-	public Respuesta enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+	public void enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 
 		try {
 			PeticionSincrona peticionPlatino = SVDUtils.peticionSincronaFAPToPeticionSincronaPlatino(peticion);
-			return svdPort.peticionSincrona(peticionPlatino);
+			Respuesta respuestaPlatino = svdPort.peticionSincrona(peticionPlatino);
+			SVDUtils.respuestaPlatinoToRespuestaFAP(respuestaPlatino, peticion);
+			peticion.estadoPeticion = "recibida";
+			peticion.solicitudesTransmision.get(0).estado = "recibida";
+
+			peticion.save();
 		}
 		catch (Exception e) {
-			System.out.println("No se ha podido enviar la petición Síncrona. Causa: " + e);
+			play.Logger.error("No se ha podido enviar la petición Síncrona. Causa: " + e);
 			throw new SVDServiceException("Error al realizar la petición síncrona");
 		}
 
 	}
 
 	@Override
-	public Respuesta enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	public void enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+
+		try {
+			PeticionAsincrona peticionPlatino = SVDUtils.peticionAsincronaFAPToPeticionAsincronaPlatino(peticion);
+			ConfirmacionPeticion confirmacionPeticion = svdPort.peticionAsincrona(peticionPlatino);
+			peticion.estadoPeticion = "enviada";
+			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision)
+				solicitudTransmision.estado = "enviada";
+
+			//Atributos
+			peticion.atributos.codigoCertificado = confirmacionPeticion.getAtributos().getCodigoCertificado();
+			peticion.atributos.idPeticion = confirmacionPeticion.getAtributos().getIdPeticion();
+			peticion.atributos.timestamp = confirmacionPeticion.getAtributos().getTimeStamp();
+			peticion.atributos.numElementos = confirmacionPeticion.getAtributos().getNumElementos();
+
+			//Estado
+			peticion.atributos.estado.literalError = confirmacionPeticion.getAtributos().getEstado().getLiteralError();
+
+			peticion.save();
+		}
+		catch (Exception e) {
+			play.Logger.error("No se ha podido enviar la petición Asíncrona. Causa: " + e);
+			throw new SVDServiceException("Error al realizar la petición Asíncrona");
+		}
 	}
 
 	@Override
-	public Respuesta solicitarRespuestaAsincrona(String idRespuesta) throws SVDServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	public void solicitarRespuestaAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+
+		try {
+			SolicitudRespuesta solicitudRespuesta = new SolicitudRespuesta();
+			solicitudRespuesta.setUidUsuario(peticion.getUidUsuario());
+			solicitudRespuesta.setAtributos(SVDUtils.setAtributosSolicitudRespuestaPlatino(peticion));
+			Respuesta respuesta = svdPort.solicitudRespuesta(solicitudRespuesta);
+			SVDUtils.respuestaPlatinoToRespuestaFAP(respuesta, peticion);
+			peticion.estadoPeticion = "recibida";
+			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision)
+				solicitudTransmision.estado = "recibida";
+
+			peticion.save();
+
+		} catch (Exception e) {
+			play.Logger.error("No se ha podido solicitar la respuesta " + e);
+			throw new SVDServiceException("Error al realizar la solicitud de respuesta");
+		}
+
 	}
 
 	@Override
@@ -123,7 +168,7 @@ public class PlatinoSVDServiceImpl implements SVDService {
 			return respuestaPdf;
 		} catch (SvdException e) {
 			Messages.error("Se ha producido un error recuperando el PDF: " + respuestaPdf.getError());
-			e.printStackTrace();
+			play.Logger.error("Se ha producido un error recuperando el PDF" + e.getMessage());
 		}
 		return null;
 	}

@@ -1,6 +1,5 @@
 package utils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,6 +22,8 @@ import models.TitularSVDFAP;
 import models.TransmisionDatosRespuestaSVDFAP;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import play.mvc.Util;
 import controllers.fap.AgenteController;
@@ -40,6 +41,7 @@ import es.gobcan.platino.servicios.svd.peticionconsentimiento.Consentimiento;
 import es.gobcan.platino.servicios.svd.peticiondatosgenericos.DatosGenericos;
 import es.gobcan.platino.servicios.svd.peticionfuncionario.Funcionario;
 import es.gobcan.platino.servicios.svd.peticionpdresiespanol.Espanol;
+import es.gobcan.platino.servicios.svd.peticionpeticionasincrona.PeticionAsincrona;
 import es.gobcan.platino.servicios.svd.peticionpeticionsincrona.PeticionSincrona;
 import es.gobcan.platino.servicios.svd.peticionprocedimiento.Procedimiento;
 import es.gobcan.platino.servicios.svd.peticionsolicitante.Solicitante;
@@ -48,6 +50,7 @@ import es.gobcan.platino.servicios.svd.peticiontitularpet.Titularpet;
 
 public class SVDUtils {
 
+	//Parsea una Petición Síncrona de FAP a una Petición Síncrona de Platino
 	public static PeticionSincrona peticionSincronaFAPToPeticionSincronaPlatino(PeticionSVDFAP peticion) {
 
 		PeticionSincrona peticionPlatino = new PeticionSincrona();
@@ -58,7 +61,7 @@ public class SVDUtils {
 		peticionPlatino.setNifFuncionario(nifFuncionario);
 
 		//Atributos
-		es.gobcan.platino.servicios.svd.peticionatributos.Atributos atributosPlatino = setAtributosPlatino(peticion.atributos.codigoCertificado);
+		es.gobcan.platino.servicios.svd.peticionatributos.Atributos atributosPlatino = setAtributosPlatino(peticion);
 		peticionPlatino.setAtributos(atributosPlatino);
 
 		//Solicitudes
@@ -71,6 +74,32 @@ public class SVDUtils {
 		return peticionPlatino;
 	}
 
+	//TODO: Unificar los métodos de parseo de Petición Síncrona y Asíncrona para optimizar el código
+	//Parsea una Petición Asíncrona de FAP a una Petición Asíncrona de Platino
+	public static PeticionAsincrona peticionAsincronaFAPToPeticionAsincronaPlatino(PeticionSVDFAP peticion) {
+
+		PeticionAsincrona peticionPlatino = new PeticionAsincrona();
+
+		//uidUsuario y NifFuncionario
+		peticionPlatino.setUidUsuario(peticion.uidUsuario);
+
+		String nifFuncionario = ParametroSVD.find("select valor from ParametroSVD parametroSVD where clave=?", "nifFuncionario").first();
+		peticionPlatino.setNifFuncionario(nifFuncionario);
+
+		//Atributos
+		es.gobcan.platino.servicios.svd.peticionatributos.Atributos atributosPlatino = setAtributosPlatino(peticion);
+		peticionPlatino.setAtributos(atributosPlatino);
+
+		//Solicitudes
+		Solicitudes solicitudesPlatino = new Solicitudes();
+		SolicitudTransmision solicitudTransmision = solicitudTransmisionFAPToSolicitudTransmisionPlatino(peticion, peticion.solicitudesTransmision.get(0));
+		solicitudesPlatino.getSolicitudTransmision().add(solicitudTransmision);
+
+		peticionPlatino.setSolicitudes(solicitudesPlatino);
+
+		return peticionPlatino;
+
+	}
 
 	//Mapeo de una solicitud de transmision de FAP a una de Platino (de Identidad o de Residencia)
 	public static SolicitudTransmision solicitudTransmisionFAPToSolicitudTransmisionPlatino(PeticionSVDFAP peticion, SolicitudTransmisionSVDFAP solicitudTransmisionSVDFAP) {
@@ -86,13 +115,34 @@ public class SVDUtils {
 		return solicitudTransmisionPlatino;
 	}
 
-	public static Atributos setAtributosPlatino (String codigoCertificado){
+	public static Atributos setAtributosPlatino (PeticionSVDFAP peticionSVDFAP){
 
 		Atributos atributos = new Atributos();
-		atributos.setCodigoCertificado(codigoCertificado);
+		if (peticionSVDFAP.getAtributos() != null) {
+			if (peticionSVDFAP.getAtributos().getCodigoCertificado() != null) {
+				atributos.setCodigoCertificado(peticionSVDFAP.getAtributos().getCodigoCertificado());
+			}
+		}
 
 		return atributos;
 	}
+
+	//Parseo de Atributos de FAP a Atributos Platino para Solicitud de Respuesta
+	public static es.gobcan.platino.servicios.svd.solicitudrespuestaatributos.Atributos setAtributosSolicitudRespuestaPlatino (PeticionSVDFAP peticionSVDFAP) {
+
+		es.gobcan.platino.servicios.svd.solicitudrespuestaatributos.Atributos atributos = new es.gobcan.platino.servicios.svd.solicitudrespuestaatributos.Atributos();
+		if (peticionSVDFAP.getAtributos() != null) {
+			if (peticionSVDFAP.getAtributos().getIdPeticion() != null)
+				atributos.setIdPeticion(peticionSVDFAP.getAtributos().getIdPeticion());
+			if (peticionSVDFAP.getAtributos().getCodigoCertificado() != null)
+				atributos.setCodigoCertificado(peticionSVDFAP.getAtributos().getCodigoCertificado());
+			if (peticionSVDFAP.getAtributos().getNumElementos() != null)
+				atributos.setNumElementos(peticionSVDFAP.getAtributos().getNumElementos());
+		}
+
+		return atributos;
+	}
+
 
 	public static Titularpet setTitular (TitularSVDFAP titularSVDFAP){
 
@@ -262,30 +312,41 @@ public class SVDUtils {
 	}
 
 
-	public static void respuestaSincronaPlatinoToRespuestaFAP(Respuesta respuesta, PeticionSVDFAP peticion) {
+	public static void respuestaPlatinoToRespuestaFAP(Respuesta respuesta, PeticionSVDFAP peticion) {
 
-		//Atributos
-		peticion.atributos.codigoCertificado = respuesta.getAtributos().getCodigoCertificado();
-		peticion.atributos.idPeticion = respuesta.getAtributos().getIdPeticion();
-		peticion.atributos.timestamp = respuesta.getAtributos().getTimestamp();
-		peticion.atributos.numElementos = respuesta.getAtributos().getNumElementos();
+		try {
 
-		//Estado
-		peticion.atributos.estado.literalError = respuesta.getAtributos().getEstado().getLiteralError();
+			//Atributos
+			peticion.atributos.codigoCertificado = respuesta.getAtributos().getCodigoCertificado();
+			peticion.atributos.idPeticion = respuesta.getAtributos().getIdPeticion();
+			peticion.atributos.timestamp = respuesta.getAtributos().getTimestamp();
+			peticion.atributos.numElementos = respuesta.getAtributos().getNumElementos();
 
-		//Transmisiones
-		Transmisiones transmisiones = respuesta.getTransmisiones();
-		for (int i = 0; i < peticion.atributos.numElementos; i++) {
+			//Estado
+			peticion.atributos.estado.literalError = respuesta.getAtributos().getEstado().getLiteralError();
 
-			TransmisionDatos transmisionDatos = transmisiones.getTransmisionDatos().get(i);
+			//Transmisiones
+			Transmisiones transmisiones = respuesta.getTransmisiones();
+			int actual = 0;
+			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision) {
 
-			peticion.solicitudesTransmision.get(i).respuesta = new TransmisionDatosRespuestaSVDFAP();
-			setDatosGenericosSVDFAP(peticion.solicitudesTransmision.get(i).respuesta.datosGenericos, transmisionDatos);
-			setDatosEspecificosSVDFAP(peticion.solicitudesTransmision.get(i).respuesta.datosEspecificos, transmisionDatos);
-		}
+				TransmisionDatos transmisionDatos = transmisiones.getTransmisionDatos().get(actual);
 
-		if (!Messages.hasErrors()) {
-			peticion.save();
+				solicitudTransmision.respuesta = new TransmisionDatosRespuestaSVDFAP();
+				setDatosGenericosSVDFAP(solicitudTransmision.respuesta.datosGenericos, transmisionDatos);
+				setDatosEspecificosSVDFAP(solicitudTransmision.respuesta.datosEspecificos, transmisionDatos);
+				solicitudTransmision.respuesta.fechaRespuesta = parseFechaHora(peticion.atributos.getTimestamp());
+
+				solicitudTransmision.save();
+				actual++;
+			}
+
+			if (!Messages.hasErrors()) {
+				peticion.save();
+			}
+
+		} catch (Exception ex){
+			play.Logger.error("Se ha producido un error parseando la respuesta de Platino a FAP");
 		}
 
 	}
@@ -320,7 +381,7 @@ public class SVDUtils {
 		datosGenericos.transmision.idSolicitud = transmisionDatos.getDatosGenericos().getTransmision().getIdSolicitud();
 		datosGenericos.transmision.idTransmision = transmisionDatos.getDatosGenericos().getTransmision().getIdTransmision();
 		//convertir a DateTime
-		datosGenericos.transmision.fechaGeneracion = SVDUtils.parseFecha(transmisionDatos.getDatosGenericos().getTransmision().getFechaGeneracion());
+		datosGenericos.transmision.fechaGeneracion = SVDUtils.parseFechaHora(transmisionDatos.getDatosGenericos().getTransmision().getFechaGeneracion());
 
 		return datosGenericos;
 	}
@@ -344,46 +405,70 @@ public class SVDUtils {
 		}
 
 		//Titular
-		datosEspecificos.datosTitular.identificador = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getIdentificador();
-		datosEspecificos.datosTitular.numeroSoporte = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNumSoporte();
-		datosEspecificos.datosTitular.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNombre();
-		datosEspecificos.datosTitular.nacionalidad = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNacionalidad();
-		datosEspecificos.datosTitular.apellido1 = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido1();
-		datosEspecificos.datosTitular.apellido2 = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido2();
-		datosEspecificos.datosTitular.nombreMadre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomMadre();
-		datosEspecificos.datosTitular.nombrePadre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomPadre();
+		if (transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular() != null) {
+			datosEspecificos.datosTitular.identificador = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getIdentificador();
+			datosEspecificos.datosTitular.numeroSoporte = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNumSoporte();
+			datosEspecificos.datosTitular.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNombre();
+			datosEspecificos.datosTitular.nacionalidad = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNacionalidad();
+			datosEspecificos.datosTitular.apellido1 = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido1();
+			datosEspecificos.datosTitular.apellido2 = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido2();
+			datosEspecificos.datosTitular.nombreMadre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomMadre();
+			datosEspecificos.datosTitular.nombrePadre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomPadre();
 
-		datosEspecificos.datosTitular.fechacaducidad = SVDUtils.parseFecha(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getFechaCaducidad());
-		datosEspecificos.datosTitular.sexo.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getSexo().toString();
+			datosEspecificos.datosTitular.fechacaducidad = SVDUtils.parseFecha(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getFechaCaducidad());
+			datosEspecificos.datosTitular.sexo.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getSexo().toString();
 
-		//Datos Nacimiento
-		datosEspecificos.datosTitular.datosNacimiento.fecha = SVDUtils.parseFecha(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getFechaNacimiento());
-		datosEspecificos.datosTitular.datosNacimiento.municipio = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getLocalidad(), "municipios");
-		datosEspecificos.datosTitular.datosNacimiento.provincia = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getProvincia(), "provincias");
-
-		//Datos Direccion
-		datosEspecificos.datosTitular.datosDireccion.localidad = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getLocalidad();
-		datosEspecificos.datosTitular.datosDireccion.provincia = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getProvincia(), "provincias");
-		datosEspecificos.datosTitular.datosDireccion.datosVia.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getDatosVia();
+			//Datos Nacimiento
+			if (transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento() != null) {
+				datosEspecificos.datosTitular.datosNacimiento.fecha = SVDUtils.parseFecha(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getFechaNacimiento());
+				datosEspecificos.datosTitular.datosNacimiento.municipio = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getLocalidad(), "municipios");
+				datosEspecificos.datosTitular.datosNacimiento.provincia = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getProvincia(), "provincias");
+			}
+			//Datos Direccion
+			if (transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion() != null) {
+				datosEspecificos.datosTitular.datosDireccion.localidad = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getLocalidad(), "municipios");
+				datosEspecificos.datosTitular.datosDireccion.provincia = SVDUtils.parseLugar(transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getProvincia(), "provincias");
+				datosEspecificos.datosTitular.datosDireccion.datosVia.nombre = transmisionDatos.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getDatosVia();
+			}
+		}
 
 		return datosEspecificos;
 	}
 
-	//Parser de fecha
-	public static DateTime parseFecha (String fecha) {
+	//Parser de fecha en formato yyyy-MM-ddTHH:mm:ss.msmsms+HH:mm
+	public static DateTime parseFechaHora (String fecha) {
 
-		Date date = new Date();
+		if (!fecha.equals("")) {
+			try {
+				DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+				String date = fecha.substring(0, fecha.indexOf('T'));
+				String time = fecha.substring(fecha.indexOf('T')+1, fecha.indexOf('.'));
+				DateTime dateTime = formatter.parseDateTime(date + " " + time);
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-		try {
-			date = format.parse(fecha);
-		} catch (ParseException e) {
-			e.printStackTrace();
+				return dateTime;
+			} catch (Exception e) {
+				play.Logger.error("Se ha producido un error parseando la fecha: " + e);
+			}
 		}
 
-		DateTime dateTime = new DateTime(date);
+		return null;
+	}
 
-		return dateTime;
+	//Parser de fecha en formato yyyyMMdd
+	public static DateTime parseFecha (String fecha) {
+
+		if (!fecha.equals("")) {
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+			try {
+				Date date = format.parse(fecha);
+				DateTime dateTime = new DateTime(date);
+				return dateTime;
+			} catch (Exception e) {
+				play.Logger.error("Se ha producido un error parseando la fecha de nacimiento: " + e);
+			}
+		}
+
+		return null;
 	}
 
 

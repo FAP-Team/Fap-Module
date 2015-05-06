@@ -3,7 +3,12 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
+import messages.Messages;
 import models.PeticionSVDFAP;
+import play.mvc.Util;
+import services.SVDService;
+import services.SVDServiceException;
+import config.InjectorConfig;
 import controllers.gen.CesionDatosSVDListarControllerGen;
 
 public class CesionDatosSVDListarController extends CesionDatosSVDListarControllerGen {
@@ -21,9 +26,31 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 	}
 
 	public static void enviarpeticionesIdentidad(Long id, List<Long> idsSeleccionados) {
-		//Sobreescribir para incorporar funcionalidad
-		//No olvide asignar los permisos
-		//index();
+
+		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
+
+		try {
+			for (Long idPeticion: idsSeleccionados) {
+				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
+				try {
+					svdService.enviarPeticionAsincrona(peticion);
+				} catch (SVDServiceException e) {
+					Messages.error("Error al enviar la petición asíncrona");
+					play.Logger.error("Error al enviar la petición asíncrona: " + e);
+					e.printStackTrace();
+				}
+			}
+			if (!Messages.hasErrors()) {
+				Messages.ok("Peticiones enviadas con éxito");
+				play.Logger.info("Peticiones enviadas con éxito");
+			}
+		} catch (Exception ex) {
+			Messages.error("Se ha producido algún error enviando las peticiones seleccionadas...");
+			play.Logger.error("Error al enviar alguna petición: " + ex);
+		}
+
+		CesionDatosSVDListarController.editarRender();
+
 	}
 
 	public static void tablatablaCesionesResidencia() {
@@ -39,9 +66,41 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 	}
 
 	public static void enviarpeticionesResidencia(Long id, List<Long> idsSeleccionados) {
-		//Sobreescribir para incorporar funcionalidad
-		//No olvide asignar los permisos
-		//index();
+
+		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
+
+		try {
+			for (Long idPeticion: idsSeleccionados) {
+				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
+				try {
+					svdService.enviarPeticionAsincrona(peticion);
+				} catch (SVDServiceException e) {
+					Messages.error("Error al enviar la petición asíncrona");
+					play.Logger.error("Error al enviar la petición asíncrona: " + e);
+					e.printStackTrace();
+				}
+			}
+			if (!Messages.hasErrors()) {
+				Messages.ok("Peticiones enviadas con éxito");
+				play.Logger.info("Peticiones enviadas con éxito");
+			}
+		} catch (Exception ex) {
+			Messages.error("Se ha producido algún error enviando las peticiones seleccionadas...");
+			play.Logger.error("Error al enviar alguna petición: " + ex);
+		}
+
+		CesionDatosSVDListarController.editarRender();
+	}
+
+	@Util
+	public static void editarRender() {
+		if (!Messages.hasMessages()) {
+			Messages.ok("Página editada correctamente");
+			Messages.keep();
+			redirect("CesionDatosSVDListarController.index", "editar");
+		}
+		Messages.keep();
+		redirect("CesionDatosSVDListarController.index", "editar");
 	}
 
 }

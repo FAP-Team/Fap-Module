@@ -31,21 +31,19 @@ public class FileSystemSVDServiceImpl implements SVDService {
 	}
 
 	@Override
-	public Respuesta enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+	public void enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
-	public Respuesta enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+	public void enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 	@Override
-	public Respuesta solicitarRespuestaAsincrona(String idRespuesta) throws SVDServiceException {
+	public void solicitarRespuestaAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

@@ -15,11 +15,11 @@ public interface SVDService {
 
 	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio);
 
-	public Respuesta enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException;
+	public void enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException;
 
-	public Respuesta enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException;
+	public void enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException;
 
-	public Respuesta solicitarRespuestaAsincrona(String idRespuesta) throws SVDServiceException;
+	public void solicitarRespuestaAsincrona(PeticionSVDFAP peticion) throws SVDServiceException;
 
 	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException;
 

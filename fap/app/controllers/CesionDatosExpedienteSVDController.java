@@ -15,7 +15,6 @@ import utils.SVDUtils;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.CesionDatosExpedienteSVDControllerGen;
-import es.gobcan.platino.servicios.svd.Respuesta;
 
 public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVDControllerGen {
 
@@ -56,7 +55,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "estado"));
+		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "respuesta.fechaRespuesta", "estado"));
 	}
 
 	public static void tablasolicitudesPeticionResidencia(Long idSolicitud) {
@@ -68,7 +67,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "estado"));
+		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "respuesta.fechaRespuesta", "estado"));
 	}
 
 	public static void enviarSolicitudesIdentidad(Long id, List<Long> idsSeleccionados) {
@@ -85,11 +84,10 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		try {
 			svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
-			Respuesta respuesta = svdService.enviarPeticionSincrona(peticion);
+			svdService.enviarPeticionSincrona(peticion);
 			if (!Messages.hasErrors()) {
-				SVDUtils.respuestaSincronaPlatinoToRespuestaFAP(respuesta, peticion);
-				peticion.estadoPeticion = "recibida";
-				Messages.info("Respuesta recibida con éxito");
+				Messages.ok("Respuesta recibida con éxito");
+				play.Logger.info("Petición enviada con éxito");
 			}
 		} catch (SVDServiceException e) {
 			Messages.error("Error al enviar la petición síncrona");
@@ -116,9 +114,11 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 		svdService.crearPeticion(peticion, listaSolicitudesTransmision, "residencia");
 
 		try {
-			Respuesta respuesta = svdService.enviarPeticionSincrona(peticion);
+			svdService.enviarPeticionSincrona(peticion);
 			if (!Messages.hasErrors()) {
-				SVDUtils.respuestaSincronaPlatinoToRespuestaFAP(respuesta, peticion);
+				Messages.ok("Respuesta recibida con éxito");
+				play.Logger.info("Petición enviada con éxito");
+
 			}
 		} catch (SVDServiceException e) {
 			Messages.error("Error al enviar la petición síncrona");

@@ -24,6 +24,10 @@ import java.text.SimpleDateFormat;
 public class TransmisionDatosRespuestaSVDFAP extends FapModel {
 	// Código de los atributos
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRespuesta"), @Column(name = "fechaRespuestaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaRespuesta;
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosGenericosRespuestaSVDFAP datosGenericos;
 

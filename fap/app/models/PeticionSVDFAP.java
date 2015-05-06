@@ -1,24 +1,22 @@
 package models;
 
-import java.util.*;
-import javax.persistence.*;
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.data.validation.*;
-import org.joda.time.DateTime;
-import models.*;
-import messages.Messages;
-import validation.*;
-import audit.Auditable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import validation.ValueFromTable;
 
 // === IMPORT REGION START ===
 
 // === IMPORT REGION END ===
 
-/***** Peticion al Servicio ******/
+/***** Peticion ******/
 
 @Entity
 public class PeticionSVDFAP extends FapModel {
@@ -45,6 +43,7 @@ public class PeticionSVDFAP extends FapModel {
 		init();
 	}
 
+	@Override
 	public void init() {
 
 		if (atributos == null)
@@ -100,6 +99,30 @@ public class PeticionSVDFAP extends FapModel {
 		//		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP(solicitanteDatos, solicitudEspecifica);
 		//
 		//		return datosEspecificos;
+	}
+
+	public AtributosSVDFAP getAtributos() {
+		return atributos;
+	}
+
+	public void setAtributos (AtributosSVDFAP atributos) {
+		this.atributos = atributos;
+	}
+
+	public String getUidUsuario() {
+		return uidUsuario;
+	}
+
+	public void setUidUsuario(String uidUsuario) {
+		this.uidUsuario = uidUsuario;
+	}
+
+	public String getNifFuncionario() {
+		return nifFuncionario;
+	}
+
+	public void setNifFuncionario(String nifFuncionario) {
+		this.nifFuncionario = nifFuncionario;
 	}
 
 	// === MANUAL REGION END ===

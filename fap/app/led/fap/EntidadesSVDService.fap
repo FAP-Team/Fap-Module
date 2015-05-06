@@ -86,8 +86,9 @@ Entidad NacimientoSVDFAP{
 /********** Entidades Respuesta - Peticion Sincrona  *************/
 
 Entidad TransmisionDatosRespuestaSVDFAP{
-  DatosGenericosRespuestaSVDFAP datosGenericos
-  DatosEspecificosRespuestaSVDFAP datosEspecificos
+    DateTime fechaRespuesta
+    DatosGenericosRespuestaSVDFAP datosGenericos
+    DatosEspecificosRespuestaSVDFAP datosEspecificos
 }
 
 /* Datos genericos Respuesta */

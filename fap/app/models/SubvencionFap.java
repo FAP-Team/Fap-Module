@@ -48,16 +48,7 @@ public class SubvencionFap extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaAprobacion;
 
-	@Moneda
 	public Double importe;
-
-	@Transient
-	public String importe_formatFapTabla;
-
-	// Getter del atributo del tipo moneda
-	public String getImporte_formatFapTabla() {
-		return format.FapFormat.formatMoneda(importe);
-	}
 
 	public void init() {
 

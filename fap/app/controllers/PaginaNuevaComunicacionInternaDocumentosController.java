@@ -154,6 +154,7 @@ public class PaginaNuevaComunicacionInternaDocumentosController extends PaginaNu
 			ComunicacionInterna comunicacionInterna = getComunicacionInterna(idSolicitud, idComunicacionInterna);
 			if( comunicacionInterna != null && comunicacionInterna.asiento != null){
 				comunicacionInterna.asiento.uris = null;
+				comunicacionInterna.asiento.numeroDocumentos = 0;
 				comunicacionInterna.save();
 			}
 		}

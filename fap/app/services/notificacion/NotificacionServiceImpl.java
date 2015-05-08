@@ -476,55 +476,76 @@ public class NotificacionServiceImpl implements NotificacionService {
 				
 	}
 
-	/* Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
-	 * 
-	 * uriProcedimiento: La uri del procedimiento que queremos saber sus notificaciones
-	 */
-	@Override
-	public List<Notificacion> getNotificaciones(String uriProcedimiento) {
-		if (!activo)
-			return new ArrayList<Notificacion>();
-		
-		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
-		if ((uriProcedimiento == null) || (uriProcedimiento.trim().isEmpty())){
-			play.Logger.info("La uri del procedimiento no puede ser vacía");
-			return notificacionesWS;
-		}
-		try {
-			NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
-			criterioBusqueda.setUriProcedimiento(uriProcedimiento);
-			ResultadoBusquedaNotificacionType resultadoBusqueda = notificacionPort.buscarNotificaciones(criterioBusqueda);
-			List<NotificacionType> notificacionesType = resultadoBusqueda.getNotificaciones().getNotificacion();
-			for (NotificacionType notificacionType: notificacionesType)
-				notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
-			return notificacionesWS;
-		} catch (NotificacionException e) {
-			play.Logger.error("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
-			return notificacionesWS;
-		} catch (Exception e){
-			play.Logger.error("Error al intentar obtener las notificaciones del servicio web "+e.getMessage());
-			return null;
-		}
-	}
+	/** Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
+     * uriProcedimiento: La uri del procedimiento que queremos saber sus notificaciones
+     * 
+     **/
+    @Override	
+    public List<Notificacion> getNotificaciones(String uriProcedimiento) {
+	    if (!activo) {	
+	    	return new ArrayList<Notificacion>();
+	    }
 	
-	@Override
-	public List<Notificacion> getNotificaciones() {
-		if (!activo)
-			return new ArrayList<Notificacion>();
+	    NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
+	    criterioBusqueda.setUriProcedimiento(uriProcedimiento);	
+	    return this.getNotificaciones(criterioBusqueda);	
+    }
+
+    @Override
+    public List<Notificacion> getNotificaciones() {	
+        if (!activo) {	
+        	return new ArrayList<Notificacion>();
+        }
+        return this.getNotificaciones(new NotificacionCriteriaType());
+    }
+	
+	/**
+    * Obtiene todas las notificaciones
+    * @param criterio	
+    * @return	
+    */
+
+    protected List<Notificacion> getNotificaciones(final NotificacionCriteriaType criterio) {	
+        int resultTemp = criterio.getPosicionPrimerResultado() == null ? 0 : criterio.getPosicionPrimerResultado();
+
+        List<NotificacionType> notificacionesType = new ArrayList<NotificacionType>();	
+        List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();	
+        try {	
 		
-		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
-		try {
-			NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
-			ResultadoBusquedaNotificacionType resultadoBusqueda = notificacionPort.buscarNotificaciones(criterioBusqueda);
-			List<NotificacionType> notificacionesType = resultadoBusqueda.getNotificaciones().getNotificacion();
-			for (NotificacionType notificacionType: notificacionesType)
-				notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
-			return notificacionesWS;
-		} catch (NotificacionException e) {
-			play.Logger.info("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
-			return notificacionesWS;
-		}
-	}
+            ResultadoBusquedaNotificacionType resultadoBusqueda = null;
+            do {
+			
+                resultadoBusqueda = notificacionPort.buscarNotificaciones(criterio);	
+                notificacionesType.addAll(resultadoBusqueda.getNotificaciones().getNotificacion());
+                resultTemp += resultadoBusqueda.getNotificaciones().getNotificacion().size();	
+                criterio.setPosicionPrimerResultado(resultTemp);
+
+            } while (resultTemp < resultadoBusqueda.getNumeroTotalResultados()
+                    && (criterio.getNumeroResultados() == null || (resultTemp < criterio.getNumeroResultados())));
+
+            /*	
+             * El while se ejecutará hasta que se deje de cumplir lo primero,
+             * bien sea, que el número de resultados obtenidos
+             * 
+             * en el servicio sea inferior al resultado acumulado o el número de
+             * resultados del criterio sea inferior al	
+             * 
+             * resultado acumulado	
+             */
+	
+            for (NotificacionType notificacionType : notificacionesType) {
+                notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
+            }
+            
+			return notificacionesWS;	
+        } catch (NotificacionException e) {
+            play.Logger.error("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: " + e.getMessage());
+            return notificacionesWS;
+        } catch (Exception e) {
+            play.Logger.error("Error al intentar obtener las notificaciones del servicio web " + e.getMessage());
+            return null;
+        }
+    }	
 
 	@Override
 	public String estadoNotificacion(String uriNotificacion) {

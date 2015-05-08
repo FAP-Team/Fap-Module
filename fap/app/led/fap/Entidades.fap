@@ -1128,21 +1128,21 @@ Entidad SubvencionFap{
     String programa
     DateTime fechaSolicitud
     DateTime fechaAprobacion
-    Moneda importe
+    Double importe
 }
 
 Entidad DeclaracionSubvenciones{
     String nombreTramite //Solo se actualiza cuando se registra (en presentacion,aceptacion o justificacion)
     OneToMany SubvencionFap  subvenciones
     DateTime fecha //Fecha de registro de la declaracion ( f.reg.solicitud, f.reg.aceptacion, f.reg.justificacion)
-    Moneda totalSolicitadas transient
-    Moneda totalConcedidas transient
-    Moneda totalSolicitadasPublicas transient
-    Moneda totalConcedidasPublicas transient
-    Moneda totalSolicitadasPrivadas transient
-    Moneda totalConcedidasPrivadas transient
-    Moneda totalSolicitadasMinimis transient
-    Moneda totalConcedidasMinimis transient
+    Double totalSolicitadas transient
+    Double totalConcedidas transient
+    Double totalSolicitadasPublicas transient
+    Double totalConcedidasPublicas transient
+    Double totalSolicitadasPrivadas transient
+    Double totalConcedidasPrivadas transient
+    Double totalSolicitadasMinimis transient
+    Double totalConcedidasMinimis transient
 }
 
 Entidad HistoricoDeclaracionSubvenciones{

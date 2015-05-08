@@ -32,101 +32,29 @@ public class DeclaracionSubvenciones extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fecha;
 
-	@Moneda
 	@Transient
 	public Double totalSolicitadas;
 
-	@Moneda
 	@Transient
 	public Double totalConcedidas;
 
-	@Moneda
 	@Transient
 	public Double totalSolicitadasPublicas;
 
-	@Moneda
 	@Transient
 	public Double totalConcedidasPublicas;
 
-	@Moneda
 	@Transient
 	public Double totalSolicitadasPrivadas;
 
-	@Moneda
 	@Transient
 	public Double totalConcedidasPrivadas;
 
-	@Moneda
 	@Transient
 	public Double totalSolicitadasMinimis;
 
-	@Moneda
 	@Transient
 	public Double totalConcedidasMinimis;
-
-	@Transient
-	public String totalSolicitadas_formatFapTabla;
-
-	@Transient
-	public String totalConcedidas_formatFapTabla;
-
-	@Transient
-	public String totalSolicitadasPublicas_formatFapTabla;
-
-	@Transient
-	public String totalConcedidasPublicas_formatFapTabla;
-
-	@Transient
-	public String totalSolicitadasPrivadas_formatFapTabla;
-
-	@Transient
-	public String totalConcedidasPrivadas_formatFapTabla;
-
-	@Transient
-	public String totalSolicitadasMinimis_formatFapTabla;
-
-	@Transient
-	public String totalConcedidasMinimis_formatFapTabla;
-
-	// Getter del atributo del tipo moneda
-	public String getTotalSolicitadas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalSolicitadas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalConcedidas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalConcedidas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalSolicitadasPublicas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalSolicitadasPublicas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalConcedidasPublicas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalConcedidasPublicas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalSolicitadasPrivadas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalSolicitadasPrivadas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalConcedidasPrivadas_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalConcedidasPrivadas);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalSolicitadasMinimis_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalSolicitadasMinimis);
-	}
-
-	// Getter del atributo del tipo moneda
-	public String getTotalConcedidasMinimis_formatFapTabla() {
-		return format.FapFormat.formatMoneda(totalConcedidasMinimis);
-	}
 
 	public DeclaracionSubvenciones() {
 		init();
@@ -181,6 +109,32 @@ public class DeclaracionSubvenciones extends FapModel {
 
 	public Double getTotalConcedidas() {
 		return this.totalConcedidasPublicas + this.totalConcedidasPrivadas + this.totalConcedidasMinimis;
+	}
+
+	private List<SubvencionFap> obtenerSubvencionesTipo(String tipo) {
+		List<SubvencionFap> lst = new ArrayList<SubvencionFap>();
+		if (this.subvenciones.isEmpty())
+			return null;
+		for (SubvencionFap sub : this.subvenciones) {
+			if (sub.tipo.equals(tipo))
+				lst.add(sub);
+		}
+		return lst;
+	}
+
+	public List<SubvencionFap> obtenerSubvencionesPublicas() {
+		List<SubvencionFap> lst = obtenerSubvencionesTipo("publica");
+		return lst;
+	}
+
+	public List<SubvencionFap> obtenerSubvencionesMinimis() {
+		List<SubvencionFap> lst = obtenerSubvencionesTipo("minimis");
+		return lst;
+	}
+
+	public List<SubvencionFap> obtenerSubvencionesPrivadas() {
+		List<SubvencionFap> lst = obtenerSubvencionesTipo("privada");
+		return lst;
 	}
 
 	// === MANUAL REGION END ===

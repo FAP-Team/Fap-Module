@@ -265,7 +265,7 @@ public class Notificacion extends FapModel {
 			try {
 				this.documentoAcuseRecibo.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriAcuseDeRecibo);
 				this.documentoAcuseRecibo.tipo = NotificacionUtils.obtenerTipoDocumento(uriAcuseDeRecibo);
-		    } catch (Exception ex) {
+			} catch (Exception ex) {
 				play.Logger.error("Error obteniendo la descripción y el tipo de documento de la uri: " + uriAcuseDeRecibo + "Excepción: " + ex.getMessage());
 			}
 		}
@@ -347,14 +347,22 @@ public class Notificacion extends FapModel {
 	}
 
 	public void actualizar(Notificacion notificacion) {
-		if ((!this.estado.equals(notificacion.estado)) || (!this.fechaFinPlazo.equals(notificacion.fechaFinPlazo))) {
-			this.estado = notificacion.estado;
-			//this.fechaAcceso = notificacion.fechaAcceso;
-			this.fechaFinPlazo = notificacion.fechaFinPlazo;
-			this.fechaLimite = notificacion.fechaLimite;
-			play.Logger.info("Actualizando fechas y estado de Notificacion: " + this.id + " para el expediente " + this.idExpedienteAed);
-		} else {
-			play.Logger.info("Notificacion " + notificacion.id + " no requiere actualizacion de fechas o estado");
+		try {
+			if ((this.estado == null && notificacion.estado != null) || (this.estado != null && !this.estado.equals(notificacion.estado)))
+				this.estado = notificacion.estado;
+
+			//if ((this.fechaAcceso == null && notificacion.fechaAcceso != null) || (!this.fechaAcceso.equals(notificacion.fechaAcceso)))
+			//    this.fechaAcceso = notificacion.fechaAcceso;
+
+			if ((this.fechaFinPlazo == null && notificacion.fechaFinPlazo != null) || (this.fechaFinPlazo != null && !this.fechaFinPlazo.equals(notificacion.fechaFinPlazo)))
+				this.fechaFinPlazo = notificacion.fechaFinPlazo;
+
+			if ((this.fechaLimite == null && notificacion.fechaLimite != null) || (this.fechaLimite != null && !this.fechaLimite.equals(notificacion.fechaLimite)))
+				this.fechaLimite = notificacion.fechaLimite;
+
+			//			play.Logger.info("Actualizando fechas y estado de Notificacion: " + this.uri + " para el expediente " + this.idExpedienteAed);
+		} catch (Exception e) {
+			play.Logger.error("Se ha producido un error actualizando la notificacion: " + this.uri + " error: " + e.getMessage());
 		}
 
 	}

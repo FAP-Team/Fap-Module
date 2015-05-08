@@ -2,6 +2,8 @@ h2. Changelog
 
 h3. Versión 2.5.6RC4
 
+* Se corrigen errores en la descarga de notificaciones.
+* Se corrigen errores en los reports de los requerimientos de la verificaciones.
 * Se corrige la copia del documentos al expediente en las notificaciones.
 * Se corrige la descarga de documentos en las notificaciones.
 * Se corrige la descarga del justificante en el PopUP de los oficios de remisión.

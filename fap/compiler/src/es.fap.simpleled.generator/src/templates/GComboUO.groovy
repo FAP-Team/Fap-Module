@@ -30,23 +30,17 @@ class GComboUO extends GElement{
 	
 	public String view(){
 		TagParameters params = new TagParameters();
+		
 		params.putStr("id", combo.name);
 		params.putStr("campo", campo.firstLower());
-		
-		Entidad entidad = null;
-		if (campo.getUltimaEntidad() != null) {
-			entidad = Entidad.create(campo.getUltimaEntidad())
-
-			if (!entidad.clase.equals("ReturnUnidadOrganicaFap")){
-				throw new Exception("Error generando combo en cascada para unidades orgánicas, la entidad de destino debe ser del tipo ReturnUnidadOrganicaFap");
-			}
-		}
 		
 		String controllerName = gPaginaPopup.controllerFullName();
 		if (controllerName != null)
 			params.putStr("controllerName", controllerName);
+			
 		if(combo.requerido)
 			params.put "requerido", true;
+			
 		if(combo.busqueda)
 			params.put "searchable", true;
 	

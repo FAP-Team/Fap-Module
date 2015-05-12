@@ -1844,7 +1844,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
    //-------------------------Comunicaciones Internas --------------------------
    //---------------------------------------------------------------------------
 	
-	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" noForm{
+	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" permiso=adminOrGestor noForm{
 		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
 		paginaLeer=PaginaDatosLeerComunicacionInterna paginaCrear=PaginaDatosNuevaComunicacionInterna paginaEditar=PaginaDatosNuevaComunicacionInterna
       {
@@ -1857,6 +1857,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	Pagina PaginaDatosLeerComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm {
 	   Grupo titulo="Datos Origen" {
    	      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
+   	      Texto uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.descripcion titulo="Unidad orgánica de origen"
    		  Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica de destino"
    		  AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
    		  AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
@@ -1947,7 +1948,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             }
          }
          
-         Boton btnNuevoAsiento titulo="Enviar" style="float : right;"
+         Boton btnNuevoAsiento titulo="Enviar" waitPopup style="float : right;"
       }
 	} 
 	

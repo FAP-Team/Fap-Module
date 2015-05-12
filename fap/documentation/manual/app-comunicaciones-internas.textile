@@ -36,7 +36,7 @@ h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
 FAP posee una serie de páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Comunicación Interna que trae implementada el módulo FAP. 
 Concretamente:
 
-* *ComunicacionesInternas*: Esta es la página que se encarga de crear, editar y ver los datos de las comunicaciones internas, debe estar dentro de una Solicitud.
+* *ComunicacionesInternas*: Esta es la página que se encarga de crear, editar y ver los datos de las comunicaciones internas, debe estar dentro de una Solicitud y sólo la pueden utilizar un Administrador o un Gestor.
 
 !images/app-comunicaciones-internas!
 
@@ -44,9 +44,15 @@ h2. Ejemplo de creacion de una nueva comunicación.
 
 h3. Nueva
 
-Se solicitan los datos obligatorios para la creación de la comunicación.
+Se solicitan los datos obligatorios para la creación de la comunicación interna. Existe 2 alternativas:
 
-!images/app-comunicaciones-internas-nueva!
+* Asiento simple, sin unidad orgánica de origen, la cuál la decidirá el servicio.
+
+!images/app-comunicaciones-internas-nueva-asiento-simple!
+
+* Asiento ampliado, con unidad orgánica de origen, especificado por el usuario.
+
+!images/app-comunicaciones-internas-nueva-asiento-ampliado!
 
 h3. Selección del documento principal
 

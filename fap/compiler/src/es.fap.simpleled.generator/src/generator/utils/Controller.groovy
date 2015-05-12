@@ -180,6 +180,9 @@ import com.google.gson.Gson;
 import javax.persistence.*;
 
 import services.*;
+import services.comunicacionesInternas.*;
+import services.genericos.*;
+import services.BDOrganizacion.*;
 import com.google.inject.Inject;
 import utils.*;
 import controllers.fap.AgenteController;

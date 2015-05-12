@@ -14,10 +14,10 @@ import play.Play;
 import play.mvc.Util;
 import properties.FapProperties;
 import services.FirmaService;
+import services.genericos.ServiciosGenericosService;
+import services.genericos.ServiciosGenericosUtils;
 import services.platino.PlatinoGestorDocumentalService;
-import utils.ComunicacionesInternasUtils;
 import utils.JsonUtils;
-import utils.ServiciosGenericosUtils;
 import messages.Messages;
 import models.Agente;
 import models.MapeoUOBDOrganizacionHiperreg;
@@ -27,7 +27,6 @@ import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.UnidadesOrganicasControllerGen;
 import es.gobcan.platino.servicios.organizacion.UnidadOrganicaItem;
-import services.ServiciosGenericosService;
 
 public class UnidadesOrganicasController extends UnidadesOrganicasControllerGen {
 

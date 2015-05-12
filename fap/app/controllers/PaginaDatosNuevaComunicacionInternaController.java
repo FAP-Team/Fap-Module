@@ -22,12 +22,8 @@ import models.ReturnUnidadOrganicaFap;
 import models.SolicitudGenerica;
 import play.mvc.Util;
 import properties.FapProperties;
-import services.BDOrganizacionService;
-import services.ServiciosGenericosService;
-import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.genericos.ServiciosGenericosUtils;
 import tags.ComboItem;
-import utils.ComunicacionesInternasUtils;
-import utils.ServiciosGenericosUtils;
 import validation.CustomValidation;
 
 import com.google.gson.Gson;
@@ -42,9 +38,6 @@ import es.gobcan.platino.servicios.organizacion.DatosBasicosPersonaItem;
 import es.gobcan.platino.servicios.organizacion.UnidadOrganicaItem;
 
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
-	
-	@Inject
-	static BDOrganizacionService platinoDBOrgPort;
 	
 	public static void index(String accion, Long idSolicitud, Long idComunicacionInterna) {
 		if (accion == null)

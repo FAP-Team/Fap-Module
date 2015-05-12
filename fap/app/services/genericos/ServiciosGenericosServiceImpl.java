@@ -23,15 +23,12 @@ import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-import services.ServiciosGenericosService;
 import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
 import swhiperreg.service.Service;
 import swhiperreg.service.ServiceSoap;
-import utils.ComunicacionesInternasUtils;
-import utils.ServiciosGenericosUtils;
 import utils.WSUtils;
 
 

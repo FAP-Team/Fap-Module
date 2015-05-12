@@ -1,4 +1,4 @@
-package services;
+package services.comunicacionesInternas;
 
 import java.util.List;
 import models.AsientoCIFap;

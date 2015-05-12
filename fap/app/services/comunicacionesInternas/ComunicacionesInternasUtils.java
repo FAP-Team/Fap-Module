@@ -1,4 +1,4 @@
-package utils;
+package services.comunicacionesInternas;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.mockito.internal.invocation.UnusedStubsFinder;
 import config.InjectorConfig;
 import es.gobcan.platino.servicios.procedimientos.UnidadOrganicaWSItem;
-import services.ComunicacionesInternasService;
 import services.FirmaService;
 import swhiperreg.ciservices.ArrayOfString;
 import swhiperreg.ciservices.ReturnComunicacionInterna;

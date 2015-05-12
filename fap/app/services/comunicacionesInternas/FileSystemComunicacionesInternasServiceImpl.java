@@ -1,4 +1,4 @@
-package services.filesystem;
+package services.comunicacionesInternas;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,8 +16,6 @@ import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoFap;
 import models.ReturnUnidadOrganicaFap;
-import services.ComunicacionesInternasService;
-import services.ComunicacionesInternasServiceException;
 import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
 import tags.ComboItem;
 

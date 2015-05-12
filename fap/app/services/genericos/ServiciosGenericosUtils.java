@@ -1,4 +1,4 @@
-package utils;
+package services.genericos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import models.ReturnUnidadOrganicaFap;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
 import tags.ComboItem;
+import utils.StringUtils;
 
 public class ServiciosGenericosUtils {
 	

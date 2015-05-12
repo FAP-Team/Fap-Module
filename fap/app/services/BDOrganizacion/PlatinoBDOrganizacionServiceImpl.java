@@ -1,22 +1,18 @@
-package services.platino;
+package services.BDOrganizacion;
 
 import java.net.URL;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-
 import es.gobcan.platino.servicios.organizacion.*;
 import platino.PlatinoProxy;
 import play.modules.guice.InjectSupport;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-import services.BDOrganizacionService;
 import utils.WSUtils;
 
 @InjectSupport

@@ -1,8 +1,7 @@
-package services.filesystem;
+package services.BDOrganizacion;
 
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
-import services.BDOrganizacionService;
 import es.gobcan.platino.servicios.organizacion.DBOrganizacionException_Exception;
 import es.gobcan.platino.servicios.organizacion.DatosBasicosPersonaItem;
 import es.gobcan.platino.servicios.organizacion.UnidadOrganicaCriteriaItem;

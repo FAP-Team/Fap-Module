@@ -33,11 +33,9 @@ import models.AsientoCIFap;
 import models.ListaUris;
 import models.RespuestaCIFap;
 import models.ReturnUnidadOrganicaFap;
-import services.ComunicacionesInternasService;
-import services.ComunicacionesInternasServiceException;
-import services.ServiciosGenericosService;
+import services.GestorDocumentalService;
 import services.VerificarDatosServiceException;
-import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.genericos.ServiciosGenericosService;
 import services.platino.PlatinoFirmaServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ArrayOfString;
@@ -49,7 +47,6 @@ import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
 import swhiperreg.entradaservices.EntradaServices;
 import swhiperreg.entradaservices.ReturnEntrada;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
-import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 import utils.GestorDocumentalUtils;
 
@@ -59,8 +56,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private CIServicesSoap comunicacionesServices;
 	private PropertyPlaceholder propertyPlaceholder;
 	private PlatinoGestorDocumentalService platinoGestorDocumental;
-	
-	@Inject
 	private ServiciosGenericosService genericosService;
 	
 	private final String URIPROCEDIMIENTO;
@@ -69,7 +64,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	public final String PASSWORDHIPERREG;
 	
 	@Inject
-	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder, PlatinoGestorDocumentalService platinoGestorDocumental){
+	public ComunicacionesInternasServiceImpl (PropertyPlaceholder propertyPlaceholder, ServiciosGenericosService genericosService, PlatinoGestorDocumentalService platinoGestorDocumental){
 		this.propertyPlaceholder = propertyPlaceholder;
 		URL wsdlURL = ComunicacionesInternasService.class.getClassLoader().getResource("wsdl/CIServices.wsdl");
 		comunicacionesServices = new CIServices(wsdlURL).getCIServicesSoap();
@@ -81,7 +76,6 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		TIPO_TRANSPORTE = FapProperties.get("fap.platino.registro.tipoTransporte");
 		
 	    Map<String, String> headers = null;
-        
         if ((URIPROCEDIMIENTO != null) && (URIPROCEDIMIENTO.compareTo("undefined") != 0)) {
         	headers = new HashMap<String, String>();
         	headers.put("uriProcedimiento", URIPROCEDIMIENTO);		
@@ -90,6 +84,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
         WSUtils.configureSecurityHeaders(comunicacionesServices, propertyPlaceholder, headers);
         PlatinoProxy.setProxy(comunicacionesServices, propertyPlaceholder);
         this.platinoGestorDocumental = new PlatinoGestorDocumentalService(propertyPlaceholder);
+        this.genericosService = genericosService;
 	}
 	
 	private String getEndPoint() {
@@ -99,7 +94,9 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	private boolean hasConnection() {
 		boolean hasConnection = false;
 		try {
-			hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
+			
+			if (USUARIOHIPERREG != null && PASSWORDHIPERREG != null && !"undefined".equals(USUARIOHIPERREG) && !"undefined".equals(PASSWORDHIPERREG))
+				hasConnection = genericosService.validarUsuario(USUARIOHIPERREG, PASSWORDHIPERREG);
 			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "?: "+hasConnection);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -140,34 +137,38 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		try{
 			listaUris = obtenerUriPlatino(asientoFap.uris);
 		}catch(Exception e){
-			play.Logger.error("Se ha producido el error obteniendo las uri de los documentos de platino: " + e.getMessage(), e);
+			play.Logger.error("Se ha producido el error obteniendo las uris de los documentos de platino: " + e.getMessage());
 			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
 		}
 		
-		try{	        	  
-			ReturnComunicacionInterna respuesta= null;
-			RespuestaCIFap respuestafap = null;
-			if (!Messages.hasErrors()) {
-				respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
-						asientoFap.resumen,
-						asientoFap.numeroDocumentos,
-						asientoFap.interesado,
-						asientoFap.unidadOrganicaDestino.codigo,
-						asientoFap.asuntoCodificado,
-						asientoFap.userId,
-						encriptarPassword(asientoFap.password),
-						asientoFap.tipoTransporte,
-						listaUris);
+		ReturnComunicacionInterna respuesta= null;
+		try{	        	 
+			respuesta = comunicacionesServices.nuevoAsiento(asientoFap.observaciones, 
+					asientoFap.resumen,
+					asientoFap.numeroDocumentos,
+					asientoFap.interesado,
+					asientoFap.unidadOrganicaDestino.codigo,
+					asientoFap.asuntoCodificado,
+					asientoFap.userId,
+					encriptarPassword(asientoFap.password),
+					asientoFap.tipoTransporte,
+					listaUris);
 			
-				respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
-			}
-			
-			return respuestafap;
 		}
-		catch(Exception e){
-			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e.getMessage(), e);
+		catch(Exception e1){
+			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e1.getMessage());
 			throw new ComunicacionesInternasServiceException("Se ha producido un error al enviar la comunicación interna");
 		}
+		
+		RespuestaCIFap respuestafap = null;
+		try {
+			respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInterna2respuestaComunicacionInternaFap(respuesta);
+		}catch(Exception e2){
+			play.Logger.error("Se ha producido un error al parsear la respuesta de la comunicación interna: " + e2.getMessage());
+			throw new ComunicacionesInternasServiceException("Se ha producido un error al parsear la respuesta de la comunicación interna");
+		}
+		
+		return respuestafap;
 	}
 	
 	/**
@@ -182,36 +183,39 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 		try{
 			listaUris = obtenerUriPlatino(asientoAmpliadoFap.uris);
 		}catch(Exception e){
-			play.Logger.error("Se ha producido el error obteniendo las uri de los documentos de platino: " + e.getMessage(), e);
+			play.Logger.error("Se ha producido el error obteniendo las uris de los documentos de platino: " + e.getMessage());
 			throw new ComunicacionesInternasServiceException("No se ha podido recuperar las uris de los documentos de platino");
 		}
 		
+		ReturnComunicacionInternaAmpliada respuesta = null;
 		try{
-			ReturnComunicacionInternaAmpliada respuesta = null;
-			RespuestaCIFap respuestafap = null;
-			if (!Messages.hasErrors()) {
-				respuesta =	comunicacionesServices.nuevoAsientoAmpliado(
-						asientoAmpliadoFap.observaciones, 
-						asientoAmpliadoFap.resumen,
-						asientoAmpliadoFap.numeroDocumentos,
-						asientoAmpliadoFap.interesado,
-						asientoAmpliadoFap.unidadOrganicaDestino.codigo,
-						asientoAmpliadoFap.asuntoCodificado,
-						asientoAmpliadoFap.userId,
-						encriptarPassword(asientoAmpliadoFap.password),
-						asientoAmpliadoFap.tipoTransporte,
-						listaUris,
-						asientoAmpliadoFap.unidadOrganicaOrigen.codigo);
-			
-					respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
-			}
-			
-			return respuestafap;
+			respuesta =	comunicacionesServices.nuevoAsientoAmpliado(
+					asientoAmpliadoFap.observaciones, 
+					asientoAmpliadoFap.resumen,
+					asientoAmpliadoFap.numeroDocumentos,
+					asientoAmpliadoFap.interesado,
+					asientoAmpliadoFap.unidadOrganicaDestino.codigo,
+					asientoAmpliadoFap.asuntoCodificado,
+					asientoAmpliadoFap.userId,
+					encriptarPassword(asientoAmpliadoFap.password),
+					asientoAmpliadoFap.tipoTransporte,
+					listaUris,
+					asientoAmpliadoFap.unidadOrganicaOrigen.codigo);	
 		}
-		catch(Exception e){
-			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e.getMessage(), e);
+		catch(Exception e1){
+			play.Logger.error("Se ha producido un error al enviar la comunicación interna: " + e1.getMessage());
 			throw new ComunicacionesInternasServiceException("Se ha producido un error al enviar la comunicación interna");
 		}
+		
+		RespuestaCIFap respuestafap = null;
+		try {
+			respuestafap = ComunicacionesInternasUtils.respuestaComunicacionInternaAmpliada2respuestaComunicacionInternaAmpliadaFap(respuesta);
+		}catch (Exception e2){
+			play.Logger.error("Se ha producido un error al parsear la respuesta de la comunicación interna: " + e2.getMessage());
+			throw new ComunicacionesInternasServiceException("Se ha producido un error al parsear la respuesta de  la comunicación interna");
+		}
+		
+		return respuestafap;
 	}
 	
 	/**
@@ -219,8 +223,9 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 	 * y devuelve la uri del aed de platino.
 	 * @param uris
 	 * @return
+	 * @throws ComunicacionesInternasServiceException 
 	 */
-	private ArrayOfString obtenerUriPlatino(List<ListaUris> uris) {
+	private ArrayOfString obtenerUriPlatino(List<ListaUris> uris) throws ComunicacionesInternasServiceException {
 		ArrayOfString listaUris = null;
 		
 		for (int i = 0; i < uris.size(); i++){
@@ -232,7 +237,7 @@ public class ComunicacionesInternasServiceImpl implements ComunicacionesInternas
 			}
 			else {
 				play.Logger.error("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
-				Messages.error("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
+				throw new ComunicacionesInternasServiceException("Error al obtener la uri de platino del documento con uri "+ uris.get(i).uri);
 			}
 		}
 		

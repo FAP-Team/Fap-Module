@@ -3,17 +3,6 @@ h1. Unidades Orgánicas
 Se necesita el servicio de *Servicios Genéricos* para obtener las unidades orgánicas, en caso que se quieran obtener desde el servicio.
 En el caso de que se quieran obtener desde fichero no haría falta, sí la existencia del fichero.
 
-En el servicio de comunicaciones internas, para crear un asiento ampliado se necesita la unidad orgánica de origen y la única manera actualmente de saberla es consultando la base de datos de organización. 
-
-Esto se puede hacer utilizando la implementación de *PlatinoBDOrganizacionServiceImpl* siguiendo los siguientes pasos:
-# Consultamos mediante el nombre de usuario ldap la uri de la persona con el método *recuperarURIPersona*.
-# Consultamos los datos de la persona mediante la uri devuelta en el paso anterior, con el método *recuperarDatosPersona* y extraemos la unidad orgánica a la que pertenece.
-
-El problema surge cuando el código de la unidad de la base de datos de organización no coincide con la de la base de datos de HiperReg impidiendo así una posible relación.
-
-Como solución se aportó un documento con la relación entre ambas unidades, pero no estaban todas por lo que no era viable. Sin embargo, el código está preparado para que más adelante si se consigue 
-toda la relación de unidades se puedan relacionar.
-
 h2. Carga desde servicio
 
 Se realiza una petición recursiva al servicio, con un retardo de 1s entre llamada para no sobrecargarlo, para obtener todas las unidades orgánicas disponibles.
@@ -23,11 +12,6 @@ h2. Carga desde fichero
 Se realiza la lectura de un fichero en formato "json" y se cargarán las unidades orgánicas presentes en el mismo.
 La localización de este fichero debe estar en la aplicación en la ruta: 
 *conf/initial-data/unidadesOrganicas.json*.
-
-h2. Mapeo de unidades de HiperReg y Organización. (Inhabilitado actualmente)
-
-Tanto para la carga desde servicio como para la carga desde fichero, justo después de la carga se espera un fichero de mapeo en la dirección: 
-*/conf/initial-data/mapeoUOBDOrganizacionHiperreg.json*, este busca la unidad orgánica correspondiente y le asigna el código para realizar la relación.
 
 h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
 

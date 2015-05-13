@@ -346,7 +346,7 @@
 		</script>
 
 	#{/if}	
-	#{elseif searchable}
+	#{elseif searchable == "true"}
 		<script>
 			var $combo = $("#${id}.combo");
 			if ($combo.attr('disabled') != "disabled") {

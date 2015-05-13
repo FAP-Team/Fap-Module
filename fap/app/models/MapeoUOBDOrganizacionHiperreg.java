@@ -18,16 +18,16 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
-@Entity
-public class ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
+public class MapeoUOBDOrganizacionHiperreg extends FapModel {
 	// Código de los atributos
 
-	public String unidadOrganicaOrigen;
+	public Long codigo;
 
-	public String unidadOrganicaPropuesta;
+	public String descripcion;
+
+	public Long unidadhiperreg;
 
 	public void init() {
-		super.init();
 
 		postInit();
 	}

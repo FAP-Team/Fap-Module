@@ -1844,37 +1844,38 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
    //-------------------------Comunicaciones Internas --------------------------
    //---------------------------------------------------------------------------
 	
-	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" noForm{
+	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" permiso=adminOrGestor noForm{
 		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
 		paginaLeer=PaginaDatosLeerComunicacionInterna paginaCrear=PaginaDatosNuevaComunicacionInterna paginaEditar=PaginaDatosNuevaComunicacionInterna
       {
-			Columna campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
 			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-			Columna campo=ComunicacionInterna.estado titulo="Estado"
+			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen" expandir
+			Columna campo=ComunicacionInterna.estado titulo="Estado" 
 		}
 	}
 	
 	Pagina PaginaDatosLeerComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm {
 	   Grupo titulo="Datos Origen" {
-   		Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-   		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-   		AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-   		AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
+   	      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
+   	      Texto uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.descripcion titulo="Unidad orgánica de origen"
+   		  Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica de destino"
+   		  AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
+   		  AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
    		
-   		Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-            Columna campo=ListaUris.uri titulo="Uri del documento" expandir
-         }
-		}
+   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
+            Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+            Columna titulo="Descargar" campo=Documento.enlaceDescarga
+            Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
+          }
+	   }
 		
-		Grupo titulo="Datos Respuesta" {
+	   Grupo titulo="Datos Respuesta" {
 		   Texto fecha campo=ComunicacionInterna.respuesta.fecha titulo="Fecha de alta"
-         Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
-         Texto ejercicio campo=ComunicacionInterna.respuesta.ejercicio titulo="Ejercicio"
-         Texto tipo campo=ComunicacionInterna.respuesta.tipoComunicacion titulo="Tipo de comunicación"
-         Texto numComunicaion campo=ComunicacionInterna.respuesta.contadorUO titulo="Identificador particular de la comunicación"
-		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número particular del asiento"
-		   AreaTexto error campo=ComunicacionInterna.respuesta.error.descripcion titulo="Descripción del error si lo hubiere" 
+           Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
+           Texto ejercicio campo=ComunicacionInterna.respuesta.ejercicio titulo="Ejercicio"
+           Texto tipo campo=ComunicacionInterna.respuesta.tipoComunicacion titulo="Tipo de comunicación"
+           Texto numComunicaion campo=ComunicacionInterna.respuesta.contadorUO titulo="ContadorUO"
+		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número de registro"
 		}
 		
 		Form frmVolverComunicacionInternas {
@@ -1884,57 +1885,70 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	
 	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos
-      Grupo titulo="Datos de la Comunicacion Interna"{
-         
-         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado requerido
+      
+       Grupo titulo="Datos de la Comunicacion Interna"{
+         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
-         
-         Grupo titulo="Unidad Orgánica de destino"{
-            Combo uoDestinoRaiz titulo="Nivel 1" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoRaiz busqueda
-            Combo uoDestinoSubNivel1 titulo="Nivel 2" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel1 busqueda 
-            Combo uoDestinoSubNivel2 titulo="Nivel 3" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel2 busqueda 
-            Combo uoDestinoSubNivel3 titulo="Nivel 4" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3 busqueda 
-            Texto uoDestino titulo="Código" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido          
+         Check uoOrigenDefecto titulo="Especificar una unidad orgánica de origen" campo=ComunicacionInterna.asiento.asientoAmpliado 
+         ayuda = "En el caso de que no se especifique una unidad orgánica de origen se utilizará la asignada por defecto." 
+         Grupo titulo="Unidad Orgánica de origen" mostrarSiCheck uoOrigenDefecto = true {
+            ComboUO uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.codigo requerido busqueda 
          }
-      }
-   } 
-   
-   Popup PopupDatosBorrarComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas{
-      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-      Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-      AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-      AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
-         
-      Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-         Columna campo=ListaUris.uri titulo="Uri del documento" expandir
-      }
+         Grupo titulo="Unidad Orgánica de destino" {
+            ComboUO uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido busqueda
+         }
+       }
    } 
 
 	Pagina PaginaNuevaComunicacionInternaDocumentos titulo="Aportar documentación" campo=SolicitudGenerica.comunicacionesInternas  noForm{
-		Grupo titulo = "Selección de Documentos"{
-			Wiki{"Selecciones los documentos que desea adjuntar antes de pulsar el botón Seleccionar"}
-			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Documentos a enviar en la comunicación"{
-				Columna titulo="Descripción" campo=Documento.descripcionVisible
-				Columna titulo="Descargar" campo=Documento.enlaceDescarga
+		Grupo titulo = "Selección del documento principal"{
+			Wiki{"Recuerde que debe seleccionar un documento como máximo. Cada nueva selección sobrescribirá la anterior."}
+			Tabla tblDocPrincipal campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione un documento como máximo"{
+				Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+				Columna titulo="Descargar" campo=Documento.enlaceDescarga 
 				Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
 			}
 		}
-		Form frmNuevaComunicacionInternaDocumentos {
-		   Grupo titulo="No aportar documentación" {
-            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente" pagina=PaginaAltaComunicacionInterna 
+		
+	   Grupo titulo="No aportar documentación" {
+	      Wiki{"Se eliminará cualquier selección de documentos hecha previamente."}
+	      Form frmNoAportarDocumentacion {
+            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente"
          }
-		}
+      }
 	}
 	
 	Pagina PaginaAltaComunicacionInterna titulo="Alta de comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm{
 		Accion editar crearSiempre 
 		Form frmNuevoAsiento {
-		   Grupo titulo="Datos adicionales" {
-            //Otros datos adicionales para crear una CI
-            //Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
-            AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+		   
+		   Grupo titulo="Credenciales de la comunicación" {
+            Texto userID titulo="Usuario" campo=ComunicacionInterna.asiento.userId requerido
+            Texto passwd titulo="Clave" campo=ComunicacionInterna.asiento.password requerido password
          }
-         Boton btnNuevoAsiento titulo="Enviar" style="float : right;"
+		   
+		   Grupo titulo="Datos adicionales" {
+            Grupo titulo = "Selección de documentos a consultar" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\"" {
+               Wiki{"Marque todos los documentos a consultar y luego seleccione. Cada nueva selección sobrescribirá la anterior."}
+               Tabla tblDocAdicionales campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione"{
+                  Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+                  Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+                  Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
+               }
+            }
+            
+            Grupo titulo="Documentación aportada en la comunicación" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\""{
+               Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos" {
+                  Columna campo=Documento.descripcionVisible titulo="Descripción del documento" expandir
+               }
+            }
+            
+            Grupo titulo= "Comentarios" {
+               AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+            }
+         }
+         
+         Boton btnNuevoAsiento titulo="Enviar" waitPopup style="float : right;"
       }
 	} 
 	

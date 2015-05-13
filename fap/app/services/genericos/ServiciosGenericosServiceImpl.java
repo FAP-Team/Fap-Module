@@ -23,14 +23,12 @@ import platino.PlatinoProxy;
 import platino.PlatinoSecurityUtils;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-import services.ServiciosGenericosService;
 import services.platino.PlatinoGestorDocumentalService;
 import swhiperreg.ciservices.ReturnError;
 import swhiperreg.service.ArrayOfReturnUnidadOrganica;
 import swhiperreg.service.ReturnUnidadOrganica;
 import swhiperreg.service.Service;
 import swhiperreg.service.ServiceSoap;
-import utils.ComunicacionesInternasUtils;
 import utils.WSUtils;
 
 
@@ -62,14 +60,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
         }
 	    
         WSUtils.configureSecurityHeaders(genericosServices, propertyPlaceholder);
-        
-        boolean proxyEnable = FapProperties.getBoolean("fap.proxy.enable");
-        FapProperties.setBoolean("fap.proxy.enable", false);
-
         PlatinoProxy.setProxy(genericosServices, propertyPlaceholder);
-		
-		//Se deja al proxy con el valor que tenía antes de inyectar el servicio de Comunicaciones Internas
-	    FapProperties.setBoolean("fap.proxy.enable", proxyEnable);    	
 	}
 	
 	private String getEndPoint() {
@@ -114,14 +105,14 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		try {
 			lstUOGenericos = genericosServices.obtenerUnidadesOrganicas(codigo, USUARIOHIPERREG, encriptarPassword(PASSWORDHIPERREG));
 			if (lstUOGenericos != null)
-				lstUO = ComunicacionesInternasUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
+				lstUO = ServiciosGenericosUtils.returnUnidadOrganica2returnUnidadOrganicaFap(lstUOGenericos);
 		} catch (Exception e) {
 			play.Logger.error("No se han podido recuperar las Unidades Orgánicas: " + e.getMessage());
 		}
 		
 		return lstUO;
 	}
-
+	
 	@Override
 	public List<ReturnUnidadOrganicaFap> obtenerUnidadesOrganicasV(Long codigo, String credencialesXml) {
 		// TODO Auto-generated method stub
@@ -133,6 +124,7 @@ public class ServiciosGenericosServiceImpl implements ServiciosGenericosService{
 		play.Logger.info("Intentando validar usuario "+userId+" en Hiperreg con password: "+password);
 		String resultado = "";
 		try {
+			play.Logger.info("Usuario: " + userId + " Passwd: " + encriptarPassword(password));
 			resultado = genericosServices.validarUsuario(userId, encriptarPassword(password));
 		} catch (Exception e) {
 			play.Logger.error("Error comprobando la validez del usuario: "+userId+" en Hiperreg");

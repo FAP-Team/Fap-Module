@@ -31,6 +31,11 @@ public class ListaUris extends FapModel {
 
 	// === MANUAL REGION START ===
 
+	public static ListaUris findByUri(String uri) {
+		ListaUris lstUri = models.ListaUris.find("byUri", uri).first();
+		return lstUri;
+	}
+
 	// === MANUAL REGION END ===
 
 }

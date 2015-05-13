@@ -161,6 +161,10 @@ public class CampoUtils implements Comparable{
 		return sinEntidadStr(str);
 	}
 	
+	public String sinEntidad(String campoStr){
+		return sinEntidadStr(campoStr);
+	}
+	
 	public boolean simple(){
 		return campo.getAtributos() == null;
 	}
@@ -227,8 +231,13 @@ public class CampoUtils implements Comparable{
 		if (last == -1) return StringUtils.firstLower(str);
 		return StringUtils.firstLower(str).substring(0, last);
 	}
-
 	
+	public String sinUltimoAtributo(String campoStr){
+		int last = campoStr.lastIndexOf('.');
+		if (last == -1) return StringUtils.firstLower(campoStr);
+		return StringUtils.firstLower(campoStr).substring(0, last);
+	}
+
 	public String getStr_(){
 		return StringUtils.firstLower(str.replace('.', '_'));
 	}

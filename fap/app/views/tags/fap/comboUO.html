@@ -1,0 +1,141 @@
+%{ def obj = _obj ?: _caller.get(_campo.split("\\.")[0])}%
+
+#{fap.field _campo, obj:obj}
+
+%{ 
+    def id = _id;
+    def controllerName = _controllerName != null ? play.mvc.Router.reverse(_controllerName + "." + id + "handlerComboUO") : "";
+    def campo = _campo;
+    def requerido = _requerido != null? _requerido : false;
+    def searchable = _searchable != null? _searchable : false;
+    
+    def campos = campo.split("\\.");
+    campos[campos.size()-1] = "";
+    def campoNiveles = campos.join(".");
+    def campoNivel1 = campoNiveles+"codigoRaiz";
+    def campoNivel2 = campoNiveles+"codigoSubNivel2";
+    def campoNivel3 = campoNiveles+"codigoSubNivel3";
+    def campoNivel4 = campoNiveles+"codigoSubNivel4";
+    def idnivel1 = id+"Nivel1";
+    def idnivel2 = id+"Nivel2";
+    def idnivel3 = id+"Nivel3";
+    def idnivel4 = id+"Nivel4";
+    def idCodigo = id+"CodigoUO"
+}%
+
+#{fap.combo id:"${idnivel1}", campo:"${campoNivel1}", titulo:'Nivel 1:', searchable:"${searchable}" /}      
+#{fap.combo id:"${idnivel2}", campo:"${campoNivel2}", titulo:'Nivel 2:', searchable:"${searchable}" /}      
+#{fap.combo id:"${idnivel3}", campo:"${campoNivel3}", titulo:'Nivel 3:', searchable:"${searchable}" /}      
+#{fap.combo id:"${idnivel4}", campo:"${campoNivel4}", titulo:'Nivel 4:', searchable:"${searchable}" /} 
+#{fap.texto campo:"${campo}", obj:obj , id:"${idCodigo}", titulo:'Código de unidad:', requerido:"${requerido}" /}   
+
+<script>
+
+function peticion${id}(combo, codigoUO, subnivelUO){
+    var resultado;
+    $.ajax({
+        type: "POST",
+        url: "${controllerName}",
+                data: {
+                    codigo: codigoUO,
+                    subnivel: subnivelUO
+                },
+                async: false,
+                success: function(data) {
+                   rellenarCombo${id}(combo, data);
+                },
+                error: function(data) {
+                   resetCombo${id}(combo);
+                }
+        });
+    }
+    
+    $( document ).ready(function() {
+       $("#${idCodigo}").prop('readonly', true);
+
+       var comboRaiz = $("#${idnivel1}");
+       peticion${id}(comboRaiz, 0, 0);
+    });
+
+    $( "#${idnivel1}" ).change(function() {
+        var combo = $("#${idnivel1}");   
+        var comboHijo = $("#${idnivel2}");
+
+        almacenarCodigo${id}(null, combo);
+        obtenerSubnivel${id}(combo, comboHijo, 1);
+        comboHijo.change();
+    });
+    
+    $( "#${idnivel2}" ).change(function() {  
+        var comboPadre = $("#${idnivel1}");     
+        var combo = $("#${idnivel2}");  
+        var comboHijo = $("#${idnivel3}");
+        
+        almacenarCodigo${id}(comboPadre, combo);
+        obtenerSubnivel${id}(combo, comboHijo, 2);
+        comboHijo.change();  
+    });
+    
+    $( "#${idnivel3}" ).change(function() {
+        var comboPadre = $("#${idnivel2}");
+        var combo = $("#${idnivel3}");
+        var comboHijo = $("#${idnivel4}");
+        
+        almacenarCodigo${id}(comboPadre, combo);
+        obtenerSubnivel${id}(combo, comboHijo, 3);
+        comboHijo.change();        
+    });
+    
+    $( "#${idnivel4}" ).change(function() {
+        var comboPadre = $("#${idnivel3}");
+        var combo = $("#${idnivel4}");
+        
+        almacenarCodigo${id}(comboPadre, combo);    
+    });
+       
+    function obtenerSubnivel${id}(comboPadre, comboHijo, subnivel){
+        var codigo = comboPadre.val();
+        peticion${id}(comboHijo, codigo, subnivel);      
+    }
+    
+    function rellenarCombo${id}(combo, data){
+       
+        resetCombo${id}(combo);
+        if (data != null && data != "") {
+            var json = jQuery.parseJSON(data); 
+            $.each(json, function(i, item) {
+                combo.append($('<option>', { 
+                value: item.key,
+                text : item.value
+            }));        
+            });
+       
+            #{if searchable} combo.trigger("liszt:updated"); #{/if}
+        }
+    }
+    
+    function resetCombo${id}(combo){ 
+       combo.empty();                     
+       combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
+       #{if searchable} combo.trigger("liszt:updated"); #{/if}
+    }
+    
+    function almacenarCodigo${id}(comboPadre, combo) {
+        var uoCodigo = $("#${idCodigo}");
+        var codigoPadre = comboPadre != null ? comboPadre.val() : null;
+        var codigo = combo.val();
+                     
+        if (codigo >= 0)
+           uoCodigo.val(codigo);
+        else
+            if (codigoPadre != null){
+               if (codigoPadre >= 0)
+                  uoCodigo.val(codigoPadre);
+            } else
+                  uoCodigo.val('');
+    }
+
+</script>
+
+
+#{/fap.field}

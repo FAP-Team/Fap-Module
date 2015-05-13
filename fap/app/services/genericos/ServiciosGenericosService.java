@@ -1,4 +1,4 @@
-package services;
+package services.genericos;
 
 import java.util.List;
 import models.ReturnUnidadOrganicaFap;

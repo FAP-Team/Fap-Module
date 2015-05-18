@@ -896,15 +896,25 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
 			aedPort.clasificarDocumento(documento.uri, propiedadesDocumento, ubicaciones);
 			documento.clasificado = true;
 			documento.save();
+			log.info("Documento temporal clasificado: Expediente: " + idAed + ", Documento: " + documento.uri);
 			tx.commit();
         } catch(AedExcepcion e){
         	if (tx.isActive())
         		tx.rollback();
-        	play.Logger.info("Error Clasificando el documento "+e.getMessage()+" en el AED");
+        	
+        	tx.begin();
+        	Documento docClasificado = obtenerDocumento(documento.uri);
+			if (docClasificado != null && docClasificado.getPropiedades() != null && docClasificado.getPropiedades().getUri() != null){
+				play.Logger.info("No se puede clasificar el documento "+e.getMessage()+" en el AED, el documento ya está clasificado");
+				documento.clasificado = true;
+				documento.save();
+			}else
+				play.Logger.error("Clasificando el documento "+e.getMessage()+" en el AED");
+			tx.commit();
+        	
         }
 		tx.begin();
 
-        log.info("Documento temporal clasificado: Expediente: " + idAed + ", Documento: " + documento.uri);
     }
 
     @Override
@@ -1550,7 +1560,7 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         try {
             doc = aedPort.obtenerDocumento(uri);
         } catch (AedExcepcion aedExcepcion) {
-            aedExcepcion.printStackTrace();
+            play.Logger.error("Se ha producido un error obteniendo el documento con uri: " + uri,  aedExcepcion.getMessage());
         }
 
         if (doc == null) {

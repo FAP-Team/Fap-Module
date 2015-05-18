@@ -6,6 +6,7 @@ fap/conf/application.conf
 fap/app/platino/client_sign.properties
 
 .classpath
+**/.classpath
 .project
 .settings/
 eclipse/

@@ -314,7 +314,9 @@
                 calculateDependencies${id}(valorDependencia${id}); 
 			}
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
-			CargarValoresComboDependiente${id}();
+			$(document).ready(function() {
+			   //CargarValoresComboDependiente${id}();   //Se elimina la carga de los valores de los combos dependiente al inicio por consumo.
+			});
 			
 			
 			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro

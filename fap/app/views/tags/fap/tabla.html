@@ -314,24 +314,25 @@
 			function ajax2Data (data){
 				var filas=[];
 				var aux;
-				for (var i=0; i<data.length; i++){
-					aux = {};
-				 	#{list campos, as:'columna_campo'}
-				 	try { // Por si el objeto intermedio es null
-				 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
-				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
-				 		} else {
-				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
-				 		}
-				 	} catch (e) {
-				 	}
-				 	#{/list}
-				 	aux['permisoLeer']=data[i].permisoLeer;
-				 	aux['permisoEditar']=data[i].permisoEditar;
-				 	aux['permisoBorrar']=data[i].permisoBorrar;
+				if (!jQuery.isEmptyObject(data))
+					for (var i=0; i<data.length; i++){
+						aux = {};
+					 	#{list campos, as:'columna_campo'}
+					 	try { // Por si el objeto intermedio es null
+					 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
+					 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
+					 		} else {
+					 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+					 		}
+					 	} catch (e) {
+					 	}
+					 	#{/list}
+					 	aux['permisoLeer']=data[i].permisoLeer;
+					 	aux['permisoEditar']=data[i].permisoEditar;
+					 	aux['permisoBorrar']=data[i].permisoBorrar;
 				 	
-				 	filas[i] = aux;
-				}
+				 	    filas[i] = aux;
+				    }
 				return filas;				
 			}
 
@@ -357,7 +358,9 @@
 		    }
 		    
 		    // Para cuando se entra a la pagina
-		    peticionJSON${id}();
+		    $(document).ready(function() {
+                 peticionJSON${id}();
+            });
 			
 			#{if combo} 
 			    var $combo = $('#${combo}');

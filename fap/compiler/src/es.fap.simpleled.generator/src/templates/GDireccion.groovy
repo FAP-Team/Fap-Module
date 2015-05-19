@@ -2,6 +2,7 @@ package templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import es.fap.simpleled.led.*
 import generator.utils.*
@@ -118,7 +119,7 @@ public class GDireccion extends GSaveCampoElement{
 	
 	public String controller() {
 		String nombreFuncion = (campo.firstLower()+".tipo").replaceAll("\\.", "_");
-		return """public static List<tags.ComboItem> ${nombreFuncion}() {
+		return """public static List<tags.ComboItem> ${nombreFuncion}(Map<String, Object> args) {
 		List<tags.ComboItem> result = new ArrayList<tags.ComboItem>();
 		String[] tipoDireccionesProperty = FapProperties.get("fap.direcciones.tipo").split(",");
 		for (String tipo : tipoDireccionesProperty){

@@ -1092,7 +1092,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		
 	}
 	
-	Popup PopUpSubvencionAcepta titulo="Subvención o ayuda" campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones permiso=editarSolicitud {
+	Popup PopUpSubvencionAcepta titulo="Subvención o ayuda" campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones {
        Grupo titulo="Datos de Subvención"{
            Combo cboTipoSubvencion titulo="Tipo Subvención" campo=SubvencionFap.tipo requerido
            Texto titulo="Administración o Entidad" campo=SubvencionFap.entidad requerido

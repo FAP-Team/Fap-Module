@@ -121,7 +121,8 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     
     fapModelPath = os.path.join(moduleDir, "app", "led");
     workflow = "workflow.LedGenerator";
-    cmd = [app.java_path(), "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    #cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];    
+    cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
     print ' '.join(cmd)
     return subprocess.call(cmd);
         

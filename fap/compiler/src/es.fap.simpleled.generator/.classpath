@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
+	<classpathentry kind="lib" path="lib/gson-1.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/bliki-core-3.0.16.jar"/>
+	<classpathentry kind="lib" path="lib/jj-textile.jar"/>
+	<classpathentry kind="lib" path="lib/jj-wikitext.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry exported="true" kind="lib" path="lib/diffutils-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/es.fap.simpleled"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/es.fap.simpleled.ui"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

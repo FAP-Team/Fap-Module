@@ -102,7 +102,7 @@ require:
 repositories:
     - Fap nexus:
         type: iBiblio
-        root: "http://fap-devel.etsii.ull.es/nexus/content/groups/public/"
+        root:  "http://eneas.itccanarias.org:8081/nexus/content/groups/all4fap/"
         contains:
             - org.apache -> *
             - es.gobcan -> *
@@ -122,7 +122,7 @@ repositories:
 
     - fap-devel modules repository:
         type: http
-        artifact: "http://fap-devel.etsii.ull.es/public/repo/[module]/[revision]/[module]-[revision].zip"
+        artifact: "http://fobos.itccanarias.org/repo/[module]/[revision]/[module]-[revision].zip"
         contains:
             - fap-modules -> guice
 

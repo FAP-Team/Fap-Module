@@ -16,6 +16,7 @@ import resolucion.ResolucionBase;
 import verificacion.VerificacionUtils;
 import models.Agente;
 import models.Busqueda;
+import models.Convocatoria;
 import models.Documento;
 import models.LineaResolucionFAP;
 import models.Participacion;
@@ -1528,6 +1529,49 @@ public class SecureFap extends Secure {
 				return new ResultadoPermiso(Accion.Leer);
 			else
 				return null;
+		}
+
+		return null;
+	}
+	
+	public Convocatoria getConvocatoria(Map<String, Long> ids, Map<String, Object> vars) {
+		if (vars != null && vars.containsKey("convocatoria"))
+			return (Convocatoria) vars.get("convocatoria");
+		else if (ids != null && ids.containsKey(""))
+			return Convocatoria.findById(ids.get(""));
+		return Convocatoria.get(Convocatoria.class);
+	}
+	
+	@SuppressWarnings("unused")
+	private ResultadoPermiso editarSolicitud(String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		// Variables
+		Agente agente = AgenteController.getAgente();
+
+		SolicitudGenerica solicitud = getSolicitudGenerica(ids, vars);
+
+		Convocatoria convocatoria = getConvocatoria(ids, vars);
+
+		Secure secure = config.InjectorConfig.getInjector().getInstance(security.Secure.class);
+
+		if (utils.StringUtils.in(agente.rolActivo.toString(), "evaluador", "lector")) {
+			if ("leer".equals(accion) || "editar".equals(accion))
+				return new ResultadoPermiso(Accion.Leer);
+			else
+				return null;
+
+		}
+
+		if (!secure.checkGrafico("usuario", "visible", accion, ids, vars) || (agente.rolActivo.toString().equals("usuario".toString()) && solicitud != null && solicitud.estado.toString().equals("borrador".toString()) && solicitud != null && solicitud.registro != null && solicitud.registro.fasesRegistro != null && solicitud.registro.fasesRegistro.borrador.toString().equals("false".toString()) && utils.StringUtils.in(convocatoria.estado.toString(), "presentacion"))) {
+			return new ResultadoPermiso(Accion.All);
+
+		}
+
+		if (!secure.checkGrafico("usuario", "visible", accion, ids, vars) || (agente.rolActivo.toString().equals("usuario".toString()))) {
+			if ("leer".equals(accion) || "editar".equals(accion))
+				return new ResultadoPermiso(Accion.Leer);
+			else
+				return null;
+
 		}
 
 		return null;

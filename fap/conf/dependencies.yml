@@ -24,8 +24,8 @@ require:
         transitive: false
     - com.google.guava -> guava r09
     - net.sf.flexjson -> flexjson 2.1
-    - javassist -> javassist 3.8.0.GA:
-        transitive: false
+#   - javassist -> javassist 3.8.0.GA:
+#       transitive: false
     - joda-time -> joda-time-hibernate 1.2:
         transitive: false
     - org.opensaml -> opensaml 1.1:

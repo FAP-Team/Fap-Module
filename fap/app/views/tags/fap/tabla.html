@@ -357,10 +357,8 @@
 				});
 		    }
 		    
-		    // Para cuando se entra a la pagina
-		    $(document).ready(function() {
-                 peticionJSON${id}();
-            });
+		    // Para cada vez que se renderiza la pagina, realizamos la petición para traer los datos
+            peticionJSON${id}();
 			
 			#{if combo} 
 			    var $combo = $('#${combo}');

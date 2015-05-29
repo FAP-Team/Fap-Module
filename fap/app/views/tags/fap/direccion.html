@@ -64,6 +64,37 @@
 	
 }%
 
+<script>
+
+//Función que deshabilita los combos según el grupo correspondiente para evitar realizar todas las llamadas
+//a los combos dependientes si no se van a utilizar en un determinado grupo.
+
+function disabled_comboUnable(comboRef){
+   switch(comboRef) {
+      case 'canaria':
+         $('#${id_comunidad}').val("");
+         $('#${id_provincia}').val("");
+         $('#${id_municipio}').val("");
+         $('#${id_pais}').val("");
+      break;
+      case 'nacional':
+         $('#${id_pais}').val("");
+         $('#${id_provinciaIsla}').val("");
+         $('#${id_municipioIsla}').val("");
+         $('#${id_isla}').val("");
+      break;
+      case 'internacional':
+         $('#${id_comunidad}').val("");
+         $('#${id_provincia}').val("");
+         $('#${id_municipio}').val("");
+         $('#${id_provinciaIsla}').val("");
+         $('#${id_municipioIsla}').val("");
+         $('#${id_isla}').val("");
+      break;
+   }
+}
+
+</script>
 	#{if !direccionAntigua}
 
 		#{fap.grupo titulo:label, visible:label != null}
@@ -71,6 +102,10 @@
 			#{fap.combo id:id_combo, titulo:'Tipo Dirección', campo:campo_combo, obj:obj, requerido:requerido/}
 		
 			#{fap.grupo siCombo:id_combo, siComboValue:['canaria'], borde:false, sendHiddenFields:false}
+				
+				<script>
+				   disabled_comboUnable($('#${id_combo}').val());
+				</script>
 				
 				<select id="${id_comunidad}_canaria" style="display:none">
 					<option value="_05" selected></option>
@@ -84,6 +119,10 @@
 		
 			#{fap.grupo siCombo:id_combo, siComboValue:['nacional'], borde:false, sendHiddenFields:false}
 				
+				<script>
+                   disabled_comboUnable($('#${id_combo}').val());
+                </script>
+				
 				<select id="${id_pais}_nacional" style="display:none">
 					<option value="_724" selected></option>
 				</select>
@@ -95,6 +134,10 @@
 			
 			
 			#{fap.grupo siCombo:id_combo, siComboValue:['internacional'], borde:false, sendHiddenFields:false}
+			    <script>
+                   disabled_comboUnable($('#${id_combo}').val());
+                </script>
+                
 				#{fap.combo id:id_pais, titulo:'País', campo:campo_pais, obj:obj, requerido:requerido, searchable:true /}
 				#{fap.texto id:id_provinciaInternacional, titulo:'Estado/Provincia/Región', campo:campo_provinciaInternacional, obj:obj, requerido:requerido, ancho:"250px", searchable:true /}	
 			#{/fap.grupo}
@@ -112,7 +155,7 @@
 		#{/fap.grupo}
 	
 		<script>
-			$('#${id_combo}').change(function(){
+				$('#${id_combo}').change(function(){
 				$('#${id_pais}').val("");
 				$('#${id_comunidad}').val("");
 				$('#${id_provincia}').val("");

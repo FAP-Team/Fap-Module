@@ -110,14 +110,14 @@ function peticion${id}(combo, codigoUO, subnivelUO){
             }));        
             });
        
-            #{if searchable} combo.trigger("liszt:updated"); #{/if}
+            #{if searchable} combo.trigger("chosen:updated"); #{/if}
         }
     }
     
     function resetCombo${id}(combo){ 
        combo.empty();                     
        combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
-       #{if searchable} combo.trigger("liszt:updated"); #{/if}
+       #{if searchable} combo.trigger("chosen:updated"); #{/if}
     }
     
     function almacenarCodigo${id}(comboPadre, combo) {

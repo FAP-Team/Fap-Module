@@ -16,6 +16,7 @@ import resolucion.ResolucionBase;
 import verificacion.VerificacionUtils;
 import models.Agente;
 import models.Busqueda;
+import models.Convocatoria;
 import models.Documento;
 import models.LineaResolucionFAP;
 import models.Participacion;

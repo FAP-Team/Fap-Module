@@ -1,30 +1,22 @@
-package services.filesystem;
+package services.comunicacionesInternas;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-
 import com.sun.star.util.Date;
 import com.sun.star.util.DateTime;
-
 import models.AsientoCIFap;
 import models.ListaUris;
-import models.ReturnComunicacionInternaAmpliadaFap;
-import models.ReturnComunicacionInternaFap;
+import models.RespuestaCIFap;
 import models.ReturnErrorFap;
 import models.ReturnInteresadoFap;
 import models.ReturnUnidadOrganicaFap;
-import services.ComunicacionesInternasService;
-import services.ComunicacionesInternasServiceException;
 import swhiperreg.ciservices.ReturnComunicacionInternaAmpliada;
-import models.AsientoAmpliadoCIFap;
 import tags.ComboItem;
 
 public class FileSystemComunicacionesInternasServiceImpl implements ComunicacionesInternasService{
@@ -42,8 +34,8 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 	}
 
 	@Override
-	public ReturnComunicacionInternaFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
-		ReturnComunicacionInternaFap respuesta = new ReturnComunicacionInternaFap();
+	public RespuestaCIFap crearNuevoAsiento(AsientoCIFap asientoFap) throws ComunicacionesInternasServiceException {
+		RespuestaCIFap respuesta = new RespuestaCIFap();
 		respuesta.usuario = asientoFap.userId;
 		respuesta.resumen = asientoFap.resumen;
 		respuesta.observaciones = asientoFap.observaciones;
@@ -58,19 +50,15 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.asunto = asientoFap.asuntoCodificado;
 		respuesta.unidadOrganica = "Descripcion de la unidad organica "+respuesta.contadorUO;
 		respuesta.interesado = new ReturnInteresadoFap();
-			respuesta.interesado.nombre = "Nombre del Interesado";
-			respuesta.interesado.save();
+		respuesta.interesado.nombre = "Nombre del Interesado";
+		respuesta.interesado.save();
 		respuesta.tipoTransporte = "Tipo de transporte";
 		respuesta.uris = new ArrayList<ListaUris>();
-			//¿Añadir uris de documentos o vacio para probar???
-		respuesta.error = new ReturnErrorFap();
-		respuesta.error.codigo = 0;
-		respuesta.error.descripcion = null;
 		return respuesta;
 	}
 	
-	public ReturnComunicacionInternaAmpliadaFap crearNuevoAsientoAmpliado(AsientoAmpliadoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
-		ReturnComunicacionInternaFap respuesta = new ReturnComunicacionInternaFap();
+	public RespuestaCIFap crearNuevoAsientoAmpliado(AsientoCIFap asientoAmpliadoFap) throws ComunicacionesInternasServiceException{
+		RespuestaCIFap respuesta = new RespuestaCIFap();
 		respuesta.usuario = asientoAmpliadoFap.userId;
 		respuesta.resumen = asientoAmpliadoFap.resumen;
 		respuesta.observaciones = asientoAmpliadoFap.observaciones;
@@ -85,12 +73,10 @@ public class FileSystemComunicacionesInternasServiceImpl implements Comunicacion
 		respuesta.asunto = asientoAmpliadoFap.asuntoCodificado;
 		respuesta.unidadOrganica = "Descripcion de la unidad organica "+respuesta.contadorUO;
 		respuesta.interesado = new ReturnInteresadoFap();
-			respuesta.interesado.nombre = "Nombre del Interesado";
-			respuesta.interesado.save();
+		respuesta.interesado.nombre = "Nombre del Interesado";
+		respuesta.interesado.save();
 		respuesta.tipoTransporte = "Tipo de transporte";
 		respuesta.uris = new ArrayList<ListaUris>();
-			//¿Añadir uris de documentos o vacio para probar???
-		respuesta.error.descripcion = "0"; //Sin errores
 		return null;
 		
 	}

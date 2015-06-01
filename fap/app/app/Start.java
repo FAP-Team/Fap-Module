@@ -88,8 +88,6 @@ import properties.Properties;
 import services.BaremacionService;
 import services.CertificadosService;
 import services.CertificadosServiceException;
-import services.ComunicacionesInternasService;
-import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
 import services.MensajeServiceException;
@@ -99,9 +97,11 @@ import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
-import services.ServiciosGenericosService;
 import services.TercerosService;
 import services.MensajeService;
+import services.BDOrganizacion.BDOrganizacionService;
+import services.comunicacionesInternas.ComunicacionesInternasService;
+import services.genericos.ServiciosGenericosService;
 import services.genericos.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
@@ -241,6 +241,9 @@ public class Start extends Job {
 		
 		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 		registroService.mostrarInfoInyeccion();
+		
+		BDOrganizacionService bdOrganizacionService = InjectorConfig.getInjector().getInstance(BDOrganizacionService.class);
+		bdOrganizacionService.mostrarInfoInyeccion();
 		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();

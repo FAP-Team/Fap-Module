@@ -19,6 +19,7 @@ import es.fap.simpleled.led.Campo;
 import es.fap.simpleled.led.Check;
 import es.fap.simpleled.led.Columna;
 import es.fap.simpleled.led.Combo;
+import es.fap.simpleled.led.ComboUO;
 import es.fap.simpleled.led.CompoundType;
 import es.fap.simpleled.led.Direccion;
 import es.fap.simpleled.led.DireccionMapa;
@@ -289,6 +290,9 @@ public abstract class LedElementValidator {
 		}
 		if (container instanceof GrupoRadioButtons) {
 			return new GrupoRadioButtonsValidator(container);
+		}
+		if (container instanceof ComboUO) {
+			return new ComboUOValidator(container);
 		}
 		return null;
 	}

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import messages.Messages;
 import models.Agente;
 import models.Documento;
@@ -15,6 +17,7 @@ import models.DocumentoNotificacion;
 import models.Notificacion;
 import play.mvc.Util;
 import properties.FapProperties;
+import services.NotificacionService;
 import tables.TableRenderResponse;
 import utils.AedUtils;
 import utils.NotificacionUtils;
@@ -23,6 +26,9 @@ import controllers.gen.NotificacionVerControllerGen;
 import es.gobcan.aciisi.servicios.enotificacion.dominio.notificacion.DocumentoNotificacionEnumType;
 
 public class NotificacionVerController extends NotificacionVerControllerGen {
+	
+	@Inject
+    private static NotificacionService notificacionService;
 	
 	public static void index(String accion, Long idNotificacion) {
 		if (accion == null)
@@ -69,11 +75,24 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 					rowsDocumentos.add(doc);
 			}
 		}
+		
 		//Obtener documento de acuseDeRecibo
 		if (notificacion.documentoAcuseRecibo != null){
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 			if (!uriDocAux.equals("")){
-				Documento doc = Documento.findByUri(uriDocAux);
+				Documento doc;
+				doc = Documento.findByUri(uriDocAux);
+				if (doc == null) {
+					doc = new Documento();
+					doc.uri = uriDocAux;
+					doc.firmado = notificacionService.obtenerFirmadoDocumentoNotificacion("", notificacion.uri, DocumentoNotificacionEnumType.ACUSE_RECIBO);					
+					try {	
+						doc.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriDocAux);
+						doc.tipo = NotificacionUtils.obtenerTipoDocumento(uriDocAux);
+					} catch (Exception ex) {
+						play.Logger.error("Excepción obteniendo la descripción y el tipo de documento de la uri: " + uriDocAux + "Error: " + ex.getMessage());
+					}					
+				}
 				rowsDocumentos.add(doc);
 			}
 		}
@@ -84,6 +103,17 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.ANULACION);
 			if (!uriDocAux.equals("")){
 				Documento doc = Documento.findByUri(uriDocAux);
+				if (doc == null) {
+					doc = new Documento();
+					doc.uri = uriDocAux;
+					doc.firmado = notificacionService.obtenerFirmadoDocumentoNotificacion("", notificacion.uri, DocumentoNotificacionEnumType.ANULACION);					
+					try {	
+						doc.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriDocAux);
+						doc.tipo = NotificacionUtils.obtenerTipoDocumento(uriDocAux);
+					} catch (Exception ex) {
+						play.Logger.error("Excepción obteniendo la descripción y el tipo de documento de la uri: " + uriDocAux + "Error: " + ex.getMessage());
+					}					
+				}
 				rowsDocumentos.add(doc);
 			}
 		}
@@ -94,6 +124,17 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 			uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);
 			if (!uriDocAux.equals("")){
 				Documento doc = Documento.findByUri(uriDocAux);
+				if (doc == null) {
+					doc = new Documento();
+					doc.uri = uriDocAux;
+					doc.firmado = notificacionService.obtenerFirmadoDocumentoNotificacion("", notificacion.uri, DocumentoNotificacionEnumType.MARCADA_RESPONDIDA);					
+					try {	
+						doc.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriDocAux);
+						doc.tipo = NotificacionUtils.obtenerTipoDocumento(uriDocAux);
+					} catch (Exception ex) {
+						play.Logger.error("Excepción obteniendo la descripción y el tipo de documento de la uri: " + uriDocAux + "Error: " + ex.getMessage());
+					}					
+				}
 				rowsDocumentos.add(doc);
 			}
 		}
@@ -102,6 +143,17 @@ public class NotificacionVerController extends NotificacionVerControllerGen {
 		uriDocAux = NotificacionUtils.obtenerUriDocumentos(notificacion, DocumentoNotificacionEnumType.NO_ACCESO);
 		if (!uriDocAux.equals("")){
 			Documento doc = Documento.findByUri(uriDocAux);
+			if (doc == null) {
+				doc = new Documento();
+				doc.uri = uriDocAux;
+				doc.firmado = notificacionService.obtenerFirmadoDocumentoNotificacion("", notificacion.uri, DocumentoNotificacionEnumType.NO_ACCESO);					
+				try {	
+					doc.descripcion = NotificacionUtils.obtenerDescripcionDocumento(uriDocAux);
+					doc.tipo = NotificacionUtils.obtenerTipoDocumento(uriDocAux);
+				} catch (Exception ex) {
+					play.Logger.error("Excepción obteniendo la descripción y el tipo de documento de la uri: " + uriDocAux + "Error: " + ex.getMessage());
+				}					
+			}
 			rowsDocumentos.add(doc);
 		}
 	

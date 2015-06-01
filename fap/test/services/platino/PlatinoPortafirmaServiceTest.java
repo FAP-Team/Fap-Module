@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import config.InjectorConfig;
 import services.GestorDocumentalService;
 import services.PortafirmaFapServiceTest;
+import services.BDOrganizacion.PlatinoBDOrganizacionServiceImpl;
 
 import javax.inject.Inject;
 import javax.xml.ws.BindingProvider;

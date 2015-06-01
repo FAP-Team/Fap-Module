@@ -8,6 +8,7 @@ import security.Secure;
 import services.*;
 import services.aed.ProcedimientosService;
 import services.aed.TiposDocumentosService;
+import services.comunicacionesInternas.ComunicacionesInternasService;
 
 import com.google.inject.Injector;
 import services.ticketing.TicketingService;

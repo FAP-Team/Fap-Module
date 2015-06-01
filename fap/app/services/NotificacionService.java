@@ -50,4 +50,6 @@ public interface NotificacionService {
 	public void mostrarInfoInyeccion();
 	
 	public String obtenerUriDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento); 
+	
+	public boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento);
 }

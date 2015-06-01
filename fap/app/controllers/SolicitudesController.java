@@ -170,7 +170,7 @@ public class SolicitudesController extends SolicitudesControllerGen {
 			}
 		}
 
-		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rows, false, false, false, "editarSolicitud", "", "", getAccion(), ids);
+		tables.TableRenderResponse<SolicitudGenerica> response = new tables.TableRenderResponse<SolicitudGenerica>(rows, true, false, false, "editarSolicitud", "", "", getAccion(), ids);
 		renderJSON(response.toJSON("id", "expedienteAed.idAed", "estado", "estadoValue", "estadoUsuario", "solicitante.numeroId", "solicitante.nombreCompleto"));
 	
 	}

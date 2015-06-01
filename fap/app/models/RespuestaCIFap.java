@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class ReturnComunicacionInternaFap extends FapModel {
+public class RespuestaCIFap extends FapModel {
 	// Código de los atributos
 
 	public String usuario;
@@ -52,30 +52,24 @@ public class ReturnComunicacionInternaFap extends FapModel {
 	public String tipoTransporte;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "returncomunicacioninternafap_uris")
+	@JoinTable(name = "respuestacifap_uris")
 	public List<ListaUris> uris;
+
+	public String unidadOrganicaOrigen;
+
+	public String unidadOrganicaPropuesta;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public ReturnErrorFap error;
 
-	public ReturnComunicacionInternaFap() {
+	public RespuestaCIFap() {
 		init();
 	}
 
 	public void init() {
 
-		if (interesado == null)
-			interesado = new ReturnInteresadoCIFap();
-		else
-			interesado.init();
-
 		if (uris == null)
 			uris = new ArrayList<ListaUris>();
-
-		if (error == null)
-			error = new ReturnErrorFap();
-		else
-			error.init();
 
 		postInit();
 	}

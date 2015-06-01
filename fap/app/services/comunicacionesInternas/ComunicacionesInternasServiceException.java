@@ -1,4 +1,4 @@
-package services;
+package services.comunicacionesInternas;
  
  public class ComunicacionesInternasServiceException extends Exception {
    public ComunicacionesInternasServiceException(String msg){

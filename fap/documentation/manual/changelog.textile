@@ -1,7 +1,49 @@
 h2. Changelog
 
+h3. Versión 2.5.6RC5
+
+* Se cambia a la versión 1.2.7.2 de Play Framework
+* FixedBug LLamada por reflexión a métodos con o sin argumentos.
+* Mejora de validación de permisos en las tablas.
+* Mejora del tiempo de carga del elemento dirección.
+* Mejora de los tiempo de carga de los combos interdependientes.
+* FixedBug  Comprobación adicional en el proceso de clasificación de documentos en el AED.
+* Actualiza los scripts de generación de código para que estos siempre muestren información a través de la consola.
+* Actualiza la lista de integrantes de FAP.
+* Actualiza las referencias a los servicios de BDOrganizacion, HiperReg y Comunicaciones Internas.
+* Añade el servicio de Comunicaciones Internas.
+* Añade el servicio de BDOrganizacion.
+* Refactorización del servicio HiperReg.
+* Añade a la gramática el combo de Unidades Organizativas (comboUO).
+* FixedBug   La búsqueda de notificaciones ya no está limitada por el número máximo de registros que retorna el servicio web.
+* Mejora el control de errores en el servicio de Notificaciones de la ACIISI.
+* FixedBug  Corrige las referencias a Solicitud en la página AceptacionRenuncia.
+* FixedBug  En la generación del elemento Tabla se ignoran los atributos que no tienen ningún valor asociado (null).
+* Actualiza el tipo de datos Moneda a Double en el módulo de Subvenciones.
+* Actualiza el report de requerimiento para que no se muestre vacío el campo "Motivo de Requerimiento" en el PDF.
+* Actualiza el permiso del botón "Obtener Borrador Requerimiento" para que éste, a excepción del estado "enRequerimiento", siempre sea visible.
+* Actualiza el módulo de Notificaciones de la ACIISI para que se copie el documento "Puesta a Disposición" en el expediente del AED.
+* Añade al módulo de Notificaciones métodos para obtener información sobre los campos Descripción, Tipo y Firmado.
+* FixedBug  Corrige la descarga de documentos en la tabla de Notificaciones.
+* Actualiza la ruta de Play en el Travis.
+* FixedBug  Corrige error en la implementación de FileSystemComunicacionesInternas.
+* Actualización para marcar como firmado el Oficio de Remisión.
+* FixedBug  Descarga del justificante del Oficio de Remisión.
+* Habilita el uso de Subvenciones en las aplicaciones.
+* FixedBug  Elimina los gestores duplicados en el combo de firma.
+* FixedBug  Verificación de los permisos en el módulo de Seguridad.
+
 h3. Versión 2.5.6RC4
 
+* Se corrigen errores en la descarga de notificaciones.
+* Se corrigen errores en los reports de los requerimientos de la verificaciones.
+* Se corrige la copia del documentos al expediente en las notificaciones.
+* Se corrige la descarga de documentos en las notificaciones.
+* Se corrige la descarga del justificante en el PopUP de los oficios de remisión.
+* Se mejora la seguridad para evitar que se no se puedan modificar los permisos desde las aplicaciones.
+* Se evita que los gestores a firmar aparezcan duplicados en el apartado de Verificación.
+* Se corrige la descarga del requerimiento una vez notificado el mismo.
+* Se corrige acuse de recibo en notificaciones de la agencia.
 * Actualizada documentación para la creación y distribución del módulo.
 * Actualizada documentación para generar las librerías.
 * Actualizada librería de platino-pre a la versión v20150331.

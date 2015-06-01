@@ -1113,7 +1113,7 @@ Permiso obtenerBorradorRequerimiento {
     vars
         Verificacion verificacion
     when
-        verificacion?.estado in ("enRequerimiento", "enRequerimientoFirmaSolicitada", "enRequerimientoFirmadaRegistrada")
+        verificacion?.estado not in ("enRequerido")
     return
         all
 }

@@ -17,7 +17,6 @@ import platino.DatosDocumento;
 import properties.FapProperties;
 import services.GestorDocumentalService;
 import services.GestorDocumentalServiceException;
-import services.platino.PlatinoBDOrganizacionServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
 import services.platino.PlatinoGestorDocumentalServiceException;
 import services.platino.PlatinoPortafirmaServiceImpl;

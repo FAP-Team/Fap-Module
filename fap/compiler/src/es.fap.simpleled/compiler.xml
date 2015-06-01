@@ -41,8 +41,8 @@
 				<include name="**/*.genmodel" />
 				<include name="**/*.xtextbin" />
 				<include name="**/*.xmi" />
-				<include name="**/*.xtextbin" />
 				<include name="**/*.tokens" />
+				<include name="**/*loadinitialization_ecore" />
 			</fileset>
 			<fileset dir=".">
 				<include name="META-INF/MANIFEST.MF" />

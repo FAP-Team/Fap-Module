@@ -39,7 +39,7 @@ import services.PortafirmaFapServiceException;
 import services.RegistroLibroResolucionesService;
 import services.RegistroLibroResolucionesServiceException;
 import services.RegistroService;
-import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.BDOrganizacion.PlatinoBDOrganizacionServiceImpl;
 import services.platino.PlatinoGestorDocumentalService;
 import services.responses.PortafirmaCrearSolicitudResponse;
 import tags.ComboItem;

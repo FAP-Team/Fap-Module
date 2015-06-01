@@ -2,6 +2,7 @@ package controllers.fap;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import config.InjectorConfig;
-
 import enumerado.fap.gen.EstadoNotificacionEnum;
-
 import models.Agente;
 import models.Interesado;
 import models.Notificacion;
@@ -24,6 +26,7 @@ import play.mvc.*;
 import properties.FapProperties;
 import services.TercerosService;
 import services.TercerosServiceException;
+import tags.ComboItem;
 import utils.DocumentosUtils;
 import utils.TercerosUtils;
 import validation.CifCheck;
@@ -58,52 +61,94 @@ public class UtilsController extends Controller {
     	return misNotificaciones.size();
     }
     
+    /**
+     * Método que permite filtrar la lista combos dependientes y devuelve un objeto JSON para ser manipulado por la vista.
+     * @param tabla
+     * @param dependencia
+     * @return
+     */
     public static String filterDependency(String tabla, String dependencia){
-    	if (!dependencia.isEmpty()){
-	    	List<TableKeyValueDependency> tablaD = TableKeyValueDependency.find("select tkvd from TableKeyValueDependency tkvd where table=?", tabla).fetch(); 
-			String js = "{";
-			int tamLimite = tablaD.size();
-			int contador=1;
-			for (TableKeyValueDependency tkvd: tablaD){
-				if (dependencia.equals(tkvd.dependency)){
-					js += tkvd.key + ":" + tkvd.dependency;
-					if(contador++ <= tamLimite){
-						js += "%";
-					}
-				}
-			}
-			js += "}";
-	    	return js;
+    	List<ComboItem> lstfilterDependency = new ArrayList<ComboItem>();
+    	String resultados = null;
+    	try  {
+    		if (tabla != null && !tabla.isEmpty() && dependencia != null && !dependencia.isEmpty()){
+        		List<TableKeyValueDependency> tablaD = TableKeyValueDependency.em().createQuery("select tkvd from TableKeyValueDependency tkvd where table=:tabla and dependency=:dependencia")
+        				.setParameter("tabla", tabla).setParameter("dependencia", dependencia).getResultList(); 
+
+    			for (TableKeyValueDependency tkvd: tablaD){
+    				lstfilterDependency.add(new ComboItem(tkvd.key, tkvd.dependency));
+    			}
+    			
+    			resultados = new Gson().toJson(lstfilterDependency);
+        	}
+    	}catch(Exception e){
+    		play.Logger.error("No se han podido recuperar las dependencias de la tabla: " + tabla + " error: " + e.getMessage());
     	}
-    	return "{}";
+    
+    	return resultados;
     }
     
+    /**
+     * Método que recupera los valores de una tabla para los elementos dados y los devuelve en un objeto JSON para ser manipuladas por la vista.
+     * @param tabla
+     * @param elementos
+     * @return
+     * @throws IOException
+     */
     public static String filterTKV(String tabla, String elementos) throws IOException{
-
-    	elementos = elementos.replaceFirst("\\{", "");
-    	elementos = elementos.replaceFirst("\\}", "");
-    	String[] parseador = elementos.split(":.*?%");
-    	List<String> mapaFilter = new ArrayList<String>();
-    	for (String s : parseador) {
-    	    mapaFilter.add(s);
+    	Map<String, String> mapfilterTKV = new HashMap<String, String>();
+    	Type type = new TypeToken<List<ComboItem>>(){}.getType();
+    	List<ComboItem> lstElementos = new ArrayList<ComboItem>();
+    	List<ComboItem> lstResult = new ArrayList<ComboItem>();
+    	String resultados = null;
+    	try{
+    		if (tabla != null && !tabla.isEmpty() && elementos != null && !elementos.isEmpty()){
+    			mapfilterTKV = TableKeyValue.findByTableAsMap(tabla);
+    			lstElementos = new Gson().fromJson(elementos, type);
+    			
+    			if (mapfilterTKV != null)
+	    			for (ComboItem item : lstElementos)
+	    				if (mapfilterTKV.containsKey(item.getKey()))
+	    					lstResult.add(new ComboItem(item.getKey(), mapfilterTKV.get(item.getKey())));
+    			
+    			resultados = new Gson().toJson(lstResult);		
+    		}
+    	}catch (Exception e){
+    		play.Logger.error("No se han podido recuperar los valores de dependencia de la tabla: " + tabla + " error: " + e.getMessage());
     	}
-    	if (!mapaFilter.isEmpty()){
-    		Map<String, String> mapa = TableKeyValue.findByTableAsMap(tabla);
-			String js = "{";
-			int tamLimite = mapaFilter.size();
-			int contador=1;
-			for (String key: mapaFilter){
-				if (mapa.containsKey(key)){
-					js += key + ":" + mapa.get(key);
-					if(contador++ <= tamLimite){
-						js += "%";
-					}
-				}
-			}
-			js += "}";
-	    	return js;
+    
+    	return resultados;
+    }
+    
+    /**
+     * Método que realiza una combinación de filterDependency y filterTKV, devuelve un objeto JSON para ser manipulado por la vista.
+     * @param tabla
+     * @param dependencia
+     * @return
+     * @throws IOException
+     */
+    public static String filterDependencyPerformance(String tabla, String dependencia) throws IOException{
+    	Map<String, String> mapfilterTKV = new HashMap<String, String>();
+    	List<ComboItem> lstResult = new ArrayList<ComboItem>();
+    	String resultados = null;
+    	try{
+    		if (tabla != null && !tabla.isEmpty() && dependencia != null && !dependencia.isEmpty()){
+    			List<TableKeyValueDependency> tablaD = TableKeyValueDependency.em().createQuery("select tkvd from TableKeyValueDependency tkvd where table=:tabla and dependency=:dependencia")
+        				.setParameter("tabla", tabla).setParameter("dependencia", dependencia).getResultList(); 
+    			
+    			mapfilterTKV = TableKeyValue.findByTableAsMap(tabla);
+    			
+    			for (TableKeyValueDependency tkvd: tablaD)
+    				if (mapfilterTKV.containsKey(tkvd.key))
+    					lstResult.add(new ComboItem(tkvd.key, mapfilterTKV.get(tkvd.key)));
+    			
+    			resultados = new Gson().toJson(lstResult);		
+    		}
+    	}catch (Exception e){
+    		play.Logger.error("No se han podido recuperar los valores de dependencia de la tabla: " + tabla + " error: " + e.getMessage());
     	}
-    	return "{}";
+    
+    	return resultados;
     }
     
     public static String getTerceroByNipOrCif (String numeroIdentificacion, String tipoIdentificacion) {

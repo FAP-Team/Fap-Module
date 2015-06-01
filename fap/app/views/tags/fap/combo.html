@@ -182,40 +182,96 @@
 	#{if dependencia}
 	
 		%{
+		    urlFilterDependencyPerformanceFunction = play.mvc.Router.reverse('fap.UtilsController.filterDependencyPerformance')
 			urlFilterDependencyFunction = play.mvc.Router.reverse('fap.UtilsController.filterDependency')
 			urlFilterTKVFunction = play.mvc.Router.reverse('fap.UtilsController.filterTKV')
 		%}
 		
 		<script>
-		
-			 var elementosKey${id}=[];
-			 var elementosValue${id}=[];
-             var elementosTKV${id}={};
-             var valorDependencia${id};
-             var tamElementos${id}=0;
-
-			// Para llamar a codigo Java que filtre los valores de la lista de dependencia para que solo cargue los potenciales, no todos.
+             var valorDependencia${id}; //Contiene el valor del combo seleccionado para aplicar la cascada de dependencias.
+                       
+             //Calcula la lista de elementos del combo dependiente en una única petición.
+             function calculateDependenciesPerformance${id}(dependency){
+               var urlFilterDependency = "${urlFilterDependencyPerformanceFunction}";
+                if(dependency != null && dependency != ""){
+                    $.ajax({
+                        type: "POST",
+                        url: urlFilterDependency,
+                        data: {tabla: "${field.table}", dependencia: dependency},
+                        beforeSend: function() {
+                           $(document.body).css({ 'cursor': 'wait' });
+                        },
+                        complete: function(){
+                           $(document.body).css({ 'cursor': 'default' });
+                        }
+                    }).done(function( result ) {
+                        var data = null;
+                         try {
+                            data = jQuery.parseJSON(result); 
+                            
+                            // Rellenar el select con options, segun los valores que le correspondan
+                            $.each(data, function(i, item) {
+                                var selected = ""
+                                // Para recuperar el valor seleccionado, si lo habia
+                                if ($('select[id=${id}]').val() == item.key)
+                                    selected = "selected=\"selected\"";
+                                contenido${id}+='<option value="'+item.key+'" '+selected+'>'+item.value+'</option>';
+                            });
+                         } catch(err) {
+                            //console.log(err);
+                         } finally {
+                            $('#${id}').html(contenido${id});
+                            var $combo = $('#${id}');
+                            if ($combo.attr('disabled') != "disabled") {
+                                #{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+                                $combo.trigger("liszt:updated");
+                                #{/if}
+                            }
+                            // Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+                            $('#${id}').change();
+                         }
+                    });
+                } else {
+                    // Rellenar el select con options, segun los valores que le correspondan
+                    var contenido${id} = '<option> </option>';
+                    $('#${id}').html(contenido${id});
+                    var $combo = $('#${id}');
+                    
+                    if ($combo.attr('disabled') != "disabled") {
+                        #{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+                        $combo.trigger("liszt:updated");
+                        #{/if}
+                    }   
+                    
+                    // Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+                    $('#${id}').change();
+                }
+            }
+             
+			//Calcula la lista de elementos del combo dependiente en dos peticiones pudiendo incluir la clave del elemento
+			//en la descripción del mismo
 			function calculateDependencies${id}(dependency){
 				var urlFilterDependency = "${urlFilterDependencyFunction}";
-				if(dependency != ""){
+				if(dependency != null && dependency != ""){
 					$.ajax({
 				  		type: "POST",
 				  		url: urlFilterDependency,
-				  		data: {tabla: "${field.table}", dependencia: dependency}
-					}).done(function( msg ) {
-		 				var params = msg;
-						if (params != "{}"){
-							params = params.replace("{", "");
-							params = params.replace("}", "");
-							params = params.split('%');
-							for (var i = 0; i < params.length; i++) {
-		 						 var parts = params[i].split(':');
-		 						 elementosKey${id}[i] = parts[0]
-		 						 elementosValue${id}[i] = parts[1];
-		 						 tamElementos${id}++;
-							}
-						} 
-						calculateTKV${id}(msg);
+				  		data: {tabla: "${field.table}", dependencia: dependency},
+				  		beforeSend: function() {
+                           $(document.body).css({ 'cursor': 'wait' });
+                        },
+                        complete: function(){
+                           $(document.body).css({ 'cursor': 'default' });
+                        }
+					}).done(function( result ) {
+		 				var data = null;
+		 				 try {
+		 				    data = jQuery.parseJSON(result); 
+		 				 } catch(err) {
+		 				    //console.log(err);
+		 				 }
+					}).then(function( data ) {
+					    calculateTKV${id}(data);
 					});
 				} else {
 					// Rellenar el select con options, segun los valores que le correspondan
@@ -231,61 +287,53 @@
 					
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
-			
-					elementosKey${id}=[];
-					elementosValue${id}=[];
-             		elementosTKV${id}={};
-             		tamElementos${id}=0;
 				}
 			}
 			
 			// Para llamar a codigo Java que filtre los valores de la lista de dependencia para que solo cargue los potenciales, no todos.
 			function calculateTKV${id}(elementos){
 				var urlFilterTKV = "${urlFilterTKVFunction}";
-				if (elementos != "{}"){
+				if (elementos != null && elementos != ""){
 					$.ajax({
 				  		type: "POST",
 				  		url: urlFilterTKV,
-				  		data: {tabla: "${field.table}", elementos: elementos}
-					}).done(function( msg ) {
-						var params = msg;
-						if (params != "{}"){
-							params = params.replace("{", "");
-							params = params.replace("}", "");
-							params = params.split('%');
-							for (var i = 0; i < params.length; i++) {
-		 						 var parts = params[i].split(':');
-		 						 elementosTKV${id}[parts[0]] = parts[1];
-							}
-						}
-						// Rellenar el select con options, segun los valores que le correspondan
-						var contenido${id} = '<option> </option>';
-						var i;
-						for (i=0; i<tamElementos${id}; i++){
-							// Calcular los valores de la lista segun el valor dependiente
-							if (elementosValue${id}[i] === valorDependencia${id}){
-								var selected = ""
-								// Para recuperar el valor seleccionado, si lo habia
-								if ($('select[id=${id}]').val() == elementosKey${id}[i])
-									selected = "selected=\"selected\"";
-							    contenido${id}+='<option value="'+elementosKey${id}[i]+'" '+selected+'>#{if mostrarClave}'+elementosValue${id}[i]+' - #{/if}'+elementosTKV${id}[elementosKey${id}[i]]+'</option>';
-							}
-						}
-						$('#${id}').html(contenido${id});
-						var $combo = $('#${id}');
-						if ($combo.attr('disabled') != "disabled") {
-							#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
-							$combo.trigger("chosen:updated");
-							#{/if}
-						}
-						// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
-						$('#${id}').change();
-						
-							
-						
-						elementos${id}={};
-	             		elementosTKV${id}={};
-	             		tamElementos${id}=0;
+				  		data: {tabla: "${field.table}", elementos: elementos},
+				  		beforeSend: function() {
+                           $(document.body).css({ 'cursor': 'wait' });
+                        },
+                        complete: function(){
+                           $(document.body).css({ 'cursor': 'default' });
+                        }
+					}).done(function( result ) {
+						var data = null;
+                        var dataelem = null; 
+                        var contenido${id} = '<option> </option>';
+                         
+                        try {
+                           data = jQuery.parseJSON(result); 
+                           dataelem = jQuery.parseJSON(elementos); 
+                           
+                           // Rellenar el select con options, segun los valores que le correspondan
+                            $.each(data, function(i, item) {
+                                var selected = ""
+                                // Para recuperar el valor seleccionado, si lo habia
+                                if ($('select[id=${id}]').val() == item.key)
+                                    selected = "selected=\"selected\"";
+                                contenido${id}+='<option value="'+item.key+'" '+selected+'>#{if mostrarClave}'+dataelem[i].value+' - #{/if}'+item.value+'</option>';
+                            });
+                        } catch(err) {
+                           // console.log(err);
+                        } finally {
+	                        $('#${id}').html(contenido${id});
+	                        var $combo = $('#${id}');
+	                        if ($combo.attr('disabled') != "disabled") {
+	                            #{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
+	                            $combo.trigger("liszt:updated");
+	                            #{/if}
+	                        }
+	                        // Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
+	                        $('#${id}').change();
+                        }
 					});
 				} else {
 					// Rellenar el select con options, segun los valores que le correspondan
@@ -299,24 +347,23 @@
 					}	
 					// Indicamos que hubo un cambio, para entre otras cosas, provocar los seteos en cadena, en caso de que cambie un combo del que dependa otro
 					$('#${id}').change();
-
-					elementos${id}={};
-             		elementosTKV${id}={};
-             		tamElementos${id}=0;
 				}
 			}
 		
-		
-		
 			// Para los combos dependientes
-			function CargarValoresComboDependiente${id}(){
-				valorDependencia${id} = $('select[id=${dependencia}]').val();
-                calculateDependencies${id}(valorDependencia${id}); 
-			}
+			function CargarValoresComboDependiente${id}(){			
+			      valorDependencia${id} = $('select[id=${dependencia}]').val();
+			   #{if mostrarClave} 
+			      calculateDependencies${id}(valorDependencia${id});
+			   #{/if}
+			   #{else}
+			      calculateDependenciesPerformance${id}(valorDependencia${id});
+			   #{/else}			   
+            }
+            
 			// Para cada vez que se renderiza la pagina, calculamos los posibles valores de ese combo
 			CargarValoresComboDependiente${id}();
-			
-			
+
 			// Para cada vez que cambie un combo del que depende otro, actualizar la lista de valores de ese otro
 			$('#${dependencia}').change(function(){
 				if (recupera${id}) {
@@ -335,7 +382,7 @@
 		#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 			$("#${id}.combo").chosen();
 			$('#${id}_chzn').on("click", "a", function(){
-				if (comboTieneBind === false) {
+				if (typeof comboTieneBind != 'undefined' && comboTieneBind === false) {
 					comboTieneBind = true; 
 	    			$('select.combo').one("change", function(){
 	    					hayCambiosSinGuardar=true;
@@ -346,14 +393,14 @@
 		</script>
 
 	#{/if}	
-	#{elseif searchable}
+	#{elseif searchable || searchable == "true"}
 		<script>
 			var $combo = $("#${id}.combo");
 			if ($combo.attr('disabled') != "disabled") {
 				#{if !properties.FapProperties.getBoolean("fap.unable.chosen")}
 				$combo.chosen();
 				$('#${id}_chzn').on("click", "a", function(){
-					if (comboTieneBind === false) {
+					if (typeof comboTieneBind != 'undefined' && comboTieneBind === false) {
 						comboTieneBind = true; 
 	    				$('select.combo').one("change", function(){
 	    						hayCambiosSinGuardar=true;

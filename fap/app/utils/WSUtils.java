@@ -28,7 +28,7 @@ import platino.KeystoreCallbackHandler;
 import platino.PlatinoCXFSecurityHeaders;
 import properties.FapProperties;
 import properties.PropertyPlaceholder;
-import services.platino.PlatinoBDOrganizacionServiceImpl;
+import services.BDOrganizacion.PlatinoBDOrganizacionServiceImpl;
 
 public class WSUtils {
 

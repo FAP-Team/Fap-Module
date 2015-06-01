@@ -992,8 +992,8 @@ Entidad JsonPeticionModificacion{
 // -----------------------------------------------------------------------
 
 Entidad ComunicacionInterna{
-	AsientoCIFap asiento
-	ReturnComunicacionInternaFap respuesta
+    AsientoCIFap asiento noConstruct
+    RespuestaCIFap respuesta noConstruct
 	Lista estadosComunicacionInterna estado
 }
 
@@ -1003,18 +1003,17 @@ Entidad AsientoCIFap {
 	Integer numeroDocumentos  //No ob
 	String interesado //No ob
 	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
+	Boolean asientoAmpliado default = "false"                 // AsientoAmpliado
+	ReturnUnidadOrganicaFap unidadOrganicaOrigen noConstruct  // AsientoAmpliado
 	String asuntoCodificado  //No ob
 	String userId
-	String password //String utf-16 unicode
+	String password transient//String utf-16 unicode
 	String tipoTransporte  //No ob
 	OneToMany ListaUris uris  //Array de uris  //No ob
 }
 
-Entidad AsientoAmpliadoCIFap extends AsientoCIFap {
-	ReturnUnidadOrganicaFap unidadOrganicaOrigen
-}
 	
-Entidad ReturnComunicacionInternaFap {
+Entidad RespuestaCIFap {
 	String usuario
 	String resumen
 	String observaciones
@@ -1028,17 +1027,14 @@ Entidad ReturnComunicacionInternaFap {
 	Long numeroRegistro
 	String asunto
 	String unidadOrganica
-	ReturnInteresadoCIFap interesado
+	ReturnInteresadoCIFap interesado noConstruct
 	String tipoTransporte
 	OneToMany ListaUris uris
+	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna. (RespuestaAmpliada)
+    String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora. (RespuestaAmpliada)
 	//Lista listaReturnErrorFap error	//Lo tenía Yure, no se por qué habrá que preguntar
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 }	
-
-Entidad ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
-	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna.
-	String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora.
-}
 
 Entidad ReturnInteresadoCIFap {
 	String nombre
@@ -1056,35 +1052,26 @@ Entidad ReturnUnidadOrganicaFap{
 	String esBaja
 	String esReceptora
 	Long codigoReceptora
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 	Long codigoRaiz transient
 	Long codigoSubNivel1 transient
 	Long codigoSubNivel2 transient
 	Long codigoSubNivel3 transient
+	Long codigoBDOrganizacion //Código que nos permite realizar el mapeo con la BDOrganización si fuera necesario
 }	
 
 Entidad ReturnErrorFap {
 	Integer codigo
 	String descripcion
 }
-	
-	
-	
-//	String referenciaCantidadDocumentos  //Hacerle un ToString cuando lo devuelva el servicio
-//	Integer tipoDocumento //lista Tipos de documentos
-//	String numeroDocumento
-//	String letraDocumento
-//	String nombreInteresado
-//	Integer numeroAsientoAsociado
-//	String userId
-//	String password //UTF16 Unicode!!
-//	String tipoTransporte
-//	OneToMany ListaUris uris  //Array de uris
-//}
 
 Entidad ListaUris {
 	String uri
 }
+
+// -----------------------------------------------------------------------
+//   Entidades necesarias para el servicio de PortaFirmas
+// -----------------------------------------------------------------------
 
 Entidad SolicitudFirmaPortafirma {
 	// -------------------- Común --------------------
@@ -1141,21 +1128,21 @@ Entidad SubvencionFap{
     String programa
     DateTime fechaSolicitud
     DateTime fechaAprobacion
-    Moneda importe
+    Double importe
 }
 
 Entidad DeclaracionSubvenciones{
     String nombreTramite //Solo se actualiza cuando se registra (en presentacion,aceptacion o justificacion)
     OneToMany SubvencionFap  subvenciones
     DateTime fecha //Fecha de registro de la declaracion ( f.reg.solicitud, f.reg.aceptacion, f.reg.justificacion)
-    Moneda totalSolicitadas transient
-    Moneda totalConcedidas transient
-    Moneda totalSolicitadasPublicas transient
-    Moneda totalConcedidasPublicas transient
-    Moneda totalSolicitadasPrivadas transient
-    Moneda totalConcedidasPrivadas transient
-    Moneda totalSolicitadasMinimis transient
-    Moneda totalConcedidasMinimis transient
+    Double totalSolicitadas transient
+    Double totalConcedidas transient
+    Double totalSolicitadasPublicas transient
+    Double totalConcedidasPublicas transient
+    Double totalSolicitadasPrivadas transient
+    Double totalConcedidasPrivadas transient
+    Double totalSolicitadasMinimis transient
+    Double totalConcedidasMinimis transient
 }
 
 Entidad HistoricoDeclaracionSubvenciones{

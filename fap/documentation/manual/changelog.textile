@@ -2,6 +2,7 @@ h2. Changelog
 
 h3. Versión 2.5.6RC5
 
+* Se añade property "fap.baremacion.iniciar.estados" para iniciar las baremaciones.
 * Se actualiza a la versión 1.4.2 de chosen.
 * Se cambia a la versión 1.2.7.2 de Play Framework
 * FixedBug LLamada por reflexión a métodos con o sin argumentos.

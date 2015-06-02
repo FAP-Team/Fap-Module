@@ -3,6 +3,7 @@ package baremacion;
 import play.mvc.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,51 +57,71 @@ public class BaremacionFAP {
 	}
 	
 	public static void iniciarNuevasEvaluaciones(){
-		TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
 		
-		//Comprueba que todas las solicitudes tengan su evaluación creada
-		List<SolicitudGenerica> solicitudesSinEvaluacion = SolicitudGenerica.find("select solicitud from Solicitud solicitud " +
-					   "where (solicitud.estado=? or (solicitud.estado=?)) and " +
-				       "not exists (select evaluacion from Evaluacion evaluacion " +
-				       "where evaluacion.tipo.id=? and evaluacion.solicitud = solicitud)", "iniciada", "verificado", tipoEvaluacion.id).fetch();
-		
-		if (solicitudesSinEvaluacion != null)
-			play.Logger.info("Se van a crear "+solicitudesSinEvaluacion.size()+" nuevas evaluaciones de las solicitudes: "+solicitudesSinEvaluacion.toString());
-		
-		for(SolicitudGenerica solicitud : solicitudesSinEvaluacion){
-			Evaluacion evaluacion = new Evaluacion();
-			evaluacion.init(tipoEvaluacion);
-			evaluacion.solicitud = solicitud;
+		try{
+			TipoEvaluacion tipoEvaluacion = TipoEvaluacion.all().first();
+			String[] estadosSolicitud = null;
+			List<String> lstEstadosSolicitud = null;
 			
-			// Asignamos a la entidad evaluacion, los valores introducidos por el solicitante de CEconomicos, si los hubiera
-			for(CEconomico ceconomicoS : solicitud.ceconomicos){
-				for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-					if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)
-							&& ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia)){
-						for (int i=0; i<tipoEvaluacion.duracion; i++){
-							ceconomicoE.valores.get(i).valorSolicitado = ceconomicoS.valores.get(i).valorSolicitado;
-//							ceconomicoE.valores.get(i).valorEstimado = ceconomicoS.valores.get(i).valorSolicitado;
-						}
-						break;
-					}
-				}
-				if (ceconomicoS.tipo.tipoOtro){
-					for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
+			if (FapProperties.get("fap.baremacion.iniciar.estados") != null && !FapProperties.get("fap.baremacion.iniciar.estados").isEmpty())
+			   estadosSolicitud = FapProperties.get("fap.baremacion.iniciar.estados").trim().split(",");
+			if (estadosSolicitud != null) 
+               lstEstadosSolicitud = Arrays.asList(estadosSolicitud);
+			
+			if (tipoEvaluacion != null && lstEstadosSolicitud != null){
+			
+				final String query = "select solicitud from Solicitud solicitud " +
+				                     "where solicitud.estado in (:estadosSolicitud) and " +
+				                     "not exists (select evaluacion from Evaluacion evaluacion " +
+				                     "where evaluacion.tipo.id=:tipoEvaluacion and evaluacion.solicitud = solicitud)";
+	
+				//Comprueba que todas las solicitudes tengan su evaluación creada
+				List<SolicitudGenerica> solicitudesSinEvaluacion = SolicitudGenerica.find(query)
+						.setParameter("tipoEvaluacion", tipoEvaluacion.id)
+						.setParameter("estadosSolicitud", lstEstadosSolicitud).fetch();
+				
+				if (solicitudesSinEvaluacion != null)
+					play.Logger.info("Se van a crear "+solicitudesSinEvaluacion.size()+" nuevas evaluaciones de las solicitudes: "+solicitudesSinEvaluacion.toString());
+				
+				for(SolicitudGenerica solicitud : solicitudesSinEvaluacion){
+					Evaluacion evaluacion = new Evaluacion();
+					evaluacion.init(tipoEvaluacion);
+					evaluacion.solicitud = solicitud;
+					
+					// Asignamos a la entidad evaluacion, los valores introducidos por el solicitante de CEconomicos, si los hubiera
+					for(CEconomico ceconomicoS : solicitud.ceconomicos){
 						for(CEconomico ceconomicoE : evaluacion.ceconomicos){
-							if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)
-									&& ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia)){
+							if (ceconomicoE.tipo.nombre.equals(ceconomicoS.tipo.nombre)
+									&& ceconomicoE.tipo.jerarquia.equals(ceconomicoS.tipo.jerarquia)){
 								for (int i=0; i<tipoEvaluacion.duracion; i++){
-									ceconomicoE.valores.get(i).valorSolicitado = ceconomicoManual.valores.get(i).valorSolicitado;
-//									ceconomicoE.valores.get(i).valorEstimado = ceconomicoManual.valores.get(i).valorSolicitado;
+									ceconomicoE.valores.get(i).valorSolicitado = ceconomicoS.valores.get(i).valorSolicitado;
+	//								ceconomicoE.valores.get(i).valorEstimado = ceconomicoS.valores.get(i).valorSolicitado;
 								}
 								break;
 							}
 						}
+						if (ceconomicoS.tipo.tipoOtro){
+							for (CEconomicosManuales ceconomicoManual: ceconomicoS.otros){
+								for(CEconomico ceconomicoE : evaluacion.ceconomicos){
+									if (ceconomicoE.tipo.nombre.equals(ceconomicoManual.tipo.nombre)
+											&& ceconomicoE.tipo.jerarquia.equals(ceconomicoManual.tipo.jerarquia)){
+										for (int i=0; i<tipoEvaluacion.duracion; i++){
+											ceconomicoE.valores.get(i).valorSolicitado = ceconomicoManual.valores.get(i).valorSolicitado;
+	//										ceconomicoE.valores.get(i).valorEstimado = ceconomicoManual.valores.get(i).valorSolicitado;
+										}
+										break;
+									}
+								}
+							}
+						}
 					}
+					
+					evaluacion.save();
 				}
-			}
-			
-			evaluacion.save();
+			}else
+				play.Logger.error("No se ha podido iniciar una nueva evaluacion, el tipo de evaluación o los estados de la solicitud son null");
+		}catch (Exception e){
+			play.Logger.error("No se ha podido iniciar una nueva evaluacion: " + e.getMessage());
 		}
 	}
 	

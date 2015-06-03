@@ -19,6 +19,7 @@ import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
 import templates.GElement;
+import templates.GMenu
 import templates.GPagina;
 import templates.GPermiso;
 import templates.GPopup;
@@ -28,6 +29,10 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Menu
+import es.fap.simpleled.led.MenuElemento
+import es.fap.simpleled.led.MenuEnlace
+import es.fap.simpleled.led.MenuGrupo
 import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.PermisoVar
 import es.fap.simpleled.led.Popup
@@ -52,6 +57,7 @@ public class End implements IWorkflowComponent {
 	public void invoke(IWorkflowContext ctx) {
 		LedUtils.setFapResources();
 		
+		//generateMenus()
 		controllersAndViews();
 		
 		if (!Start.generatingModule){
@@ -74,22 +80,62 @@ public class End implements IWorkflowComponent {
 	public void postInvoke() {
 		// TODO Auto-generated method stub
 	}
+	
+	private void generateMenu(Formulario form) {
+//		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), LedUtils.resource);
+//		for (Formulario form: formularios) {
+			List<Menu> menus = form.getMenus()
+//			if (menus.size() == 0) {
+//				continue
+//			}
+			
+			String elementsMenuCode = ""
+			Set<String> scriptVariables = new HashSet<String>()
+			String entitiesDeclaration = ""
+			for (Menu menu : menus) {
+				GMenu gMenu = GElement.getInstance(menu, null);
+				for (MenuElemento menuElement : menu.elementos) {
+					elementsMenuCode += gMenu.generateElemento(menuElement, -1, scriptVariables, entitiesDeclaration)
+				}
+			}
+			
+			String code = """
+				<ul class='nav nav-list'>
+				%{
+					${entitiesDeclaration}
+				%}
+				${elementsMenuCode}
+				</ul>"""
+			
+			String menuName = form.name + ".html"
+			FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), menuName, code)
+//		}
+		
+		return
+	}
 
 	private void controllersAndViews(){
 		for (Formulario formulario: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario())){
-			if (!LedUtils.inPath(formulario)) continue;
+			if (!LedUtils.inPath(formulario)) {
+				continue;
+			}
+			
 			for (Pagina pagina: formulario.paginas){
 				GPagina gpagina = GElement.getInstance(pagina, null);
 				gpagina.view();
 				gpagina.controller();
 			}
+			
 			for (Popup popup: formulario.popups){
 				GPopup gpopup = GElement.getInstance(popup, null);
 				gpopup.view();
 				gpopup.controller();
 			}
-			if(formulario.menu)
-				GElement.getInstance(formulario.menu, null).generate();
+			
+			if(formulario.getMenus().size() > 0) {
+				// GElement.getInstance(formulario.menu, null).generate();
+				generateMenu(formulario)
+			}
 		}
 	}
 	

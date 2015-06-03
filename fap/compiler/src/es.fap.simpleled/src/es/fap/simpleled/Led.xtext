@@ -103,7 +103,7 @@ Formulario:
 		& (inicial?="inicial")?
 	)
 	'{'
-		(menu = Menu)?
+		(menus += Menu)*
 		(paginas += Pagina  |  popups += Popup)*
 	'}'
 ;

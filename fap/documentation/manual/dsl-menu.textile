@@ -4,42 +4,53 @@ h2. Descripción
 
 Elemento opcional en el formulario, que muestra a la izquierda de sus páginas un menú de navegación que permite incluir enlaces a los siguientes elementos: páginas de la aplicación, popups, URLs externas, y acciones de controladores. Además, varios enlaces pueden ser agrupados para que aparezcan dentro de una misma área rectangular y reciban los mismos permisos. Dentro de Menú se pueden utilizar los siguientes elementos: "Enlace":dsl-menuEnlace y "Grupo":dsl-menuGrupo.
 
+Un formulario puede tener definido más de un menú. En este caso, cuando se representa el formulario se muestra la unión de todos los enlaces y grupos contenidos en los menus asociados al formulario. 
+
 h2. Parámetros
 
-No tiene parámetros.
+* **_[indice]_** (opcional): En el caso de que el formulario contenga la definicio de varios menus, este parámetro indica la posición en la que debe aparecer el menú respecto a los otros. Cuanto menor sea el valor, más arriba aparece el menú.
+
+* **_[unico]_** (opcional): En el caso de que el formulario contenga la definición de varios menus, este parámetro indica si el menú al que está asociado es el único que debe mostrarse.
+
 
 h2. Definición
 
 bc.. Menu:
-	elemento='Menu' '{'
-		elementos +=MenuElemento+
-	'}'
+    elemento='Menu' 
+    (
+        ("indice" "=" indice=INT)?
+        & ("unico" "=" unico=("false" | "true"))?
+    )
+    '{'
+        elementos += MenuElemento+
+    '}'
 ;
 
 MenuElemento:
-	MenuGrupo | MenuEnlace
-;	
+    MenuGrupo | MenuEnlace
+;   
 
 MenuGrupo:
-	elemento='Grupo' titulo=STRING 
-	("permiso" "=" permiso=[Permiso])?  '{'
-		elementos +=MenuElemento*
-	'}'
+    elemento='Grupo' titulo=STRING 
+    ("permiso" "=" permiso=[Permiso])?  '{'
+        elementos +=MenuElemento*
+    '}'
 ;
 
 MenuEnlace:
-	elemento='Enlace' titulo=STRING
-	(
-		("permiso" "=" permiso=[Permiso])?
-		& (
-			('pagina' '=' pagina=PaginaAccion) |
-			('popup' '=' popup=PopupAccion) |
-			('accion' '=' (accion=STRING | accionLogout?="logout" | accionLogin?="login")) |
-			('url' '=' url=STRING) |
-			(anterior?="anterior")
-		)?
-	)
+    elemento='Enlace' titulo=STRING
+    (
+        ("permiso" "=" permiso=[Permiso])?
+        & (
+            ('pagina' '=' pagina=PaginaAccion) |
+            ('popup' '=' popup=PopupAccion) |
+            ('accion' '=' (accion=STRING | accionLogout?="logout" | accionLogin?="login")) |
+            ('url' '=' url=STRING) |
+            (anterior?="anterior")
+        )?
+    )
 ;
+
 
 h2. Ejemplos de uso
 
@@ -67,6 +78,7 @@ bc..     Menu {
 		}
 	Enlace "Salir" accion=logout
 }
+
 
 h3. Resultado
 

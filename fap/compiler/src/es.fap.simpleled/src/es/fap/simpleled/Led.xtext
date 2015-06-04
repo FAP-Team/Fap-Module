@@ -109,8 +109,13 @@ Formulario:
 ;
 
 Menu:
-	elemento='Menu' '{'
-		elementos +=MenuElemento+
+	elemento='Menu' 
+	(
+		("indice" "=" indice=INT)?
+		& ("unico" "=" unico=("false" | "true"))?
+	)
+	'{'
+		elementos += MenuElemento+
 	'}'
 ;
 

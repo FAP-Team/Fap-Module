@@ -57,8 +57,8 @@ public class End implements IWorkflowComponent {
 	public void invoke(IWorkflowContext ctx) {
 		LedUtils.setFapResources();
 		
-		//generateMenus()
 		controllersAndViews();
+		generateMenus()
 		
 		if (!Start.generatingModule){
 			entitySolicitud();
@@ -81,17 +81,19 @@ public class End implements IWorkflowComponent {
 		// TODO Auto-generated method stub
 	}
 	
-	private void generateMenu(Formulario form) {
-//		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), LedUtils.resource);
-//		for (Formulario form: formularios) {
-			List<Menu> menus = form.getMenus()
-//			if (menus.size() == 0) {
-//				continue
-//			}
+	private void generateMenus() {
+		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), LedUtils.resource);
+		def formsMenus = filtrarMenus(formularios)
+		formsMenus.each { entry ->
+			def menus = entry.value
+			if (menus.size() == 0) {
+				return
+			}
 			
-			String elementsMenuCode = ""
-			Set<String> scriptVariables = new HashSet<String>()
-			String entitiesDeclaration = ""
+			def scriptVariables = new HashSet<String>()
+			def entitiesDeclaration = ""
+			
+			def elementsMenuCode = ""
 			for (Menu menu : menus) {
 				GMenu gMenu = GElement.getInstance(menu, null);
 				for (MenuElemento menuElement : menu.elementos) {
@@ -99,7 +101,7 @@ public class End implements IWorkflowComponent {
 				}
 			}
 			
-			String code = """
+			def code = """
 				<ul class='nav nav-list'>
 				%{
 					${entitiesDeclaration}
@@ -107,11 +109,47 @@ public class End implements IWorkflowComponent {
 				${elementsMenuCode}
 				</ul>"""
 			
-			String menuName = form.name + ".html"
+			String menuName = entry.key + ".html"
 			FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), menuName, code)
-//		}
+		}
 		
 		return
+	}
+	
+	
+	private Map<String,List<Menu>> filtrarMenus(List<Formulario> forms) {
+		def menus = [:]
+		
+		// Filtrar los menus que se mostrarán para cada Formulario
+		for (Formulario form : forms) {
+			def formName = form.getName()
+			
+			def formMenus = menus[formName]
+			if (formMenus == null) {
+				formMenus = []
+				menus[formName] = formMenus
+
+			} else if ((formMenus.size() == 1) && (formMenus[0].getUnico() == "true")) {
+				continue
+			}
+			
+			for (Menu menu : form.getMenus()) {
+				if (menu.getUnico() == "true") {
+					formMenus.clear()
+					formMenus.add(menu)
+					break
+				}
+				
+				formMenus.add(menu)
+			}
+		}
+		
+		// Ordenar los menus el índice de los mismos
+		menus.each{entry ->
+			entry.value.sort{a,b -> a.getIndice() <=> b.getIndice()}
+		}
+		
+		return menus
 	}
 
 	private void controllersAndViews(){
@@ -132,10 +170,10 @@ public class End implements IWorkflowComponent {
 				gpopup.controller();
 			}
 			
-			if(formulario.getMenus().size() > 0) {
-				// GElement.getInstance(formulario.menu, null).generate();
-				generateMenu(formulario)
-			}
+//			if(formulario.getMenus().size() > 0) {
+//				// GElement.getInstance(formulario.menu, null).generate();
+//				generateMenu(formulario)
+//			}
 		}
 	}
 	

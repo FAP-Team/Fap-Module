@@ -1940,6 +1940,8 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
             Grupo titulo="Documentación aportada en la comunicación" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\""{
                Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos" {
                   Columna campo=Documento.descripcionVisible titulo="Descripción del documento" expandir
+                  Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+                  Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
                }
             }
             

@@ -26,17 +26,16 @@
         
             #{fap.grupo siCheck:'uoOrigenDefecto', siCheckValue:true, titulo:'Unidad Orgánica de origen'}
                 
-           #{fap.comboUO campo:'comunicacionInterna.asiento.unidadOrganicaOrigen.codigo', controllerName:'PaginaDatosNuevaComunicacionInternaController', id:'uoOrigen', requerido:true, searchable:true /}     
+           #{fap.comboUO accion:accion, campo:'comunicacionInterna.asiento.unidadOrganicaOrigen.codigo', controllerName:'PaginaDatosNuevaComunicacionInternaController', id:'uoOrigen', requerido:true, searchable:true /}      
         
             #{/fap.grupo}
         
             #{fap.grupo titulo:'Unidad Orgánica de destino'}
                 
-           #{fap.comboUO campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', controllerName:'PaginaDatosNuevaComunicacionInternaController', id:'uoDestino', requerido:true, searchable:true /}       
+           #{fap.comboUO accion:accion, campo:'comunicacionInterna.asiento.unidadOrganicaDestino.codigo', controllerName:'PaginaDatosNuevaComunicacionInternaController', id:'uoDestino', requerido:true, searchable:true /}        
         
             #{/fap.grupo}
         
             #{/fap.grupo}
         
 #{/fap.pagina}
-		

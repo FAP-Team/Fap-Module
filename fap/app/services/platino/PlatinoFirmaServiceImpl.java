@@ -34,6 +34,7 @@ import es.gobcan.platino.servicios.sfst.NodoInfoResult;
 import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 import es.gobcan.platino.servicios.sfst.ValidateCertResult;
+import es.gobcan.platino.servicios.sfst.VerifySignatureResult;
 
 /**
  * FirmaServiceImpl
@@ -202,7 +203,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
     	log.info("[firmarTexto] Iniciando firmarTexto -> Datos de Registro");
         String firma = null;
         try {
-            firma = firmaPort.signPKCS7(texto, INVOKING_APP, ALIAS);
+        	firma = firmaPort.signContent(texto, INVOKING_APP, ALIAS);
             log.info("[firmarTexto] Texto firmado correctamente");
         } catch (NullPointerException e) {
             log.error("NullPointerException. Posiblemente recibido null como texto a firmar");
@@ -218,7 +219,10 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException{
         boolean result = false;
         try {
-            result = firmaPort.verifyContentSignature(texto, firma.getBytes(), INVOKING_APP);
+            VerifySignatureResult vefifyResult = firmaPort.verifyContentSignature(texto, firma.getBytes(), INVOKING_APP);
+            
+            if (vefifyResult != null)
+                result = vefifyResult.isValido();
         } catch (NullPointerException e) {
             throw e;
         } catch (Exception e) {
@@ -242,7 +246,10 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	public boolean validarFirmaDocumento(byte[] contenidoDocumento, String firma) throws FirmaServiceException {
         boolean result = false;
         try {
-            result = firmaPort.verifyContentSignature(contenidoDocumento, firma.getBytes(), INVOKING_APP);
+        	 VerifySignatureResult vefifyResult = firmaPort.verifyContentSignature(contenidoDocumento, firma.getBytes(), INVOKING_APP);
+            
+            if (vefifyResult != null)
+            	result = vefifyResult.isValido();
         } catch (SignatureServiceException_Exception e) {
             play.Logger.error("Error verificando el contenido de la firma", e);
         }
@@ -371,14 +378,18 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	}
 
 	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
+		boolean result = false;
 		try {
-			Boolean verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(content, signature, INVOKING_APP, "CADES");
+			VerifySignatureResult verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(content, signature, INVOKING_APP, "CADES");
+
+			if(verifySignatureByFormatResponse != null)
+				result = verifySignatureByFormatResponse.isValido();
+			
 			play.Logger.info("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
-			return verifySignatureByFormatResponse;
 		} catch (SignatureServiceException_Exception e) {
 			play.Logger.error("Error verificando el contenido de la firma", e);
-			return false;
-		}
+		}	
+		return result;
 	}
 
 	@Override

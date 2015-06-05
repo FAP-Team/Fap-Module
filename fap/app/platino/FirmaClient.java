@@ -33,16 +33,16 @@ import org.xml.sax.SAXException;
 
 import play.libs.Codec;
 import properties.FapProperties;
-
 import sun.security.pkcs.PKCS7;
 import sun.security.pkcs.ParsingException;
-
 import es.gobcan.eadmon.aed.ws.Aed;
 import es.gobcan.eadmon.aed.ws.AedPortType;
 import es.gobcan.platino.servicios.sfst.FirmaService;
 import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 import es.gobcan.platino.servicios.sfst.ValidateCertResult;
+import es.gobcan.platino.servicios.sfst.VerifyContentSignature;
+import es.gobcan.platino.servicios.sfst.VerifySignatureResult;
 
 /**
  * @deprecated Utilizar FirmaService con la nueva forma de inyectar servicios
@@ -87,26 +87,36 @@ public class FirmaClient {
 	}
 
 	public static Boolean verificarPKCS7(String texto, String firma){
+		Boolean result = false;
 		try {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
 			play.Logger.info("invokingApp: "+invokingApp);
 			play.Logger.info("texto: "+texto);
 			play.Logger.info("firma: "+firma);
-			return firmaPlatino.verifyPKCS7Signature(texto.getBytes(), firma.getBytes(), invokingApp);
+			VerifySignatureResult verifyResult = firmaPlatino.verifyContentSignature(texto.getBytes(), firma.getBytes(), invokingApp);
+			
+			if (verifyResult != null)
+				result = verifyResult.isValido();
 		} catch (Exception e) {
 			log.error("Error verificando la firma", e);
-			return false;
 		}
+		
+		return result;
 	}
 	
 	public static Boolean verificarContentSignature(byte[] content, byte[] signature) {
+		Boolean result = false;
 		try {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
-			return firmaPlatino.verifyContentSignature(content, signature, invokingApp);
+			VerifySignatureResult verifyResult = firmaPlatino.verifyContentSignature(content, signature, invokingApp);
+			
+			if (verifyResult != null)
+				result = verifyResult.isValido();
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error verificando el contenido de la firma", e);
-			return false;
 		}
+		
+		return result;
 	}
 	
 	public static String firmarPKCS7(String texto){
@@ -118,7 +128,7 @@ public class FirmaClient {
 		try {
 			String invokingApp = FapProperties.get("fap.platino.firma.invokingApp");
 			String alias = FapProperties.get("fap.platino.firma.alias");
-			firma = firmaPlatino.signPKCS7(bytes, invokingApp, alias);
+			firma = firmaPlatino.signContent(bytes, invokingApp, alias);
 		} catch (SignatureServiceException_Exception e) {
 			log.error("Error al hacer la firma pkcs7", e);
 		} 

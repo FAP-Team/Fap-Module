@@ -47,7 +47,7 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
     private static void configurarMockFirmaPort() {
         try {
             //Tests excepciones
-            doThrow(NullPointerException.class).when(firmaPort).signPKCS7((byte[]) isNull(), anyString(), anyString());
+            doThrow(NullPointerException.class).when(firmaPort).signContent((byte[]) isNull(), anyString(), anyString());
             doThrow(NullPointerException.class).when(firmaPort).verifyContentSignature((byte[]) isNull(),any(byte[].class), anyString());
 
 
@@ -80,7 +80,7 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
     private static void configurarMockFirmaPort(String texto) {
         try {
             String textoFirmado = simularFirmaValida(texto);
-            doReturn(simularFirmaValida(texto)).when(firmaPort).signPKCS7(eq(texto.getBytes()), anyString(), anyString());
+            doReturn(simularFirmaValida(texto)).when(firmaPort).signContent(eq(texto.getBytes()), anyString(), anyString());
             doReturn(true).when(firmaPort).verifyContentSignature(eq(texto.getBytes()), eq(textoFirmado.getBytes()), anyString());
         } catch (SignatureServiceException_Exception e) {
             e.printStackTrace();

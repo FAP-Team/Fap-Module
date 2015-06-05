@@ -32,6 +32,7 @@ class GComboUO extends GElement{
 		TagParameters params = new TagParameters();
 		
 		params.putStr("id", combo.name);
+		params.put("accion", "accion");
 		params.putStr("campo", campo.firstLower());
 		
 		String controllerName = gPaginaPopup.controllerFullName();

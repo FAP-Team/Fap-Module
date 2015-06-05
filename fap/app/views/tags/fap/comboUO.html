@@ -4,6 +4,7 @@
 
 %{ 
     def id = _id;
+    def accion =_accion != null ? _accion : "";
     def controllerName = _controllerName != null ? play.mvc.Router.reverse(_controllerName + "." + id + "handlerComboUO") : "";
     def campo = _campo;
     def requerido = _requerido != null? _requerido : false;
@@ -16,11 +17,13 @@
     def campoNivel2 = campoNiveles+"codigoSubNivel2";
     def campoNivel3 = campoNiveles+"codigoSubNivel3";
     def campoNivel4 = campoNiveles+"codigoSubNivel4";
+    def campoDescripcion = campoNiveles+"descripcion";
     def idnivel1 = id+"Nivel1";
     def idnivel2 = id+"Nivel2";
     def idnivel3 = id+"Nivel3";
     def idnivel4 = id+"Nivel4";
-    def idCodigo = id+"CodigoUO"
+    def idCodigo = id+"CodigoUO";
+    def idDescripcion = id+"DescripcionUO";
 }%
 
 #{fap.combo id:"${idnivel1}", campo:"${campoNivel1}", titulo:'Nivel 1:', searchable:"${searchable}" /}      
@@ -28,6 +31,11 @@
 #{fap.combo id:"${idnivel3}", campo:"${campoNivel3}", titulo:'Nivel 3:', searchable:"${searchable}" /}      
 #{fap.combo id:"${idnivel4}", campo:"${campoNivel4}", titulo:'Nivel 4:', searchable:"${searchable}" /} 
 #{fap.texto campo:"${campo}", obj:obj , id:"${idCodigo}", titulo:'Código de unidad:', requerido:"${requerido}" /}   
+
+#{if accion != "crear"}
+   #{fap.texto campo:"${campoDescripcion}", obj:obj , id:"${idDescripcion}", titulo:'Descripción de unidad:' /}   
+#{/if}
+
 
 <script>
 
@@ -52,6 +60,10 @@ function peticion${id}(combo, codigoUO, subnivelUO){
     
     $( document ).ready(function() {
        $("#${idCodigo}").prop('readonly', true);
+       
+       #{if accion != "crear"}
+          $("#${idDescripcion}").prop('readonly', true);
+       #{/if}
 
        var comboRaiz = $("#${idnivel1}");
        peticion${id}(comboRaiz, 0, 0);

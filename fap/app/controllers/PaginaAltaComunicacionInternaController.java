@@ -251,7 +251,7 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 
 		tables.TableRenderResponse<Documento> response = new tables.TableRenderResponse<Documento>(rowsFiltered, false, false, false, "", "", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("descripcionVisible", "id"));
+		renderJSON(response.toJSON("descripcionVisible", "enlaceDescarga", "enlaceDescargaFirmado", "id"));
 	}
 	
 }

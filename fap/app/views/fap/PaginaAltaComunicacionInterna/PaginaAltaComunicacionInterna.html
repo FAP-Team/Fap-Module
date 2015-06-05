@@ -67,10 +67,15 @@
      idEntidad:'idListaUris', 
      saveEntity:false, 
      tipoContainer:'pagina', 
+     titulo:'Documentos', 
      urlTabla:@PaginaAltaComunicacionInternaController.tabladocumentosCI(idComunicacionInterna)
 }
     
     #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción del documento', campo:'descripcionVisible', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado', expandir:true /}
         
 #{/fap.tabla}
 

@@ -1,5 +1,9 @@
 h2. Changelog
 
+h3. Versión ??
+
+* Soporte para la definición de múltiples menús en los Formularios.
+
 h3. Versión 2.5.6RC5
 
 * Se añade property "fap.baremacion.iniciar.estados" para iniciar las baremaciones.

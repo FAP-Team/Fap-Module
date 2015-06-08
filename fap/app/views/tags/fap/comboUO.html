@@ -134,17 +134,37 @@ function peticion${id}(combo, codigoUO, subnivelUO){
     
     function almacenarCodigo${id}(comboPadre, combo) {
         var uoCodigo = $("#${idCodigo}");
+        var uoDescripcion = $("#${idDescripcion}");
         var codigoPadre = comboPadre != null ? comboPadre.val() : null;
+        var descripcionPadre = comboPadre != null ? filterDescripcion(comboPadre.find('option:selected').text().split('-')) : null;
         var codigo = combo.val();
+        var descripcion = combo != null ? filterDescripcion(combo.find('option:selected').text().split('-')) : null;
                      
-        if (codigo >= 0)
+        if (codigo >= 0) {
            uoCodigo.val(codigo);
+           if (descripcion != null && descripcion[1] != null)
+              uoDescripcion.val(descripcion[1]);
+        }
         else
             if (codigoPadre != null){
-               if (codigoPadre >= 0)
+               if (codigoPadre >= 0) {
                   uoCodigo.val(codigoPadre);
-            } else
+                  if (descripcionPadre != null && descripcionPadre[1] != null)
+                     uoDescripcion.val(descripcionPadre[1]);
+               }
+            } else {
                   uoCodigo.val('');
+                  uoDescripcion.val('');
+            }
+    }
+    
+    function filterDescripcion(data){
+       if (data != null)
+	      data = jQuery.grep(data, function(n, i){
+	         return (n !== "" && n !== " " &&  n != null);
+          });
+          
+       return data;
     }
 
 </script>

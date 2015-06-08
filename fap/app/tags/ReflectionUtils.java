@@ -321,11 +321,13 @@ public class ReflectionUtils {
      * @return
      */
     public static Object callControllerMethodIfExists(final String method, final Map<String, Object> args) {
+    	boolean declaredMethodWithArgs = true;
         Method m = getControllerMethod(method, args);
         
         // Se realiza un segundo intento sin parámetros por mantener la compatibilidad en las aplicaciones antiguas
         if (m == null && args != null) {
             m = getControllerMethod(method, null);
+            declaredMethodWithArgs = false;
             Logger.warn("Definición del método %s obsoleto. La nueva definición \"public static List<ComboItem> %s(Map<String, Object> args)\"", method, method);
         }
 
@@ -333,7 +335,7 @@ public class ReflectionUtils {
         if (m != null) {
             try {
                 // Se realiza la llamada al método dependiendo de si está definido con o sin parámetros
-                o = (args == null) ? m.invoke(null, (Object []) null) : m.invoke(null, args);
+                o = (args == null || !declaredMethodWithArgs) ? m.invoke(null, (Object []) null) : m.invoke(null, args);
             } catch (Exception e) {
                 // No se ha podido invocar al método
             }

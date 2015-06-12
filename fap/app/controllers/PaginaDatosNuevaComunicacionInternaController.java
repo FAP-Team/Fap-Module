@@ -39,61 +39,6 @@ import es.gobcan.platino.servicios.organizacion.UnidadOrganicaItem;
 
 public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNuevaComunicacionInternaControllerGen {
 	
-	public static void index(String accion, Long idSolicitud, Long idComunicacionInterna) {
-		if (accion == null)
-			accion = getAccion();
-		if (!permiso(accion)) {
-			Messages.fatal("No tiene suficientes privilegios para acceder a esta solicitud");
-			renderTemplate("fap/PaginaDatosNuevaComunicacionInterna/PaginaDatosNuevaComunicacionInterna.html");
-		}
-
-		SolicitudGenerica solicitud = PaginaDatosNuevaComunicacionInternaController.getSolicitudGenerica(idSolicitud);
-
-		ComunicacionInterna comunicacionInterna = null;
-		if ("crear".equals(accion)) {
-			comunicacionInterna = PaginaDatosNuevaComunicacionInternaController.getComunicacionInterna();
-			
-			if (comunicacionInterna.asiento == null)
-				comunicacionInterna.asiento = new AsientoCIFap();
-			
-			if (properties.FapProperties.getBoolean("fap.entidades.guardar.antes")) {
-
-				comunicacionInterna.save();
-				idComunicacionInterna = comunicacionInterna.id;
-				solicitud.comunicacionesInternas.add(comunicacionInterna);
-				solicitud.save();
-
-				accion = "editar";
-			}
-
-		} else 
-			if (!"borrado".equals(accion)) {
-				comunicacionInterna = PaginaDatosNuevaComunicacionInternaController.getComunicacionInterna(idSolicitud, idComunicacionInterna);
-				if ("enviada".equals(comunicacionInterna.estado)) {
-					Messages.info("La comunicación interna ya ha sido enviada");
-					Messages.keep();
-					redirect("ComunicacionesInternasController.index", "editar", idSolicitud, idComunicacionInterna);
-				}
-			}
-					
-		Agente logAgente = AgenteController.getAgente();
-		log.info("Visitando página: " + "fap/PaginaDatosNuevaComunicacionInterna/PaginaDatosNuevaComunicacionInterna.html" + " Agente: " + logAgente);
-		renderTemplate("fap/PaginaDatosNuevaComunicacionInterna/PaginaDatosNuevaComunicacionInterna.html", accion, idSolicitud, idComunicacionInterna, solicitud, comunicacionInterna);
-	}
-	
-	@Util
-	public static void crearRender(Long idSolicitud, Long idComunicacionInterna) {
-		if (!Messages.hasMessages()) {
-
-			Messages.ok("Página creada correctamente");
-			Messages.keep();
-			redirect("PaginaNuevaComunicacionInternaDocumentosController.index", "editar", idSolicitud, idComunicacionInterna);
-
-		}
-		Messages.keep();
-		redirect("PaginaDatosNuevaComunicacionInternaController.index", "crear", idSolicitud, idComunicacionInterna);
-	}
-
 	@Util
 	public static void PaginaDatosNuevaComunicacionInternaValidateCopy(String accion, ComunicacionInterna dbComunicacionInterna, ComunicacionInterna comunicacionInterna) {
 		CustomValidation.clearValidadas();
@@ -129,6 +74,11 @@ public class PaginaDatosNuevaComunicacionInternaController extends PaginaDatosNu
 			dbComunicacionInterna.asiento.unidadOrganicaDestino = ServiciosGenericosUtils.getUnidadOrganicaFAP(uoDestinocodigoUO);
 			dbComunicacionInterna.asiento.unidadOrganicaDestino.codigo = uoDestinocodigoUO;
 		}
+		
+		Agente agente = AgenteController.getAgente();
+		if (agente != null && agente.usuarioldap != null && !agente.usuarioldap.isEmpty())
+			dbComunicacionInterna.asiento.userId = agente.usuarioldap;
+		
 		dbComunicacionInterna.estado = EstadosComunicacionInternaEnum.creada.name();
 	}
 	

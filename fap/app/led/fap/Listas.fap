@@ -9159,6 +9159,7 @@ Lista estadosComunicacionInterna crearEnumerado{
 	docAdjuntos: "Documentos adjuntados"
 	datosCompletos: "Asiento completo"
 	enviada: "Enviada"
+	cancelada: "Cancelada"
 }
 
 // -----------------------------------------------------------------------

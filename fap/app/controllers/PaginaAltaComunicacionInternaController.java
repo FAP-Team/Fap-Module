@@ -79,6 +79,10 @@ public class PaginaAltaComunicacionInternaController extends PaginaAltaComunicac
 		if (!Messages.hasErrors()) {
 			PaginaAltaComunicacionInternaController.frmNuevoAsientoValidateCopy("editar", dbComunicacionInterna, comunicacionInterna);
 		}
+		
+		if (!Messages.hasErrors()) {
+			dbComunicacionInterna.save();
+		}
 
 		if (!Messages.hasErrors()) {
 			PaginaAltaComunicacionInternaController.frmNuevoAsientoValidateRules(dbComunicacionInterna, comunicacionInterna);

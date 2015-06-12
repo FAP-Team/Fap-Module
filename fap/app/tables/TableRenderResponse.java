@@ -1,5 +1,6 @@
 package tables;
 
+import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +14,9 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import config.InjectorConfig;
-
 import play.db.jpa.Model;
 import play.mvc.Util;
-
 import flexjson.JSONSerializer;
-
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Firmante;
@@ -170,7 +168,7 @@ public class TableRenderResponse<T> {
 				if (!ids.containsKey(paramClass)){
 					ids.put(paramClass, (Long) ReflectionUtils.getValueFromMethodFromClass(tablaTipo, "getId"));
 				}
-				vars.put(nombre[nombre.length-1].toLowerCase(), tablaTipo);
+				vars.put(Introspector.decapitalize(nombre[nombre.length-1]), tablaTipo);
 			}
 
 			if (permisoEditar)

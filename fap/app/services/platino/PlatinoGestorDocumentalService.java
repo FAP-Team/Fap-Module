@@ -277,8 +277,12 @@ public class PlatinoGestorDocumentalService {
 				datos.setFecha(PlatinoPortafirmaServiceImpl.DateTime2XMLGregorianCalendar(DateTime.now())); // TODO: Cambiar el modo de conversion
 				datos.setDescripcion(documento.descripcionVisible);
 				datos.setAdmiteVersionado(true);
-				datos.setFirmaXml(doc.propiedades.getFirma().getContenido());
-				datos.setFirmantes(getDatosFirmantesAED(doc.propiedades.getFirma()));
+				
+				//El documento no tiene que tener firma obligatoriamente
+				if (doc.propiedades.getFirma() != null) {
+					datos.setFirmaXml(doc.propiedades.getFirma().getContenido());
+					datos.setFirmantes(getDatosFirmantesAED(doc.propiedades.getFirma()));
+				}
 				
 				//Subimos el documento al gestor documental de platino
 				documento.uriPlatino = guardarDocumento(uriPlatinoExpediente, datos);

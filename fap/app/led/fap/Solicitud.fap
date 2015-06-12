@@ -1847,22 +1847,26 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" permiso=adminOrGestor noForm{
 		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
 		paginaLeer=PaginaDatosLeerComunicacionInterna paginaCrear=PaginaDatosNuevaComunicacionInterna paginaEditar=PaginaDatosNuevaComunicacionInterna
+		popupBorrar=PopupBorrarComunicacionInterna permisoFilas=tblComunicacionesInternas
       {
-			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen" expandir
-			Columna campo=ComunicacionInterna.estado titulo="Estado" 
+			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino" ancho="150"
+			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen" ancho="180"
+			Columna funcion="${ComunicacionInterna.numRegistroHiperReg}" titulo="Número de registro" ancho="100"
+            Columna funcion="${ComunicacionInterna.fechaHiperReg}" titulo="Fecha" ancho="150"
+			Columna campo=ComunicacionInterna.estado titulo="Estado" expandir
 		}
 	}
 	
 	Pagina PaginaDatosLeerComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm {
-	   Grupo titulo="Datos Origen" {
+	   Grupo titulo="Datos petición Comunicación interna " {
+	      Texto usuario campo=ComunicacionInterna.asiento.userId titulo="Usuario"
    	      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
    	      Texto uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.descripcion titulo="Unidad orgánica de origen"
    		  Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica de destino"
    		  AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
    		  AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
    		
-   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
+   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos y anexos" {
             Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
             Columna titulo="Descargar" campo=Documento.enlaceDescarga
             Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
@@ -1883,7 +1887,13 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
       }
 	}
 	
-	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
+	Popup PopupBorrarComunicacionInterna titulo="Borrar comunicación interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
+	    Accion borrar redirigir=ComunicacionesInternas
+	    Wiki{"¿ Está seguro de borrar la comunicación interna ?"}
+	}
+	
+	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
+      Accion crear redirigir=PaginaNuevaComunicacionInternaDocumentos
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos
       
        Grupo titulo="Datos de la Comunicacion Interna"{
@@ -1918,6 +1928,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
       }
 	}
 	
+	Popup PopupBorrarDocumentosAsociadosAltaCI titulo="Excluir documento asociado al alta de la comunicación interna" campo=SolicitudGenerica.comunicacionesInternas.asiento.uris{
+        Accion borrar redirigir=PaginaAltaComunicacionInterna
+        Wiki{"¿ Está seguro de excluir el documento ?"}
+    }
+	
 	Pagina PaginaAltaComunicacionInterna titulo="Alta de comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm{
 		Accion editar crearSiempre 
 		Form frmNuevoAsiento {
@@ -1928,8 +1943,8 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
          }
 		   
 		   Grupo titulo="Datos adicionales" {
-            Grupo titulo = "Selección de documentos a consultar" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\"" {
-               Wiki{"Marque todos los documentos a consultar y luego seleccione. Cada nueva selección sobrescribirá la anterior."}
+            Grupo titulo = "Selección de documentos anexos" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\"" {
+               Wiki{"Marque todos los documentos anexos y luego seleccione. Cada nueva selección sobrescribirá la anterior."}
                Tabla tblDocAdicionales campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione"{
                   Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
                   Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
@@ -1937,8 +1952,9 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
                }
             }
             
-            Grupo titulo="Documentación aportada en la comunicación" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\""{
-               Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos" {
+            Grupo titulo="Documentación asociada a la comunicación" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\""{
+               Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documento y anexos"
+               popupBorrar=PopupBorrarDocumentosAsociadosAltaCI nombreBotonBorrar="Excluir"{
                   Columna campo=Documento.descripcionVisible titulo="Descripción del documento" expandir
                   Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
                   Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
@@ -1953,5 +1969,4 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
          Boton btnNuevoAsiento titulo="Enviar" waitPopup style="float : right;"
       }
 	} 
-	
 }

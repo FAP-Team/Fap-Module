@@ -29,9 +29,9 @@ import utils.BinaryResponse;
 import utils.WSUtils;
 import controllers.fap.FirmaController;
 import es.gobcan.platino.servicios.sfst.FirmaInfoResult;
-import es.gobcan.platino.servicios.sfst.FirmaService;
 import es.gobcan.platino.servicios.sfst.NodoInfoResult;
 import es.gobcan.platino.servicios.sfst.PlatinoSignatureServerBean;
+import es.gobcan.platino.servicios.sfst.SfstService;
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
 import es.gobcan.platino.servicios.sfst.ValidateCertResult;
 import es.gobcan.platino.servicios.sfst.VerifySignatureResult;
@@ -67,7 +67,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 
         if (signPort == null) {
             URL wsdlURL = PlatinoFirmaServiceImpl.class.getClassLoader().getResource("wsdl/firma.wsdl");
-            firmaPort = new FirmaService(wsdlURL).getFirmaService();
+            firmaPort = new SfstService(wsdlURL).getFirmaService();
             WSUtils.configureEndPoint(firmaPort, getEndPoint());
             WSUtils.configureSecurityHeaders(firmaPort, propertyPlaceholder);
             PlatinoProxy.setProxy(firmaPort, propertyPlaceholder);
@@ -134,7 +134,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	        SignatureServiceException_Exception signatureException = (SignatureServiceException_Exception) cause;
 	        return new FirmaServiceException(msg + " - " + signatureException.getFaultInfo().getMessage(), cause);
 	    }else{
-	        return new FirmaServiceException("Error al realizar firma pkcs7", cause);
+	        return new FirmaServiceException("Error al realizar firma signContent", cause);
 	    }
 	}
 
@@ -209,8 +209,8 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             log.error("NullPointerException. Posiblemente recibido null como texto a firmar");
             throw e;
         }catch (Exception e) {
-        	log.error("[firmarDatosRegistro] Error en firmaPort.signPKCS7()");
-            throw newFirmaServiceException("Error al realizar firma pkcs7", e);
+        	log.error("[firmarDatosRegistro] Error en firmaPort.signContent()");
+            throw newFirmaServiceException("Error al realizar la firma", e);
         }
         return firma;
     }
@@ -265,6 +265,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         return getInformacion(certificado);
     }
 
+    @Deprecated
     @Override
 	public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException{
 		String certificado = null;

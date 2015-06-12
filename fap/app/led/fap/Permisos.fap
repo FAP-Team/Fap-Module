@@ -1802,3 +1802,23 @@ Permiso menuConModificacion {
 	return
 		all
 }
+
+//Permiso que filtra la comunicaciones internas a mostrar en la tabla de comunicaciones internas
+Permiso tblComunicacionesInternas{
+    vars
+        ComunicacionInterna ci
+    when
+        ci?.estado != "cancelada"
+    return all
+}
+
+//Permiso que controla las acciones posibles en la tabla de comunicaciones internas
+Permiso ComunicacionesInternas{
+     vars
+        ComunicacionInterna ci
+    when
+        ci?.estado = "enviada"
+    return [crear leer]
+    else
+    return all
+}

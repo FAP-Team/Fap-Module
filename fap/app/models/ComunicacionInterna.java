@@ -32,12 +32,32 @@ public class ComunicacionInterna extends FapModel {
 	@FapEnum("enumerado.fap.gen.EstadosComunicacionInternaEnum")
 	public String estado;
 
+	@Transient
+	public String numRegistroHiperReg;
+
+	@Transient
+	public String fechaHiperReg;
+
 	public void init() {
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
+
+	public String getNumRegistroHiperReg() {
+		if (respuesta != null && respuesta.contadorUO != null && respuesta.numeroRegistro != null)
+			return respuesta.contadorUO + "/" + respuesta.numeroRegistro;
+
+		return "";
+	}
+
+	public String getFechaHiperReg() {
+		if (respuesta != null && respuesta.fecha != null && respuesta.hora != null)
+			return respuesta.fecha + " " + respuesta.hora;
+
+		return "";
+	}
 
 	// === MANUAL REGION END ===
 

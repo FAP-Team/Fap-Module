@@ -995,6 +995,8 @@ Entidad ComunicacionInterna{
     AsientoCIFap asiento noConstruct
     RespuestaCIFap respuesta noConstruct
 	Lista estadosComunicacionInterna estado
+	String numRegistroHiperReg transient
+	String fechaHiperReg transient
 }
 
 Entidad AsientoCIFap {

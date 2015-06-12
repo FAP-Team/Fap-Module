@@ -29,10 +29,10 @@
         
             #{fap.grupo titulo:'Datos adicionales'}
                 
-            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Selección de documentos a consultar'}
+            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Selección de documentos anexos'}
                 
             <div class="wiki ">
-<p>Marque todos los documentos a consultar y luego seleccione. Cada nueva selección sobrescribirá la anterior.</p>
+<p>Marque todos los documentos anexos y luego seleccione. Cada nueva selección sobrescribirá la anterior.</p>
 
             </div>
         
@@ -59,15 +59,18 @@
 
             #{/fap.grupo}
         
-            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Documentación aportada en la comunicación'}
+            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Documentación asociada a la comunicación'}
                 
 #{fap.tabla 
      campo:'ComunicacionInterna.asiento.uris', 
      id:'documentosCI', 
      idEntidad:'idListaUris', 
+     nombreBotonBorrar:'Excluir', 
+     popupBorrar:'PopupBorrarDocumentosAsociadosAltaCI', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Documentos', 
+     titulo:'Documento y anexos', 
+     urlBorrar:play.mvc.Router.reverse("popups.PopupBorrarDocumentosAsociadosAltaCIController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idComunicacionInterna':comunicacionInterna?.id? comunicacionInterna?.id:'_idComunicacionInterna_', 'idListaUris':listaUris?.id? listaUris?.id:'_idListaUris_']), 
      urlTabla:@PaginaAltaComunicacionInternaController.tabladocumentosCI(idComunicacionInterna)
 }
     
@@ -94,3 +97,4 @@
                 #{/form}
             
 #{/fap.pagina}
+        

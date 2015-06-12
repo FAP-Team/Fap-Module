@@ -155,8 +155,7 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 	public Solicitante buscarTercerosDetalladosByNumeroIdentificacion(String numeroIdentificacion, String tipoIdentificacion) throws TercerosServiceException{
 		TerceroMinimalItem tercero = new TerceroMinimalItem();
 		tercero.setNumeroDocumento(numeroIdentificacion);
-		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
-	
+			
 		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
 		
 		if ((tercerosListItem != null) && (!tercerosListItem.isEmpty())){
@@ -539,7 +538,6 @@ public class PlatinoTercerosServiceImpl implements services.TercerosService {
 			throws TercerosServiceException {
 		TerceroMinimalItem tercero = new TerceroMinimalItem();
 		tercero.setNumeroDocumento(numeroIdentificacion);
-		tercero.setTipoDocumento(convertirTipoNipATipoDocumentoItem(tipoIdentificacion));
 
 		List<TerceroListItem> tercerosListItem = buscarTercerosDetalladosByItem(tercero);
 

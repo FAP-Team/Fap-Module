@@ -40,38 +40,38 @@ public abstract class FirmaServiceTest extends UnitTest {
     }
 
     protected void assertCorrectFirmarValidarTexto(String texto) throws Exception {
-        String firma = firmaService.firmarTexto(texto.getBytes());
+        String firma = firmaService.firmarContenido(texto.getBytes());
         assertNotNull(firma);
-        boolean firmaValida = firmaService.validarFirmaTexto(texto.getBytes(), firma);
+        boolean firmaValida = firmaService.validarFirma(texto.getBytes(), firma);
         assertTrue(firmaValida);
     }
 
     @Test
     public void invalidFirma() throws Exception {
-        boolean firmaValida = firmaService.validarFirmaTexto(TEST_TEXT.getBytes(), TEST_FIRMA_INVALIDA);
+        boolean firmaValida = firmaService.validarFirma(TEST_TEXT.getBytes(), TEST_FIRMA_INVALIDA);
         assertFalse(firmaValida);
     }
     
     @Test(expected = NullPointerException.class)
     public void firmarTextoNull() throws Exception {
-        firmaService.firmarTexto(null);
+        firmaService.firmarContenido(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void validarFirmaTextoTextoNull() throws Exception {
-        firmaService.validarFirmaTexto(null, "firma");
+        firmaService.validarFirma(null, "firma");
     }
 
     @Test(expected = NullPointerException.class)
     public void validarFirmaTextoFirmaNull() throws Exception {
-        firmaService.validarFirmaTexto("".getBytes(), null);
+        firmaService.validarFirma("".getBytes(), null);
     }
 
     @Test
     public void extraerInformacion() throws Exception {
         assumeTrue(hasConnection);
         String texto = "Texto de prueba para firma";
-        String firma = firmaService.firmarTexto(texto.getBytes());
+        String firma = firmaService.firmarContenido(texto.getBytes());
         Assert.assertNotNull(firma);
         InfoCert certificado = firmaService.extraerCertificado(firma);
         Assert.assertNotNull(certificado);

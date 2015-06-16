@@ -70,7 +70,7 @@ public abstract class RegistroServiceTest extends UnitTest {
 		
 		//Firma el documento
 		byte[] content = IO.readContent(f);
-		String firmaDocumento = firmaService.firmarDocumento(content);
+		String firmaDocumento = firmaService.firmarContenido(content);
 		assertNotNull(firmaDocumento);
 		
 		Firmante firmante = new Firmante(solicitante, "unico");

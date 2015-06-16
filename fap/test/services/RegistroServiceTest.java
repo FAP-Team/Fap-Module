@@ -79,7 +79,7 @@ public abstract class RegistroServiceTest extends UnitTest {
 		models.Firma firma = new models.Firma(firmaDocumento, firmante);
 		gestorDocumentalService.agregarFirma(documento, firma);
 		
-		String firma2Documento = firmaService.firmarDocumento(content);
+		String firma2Documento = firmaService.firmarContenido(content);
 		gestorDocumentalService.agregarFirma(documento, new Firma(firma2Documento, firmante));
 		
 		//Registra el documento

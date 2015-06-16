@@ -212,7 +212,7 @@ public class SecureController extends GenericController{
     	//Valida la firma
     	if(!validation.hasErrors()){
     	    try {
-    	        boolean firmaCorrecta = firmaService.validarFirmaTexto(token.getBytes(), firma);
+    	        boolean firmaCorrecta = firmaService.validarFirma(token.getBytes(), firma);
     	        if(!firmaCorrecta){
     	            validation.addError("login-certificado", "La firma no es válida");
     	        }

@@ -403,7 +403,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
     	log.info("[firmarDatosRegistro] Iniciando la firma de los datos de registro");
         try {
         	log.info("Llamando a firmarTexto para firmar datosRegistro");
-            String datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
+            String datosFirmados = firmaService.firmarContenidoEnFormato(datosAFirmar.getBytes("iso-8859-1"), null, "PKCS7", false, false);
             log.info("[firmarDatosRegistro] Datos de registro firmados correctamente");
             return datosFirmados;
         }catch(Exception e){
@@ -432,7 +432,7 @@ public class PlatinoRegistroServiceImpl implements RegistroService {
 
 		String datosFirmados;
 		try {
-			datosFirmados = firmaService.firmarTexto(datosAFirmar.getBytes("iso-8859-1"));
+			datosFirmados = firmaService.firmarContenidoEnFormato(datosAFirmar.getBytes("iso-8859-1"), null, "PKCS7", false, false);
 			play.Logger.info("Datos normalizados firmados");
 		} catch(Exception e){
             throw new RegistroServiceException("Error firmando los datos de registro de Salida"+ e);

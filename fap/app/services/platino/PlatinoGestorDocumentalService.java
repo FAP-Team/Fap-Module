@@ -347,7 +347,7 @@ public class PlatinoGestorDocumentalService {
 		
 			try {
 				
-				return obtenerDocumentoConCaja(idDocumento, false, 1);
+				return obtenerDocumentoConCaja(idDocumento, true, 1);
 
 			} catch (ElementoNoEncontradoException e) {
 				play.Logger.error("Se produjo un error recuperando el documento del AED-Platino: " + e);

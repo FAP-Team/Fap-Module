@@ -75,8 +75,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             firmaPort = signPort;
         }
 
-
-
         //Properties
         INVOKING_APP = propertyPlaceholder.get("fap.platino.firma.invokingApp");
         ALIAS = propertyPlaceholder.get("fap.platino.firma.alias");
@@ -101,43 +99,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         return NOMBRE_IMPLEMENTACION;
     }
 
-	private boolean hasConnection() {
-		boolean hasConnection = false;
-		try {
-			hasConnection = getVersion() != null;
-			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
-		}catch(Exception e){
-			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
-		}
-		return hasConnection;
-	}
-
-	private String getVersion() throws FirmaServiceException {
-	    try {
-	        String version = firmaPort.getVersion();
-	        return version;
-	    }catch(Exception e){
-	        throw newFirmaServiceException("Error al hacer getVersion", e);
-	    }
-	}
-
-	protected PlatinoSignatureServerBean getFirmaPort(){
-    	return this.firmaPort;
-    }
-
-	private String getEndPoint() {
-		return propertyPlaceholder.get("fap.platino.firma.url");
-	}
-
-	private FirmaServiceException newFirmaServiceException(String msg, Exception cause){
-	    if(cause instanceof SignatureServiceException_Exception){
-	        SignatureServiceException_Exception signatureException = (SignatureServiceException_Exception) cause;
-	        return new FirmaServiceException(msg + " - " + signatureException.getFaultInfo().getMessage(), cause);
-	    }else{
-	        return new FirmaServiceException("Error al realizar firma signContent", cause);
-	    }
-	}
-
 	@Override
     public List<String> getFirmaEnClienteJS() {
         List<String> jsclient = new ArrayList<String>();
@@ -154,107 +115,57 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         return jsclient;
     }
 
-	private String getHostJavaScripts() {
-		String baseJavascript = FapProperties.get("fap.platino.firma.baseJavascript");
-		StringBuilder hostBuilder = new StringBuilder();
-		if ((baseJavascript != null) && (!"undefined".equals(baseJavascript))) {
-			hostBuilder.append(baseJavascript);
-		} else {
-			String baseUrl = FapProperties.get("application.baseUrl");
-			String entornoJS = getEntornoJS(baseUrl);
-			hostBuilder.append("https://")
-					.append(entornoJS)
-					.append("/platino/")
-					.append(APPLET_FIRMA);
-		}
-
-		return hostBuilder.toString();
-	}
-
-	private String getEntornoJS(String baseUrl) {
-		StringBuilder entorno = new StringBuilder();
-		if (baseUrl.contains("sede.gobcan.es")) {
-			entorno.append("sede.gobcan.es");
-		} else {
-			entorno.append("gobiernodecanarias.org");
-		}
-		entorno.insert(0,getPrefijoEntornoJS(entorno.toString()));
-		return entorno.toString();
-	}
-
-	private String getPrefijoEntornoJS(String entornoJs) {
-		String prefijoEntorno = "";
-		if("pre".equals(JS_ENTORNO.toLowerCase())){
-            if (entornoJs.contains("gobiernodecanarias.org")) {
-                prefijoEntorno = "www-pre.";
-            } else if (entornoJs.contains("sede.gobcan.es")) {
-                prefijoEntorno = "pre-";
-            }
-        }else{
-            if (entornoJs.contains("gobiernodecanarias.org")) {
-                prefijoEntorno = "www.";
-            }
-        }
-		return prefijoEntorno;
+    @Override
+	public String firmarContenido(byte[] contenido) throws FirmaServiceException {
+    	 String firma = null;
+         try {
+             firma = firmaPort.signContent(contenido, INVOKING_APP, ALIAS);
+         } catch (Exception e) {
+             throw newFirmaServiceException("Error al intentar firmar ", e);
+         }
+         return firma;
 	}
 
 	@Override
-	public String firmarTexto(byte[] texto) throws FirmaServiceException {
-    	log.info("[firmarTexto] Iniciando firmarTexto -> Datos de Registro");
+	public boolean validarFirma(byte[] contenido, String firma)	throws FirmaServiceException {
+		boolean result = false;
+        try {
+            VerifySignatureResult vefifyResult = firmaPort.verifyContentSignature(contenido, firma.getBytes(), INVOKING_APP);
+            
+            if (vefifyResult != null)
+                result = vefifyResult.isValido();
+        } catch (Exception e) {
+            throw newFirmaServiceException("Error al validar la firma", e);
+        }
+        return result;
+	}
+    
+    @Override
+	public String firmarContenidoEnFormato(byte[] contenido, String uri, String formato, boolean timeStamp, boolean detached) throws FirmaServiceException {
         String firma = null;
         try {
-        	firma = firmaPort.signContent(texto, INVOKING_APP, ALIAS);
-            log.info("[firmarTexto] Texto firmado correctamente");
-        } catch (NullPointerException e) {
-            log.error("NullPointerException. Posiblemente recibido null como texto a firmar");
-            throw e;
-        }catch (Exception e) {
-        	log.error("[firmarDatosRegistro] Error en firmaPort.signContent()");
-            throw newFirmaServiceException("Error al realizar la firma", e);
+        	firma = firmaPort.signByFormat(contenido, uri, INVOKING_APP, ALIAS, formato, timeStamp, detached);
+        } catch (Exception e) {
+            throw newFirmaServiceException("Error al intentar firmar con formato", e);
         }
         return firma;
-    }
-
-    @Override
-	public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException{
-        boolean result = false;
+	}
+    
+	@Override
+	public boolean validarFirmaEnFormato(byte[] contenido, String firma, String formato) throws FirmaServiceException {
+		boolean result = false;
         try {
-            VerifySignatureResult vefifyResult = firmaPort.verifyContentSignature(texto, firma.getBytes(), INVOKING_APP);
+            VerifySignatureResult vefifyResult = firmaPort.verifySignatureByFormat(contenido, firma.getBytes(), INVOKING_APP, formato);
             
             if (vefifyResult != null)
                 result = vefifyResult.isValido();
         } catch (NullPointerException e) {
             throw e;
         } catch (Exception e) {
-            throw newFirmaServiceException("Error al validar la firma en el texto", e);
+            throw newFirmaServiceException("Error al validar la firma con formato", e);
         }
         return result;
-    }
-
-    @Override
-	public String firmarDocumento(byte[] contenidoDocumento) throws FirmaServiceException {
-        String firma = null;
-        try {
-            firma = firmaPort.signContent(contenidoDocumento, INVOKING_APP, ALIAS);
-        } catch (Exception e) {
-            throw newFirmaServiceException("Error al firmar XMLSignature ", e);
-        }
-        return firma;
-    }
-
-    @Override
-	public boolean validarFirmaDocumento(byte[] contenidoDocumento, String firma) throws FirmaServiceException {
-        boolean result = false;
-        try {
-        	 VerifySignatureResult vefifyResult = firmaPort.verifyContentSignature(contenidoDocumento, firma.getBytes(), INVOKING_APP);
-            
-            if (vefifyResult != null)
-            	result = vefifyResult.isValido();
-        } catch (SignatureServiceException_Exception e) {
-            play.Logger.error("Error verificando el contenido de la firma", e);
-        }
-        return result;
-    }
+	}
 
     @Override
 	public InfoCert extraerCertificado(String firma) throws FirmaServiceException {
@@ -264,55 +175,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             throw new FirmaServiceException("El certificado no es válido");
         return getInformacion(certificado);
     }
-
-    @Deprecated
-    @Override
-	public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException{
-		String certificado = null;
-		try {
-			PKCS7 pkcs7 = new PKCS7(Codec.decodeBASE64(firma));
-			X509Certificate certificate = pkcs7.getCertificates()[1];
-			byte[] certificadoEncoded = certificate.getEncoded();
-			certificado = Codec.encodeBASE64(certificadoEncoded);
-		} catch (Exception e) {
-			play.Logger.error("Error al extraer la información del certificado", e);
-		}
-		boolean certificadoValido = isValidCertificado(certificado);
-        if(!certificadoValido)
-            throw new FirmaServiceException("El certificado no es válido");
-		return getInformacion(certificado);
-	}
-
-	protected String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
-		try {
-			//"Extrayendo el certificado de la firma
-            FirmaInfoResult firmaInfoResult = firmaPort.getSignInfo(firma.getBytes());
-            List<NodoInfoResult> nodosFirma = firmaInfoResult.getNodosFirma().getNodoFirma();
-            return nodosFirma.get(nodosFirma.size()-1).getCertificado().get(0);
-		} catch (Exception e) {
-			System.out.println("Exception extraer: "+e.getMessage());
-			throw new FirmaServiceException("Error al extraer el certificado de la firma", e);
-		}
-	}
-
-	private boolean isValidCertificado(String certificado) throws FirmaServiceException{
-		try {
-			ValidateCertResult result = firmaPort.validateCert(certificado, INVOKING_APP);
-			return result.getCode() == 6; //Codigo 6 Certificado OK
-		} catch (Exception e) {
-		    throw new FirmaServiceException("Error validando el certificado", e);
-		}
-	}
-
-	protected InfoCert getInformacion(String certificado) throws FirmaServiceException{
-		try {
-			List<StringArray> certInfo = firmaPort.getCertInfo(certificado, INVOKING_APP);
-			InfoCert infoCert = new InfoCert(certInfo);
-			return infoCert;
-		} catch (Exception e) {
-			throw newFirmaServiceException("Error al extraer la información del certificado", e);
-		}
-	}
 
 	@Override
 	public Firmante getFirmante(String firma, Documento documento){
@@ -376,21 +238,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			Messages.error("Error validando la firma");
 		}
 		return firmante;
-	}
-
-	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
-		boolean result = false;
-		try {
-			VerifySignatureResult verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(content, signature, INVOKING_APP, "CADES");
-
-			if(verifySignatureByFormatResponse != null)
-				result = verifySignatureByFormatResponse.isValido();
-			
-			play.Logger.info("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
-		} catch (SignatureServiceException_Exception e) {
-			play.Logger.error("Error verificando el contenido de la firma", e);
-		}	
-		return result;
 	}
 
 	@Override
@@ -481,50 +328,6 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		}
 	}
 
-    private void agregarFirmaEnGestorDocumental(Documento documento, String firma, Firmante firmante) {
-        try {
-            play.Logger.info("Guardando firma en el aed");
-            firmante.fechaFirma = new DateTime();
-            gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
-            firmante.save();
-            play.Logger.info("Firma del documento " + documento.uri + ", con fecha " + firmante.fechaFirma + " guardada en el AED");
-        }catch(GestorDocumentalServiceException e){
-            play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
-            Messages.error("Error al guardar la firma");
-        }
-    }
-
-    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado, Documento documento) {
-        Firmante firmante = buscarFirmanteEnFirmantes(firmanteCertificado.idvalor, firmantes);
-        if(firmante == null){
-            Messages.error("El certificado no se corresponde con uno que puede firmar la solicitud.");
-            play.Logger.info("Error: este certificado no es válido para firmar este documento");
-        }else{
-            if(firmante.fechaFirma != null){
-            	Messages.error("Este certificado ya ha firmado el documento " + documento.descripcion);
-            	play.Logger.info("Error: Documento ya firmado por este certificado");
-            }
-
-            play.Logger.info("Firmante encontrado " + firmante.idvalor );
-            if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
-                Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
-            }
-        }
-        return firmante;
-    }
-
-    private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
-        Firmante firmante = null;
-        play.Logger.info("Posibles firmantes: ");
-        for (Firmante fB : firmantes) {
-        	play.Logger.info("Firmate: (idvalor: " + fB.idvalor + ", tipo: " + fB.tipo + ")");
-            if (fB.idvalor.equals(idValorFirmante)) {
-                firmante = fB;
-            }
-        }
-        return firmante;
-    }
-
 	/**
 	 * Realiza la firma mediante el sello del documento indicado.
 	 *
@@ -539,7 +342,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	public String firmarEnServidor (Documento documento) throws FirmaServiceException {
 		String firma = "";
 		try {
-			firma = firmarDocumento(gestorDocumentalService.getDocumento(documento).getBytes());
+			firma = firmarContenido(gestorDocumentalService.getDocumento(documento).getBytes());
 			gestorDocumentalService.agregarFirma(documento, firma);
 		} catch (GestorDocumentalServiceException ex) {
 			play.Logger.error("Error al agregar la firma al documento "+documento.uri+ ": "+ex.getMessage());
@@ -551,13 +354,184 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 		}
 		return firma;
 	}
+	
+	protected PlatinoSignatureServerBean getFirmaPort(){
+    	return this.firmaPort;
+    }
+	
+	protected String extraerCertificadoDeFirma(String firma) throws FirmaServiceException {
+		try {
+			//"Extrayendo el certificado de la firma
+            FirmaInfoResult firmaInfoResult = firmaPort.getSignInfo(firma.getBytes());
+            List<NodoInfoResult> nodosFirma = firmaInfoResult.getNodosFirma().getNodoFirma();
+            return nodosFirma.get(nodosFirma.size()-1).getCertificado().get(0);
+		} catch (Exception e) {
+			System.out.println("Exception extraer: "+e.getMessage());
+			throw new FirmaServiceException("Error al extraer el certificado de la firma", e);
+		}
+	}
+	
+	protected InfoCert getInformacion(String certificado) throws FirmaServiceException{
+		try {
+			List<StringArray> certInfo = firmaPort.getCertInfo(certificado, INVOKING_APP);
+			InfoCert infoCert = new InfoCert(certInfo);
+			return infoCert;
+		} catch (Exception e) {
+			throw newFirmaServiceException("Error al extraer la información del certificado", e);
+		}
+	}
+    
+    private boolean hasConnection() {
+		boolean hasConnection = false;
+		try {
+			hasConnection = getVersion() != null;
+			play.Logger.info("El servicio tiene conexion con " + getEndPoint() + "? :"+hasConnection);
+		}catch(Exception e){
+			play.Logger.info("El servicio no tiene conexion con " + getEndPoint());
+		}
+		return hasConnection;
+	}
 
-    private Firmante firmanteFromCertInfo(InfoCert infoCert) {
+	private String getVersion() throws FirmaServiceException {
+	    try {
+	        String version = firmaPort.getVersion();
+	        return version;
+	    }catch(Exception e){
+	        throw newFirmaServiceException("Error al hacer getVersion", e);
+	    }
+	}
+	
+	private String getEndPoint() {
+		return propertyPlaceholder.get("fap.platino.firma.url");
+	}
+
+	private FirmaServiceException newFirmaServiceException(String msg, Exception cause){
+	    if(cause instanceof SignatureServiceException_Exception){
+	        SignatureServiceException_Exception signatureException = (SignatureServiceException_Exception) cause;
+	        return new FirmaServiceException(msg + " - " + signatureException.getFaultInfo().getMessage(), cause);
+	    }else{
+	        return new FirmaServiceException("Error al realizar firma signContent", cause);
+	    }
+	}
+	
+	private String getHostJavaScripts() {
+		String baseJavascript = FapProperties.get("fap.platino.firma.baseJavascript");
+		StringBuilder hostBuilder = new StringBuilder();
+		if ((baseJavascript != null) && (!"undefined".equals(baseJavascript))) {
+			hostBuilder.append(baseJavascript);
+		} else {
+			String baseUrl = FapProperties.get("application.baseUrl");
+			String entornoJS = getEntornoJS(baseUrl);
+			hostBuilder.append("https://")
+					.append(entornoJS)
+					.append("/platino/")
+					.append(APPLET_FIRMA);
+		}
+
+		return hostBuilder.toString();
+	}
+
+	private String getEntornoJS(String baseUrl) {
+		StringBuilder entorno = new StringBuilder();
+		if (baseUrl.contains("sede.gobcan.es")) {
+			entorno.append("sede.gobcan.es");
+		} else {
+			entorno.append("gobiernodecanarias.org");
+		}
+		entorno.insert(0,getPrefijoEntornoJS(entorno.toString()));
+		return entorno.toString();
+	}
+
+	private String getPrefijoEntornoJS(String entornoJs) {
+		String prefijoEntorno = "";
+		if("pre".equals(JS_ENTORNO.toLowerCase())){
+            if (entornoJs.contains("gobiernodecanarias.org")) {
+                prefijoEntorno = "www-pre.";
+            } else if (entornoJs.contains("sede.gobcan.es")) {
+                prefijoEntorno = "pre-";
+            }
+        }else{
+            if (entornoJs.contains("gobiernodecanarias.org")) {
+                prefijoEntorno = "www.";
+            }
+        }
+		return prefijoEntorno;
+	}
+	
+	private Firmante firmanteFromCertInfo(InfoCert infoCert) {
         Firmante firmante = new Firmante();
         firmante.idtipo = infoCert.getIdTipo();
         firmante.idvalor = infoCert.getId();
         firmante.nombre = infoCert.getNombreCompleto();
         return firmante;
     }
+
+	private boolean isValidCertificado(String certificado) throws FirmaServiceException{
+		try {
+			ValidateCertResult result = firmaPort.validateCert(certificado, INVOKING_APP);
+			return result.getCode() == 6; //Codigo 6 Certificado OK
+		} catch (Exception e) {
+		    throw new FirmaServiceException("Error validando el certificado", e);
+		}
+	}
+	
+	private Boolean verificarContentSignature(byte[] content, byte[] signature) {
+		boolean result = false;
+		try {
+			VerifySignatureResult verifySignatureByFormatResponse = firmaPort.verifySignatureByFormat(content, signature, INVOKING_APP, "CADES");
+
+			if(verifySignatureByFormatResponse != null)
+				result = verifySignatureByFormatResponse.isValido();
+			
+			play.Logger.info("verificarContentSignature() | verifySignatureByFormatResponse: "+verifySignatureByFormatResponse);
+		} catch (SignatureServiceException_Exception e) {
+			play.Logger.error("Error verificando el contenido de la firma", e);
+		}	
+		return result;
+	}
+	
+	  private void agregarFirmaEnGestorDocumental(Documento documento, String firma, Firmante firmante) {
+	        try {
+	            play.Logger.info("Guardando firma en el aed");
+	            firmante.fechaFirma = new DateTime();
+	            gestorDocumentalService.agregarFirma(documento, new models.Firma(firma, firmante));
+	            firmante.save();
+	            play.Logger.info("Firma del documento " + documento.uri + ", con fecha " + firmante.fechaFirma + " guardada en el AED");
+	        }catch(GestorDocumentalServiceException e){
+	            play.Logger.error("Error guardando la firma en el aed: " +e.getMessage());
+	            Messages.error("Error al guardar la firma");
+	        }
+	    }
+
+	    private Firmante comprobarFirmanteValido(List<Firmante> firmantes, String valorDocumentofirmanteSolicitado, Firmante firmanteCertificado, Documento documento) {
+	        Firmante firmante = buscarFirmanteEnFirmantes(firmanteCertificado.idvalor, firmantes);
+	        if(firmante == null){
+	            Messages.error("El certificado no se corresponde con uno que puede firmar la solicitud.");
+	            play.Logger.info("Error: este certificado no es válido para firmar este documento");
+	        }else{
+	            if(firmante.fechaFirma != null){
+	            	Messages.error("Este certificado ya ha firmado el documento " + documento.descripcion);
+	            	play.Logger.info("Error: Documento ya firmado por este certificado");
+	            }
+
+	            play.Logger.info("Firmante encontrado " + firmante.idvalor );
+	            if(valorDocumentofirmanteSolicitado != null && !firmante.idvalor.equalsIgnoreCase(valorDocumentofirmanteSolicitado)){
+	                Messages.error("Se esperaba la firma de " + valorDocumentofirmanteSolicitado);
+	            }
+	        }
+	        return firmante;
+	    }
+
+	    private Firmante buscarFirmanteEnFirmantes(String idValorFirmante, List<Firmante> firmantes) {
+	        Firmante firmante = null;
+	        play.Logger.info("Posibles firmantes: ");
+	        for (Firmante fB : firmantes) {
+	        	play.Logger.info("Firmate: (idvalor: " + fB.idvalor + ", tipo: " + fB.tipo + ")");
+	            if (fB.idvalor.equals(idValorFirmante)) {
+	                firmante = fB;
+	            }
+	        }
+	        return firmante;
+	    }
 
 }

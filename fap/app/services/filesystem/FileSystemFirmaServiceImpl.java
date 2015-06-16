@@ -10,15 +10,11 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import controllers.fap.FirmaController;
-
 import es.gobcan.platino.servicios.sfst.SignatureServiceException_Exception;
-
 import net.java.dev.jaxb.array.StringArray;
-
 import messages.Messages;
 import models.Documento;
 import models.Firmante;
-
 import platino.Firma;
 import platino.InfoCert;
 import play.libs.Codec;
@@ -69,38 +65,29 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     }
     
     @Override
-    public String firmarTexto(byte[] texto) throws FirmaServiceException {
-        FileSystemFirma fsFirma = FileSystemFirma.encode("APP", "APPNIF", new String(texto));
-        return fsFirma.encode();
-    }
+	public String firmarContenido(byte[] contenido)	throws FirmaServiceException {
+	   FileSystemFirma fsFirma = FileSystemFirma.encode("APP", "APPNIF", new String(contenido));
+       return fsFirma.encode();
+	}
 
-    @Override
-    public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException {
-        FileSystemFirma decodeFirma = FileSystemFirma.decode(firma);
-        return new String(texto).equals(decodeFirma.getFirma());
-    }
-    
-    @Override
-    public String firmarDocumento(byte[] contenidoDocumento) throws FirmaServiceException {
-        return firmarTexto(contenidoDocumento); 
-    }
+	@Override
+	public String firmarContenidoEnFormato(byte[] contenido, String uri, String formato, boolean timeStamp, boolean detached) throws FirmaServiceException {
+		return null;
+	}
 
-    @Override
-    public boolean validarFirmaDocumento(byte[] contenidoDocumento, String firma) throws FirmaServiceException {
-        return false;
-    }
+	@Override
+	public boolean validarFirma(byte[] contenido, String firma)	throws FirmaServiceException {
+	   FileSystemFirma decodeFirma = FileSystemFirma.decode(firma);
+       return new String(contenido).equals(decodeFirma.getFirma());
+	}
+
+	@Override
+	public boolean validarFirmaEnFormato(byte[] contenido, String firma, String formato) throws FirmaServiceException {
+		return false;
+	}
 
     @Override
     public InfoCert extraerCertificado(String firma) throws FirmaServiceException {
-        FileSystemFirma decode = FileSystemFirma.decode(firma);
-        InfoCert info = new InfoCert();
-        info.nombrecompleto = decode.getNombre();
-        info.nif = decode.getNif();
-        return info;
-    }
-    
-    @Override
-    public InfoCert extraerCertificadoLogin (String firma) throws FirmaServiceException {
         FileSystemFirma decode = FileSystemFirma.decode(firma);
         InfoCert info = new InfoCert();
         info.nombrecompleto = decode.getNombre();

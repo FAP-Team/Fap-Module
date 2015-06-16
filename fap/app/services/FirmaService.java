@@ -20,17 +20,15 @@ public interface FirmaService {
 
     public List<String> getFirmaEnClienteJS();
     
-    public String firmarTexto(byte[] texto) throws FirmaServiceException;
-
-    public boolean validarFirmaTexto(byte[] texto, String firma) throws FirmaServiceException;
-
-    public String firmarDocumento(byte[] contenidoDocumento) throws FirmaServiceException;
-
-    public boolean validarFirmaDocumento(byte[] contenidoDocumento, String firma) throws FirmaServiceException;
+    public String firmarContenido(byte[] contenido) throws FirmaServiceException;
+    
+    public boolean validarFirma(byte[] contenido, String firma) throws FirmaServiceException;
+    
+    public String firmarContenidoEnFormato(byte[] contenido, String uri, String formato, boolean timeStamp, boolean detached) throws FirmaServiceException;
+    
+    public boolean validarFirmaEnFormato(byte[] contenido, String firma, String formato) throws FirmaServiceException;
 
     public InfoCert extraerCertificado(String firma) throws FirmaServiceException;
-    
-    public InfoCert extraerCertificadoLogin(String firma) throws FirmaServiceException;
     
     public List<Firmante> getFirmantes(String firma);
 

@@ -121,7 +121,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
          try {
              firma = firmaPort.signContent(contenido, INVOKING_APP, ALIAS);
          } catch (Exception e) {
-             throw newFirmaServiceException("Error al intentar firmar ", e);
+             throw new FirmaServiceException("Error al intentar firmar ", e);
          }
          return firma;
 	}
@@ -135,7 +135,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
             if (vefifyResult != null)
                 result = vefifyResult.isValido();
         } catch (Exception e) {
-            throw newFirmaServiceException("Error al validar la firma", e);
+            throw new FirmaServiceException("Error al validar la firma", e);
         }
         return result;
 	}
@@ -146,7 +146,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         try {
         	firma = firmaPort.signByFormat(contenido, uri, INVOKING_APP, ALIAS, formato, timeStamp, detached);
         } catch (Exception e) {
-            throw newFirmaServiceException("Error al intentar firmar con formato", e);
+            throw new FirmaServiceException("Error al intentar firmar con formato", e);
         }
         return firma;
 	}
@@ -162,7 +162,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
         } catch (NullPointerException e) {
             throw e;
         } catch (Exception e) {
-            throw newFirmaServiceException("Error al validar la firma con formato", e);
+            throw new FirmaServiceException("Error al validar la firma con formato", e);
         }
         return result;
 	}
@@ -377,7 +377,7 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 			InfoCert infoCert = new InfoCert(certInfo);
 			return infoCert;
 		} catch (Exception e) {
-			throw newFirmaServiceException("Error al extraer la información del certificado", e);
+			throw new FirmaServiceException("Error al extraer la información del certificado", e);
 		}
 	}
     
@@ -397,21 +397,12 @@ public class PlatinoFirmaServiceImpl implements services.FirmaService {
 	        String version = firmaPort.getVersion();
 	        return version;
 	    }catch(Exception e){
-	        throw newFirmaServiceException("Error al hacer getVersion", e);
+	        throw new FirmaServiceException("Error al hacer getVersion", e);
 	    }
 	}
 	
 	private String getEndPoint() {
 		return propertyPlaceholder.get("fap.platino.firma.url");
-	}
-
-	private FirmaServiceException newFirmaServiceException(String msg, Exception cause){
-	    if(cause instanceof SignatureServiceException_Exception){
-	        SignatureServiceException_Exception signatureException = (SignatureServiceException_Exception) cause;
-	        return new FirmaServiceException(msg + " - " + signatureException.getFaultInfo().getMessage(), cause);
-	    }else{
-	        return new FirmaServiceException("Error al realizar firma signContent", cause);
-	    }
 	}
 	
 	private String getHostJavaScripts() {

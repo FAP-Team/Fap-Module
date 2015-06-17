@@ -66,8 +66,12 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
     
     @Override
 	public String firmarContenido(byte[] contenido)	throws FirmaServiceException {
-	   FileSystemFirma fsFirma = FileSystemFirma.encode("APP", "APPNIF", new String(contenido));
-       return fsFirma.encode();
+       try {
+           FileSystemFirma fsFirma = FileSystemFirma.encode("APP", "APPNIF", new String(contenido));
+		   return fsFirma.encode();
+       } catch(Exception e){
+    	   throw new FirmaServiceException("Error al intentar firmar ", e);
+       }
 	}
 
 	@Override
@@ -77,8 +81,12 @@ public class FileSystemFirmaServiceImpl implements FirmaService {
 
 	@Override
 	public boolean validarFirma(byte[] contenido, String firma)	throws FirmaServiceException {
-	   FileSystemFirma decodeFirma = FileSystemFirma.decode(firma);
-       return new String(contenido).equals(decodeFirma.getFirma());
+	   try {
+		   FileSystemFirma decodeFirma = FileSystemFirma.decode(firma);
+	       return new String(contenido).equals(decodeFirma.getFirma());
+	   } catch(Exception e){
+		   throw new FirmaServiceException("Error al validar la firma", e);
+       }
 	}
 
 	@Override

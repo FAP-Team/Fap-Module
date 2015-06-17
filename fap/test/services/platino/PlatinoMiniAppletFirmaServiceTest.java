@@ -81,7 +81,7 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
         try {
             String textoFirmado = simularFirmaValida(texto);
             doReturn(simularFirmaValida(texto)).when(firmaPort).signContent(eq(texto.getBytes()), anyString(), anyString());
-            doReturn(true).when(firmaPort).verifyContentSignature(eq(texto.getBytes()), eq(textoFirmado.getBytes()), anyString());
+            doReturn(simularVerificacionFirmaValida()).when(firmaPort).verifyContentSignature(eq(texto.getBytes()), eq(textoFirmado.getBytes()), anyString());
         } catch (SignatureServiceException_Exception e) {
             e.printStackTrace();
         }
@@ -172,6 +172,12 @@ public class PlatinoMiniAppletFirmaServiceTest extends FirmaServiceTest {
 
     private static String simularFirmaValida(String testText) {
         return new StringBuilder(testText).append("FIRMADO").reverse().toString();
+    }
+    
+    private static VerifySignatureResult simularVerificacionFirmaValida(){
+    	VerifySignatureResult result = new VerifySignatureResult();
+    	result.setValido(true);
+    	return result;
     }
 
     @Override

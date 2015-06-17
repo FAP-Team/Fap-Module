@@ -52,17 +52,17 @@ public abstract class FirmaServiceTest extends UnitTest {
         assertFalse(firmaValida);
     }
     
-    @Test(expected = NullPointerException.class)
+    @Test(expected = FirmaServiceException.class)
     public void firmarTextoNull() throws Exception {
         firmaService.firmarContenido(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = FirmaServiceException.class)
     public void validarFirmaTextoTextoNull() throws Exception {
         firmaService.validarFirma(null, "firma");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = FirmaServiceException.class)
     public void validarFirmaTextoFirmaNull() throws Exception {
         firmaService.validarFirma("".getBytes(), null);
     }

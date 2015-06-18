@@ -1196,8 +1196,8 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private static boolean hayAnterior(Object o){
 		if(o instanceof Popup || o instanceof Pagina){
-			if (o.eContainer().getMenus().size() > 0){
-				if (hayAnterior(o.eContainer().getMenus().getAt(0)))
+			if (o.eContainer().menu){
+				if (hayAnterior(o.eContainer().menu))
 					return true;
 			}
 		}

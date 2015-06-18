@@ -103,14 +103,19 @@ Formulario:
 		& (inicial?="inicial")?
 	)
 	'{'
-		(menu = Menu)?
+		(menus += Menu)*
 		(paginas += Pagina  |  popups += Popup)*
 	'}'
 ;
 
 Menu:
-	elemento='Menu' '{'
-		elementos +=MenuElemento+
+	elemento='Menu' 
+	(
+		("indice" "=" indice=INT)?
+		& ("unico" "=" unico=("false" | "true"))?
+	)
+	'{'
+		elementos += MenuElemento+
 	'}'
 ;
 
@@ -232,7 +237,7 @@ Elemento:
 	AreaTexto | Enlace | Form |
 	SubirArchivo | EditarArchivo | FirmaSimple | FirmaMasiva |
 	EntidadAutomatica | Accion | Codigo | CCC | VisorFactura | SubirFactura | EditarFactura | TextoOculto |
-	GrupoRadioButtons
+	GrupoRadioButtons | ComboUO
 ;
 
 Campo:
@@ -401,6 +406,14 @@ Combo:
 		& (ordenar = ('ordenarPorClave' | 'ordenarPorValor'))?
 		& (eliminarDuplicados?="eliminarDuplicados")?
 	)
+;
+
+ComboUO:
+    elemento='ComboUO' (name=ID) (
+        ('campo' '=' campo=Campo)
+        & (requerido?='requerido')?
+        & (busqueda?="busqueda")?
+    )
 ;
 
 Form:

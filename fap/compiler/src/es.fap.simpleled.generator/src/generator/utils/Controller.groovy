@@ -179,11 +179,12 @@ import es.mityc.facturae32.Facturae;
 import com.google.gson.Gson;
 import javax.persistence.*;
 
-import services.FirmaService;
-import services.GestorDocumentalService;
-import services.GestorDocumentalServiceException;
+import services.*;
+import services.comunicacionesInternas.*;
+import services.genericos.*;
+import services.BDOrganizacion.*;
 import com.google.inject.Inject;
-import utils.PeticionModificacion;
+import utils.*;
 import controllers.fap.AgenteController;
 
 ${withSecure}
@@ -1195,8 +1196,8 @@ public class ${controllerName} extends ${controllerGenName} {
 	
 	private static boolean hayAnterior(Object o){
 		if(o instanceof Popup || o instanceof Pagina){
-			if (o.eContainer().menu){
-				if (hayAnterior(o.eContainer().menu))
+			if (o.eContainer().getMenus().size() > 0){
+				if (hayAnterior(o.eContainer().getMenus().getAt(0)))
 					return true;
 			}
 		}

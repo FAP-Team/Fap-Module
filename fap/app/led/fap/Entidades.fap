@@ -56,6 +56,7 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Cesion cesion
 	//Comunicaciones Internas
 	OneToMany ComunicacionInterna comunicacionesInternas
+	//Comunicaciones Internas
 	Boolean activoModificacion transient
 	String estadoAntesModificacion	//Estado al que se vuelve al finalizar la modificacion
 	OneToMany RegistroModificacion registroModificacion
@@ -65,9 +66,14 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	Respuesta respuestaSvd
 	PeticionSVD peticion
 	OneToMany Registro registros
+
 	Lista NombreServicioSVDFAP nombreServicio transient
 	Lista tipoEstadoPeticionSVDFAP estadoPeticionSVD
 
+	//Subvenciones
+	DeclaracionSubvenciones declaracionSubvenciones
+    HistoricoDeclaracionSubvenciones historicoDeclaracionSubvenciones
+    //Subvenciones
 }
 
 // Datos básicos de un Solicitante (extiende de Persona, y por lo tanto tendrá también los atributos que tenga esa entidad)
@@ -107,6 +113,7 @@ Entidad Agente inheritance=joined auditable {
 	String verificacion transient		// campo auxiliar para el cambio de password
 	String cargo length=500
 	String usuarioldap
+	String sessionHash
 }
 
 // Entidad que contiene los campos necesarios para una dirección. Se establece como "embeddable", lo que indica
@@ -629,6 +636,7 @@ Entidad ConfigurarMensaje {
 }
 
 Entidad AceptarRenunciar {
+    DeclaracionSubvenciones declaracionSubvenciones
 	Lista seleccion seleccion
 	LongText motivoRenuncia
 	Documento borrador
@@ -988,9 +996,11 @@ Entidad JsonPeticionModificacion{
 // -----------------------------------------------------------------------
 
 Entidad ComunicacionInterna{
-	AsientoCIFap asiento
-	ReturnComunicacionInternaFap respuesta
+    AsientoCIFap asiento noConstruct
+    RespuestaCIFap respuesta noConstruct
 	Lista estadosComunicacionInterna estado
+	String numRegistroHiperReg transient
+	String fechaHiperReg transient
 }
 
 Entidad AsientoCIFap {
@@ -999,18 +1009,17 @@ Entidad AsientoCIFap {
 	Integer numeroDocumentos  //No ob
 	String interesado //No ob
 	ReturnUnidadOrganicaFap unidadOrganicaDestino noConstruct  //No ob si asunto codificado existe
+	Boolean asientoAmpliado default = "false"                 // AsientoAmpliado
+	ReturnUnidadOrganicaFap unidadOrganicaOrigen noConstruct  // AsientoAmpliado
 	String asuntoCodificado  //No ob
 	String userId
-	String password //String utf-16 unicode
+	String password transient//String utf-16 unicode
 	String tipoTransporte  //No ob
 	OneToMany ListaUris uris  //Array de uris  //No ob
 }
 
-Entidad AsientoAmpliadoCIFap extends AsientoCIFap {
-	ReturnUnidadOrganicaFap unidadOrganicaOrigen
-}
 	
-Entidad ReturnComunicacionInternaFap {
+Entidad RespuestaCIFap {
 	String usuario
 	String resumen
 	String observaciones
@@ -1024,17 +1033,14 @@ Entidad ReturnComunicacionInternaFap {
 	Long numeroRegistro
 	String asunto
 	String unidadOrganica
-	ReturnInteresadoCIFap interesado
+	ReturnInteresadoCIFap interesado noConstruct
 	String tipoTransporte
 	OneToMany ListaUris uris
+	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna. (RespuestaAmpliada)
+    String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora. (RespuestaAmpliada)
 	//Lista listaReturnErrorFap error	//Lo tenía Yure, no se por qué habrá que preguntar
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 }	
-
-Entidad ReturnComunicacionInternaAmpliadaFap extends ReturnComunicacionInternaFap {
-	String unidadOrganicaOrigen //U. orgánica origen de la comunicación interna.
-	String unidadOrganicaPropuesta //U. orgánica destino propuestainicialmente como destino en caso de no ser receptora.
-}
 
 Entidad ReturnInteresadoCIFap {
 	String nombre
@@ -1052,35 +1058,26 @@ Entidad ReturnUnidadOrganicaFap{
 	String esBaja
 	String esReceptora
 	Long codigoReceptora
-	ReturnErrorFap error
+	ReturnErrorFap error noConstruct
 	Long codigoRaiz transient
 	Long codigoSubNivel1 transient
 	Long codigoSubNivel2 transient
 	Long codigoSubNivel3 transient
+	Long codigoBDOrganizacion //Código que nos permite realizar el mapeo con la BDOrganización si fuera necesario
 }	
 
 Entidad ReturnErrorFap {
 	Integer codigo
 	String descripcion
 }
-	
-	
-	
-//	String referenciaCantidadDocumentos  //Hacerle un ToString cuando lo devuelva el servicio
-//	Integer tipoDocumento //lista Tipos de documentos
-//	String numeroDocumento
-//	String letraDocumento
-//	String nombreInteresado
-//	Integer numeroAsientoAsociado
-//	String userId
-//	String password //UTF16 Unicode!!
-//	String tipoTransporte
-//	OneToMany ListaUris uris  //Array de uris
-//}
 
 Entidad ListaUris {
 	String uri
 }
+
+// -----------------------------------------------------------------------
+//   Entidades necesarias para el servicio de PortaFirmas
+// -----------------------------------------------------------------------
 
 Entidad SolicitudFirmaPortafirma {
 	// -------------------- Común --------------------
@@ -1120,4 +1117,40 @@ Entidad SolicitudFirmaPortafirma {
 	Boolean firmaDelegada					// Indica si el destinatario de la solicitud es un destinatario por delegación de firma.
 	Boolean archivada						// Indica si la solicitud fue archivada por el solicitante.
 	String comentarioSolicitante			// Comentario que puede hacer el solicitante en varias operaciones (eliminar, validar...)
+}
+
+
+// -----------------------------------------------------------------------
+//   Entidades necesarias para las Subvenciones
+// -----------------------------------------------------------------------
+
+Entidad SubvencionFap{
+    Lista tiposSubvencion tipo
+    Lista estadosSubvenciones situacion
+    String entidad
+    String objeto length=2000
+    String fondo
+    String reglamento
+    String programa
+    DateTime fechaSolicitud
+    DateTime fechaAprobacion
+    Double importe
+}
+
+Entidad DeclaracionSubvenciones{
+    String nombreTramite //Solo se actualiza cuando se registra (en presentacion,aceptacion o justificacion)
+    OneToMany SubvencionFap  subvenciones
+    DateTime fecha //Fecha de registro de la declaracion ( f.reg.solicitud, f.reg.aceptacion, f.reg.justificacion)
+    Double totalSolicitadas transient
+    Double totalConcedidas transient
+    Double totalSolicitadasPublicas transient
+    Double totalConcedidasPublicas transient
+    Double totalSolicitadasPrivadas transient
+    Double totalConcedidasPrivadas transient
+    Double totalSolicitadasMinimis transient
+    Double totalConcedidasMinimis transient
+}
+
+Entidad HistoricoDeclaracionSubvenciones{
+    OneToMany DeclaracionSubvenciones declaraciones
 }

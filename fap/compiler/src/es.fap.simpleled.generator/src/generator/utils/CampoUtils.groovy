@@ -41,7 +41,7 @@ public class CampoUtils implements Comparable{
 	
 	public static CampoUtils create(String campoStr){
 		String entidad = entidadRaiz(campoStr);
-		List<String> atributos = sinEntidad(campoStr).split("\\.");
+		List<String> atributos = sinEntidadStr(campoStr).split("\\.");
 		if (atributos.get(0).equals(""))
 			atributos.clear();
 		Entity entity = ModelUtils.getVisibleNode(LedFactory.eINSTANCE.getLedPackage().getEntity(), entidad, LedUtils.resource);
@@ -158,7 +158,11 @@ public class CampoUtils implements Comparable{
 	}
 	
 	public String sinEntidad(){
-		return sinEntidad(str);
+		return sinEntidadStr(str);
+	}
+	
+	public String sinEntidad(String campoStr){
+		return sinEntidadStr(campoStr);
 	}
 	
 	public boolean simple(){
@@ -216,7 +220,7 @@ public class CampoUtils implements Comparable{
 		return null;
 	}
 	
-	private static String sinEntidad(String campoStr){
+	private static String sinEntidadStr(String campoStr){
 		int index = campoStr.findIndexOf{ it == '.' };
 		if(index == -1) return "";
 		return campoStr.substring(campoStr.findIndexOf{ it == '.' } + 1)
@@ -227,8 +231,13 @@ public class CampoUtils implements Comparable{
 		if (last == -1) return StringUtils.firstLower(str);
 		return StringUtils.firstLower(str).substring(0, last);
 	}
-
 	
+	public String sinUltimoAtributo(String campoStr){
+		int last = campoStr.lastIndexOf('.');
+		if (last == -1) return StringUtils.firstLower(campoStr);
+		return StringUtils.firstLower(campoStr).substring(0, last);
+	}
+
 	public String getStr_(){
 		return StringUtils.firstLower(str.replace('.', '_'));
 	}

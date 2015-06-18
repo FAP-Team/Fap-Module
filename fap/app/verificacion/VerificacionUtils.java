@@ -96,8 +96,8 @@ public class VerificacionUtils {
 				if (auxVerificacion.uriTramite.equals(uriTramite)) {
 					if (!auxVerificacion.estado.equals(EstadosVerificacionEnum.verificacionPositiva.name())) {
 						verificacionAnterior = auxVerificacion;
-						break;
 					}
+					break;
 				}
 			}
 		}
@@ -608,58 +608,58 @@ public class VerificacionUtils {
 		return estadoResultado;
 	}
 	
-	private static DomicilioRespuesta setDomicilio (TransmisionDatos transmisionsvd, TransmisionDatosRespuesta transmision){
-		DomicilioRespuesta domicilio = transmision.datosEspecificos.domicilio;
-		domicilio.provincia.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getProvinciaRespuesta().getCodigo();
-		domicilio.provincia.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getProvinciaRespuesta().getNombre();
-		domicilio.municipio.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getMunicipioRespuesta().getCodigo();
-		domicilio.municipio.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getMunicipioRespuesta().getNombre();
-		domicilio.entColectiva.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getEntColectiva().getCodigo();
-		domicilio.entColectiva.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getEntColectiva().getNombre();
-		domicilio.entSingular.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getEntSingular().getCodigo();
-		domicilio.entSingular.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getEntSingular().getNombre();
-		domicilio.nucleo.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getNucleo().getCodigo();
-		domicilio.nucleo.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getNucleo().getNombre();
-		domicilio.direccion.via.codigo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getVia().getCodigo();
-		domicilio.direccion.via.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getVia().getNombre();
-		domicilio.direccion.via.tipo = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getVia().getTipo();
-		domicilio.direccion.numero.calificador = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getNumero().getCalificador();
-		domicilio.direccion.numero.valor = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getNumero().getValor();
-		domicilio.direccion.numeroSuperior.calificador = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getNumeroSuperior().getCalificador();
-		domicilio.direccion.numeroSuperior.valor = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getNumeroSuperior().getValor();
-		domicilio.direccion.bloque = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getBloque();
-		domicilio.direccion.codigoPostal = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getCodPostal();
-		domicilio.direccion.escalera = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getEscalera();
-		domicilio.direccion.hmt = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getHmt();
-		domicilio.direccion.kmt = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getKmt();
-		domicilio.direccion.planta = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getPlanta();
-		domicilio.direccion.portal = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getPortal();
-		domicilio.direccion.puerta = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDomicilio().getDireccion().getPuerta();
-		
-		return domicilio;
-	}
+//	private static DomicilioRespuesta setDomicilio (TransmisionDatos transmisionsvd, TransmisionDatosRespuesta transmision){
+//		DomicilioRespuesta domicilio = transmision.datosEspecificos.domicilio;
+//		domicilio.provincia.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getProvinciaRespuesta().getCodigo();
+//		domicilio.provincia.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getProvinciaRespuesta().getNombre();
+//		domicilio.municipio.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getMunicipioRespuesta().getCodigo();
+//		domicilio.municipio.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getMunicipioRespuesta().getNombre();
+//		domicilio.entColectiva.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getEntColectiva().getCodigo();
+//		domicilio.entColectiva.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getEntColectiva().getNombre();
+//		domicilio.entSingular.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getEntSingular().getCodigo();
+//		domicilio.entSingular.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getEntSingular().getNombre();
+//		domicilio.nucleo.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getNucleo().getCodigo();
+//		domicilio.nucleo.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getNucleo().getNombre();
+//		domicilio.direccion.via.codigo = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getVia().getCodigo();
+//		domicilio.direccion.via.nombre = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getVia().getNombre();
+//		domicilio.direccion.via.tipo = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getVia().getTipo();
+//		domicilio.direccion.numero.calificador = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getNumero().getCalificador();
+//		domicilio.direccion.numero.valor = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getNumero().getValor();
+//		domicilio.direccion.numeroSuperior.calificador = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getNumeroSuperior().getCalificador();
+//		domicilio.direccion.numeroSuperior.valor = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getNumeroSuperior().getValor();
+//		domicilio.direccion.bloque = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getBloque();
+//		domicilio.direccion.codigoPostal = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getCodPostal();
+//		domicilio.direccion.escalera = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getEscalera();
+//		domicilio.direccion.hmt = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getHmt();
+//		domicilio.direccion.kmt = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getKmt();
+//		domicilio.direccion.planta = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getPlanta();
+//		domicilio.direccion.portal = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getPortal();
+//		domicilio.direccion.puerta = transmisionsvd.getDatosEspecificos().getDomicilio().getDireccion().getPuerta();
+//		
+//		return domicilio;
+//	}
 	
-	private static DatosTitularRespuesta setDatosTitular (TransmisionDatos transmisionsvd, TransmisionDatosRespuesta transmision){
-		DatosTitularRespuesta datosTitular = transmision.datosEspecificos.datosTitular;
-		datosTitular.identificador = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getIdentificador();
-		datosTitular.numeroSoporte = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNumSoporte();
-		datosTitular.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNombre();
-		datosTitular.apellido1 = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido1();
-		datosTitular.apellido2 = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getApellido2();
-		datosTitular.nacionalidad = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNacionalidad();
-		datosTitular.nombrePadre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomPadre();
-		datosTitular.nombreMadre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getNomMadre();
-		datosTitular.fechacaducidad = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getFechaCaducidad();
-		datosTitular.sexo.nombre = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getSexo().name();
-		datosTitular.sexo.valor = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getSexo().value();
-		datosTitular.datosNacimiento.fecha = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getFechaNacimiento();
-		datosTitular.datosNacimiento.localidad = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getLocalidad();
-		datosTitular.datosNacimiento.provincia = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosNacimiento().getProvincia();
-		datosTitular.datosDireccion.localidad = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getLocalidad();
-		datosTitular.datosDireccion.provincia = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getProvincia();
-		datosTitular.datosDireccion.datosVia = transmisionsvd.getDatosEspecificos().getDatosEspecificosIdResi().getDatosTitular().getDatosDireccion().getDatosVia();
-		return datosTitular;
-	}
+//	private static DatosTitularRespuesta setDatosTitular (TransmisionDatos transmisionsvd, TransmisionDatosRespuesta transmision){
+//		DatosTitularRespuesta datosTitular = transmision.datosEspecificos.datosTitular;
+//		datosTitular.identificador = transmisionsvd.getDatosEspecificos().getDatosTitular().getIdentificador();
+//		datosTitular.numeroSoporte = transmisionsvd.getDatosEspecificos().getDatosTitular().getNumSoporte();
+//		datosTitular.nombre = transmisionsvd.getDatosEspecificos().getDatosTitular().getNombre();
+//		datosTitular.apellido1 = transmisionsvd.getDatosEspecificos().getDatosTitular().getApellido1();
+//		datosTitular.apellido2 = transmisionsvd.getDatosEspecificos().getDatosTitular().getApellido2();
+//		datosTitular.nacionalidad = transmisionsvd.getDatosEspecificos().getDatosTitular().getNacionalidad();
+//		datosTitular.nombrePadre = transmisionsvd.getDatosEspecificos().getDatosTitular().getNomPadre();
+//		datosTitular.nombreMadre = transmisionsvd.getDatosEspecificos().getDatosTitular().getNomMadre();
+//		datosTitular.fechacaducidad = transmisionsvd.getDatosEspecificos().getDatosTitular().getFechaCaducidad();
+//		datosTitular.sexo.nombre = transmisionsvd.getDatosEspecificos().getDatosTitular().getSexo().name();
+//		datosTitular.sexo.valor = transmisionsvd.getDatosEspecificos().getDatosTitular().getSexo().value();
+//		datosTitular.datosNacimiento.fecha = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosNacimiento().getFecha();
+//		datosTitular.datosNacimiento.localidad = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosNacimiento().getLocalidad();
+//		datosTitular.datosNacimiento.provincia = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosNacimiento().getProvincia();
+//		datosTitular.datosDireccion.localidad = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosDireccion().getLocalidad();
+//		datosTitular.datosDireccion.provincia = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosDireccion().getProvincia();
+//		datosTitular.datosDireccion.datosVia = transmisionsvd.getDatosEspecificos().getDatosTitular().getDatosDireccion().getDatosVia();
+//		return datosTitular;
+//	}
 	
 	public static models.Respuesta convertRespuestaSvdToRespuesta (Respuesta respuestaSvd){
 		models.Respuesta respuesta = new models.Respuesta();
@@ -676,8 +676,8 @@ public class VerificacionUtils {
 			transmision.datosGenericos.transmision = setTransmisionRespuesta(transmisionsvd, transmision);
 			transmision.datosEspecificos.estado = setEstadoEspecifico(transmisionsvd, transmision);
 			transmision.datosEspecificos.estadoResultado = setEstadoResultado(transmisionsvd, transmision);
-			transmision.datosEspecificos.domicilio = setDomicilio(transmisionsvd, transmision);
-			transmision.datosEspecificos.datosTitular = setDatosTitular(transmisionsvd, transmision);
+//			transmision.datosEspecificos.domicilio = setDomicilio(transmisionsvd, transmision);
+//			transmision.datosEspecificos.datosTitular = setDatosTitular(transmisionsvd, transmision);
 			
 			transmisiones.transmisionDatos.add(transmision);
 		}

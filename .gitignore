@@ -108,7 +108,7 @@ apps/*/dist
 apps/test/app/DiffGen.patch
 fap/app/DiffGen.patch
 
-# Configuraci�n de platino
+# Configuracion de platino
 apps/test/conf/platino
 
 #Gestor documental FileSystem
@@ -121,12 +121,12 @@ fap/app/listas/initial-data/paginasMsj.yml
 fap/app/listas/initial-data/paginasMsjLista.yml
 apps/test/app/listas/initial-data/*.yml
 
-#Aplicaci�n Cuadro de Mandos
+#Aplicacion Cuadro de Mandos
 apps/cuadroMandos/tmp/*
 apps/cuadroMandos/app/listas/initial-data/*.yml
 apps/cuadroMandos/app/views/gen/*
 
-#Aplicaci�n Gen�rica
+#Aplicacion Generica
 apps/aplicacionGenerica/gestorDocumental/temporal/*
 apps/aplicacionGenerica/gestorDocumental/clasificado/*
 apps/aplicacionGenerica/conf/platino

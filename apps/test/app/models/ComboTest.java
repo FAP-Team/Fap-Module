@@ -49,6 +49,12 @@ public class ComboTest extends FapModel {
 	@ValueFromTable("ComboTestList")
 	public String list;
 
+	@ValueFromTable("ComboTestList")
+	public String sinParametros;
+
+	@ValueFromTable("ComboTestList")
+	public String parametros;
+
 	@ValueFromTable("Numeritos")
 	public String listNumber;
 

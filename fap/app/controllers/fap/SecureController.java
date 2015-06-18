@@ -48,6 +48,7 @@ import ugot.recaptcha.Recaptcha;
 import ugot.recaptcha.RecaptchaCheck;
 import ugot.recaptcha.RecaptchaValidator;
 import utils.RoutesUtils;
+import validation.CustomValidation;
 
 
 public class SecureController extends GenericController{
@@ -260,12 +261,14 @@ public class SecureController extends GenericController{
 			}
 		}
 		
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.certificado.name();
 		agente.save();
 
 		//Almacena el usuario en la sesion
-		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username);
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
 		
 		redirectToOriginalURL();
@@ -392,6 +395,8 @@ public class SecureController extends GenericController{
             loginFap();
     	}
         
+    	//Genera un hash de firma de sesion
+    	agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		//Almacena el modo de acceso del agente
 		agente.acceso = AccesoAgenteEnum.usuario.name();
 		agente.save();
@@ -399,8 +404,10 @@ public class SecureController extends GenericController{
 		Session.current().put("accesoFallido", 0);
 
         // Mark user as connected
+		play.Logger.info("Asignando a la sesion: " + Session.current().getId() + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
-        // Remember if needed
+      
+		// Remember if needed
         if(remember) {
             response.setCookie("rememberme", Crypto.sign(agente.username) + "-" + username, "30d");
         }
@@ -421,13 +428,15 @@ public class SecureController extends GenericController{
 	    	boolean logoutPorTicketing = logoutPorTicketing();
 	    	String redireccionTicketing = FapProperties.get("fap.logout.ticketing.url");
 	    	String usuarioSesion = null;
+	    	
 	    	if (Session.current().contains("username"))
 	    		usuarioSesion = Session.current().get("username");	    	
-	    	log.info("Logout del usuario: "+ usuarioSesion);
-	    	Cache.delete(Session.current().getId());
-	    	Session.current().clear();
-	        response.removeCookie("rememberme");
-	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));
+		    log.info("Logout del usuario: "+ usuarioSesion);
+		    
+	        cleaningSession();	    
+
+	        CustomValidation.validAgentSession("unAuthorized", play.i18n.Messages.get("fap.login.error.unAuthorized"));
+	        Messages.info(play.i18n.Messages.get("fap.logout.ok"));		       
 	        Messages.keep();
 	        
 	    	if (redireccion != null){
@@ -624,15 +633,27 @@ public class SecureController extends GenericController{
 			agente.roles.add("usuario");
 			agente.cambiarRolActivo("usuario");
 		}
+		//Genera un hash de firma de sesion
+		agente.sessionHash = Crypto.passwordHash(Session.current().getId());
 		agente.save();
 		play.Logger.info("Datos recibidos de terceros: Agente( username:" + agente.username + ")");
 
 		// Mark user as connected
-		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ")");
+		play.Logger.info("Asignando a la sesion: " + sessionid + " Agente(username:" + agente.username + ", " + "sessionhash: " + agente.sessionHash +")");
 		Session.current().put("username", agente.username);
 
 		// Redirect to the original URL (or /)
 		redirectToOriginalURL();
-    }    
+    }
+
+    /**
+     * Método que limpia los datos de la caché, sesión y cookie.
+     */
+    @Util
+	public static void cleaningSession() {
+		Cache.delete(Session.current().getId());
+    	Session.current().clear();
+        response.removeCookie("rememberme");
+	}    
         
 }

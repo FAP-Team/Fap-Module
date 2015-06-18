@@ -23,6 +23,7 @@ public class CesionPDF extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("listaCesiones")
+	@FapEnum("enumerado.fap.gen.ListaCesionesEnum")
 	public String tipo;
 
 	public String cabeceraPrimera;

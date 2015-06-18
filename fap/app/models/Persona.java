@@ -31,6 +31,7 @@ public class Persona extends FapModel {
 	public PersonaJuridica juridica;
 
 	@ValueFromTable("TipoDePersona")
+	@FapEnum("enumerado.fap.gen.TipoDePersonaEnum")
 	public String tipo;
 
 	@Transient

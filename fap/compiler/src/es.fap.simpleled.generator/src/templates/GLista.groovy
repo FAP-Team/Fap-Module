@@ -6,6 +6,7 @@ import org.eclipse.emf.common.util.EList;
 import generator.utils.FileUtils;
 import generator.utils.StringUtils;
 import generator.utils.LedUtils;
+import generator.utils.BeautifierUtils;
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -87,23 +88,37 @@ public class GLista extends GElement{
         String ppackage;
         String route;
         String elementos;
+        ppackage = getEnumClassPackage();
 		if (Start.generatingModule){ // Si es lista FAP, lo creo en un directorio distinto y con marcadores comentados para propiciar el añadir despues si la sobreescribimos con una lista de aplicacion
-			ppackage = "enumerado.fap.gen";
+			//ppackage = "enumerado.fap.gen";
             route = FileUtils.getRoute('ENUM_FAP');
             elementos = getEnumElementsDefinition(lista.elementos);
 		} else{ // Si la lista es de la Aplicacion
-            ppackage = "enumerado.gen";
+            //ppackage = "enumerado.gen";
             route = FileUtils.getRoute('ENUM');
             List<ElementoLista> merged = elementosListaMergedWithModule();
             elementos = getEnumElementsDefinition(lista.elementos);
 		}
         String className = getEnumClassName();
         String classContent = getEnumClassBody(ppackage, className, elementos);
-        FileUtils.overwrite(route, className + ".java", classContent);
+        FileUtils.overwrite(route, className + ".java", BeautifierUtils.formatear(classContent));
 	}
 	
-    private String getEnumClassName(){
-        return StringUtils.firstUpper(lista.name) + "Enum";
+    private String getEnumClassName() {
+        return getEnumClassNameForLista(lista.name);
+        //return StringUtils.firstUpper(lista.name) + "Enum";
+    }
+    
+    public static String getEnumClassNameForLista(String listName) {
+        return StringUtils.firstUpper(listName) + "Enum";
+    }
+    
+    public static String getEnumClassPackage() {
+        if (Start.generatingModule){
+            return "enumerado.fap.gen";
+        }
+        
+        return "enumerado.gen";
     }
     
     private String getEnumElementKey(ElementoLista el){

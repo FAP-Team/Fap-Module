@@ -247,6 +247,9 @@ public class GElement {
 				
 			else if(element instanceof FirmaMasiva)
 				cache.put(element, new GFirmaMasiva(element, container));
+			
+			else if(element instanceof ComboUO)
+				cache.put(element, new GComboUO(element, container));
 		}
 		
 		return cache.get(element);

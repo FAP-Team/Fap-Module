@@ -306,6 +306,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 			} catch (Exception e){
 				play.Logger.error("Fallo al intentar recuperar la URI del Documento Notificacion. Error: "+e.getMessage());
 				play.Logger.error("Ojo, la URI del documento puesta a disposicion de la notificacion "+uriNotificacion+" se seteará a NULL en la BBDD local de la aplicación");
+				throw new NotificacionException("Fallo al intentar recuperar la URI del documento puesta a disposicion de la notificacion, error: "+e.getMessage());
 			}
 			
 			// Cumplimentar los campos del documento
@@ -316,15 +317,13 @@ public class NotificacionServiceImpl implements NotificacionService {
 			docPuestaADisposicion.fechaSubida = DateTime.now();
 			docPuestaADisposicion.tipo = this.getTipoDocPuestaADisposicion();
 			docPuestaADisposicion.uri = uriDoc;
+			docPuestaADisposicion.firmado = obtenerFirmadoDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.PUESTA_A_DISPOSICION);
 			docPuestaADisposicion.estadoDocumento = EstadoNotificacionEnum.puestaadisposicion.name();
 		
 			docPuestaADisposicion.save();
 			
-			//Documento dbDoc = notificacion.documentoPuestaADisposicion;
 			notificacion.documentoPuestaADisposicion = null;
 			notificacion.save();
-			//dbDoc.delete();
-			//dbDoc = null;
 
 			notificacion.uri = uriNotificacion;
 			notificacion.documentoPuestaADisposicion = docPuestaADisposicion;
@@ -337,6 +336,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 			notificacion.agente = gestor;
 			
 			notificacion.save();
+			
+			//Se copia el documento de Puesta a Disposición al Expediente en el AED
+			NotificacionUtils.subirDocumentoNotificacionExpediente(docPuestaADisposicion.uri, notificacion);
 		}
 		catch (javax.xml.ws.soap.SOAPFaultException e) {
 			play.Logger.error("La notificación fue creada pero no se pudo enviar: "+e.getMessage());
@@ -402,9 +404,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 				dbDocAcuseDeRecibo.uri = gestorDocumental.saveDocumentoTemporal(dbDocAcuseDeRecibo, docAcuseDeRecibo.getDatos().getInputStream(), UUID.randomUUID().toString() + ".pdf");
 				play.Logger.info(String.format("Se guarda el acuse de recibo (%s) para la notificación (%s) en la carpeta temporal", dbDocAcuseDeRecibo.uri, uriNotificacion));
 				
-				dbNotificacion.documentoRespondida = dbDocAcuseDeRecibo;
+				dbNotificacion.documentoAcuseRecibo = dbDocAcuseDeRecibo;
 				dbNotificacion.documentosAuditoria.add(dbDocAcuseDeRecibo); // Añadir el documento a la collección de documentos de auditoría
-				dbNotificacion.preparadaRespondida = true;
 
 				dbDocAcuseDeRecibo.save();
 				dbNotificacion.save();
@@ -450,12 +451,19 @@ public class NotificacionServiceImpl implements NotificacionService {
 			
 			// Se procede a la actualización de la notificación de acuse de recibo
 			// Se obtiene la uri del documento de notificación
-			String uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
-			play.Logger.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			String uriDoc = null;
+			try {
+				uriDoc = notificacionPort.obtenerURIDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
+				play.Logger.info(String.format("Documento de acuse de recibo (%s) para la notificación (%s)", uriDoc, uriNotificacion));
+			} catch (Exception e){
+				play.Logger.error("Fallo al intentar recuperar la URI del Documento de acuse de recibo de la Notificacion. Error: "+e.getMessage());
+				throw new NotificacionException("Fallo al intentar recuperar la URI del documento de acuse de recibo de la notificacion, error: "+e.getMessage());
+			}
 			
 			// Se actualizan las propiedades del documento			
 			dbNotificacion.documentoAcuseRecibo.uri = uriDoc;
 			dbNotificacion.documentoAcuseRecibo.clasificado = true;
+			dbNotificacion.documentoAcuseRecibo.firmado = obtenerFirmadoDocumentoNotificacion("", uriNotificacion, DocumentoNotificacionEnumType.ACUSE_RECIBO);
 			dbNotificacion.documentoAcuseRecibo.save();
 
 			// TODO: ¿Cambiar el estado de la notificacion?
@@ -468,55 +476,76 @@ public class NotificacionServiceImpl implements NotificacionService {
 				
 	}
 
-	/* Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
-	 * 
-	 * uriProcedimiento: La uri del procedimiento que queremos saber sus notificaciones
-	 */
-	@Override
-	public List<Notificacion> getNotificaciones(String uriProcedimiento) {
-		if (!activo)
-			return new ArrayList<Notificacion>();
-		
-		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
-		if ((uriProcedimiento == null) || (uriProcedimiento.trim().isEmpty())){
-			play.Logger.info("La uri del procedimiento no puede ser vacía");
-			return notificacionesWS;
-		}
-		try {
-			NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
-			criterioBusqueda.setUriProcedimiento(uriProcedimiento);
-			ResultadoBusquedaNotificacionType resultadoBusqueda = notificacionPort.buscarNotificaciones(criterioBusqueda);
-			List<NotificacionType> notificacionesType = resultadoBusqueda.getNotificaciones().getNotificacion();
-			for (NotificacionType notificacionType: notificacionesType)
-				notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
-			return notificacionesWS;
-		} catch (NotificacionException e) {
-			play.Logger.error("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
-			return notificacionesWS;
-		} catch (Exception e){
-			play.Logger.error("Error al intentar obtener las notificaciones del servicio web "+e.getMessage());
-			return null;
-		}
-	}
+	/** Funcion que consulta el WS de Notificaciones para conocer las notificaciones a raiz de un patrón de búsqueda
+     * uriProcedimiento: La uri del procedimiento que queremos saber sus notificaciones
+     * 
+     **/
+    @Override	
+    public List<Notificacion> getNotificaciones(String uriProcedimiento) {
+	    if (!activo) {	
+	    	return new ArrayList<Notificacion>();
+	    }
 	
-	@Override
-	public List<Notificacion> getNotificaciones() {
-		if (!activo)
-			return new ArrayList<Notificacion>();
+	    NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
+	    criterioBusqueda.setUriProcedimiento(uriProcedimiento);	
+	    return this.getNotificaciones(criterioBusqueda);	
+    }
+
+    @Override
+    public List<Notificacion> getNotificaciones() {	
+        if (!activo) {	
+        	return new ArrayList<Notificacion>();
+        }
+        return this.getNotificaciones(new NotificacionCriteriaType());
+    }
+	
+	/**
+    * Obtiene todas las notificaciones
+    * @param criterio	
+    * @return	
+    */
+
+    protected List<Notificacion> getNotificaciones(final NotificacionCriteriaType criterio) {	
+        int resultTemp = criterio.getPosicionPrimerResultado() == null ? 0 : criterio.getPosicionPrimerResultado();
+
+        List<NotificacionType> notificacionesType = new ArrayList<NotificacionType>();	
+        List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();	
+        try {	
 		
-		List<Notificacion> notificacionesWS = new ArrayList<Notificacion>();
-		try {
-			NotificacionCriteriaType criterioBusqueda = new NotificacionCriteriaType();
-			ResultadoBusquedaNotificacionType resultadoBusqueda = notificacionPort.buscarNotificaciones(criterioBusqueda);
-			List<NotificacionType> notificacionesType = resultadoBusqueda.getNotificaciones().getNotificacion();
-			for (NotificacionType notificacionType: notificacionesType)
-				notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
-			return notificacionesWS;
-		} catch (NotificacionException e) {
-			play.Logger.info("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: "+e.getMessage());
-			return notificacionesWS;
-		}
-	}
+            ResultadoBusquedaNotificacionType resultadoBusqueda = null;
+            do {
+			
+                resultadoBusqueda = notificacionPort.buscarNotificaciones(criterio);	
+                notificacionesType.addAll(resultadoBusqueda.getNotificaciones().getNotificacion());
+                resultTemp += resultadoBusqueda.getNotificaciones().getNotificacion().size();	
+                criterio.setPosicionPrimerResultado(resultTemp);
+
+            } while (resultTemp < resultadoBusqueda.getNumeroTotalResultados()
+                    && (criterio.getNumeroResultados() == null || (resultTemp < criterio.getNumeroResultados())));
+
+            /*	
+             * El while se ejecutará hasta que se deje de cumplir lo primero,
+             * bien sea, que el número de resultados obtenidos
+             * 
+             * en el servicio sea inferior al resultado acumulado o el número de
+             * resultados del criterio sea inferior al	
+             * 
+             * resultado acumulado	
+             */
+	
+            for (NotificacionType notificacionType : notificacionesType) {
+                notificacionesWS.add(NotificacionUtils.convertNotificacionTypeToNotificacion(notificacionType));
+            }
+            
+			return notificacionesWS;	
+        } catch (NotificacionException e) {
+            play.Logger.error("Error en la llamada al método del Servicio Web de búsqueda de notificaciones: " + e.getMessage());
+            return notificacionesWS;
+        } catch (Exception e) {
+            play.Logger.error("Error al intentar obtener las notificaciones del servicio web " + e.getMessage());
+            return null;
+        }
+    }	
 
 	@Override
 	public String estadoNotificacion(String uriNotificacion) {
@@ -857,6 +886,19 @@ public class NotificacionServiceImpl implements NotificacionService {
 	
 	protected String getTipoDocAcuseRecibo() {
 		return TIPO_DOC_ACUSERECIBO;
+	}
+	
+	public boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento){
+		boolean result = false;
+		
+		try {
+			DocumentoType documentoType = notificacionPort.obtenerDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+			result =  documentoType.getFirmaXmlSignature() != null && !documentoType.getFirmaXmlSignature().isEmpty() ? true : false;
+		} catch (NotificacionException e) {
+			play.Logger.error("Hubo un error al intentar comnprobar la firma del documento de notificación con uri "+uriNotificacion+" : "+e.getMessage());
+		}
+		
+		return result;
 	}
 
 }

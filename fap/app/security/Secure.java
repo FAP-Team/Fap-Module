@@ -1,8 +1,15 @@
 package security;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
+import models.Agente;
+
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+
+import controllers.fap.AgenteController;
 
 abstract public class Secure {
 	
@@ -22,11 +29,41 @@ abstract public class Secure {
 		this.next = next;
 	}
 
-	
-	public abstract ResultadoPermiso check(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars);
-	
-	public abstract ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars);
-	
+	public final ResultadoPermiso check(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars) {
+		Class<?> parameters [] = { String.class, String.class, Map.class, Map.class };
+        
+        Method method = null;
+
+        try {
+			method = this.getClass().getDeclaredMethod(id, parameters);
+			method.setAccessible(true);
+			return (ResultadoPermiso) method.invoke(this, grafico, accion, ids, vars);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+//				logger.debug(String.format("Error al obtener el método %s.", id), e);
+			}
+		}
+        
+        return nextCheck(id, grafico, accion, ids, vars);
+	}
+		
+	public final ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
+		Class<?> parameters [] = { Map.class, Map.class };
+        
+        Method method = null;
+
+        try {
+        	method = this.getClass().getDeclaredMethod(id + "Accion", parameters);
+        	method.setAccessible(true);
+        	return (ResultadoPermiso) method.invoke(this, ids, vars);
+		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+//				logger.debug(String.format("Error al obtener el método %s.", id), e);
+			}
+		}
+        
+        return nextAccion(id, ids, vars);
+	}
 	
 	public boolean checkGrafico(String id, String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars){
 		if (accion.equals("borrado")) return true;

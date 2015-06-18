@@ -21,7 +21,6 @@ import properties.PropertyPlaceholder;
 import utils.FechaUtils;
 import properties.FapPropertiesKeys;
 
-
 @DiscriminatorOptions(force = true)
 // === IMPORT REGION END ===
 @Entity
@@ -29,6 +28,7 @@ public class Convocatoria extends Singleton {
 	// Código de los atributos
 
 	@ValueFromTable("estadoConvocatoria")
+	@FapEnum("enumerado.fap.gen.EstadoConvocatoriaEnum")
 	public String estado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -57,9 +57,9 @@ public class Convocatoria extends Singleton {
 
 	public static String getIdentificadorConvocatoria(PropertyPlaceholder propertyPlaceholder) {
 		if (esAnual()) {
-            return PREFIJO_CONVOCATORIA_ANUAL + FechaUtils.getAnyoActual();
-        } else {
-            String prefijo = propertyPlaceholder.get("fap." + propertyPlaceholder.get("fap.defaultAED") + ".convocatoria");
+			return PREFIJO_CONVOCATORIA_ANUAL + FechaUtils.getAnyoActual();
+		} else {
+			String prefijo = propertyPlaceholder.get("fap." + propertyPlaceholder.get("fap.defaultAED") + ".convocatoria");
 			return prefijo;
 		}
 	}

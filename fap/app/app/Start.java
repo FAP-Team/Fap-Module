@@ -88,11 +88,9 @@ import properties.Properties;
 import services.BaremacionService;
 import services.CertificadosService;
 import services.CertificadosServiceException;
-import services.ComunicacionesInternasService;
-import services.ComunicacionesInternasServiceException;
 import services.FirmaService;
 import services.GestorDocumentalService;
-import services.MensajeService;
+import services.MensajeServiceException;
 import services.NotificacionService;
 import services.PortafirmaFapService;
 import services.PortafirmaFapServiceException;
@@ -101,9 +99,10 @@ import services.RegistroLibroResolucionesService;
 import services.RegistroService;
 import services.SVDService;
 import services.TercerosService;
-import services.ServiciosGenericosService;
-import services.TercerosService;
 import services.MensajeService;
+import services.BDOrganizacion.BDOrganizacionService;
+import services.comunicacionesInternas.ComunicacionesInternasService;
+import services.genericos.ServiciosGenericosService;
 import services.genericos.ServiciosGenericosServiceImpl;
 import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
@@ -112,24 +111,21 @@ import services.responses.PortafirmaCrearSolicitudResponse;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
-import config.InjectorConfig;
-import emails.Mails;
 
 @OnApplicationStart
 public class Start extends Job {
-
-	@Override
+	
 	public void doJob() {
-
+		
 		// Context Path, para el despliegue de varias aplicaciones en Apache y no tener el problema del Path
 		String ctxPath = FapProperties.get("fap.ctxPath");
 		if (ctxPath != null){
 			Play.ctxPath = ctxPath;
 	        Router.load(Play.ctxPath);
 		}
-
+		
 		loadLog4Config();
-
+		
 		if (AdministracionFapJobs.count() == 0){
 			AdministracionFapJobs jobs = new AdministracionFapJobs();
 			jobs.save();
@@ -141,7 +137,7 @@ public class Start extends Job {
             Logger.info("Cargando agentes desde %s", agentesFile);
             play.test.Fixtures.loadModels(agentesFile);
         }
-
+		
 		if (Consulta.count() == 0){
             Fixtures.delete();
             String consultasFile = "listas/initial-data/consultasSQL.yml";
@@ -155,21 +151,21 @@ public class Start extends Job {
             Logger.info("Cargando parámetros SVD desde %s", parametrosSVDFile);
             play.test.Fixtures.loadModels(parametrosSVDFile);
         }
-
+		
 		//Cargando mensajes de pagina desde conf/initial-data/paginas.yml
-
+		
 		if ((ConfigurarMensaje.count() == 0)){
 			//Fap
 			Fixtures.delete(ConfigurarMensaje.class);
 			String paginasFile = "listas/initial-data/paginasMsj.yml";
 			Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
 			play.test.Fixtures.loadModels(paginasFile);
-
+			
 			//Aplicacion
 			paginasFile = "listas/initial-data/paginasAppMsj.yml";
 			Logger.info("Cargando mensajes de páginas desde %s", paginasFile);
 			play.test.Fixtures.loadModels(paginasFile);
-
+			
 			// Pagina de Login
 			ConfigurarMensaje cm = new ConfigurarMensaje();
 			cm.nombrePagina = "login";
@@ -179,30 +175,30 @@ public class Start extends Job {
 		}else{
 		//Siempre revisa que las páginas no hayan sido previamente cargadas -> Añade nuevas
 			String paginasFileFap = "listas/initial-data/paginasMsj.yml";
-			String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";
-
+			String paginasFileApp = "listas/initial-data/paginasAppMsj.yml";            
+		
 			utils.Fixtures.loadConfigurarMensaje(paginasFileFap);
 			utils.Fixtures.loadConfigurarMensaje(paginasFileApp);
 		}
-
+		
 		// Para controlar el posible cambio de version del modulo fap de una aplicacion, y evitar el minimo daño posible en la BBDD
 		// Ya que en versiones 1.2.X y anteriores la TableKeyValueDependency no existía, por lo que debemos controlar eso.
 		boolean cambioVersion=true;
-
+		
 		// Si TableKeyValue no está vacía y tiene el atributo noVisible a NULL,
 		// se lo ponemos a false (si no, salta un error)
 		if (TableKeyValue.count() != 0) {
 			Query query = JPA.em().createQuery("update TableKeyValue tablekeyvalue set o=false where o=null");
 			query.executeUpdate();
 		}
-
+		
 		if(TableKeyValue.count() == 0){
 	        long count = TableKeyValue.loadFromFiles(false); //Carga las dos tablas, tanto la TableKeyValue como la TableKeyValueDependency, le pasamos false porque no se ha cargado nada (ningun .yaml) previamente
 	        if (count > 0)
 	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas");
 	        cambioVersion=false; // Si no existe la TableKeyValue, es que no es un cambio de versión, sino una inicializacion por primera vez de la BBDD
 		}
-
+		
 		if(TableKeyValueDependency.count() == 0){
 			// Si estamos en un cambio de version de la 1.2.X a la 2.X del modulo FAP
 			if (cambioVersion) { // Sabemos que estamos en un cambio de version porque existe TableKeyValue, pero no existe TableKeyValueDependency
@@ -217,7 +213,7 @@ public class Start extends Job {
 	        if (count > 0)
 	        	Logger.info("Se cargaron desde fichero " + count + " registros de la tabla de tablas de Dependencias");
 		}
-
+		
 		if (Mail.count() == 0){
 			long count = Mails.loadFromFiles();
 	        if (count > 0)
@@ -233,42 +229,45 @@ public class Start extends Job {
 				solicitud.save();
 			}
 		}
-
+		
 		// Inicializamos, recuperamos o actualizamos la Baremación
 		BaremacionUtils.actualizarTipoEvaluacion();
-
+		
 		actualizarSemillaExpediente();
-
+		
 		if ((TramitesVerificables.count() == 0) && (Tramite.count() > 0)){
 			List<Tramite> tramites = Tramite.findAll();
 			ModelUtils.actualizarTramitesVerificables(tramites);
 		}
-
+		
 		// Para mostrar información acerca de la inyección de los servicios
 		GestorDocumentalService gestorDocumentalService = InjectorConfig.getInjector().getInstance(GestorDocumentalService.class);
 		gestorDocumentalService.mostrarInfoInyeccion();
-
+		
 		FirmaService firmaService = InjectorConfig.getInjector().getInstance(FirmaService.class);
 		firmaService.mostrarInfoInyeccion();
-
+		
 		RegistroService registroService = InjectorConfig.getInjector().getInstance(RegistroService.class);
 		registroService.mostrarInfoInyeccion();
-
+		
+		BDOrganizacionService bdOrganizacionService = InjectorConfig.getInjector().getInstance(BDOrganizacionService.class);
+		bdOrganizacionService.mostrarInfoInyeccion();
+		
 		NotificacionService notificacionService = InjectorConfig.getInjector().getInstance(NotificacionService.class);
 		notificacionService.mostrarInfoInyeccion();
-
+		
 		PortafirmaFapService portafirmaService = InjectorConfig.getInjector().getInstance(PortafirmaFapService.class);
 		portafirmaService.mostrarInfoInyeccion();
-
+		
 		PublicarService publicarService = InjectorConfig.getInjector().getInstance(PublicarService.class);
 		publicarService.mostrarInfoInyeccion();
-
+		
 		RegistroLibroResolucionesService registroLibroResolucionesService = InjectorConfig.getInjector().getInstance(RegistroLibroResolucionesService.class);
 		registroLibroResolucionesService.mostrarInfoInyeccion();
 
 		TercerosService tercerosService = InjectorConfig.getInjector().getInstance(TercerosService.class);
 		tercerosService.mostrarInfoInyeccion();
-
+		
 		MensajeService mensajeService = InjectorConfig.getInjector().getInstance(MensajeService.class);
 		mensajeService.mostrarInfoInyeccion();
 		
@@ -280,7 +279,7 @@ public class Start extends Job {
 		
 		VerificarDatosService verificarDatosService = InjectorConfig.getInjector().getInstance(VerificarDatosService.class);
 		verificarDatosService.mostrarInfoInyeccion();
-
+			
 		CertificadosService certificadosService = InjectorConfig.getInjector().getInstance(CertificadosService.class);
 		certificadosService.mostrarInfoInyeccion();
 
@@ -292,22 +291,22 @@ public class Start extends Job {
         if(assignableClasses.size() > 1){
         	play.Logger.warn("¡¡ CUIDADO !! : Existen varias clases ("+assignableClasses.size()+") que extienden de SolicitudGenerica, esto creará conflictos GRAVES.");
         }
-
-		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();
+        
+		Convocatoria convocatoria = Convocatoria.find("select convocatoria from Convocatoria convocatoria").first();	
 		if (convocatoria != null) {
 			if (convocatoria.expedienteAed == null) {
 				convocatoria.expedienteAed = new ExpedienteAed();
 				convocatoria.save();
 			}
 		}
-
+		
 		// TimeZone por defecto del servidor
 		play.Logger.info("TimeZone por defecto: "+TimeZone.getDefault());
-
+        
 	}
 
 	/**
-	 * Carga la configuracion de log4j
+	 * Carga la configuracion de log4j 
 	 * a partir del fichero definido en "app.log.path"
 	 * si la property existe y el fichero está definido
 	 */
@@ -320,13 +319,13 @@ public class Start extends Job {
 			}
 		}
 	}
-
+	
 	/**
 	 * Actualiza la semilla del Expediente, en caso necesario,
 	 * para que funcione la versión 1.3.2 de FAP y posteriores.
 	 */
 	private void actualizarSemillaExpediente() {
-
+		
 		Long size = (long) SemillaExpediente.findAll().size();
 		Long idSemilla;
 		Long valueSemilla;
@@ -334,13 +333,13 @@ public class Start extends Job {
 			SemillaExpediente semilla = SemillaExpediente.find("select semillaExpediente from SemillaExpediente semillaExpediente").first();
 			valueSemilla = semilla.semilla;
 			idSemilla = semilla.id;
-
+			
 			if (valueSemilla != null){
 				play.Logger.info("Semilla a buscar: "+ valueSemilla + ", encontrada: " + idSemilla);
 				while (idSemilla < valueSemilla) {
 					SemillaExpediente sem = new SemillaExpediente();
 					sem.save();
-
+				
 					idSemilla = sem.id;
 				}
 				play.Logger.info("Semilla actualizada a " + idSemilla);
@@ -348,5 +347,5 @@ public class Start extends Job {
 		}
 	}
 }
-
-
+	
+	

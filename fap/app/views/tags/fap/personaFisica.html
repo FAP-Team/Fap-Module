@@ -97,7 +97,7 @@
 							var parts = params[params.length-1].split('%->%');
 							if ((parts[0].replace("%&%", "") === "tipo") && ($('#${solicitante}Direccion_tipo').val() === "")){
 	 						 	$('#${solicitante}Direccion_tipo').val(parts[1]);
-	 						 	$('#${solicitante}Direccion_tipo').trigger("liszt:updated");
+	 						 	$('#${solicitante}Direccion_tipo').trigger("chosen:updated");
 	 						 	$('#${solicitante}Direccion_tipo').change();
 		 					}
 							
@@ -111,7 +111,7 @@
 				 						 	if ($('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).val() === ""){
 				 						 		$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).val(parts[1]);
 												if ((parts[0].replace("%&%", "") === "pais") || (parts[0].replace("%&%", "") === "municipio") || (parts[0].replace("%&%", "") === "provincia") || (parts[0].replace("%&%", "") === "comunidad") || (parts[0].replace("%&%", "") === "isla") || (parts[0].replace("%&%", "") === "provinciaIsla") || (parts[0].replace("%&%", "") === "municipioIsla")){
-				 						 			$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).trigger("liszt:updated");
+				 						 			$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).trigger("chosen:updated");
 				 						 			$('#${solicitante}Direccion_'+parts[0].replace("%&%", "")).change();
 				 						 			tiempoNuevo=${tiempoNuevo};
 				 						 		}

@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION START ===
 
 import play.db.jpa.JPABase;
+import properties.FapProperties;
 import controllers.fap.SecureController;
 import com.google.gson.Gson;
 import utils.PeticionModificacion;
@@ -37,10 +38,12 @@ public class SolicitudGenerica extends FapModel {
 	public String estadoAntesVerificacion;
 
 	@ValueFromTable("estadosSolicitud")
+	@FapEnum("enumerado.fap.gen.EstadosSolicitudEnum")
 	@Transient
 	public String estadoValue;
 
 	@ValueFromTable("estadosSolicitud")
+	@FapEnum("enumerado.fap.gen.EstadosSolicitudEnum")
 	@Transient
 	public String estadoUsuario;
 
@@ -160,6 +163,12 @@ public class SolicitudGenerica extends FapModel {
 
 	@ValueFromTable("tipoEstadoPeticionSVDFAP")
 	public String estadoPeticionSVD;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DeclaracionSubvenciones declaracionSubvenciones;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public HistoricoDeclaracionSubvenciones historicoDeclaracionSubvenciones;
 
 	public SolicitudGenerica() {
 		init();
@@ -294,6 +303,16 @@ public class SolicitudGenerica extends FapModel {
 		if (registros == null)
 			registros = new ArrayList<Registro>();
 
+		if (declaracionSubvenciones == null)
+			declaracionSubvenciones = new DeclaracionSubvenciones();
+		else
+			declaracionSubvenciones.init();
+
+		if (historicoDeclaracionSubvenciones == null)
+			historicoDeclaracionSubvenciones = new HistoricoDeclaracionSubvenciones();
+		else
+			historicoDeclaracionSubvenciones.init();
+
 		postInit();
 	}
 
@@ -351,7 +370,8 @@ public class SolicitudGenerica extends FapModel {
 			return;
 		}
 
-		play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del usuario " + user + " para la solicitud " + this.id);
 
 		List<Participacion> participaciones = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=?", user, this.id).fetch();
 
@@ -404,7 +424,8 @@ public class SolicitudGenerica extends FapModel {
 			return;
 		}
 
-		play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
+		if (FapProperties.getBoolean("fap.debug.session.agente"))
+			play.Logger.info("Comprobando participación del representante " + user + " para la solicitud " + this.id);
 
 		Participacion p = Participacion.find("select participacion from Participacion participacion where participacion.agente.username=? and participacion.solicitud.id=? and participacion.tipo=?", user, this.id, TiposParticipacionEnum.representante.name()).first();
 		if (p == null) {

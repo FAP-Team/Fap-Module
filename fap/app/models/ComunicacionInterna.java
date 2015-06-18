@@ -26,31 +26,38 @@ public class ComunicacionInterna extends FapModel {
 	public AsientoCIFap asiento;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ReturnComunicacionInternaFap respuesta;
+	public RespuestaCIFap respuesta;
 
 	@ValueFromTable("estadosComunicacionInterna")
+	@FapEnum("enumerado.fap.gen.EstadosComunicacionInternaEnum")
 	public String estado;
 
-	public ComunicacionInterna() {
-		init();
-	}
+	@Transient
+	public String numRegistroHiperReg;
+
+	@Transient
+	public String fechaHiperReg;
 
 	public void init() {
-
-		if (asiento == null)
-			asiento = new AsientoCIFap();
-		else
-			asiento.init();
-
-		if (respuesta == null)
-			respuesta = new ReturnComunicacionInternaFap();
-		else
-			respuesta.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
+
+	public String getNumRegistroHiperReg() {
+		if (respuesta != null && respuesta.contadorUO != null && respuesta.numeroRegistro != null)
+			return respuesta.contadorUO + "/" + respuesta.numeroRegistro;
+
+		return "";
+	}
+
+	public String getFechaHiperReg() {
+		if (respuesta != null && respuesta.fecha != null && respuesta.hora != null)
+			return respuesta.fecha + " " + respuesta.hora;
+
+		return "";
+	}
 
 	// === MANUAL REGION END ===
 

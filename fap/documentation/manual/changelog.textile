@@ -1,7 +1,90 @@
 h2. Changelog
 
+h3. Versión ??
+
+* Se fuerza a que la firma con caja de platino sea reducible para que no se solapen los datos.
+* Se modifica los parámetros utilizados en la consulta de datos a terceros.
+* Se actualizan las páginas e implementación para la realización de comunicaciones internas.
+* Se corrige la subida de documentos a Platino para que no sea obligatorio que lleven la firma.
+* Se corrige la asignación de permisos a los objetos cargados en un elemento tabla.
+* El elemento ComboUO muestra la descripción de la Unidad Orgánica seleccionada.
+* Soporte para la definición de múltiples menús en los Formularios.
+* Se añade property "fap.baremacion.iniciar.estados" para iniciar las baremaciones.
+* Se actualiza a la versión 1.4.2 de chosen.
+* Se cambia a la versión 1.2.7.2 de Play Framework
+* FixedBug LLamada por reflexión a métodos con o sin argumentos.
+* Mejora de validación de permisos en las tablas.
+* Mejora del tiempo de carga del elemento dirección.
+
+h3. Versión 2.5.6RC5
+
+* Mejora de los tiempo de carga de los combos interdependientes.
+* FixedBug  Comprobación adicional en el proceso de clasificación de documentos en el AED.
+* Actualiza los scripts de generación de código para que estos siempre muestren información a través de la consola.
+* Actualiza la lista de integrantes de FAP.
+* Actualiza las referencias a los servicios de BDOrganizacion, HiperReg y Comunicaciones Internas.
+* Añade el servicio de Comunicaciones Internas.
+* Añade el servicio de BDOrganizacion.
+* Refactorización del servicio HiperReg.
+* Añade a la gramática el combo de Unidades Organizativas (comboUO).
+* FixedBug   La búsqueda de notificaciones ya no está limitada por el número máximo de registros que retorna el servicio web.
+* Mejora el control de errores en el servicio de Notificaciones de la ACIISI.
+* FixedBug  Corrige las referencias a Solicitud en la página AceptacionRenuncia.
+* FixedBug  En la generación del elemento Tabla se ignoran los atributos que no tienen ningún valor asociado (null).
+* Actualiza el tipo de datos Moneda a Double en el módulo de Subvenciones.
+* Actualiza el report de requerimiento para que no se muestre vacío el campo "Motivo de Requerimiento" en el PDF.
+* Actualiza el permiso del botón "Obtener Borrador Requerimiento" para que éste, a excepción del estado "enRequerimiento", siempre sea visible.
+* Actualiza el módulo de Notificaciones de la ACIISI para que se copie el documento "Puesta a Disposición" en el expediente del AED.
+* Añade al módulo de Notificaciones métodos para obtener información sobre los campos Descripción, Tipo y Firmado.
+* FixedBug  Corrige la descarga de documentos en la tabla de Notificaciones.
+* Actualiza la ruta de Play en el Travis.
+* FixedBug  Corrige error en la implementación de FileSystemComunicacionesInternas.
+* Actualización para marcar como firmado el Oficio de Remisión.
+* FixedBug  Descarga del justificante del Oficio de Remisión.
+* Habilita el uso de Subvenciones en las aplicaciones.
+* FixedBug  Elimina los gestores duplicados en el combo de firma.
+* FixedBug  Verificación de los permisos en el módulo de Seguridad.
+
+h3. Versión 2.5.6RC4
+
+* Se corrigen errores en la descarga de notificaciones.
+* Se corrigen errores en los reports de los requerimientos de la verificaciones.
+* Se corrige la copia del documentos al expediente en las notificaciones.
+* Se corrige la descarga de documentos en las notificaciones.
+* Se corrige la descarga del justificante en el PopUP de los oficios de remisión.
+* Se mejora la seguridad para evitar que se no se puedan modificar los permisos desde las aplicaciones.
+* Se evita que los gestores a firmar aparezcan duplicados en el apartado de Verificación.
+* Se corrige la descarga del requerimiento una vez notificado el mismo.
+* Se corrige acuse de recibo en notificaciones de la agencia.
+* Actualizada documentación para la creación y distribución del módulo.
+* Actualizada documentación para generar las librerías.
+* Actualizada librería de platino-pre a la versión v20150331.
+* FixedBug Se sube a la versión 1.2.6 de Play Framework para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se añade hash de sesión para evitar problemas de vulnerabilidad en las sesiones de usuario.
+* FixedBug Se puede realizar más de una verificación.
+* Se marca una solicitud como verificada cuando una verificación no es positiva.
+* FixedBug Se evita que se envíen notificaciones duplicadas.
+* FixedBug Se corrige las referencias a los documentos de las notificaciones.
+* Se añade información para el uso de subvenciones.
+
+h3. Versión 2.5.6RC3
+
+* Se modifican los reports de notificación de los oficios de remisión.
+* Se optimiza la forma de comprobar si un documento está firmado.
+* Se comprueba la property "fap.debug.session.agente" para filtrar mensajes de participaciones en las solicitudes.
+* Se ponen mensajes de espera en varios procesos de las resoluciones.
+
 h3. Versión 2.5.6RC2
 
+* Añadida nueva property para seleccionar si mostrar mensajes de información de la sessión o no.
+* Se modifica la comprobación que permite que se muestre o no el link descargar firmado de un documento.
+* Se corrige que un documento quede clasificado tanto en el AED como en la BD.
+* Se agrega permiso para modificar un requerimiento en Verificación.
+* Se añaden mayor control de errores e la firma masiva de documentos.
+* Se modifica la generación de la firma masiva de documentos.
+* Se elimina el vaciado de datos de sessión al loguearse, pueden hacer falta esos datos.
+* Se cambian todas las referencias de la variable session por Spope.Session.current().
+* FixedBug se elimina el parámetro syncronized de la firma de documentos.
 * Se eliminan los documentos, no clasificados del AED además de en la base de datos, al borrarlos de las aplicaciones.
 * Se añade control de concurrencia en la firma de documentos de la solicitud.
 * Se añade al log más información de la sesión de un usuario.

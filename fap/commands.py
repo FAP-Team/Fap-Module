@@ -121,7 +121,9 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     
     fapModelPath = os.path.join(moduleDir, "app", "led");
     workflow = "workflow.LedGenerator";
-    cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    #cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];    
+    cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    print ' '.join(cmd)
     return subprocess.call(cmd);
         
     
@@ -346,6 +348,8 @@ def generateDocumentationHTML(app):
     regexp = re.compile(".fap$")
     # Primero creo la documentacion de los fichero "*.fap" que vienen por defecto
     ficheros = os.listdir(ruta_ledFap)
+    classpath=ruta_clase.replace("\\", "/") + os.pathsep + ruta_modulo + "/compiler/src/es.fap.simpleled.generator/lib/groovy-all-1.7.5.jar" + os.pathsep + ruta_modulo + "/compiler/src/es.fap.simpleled.generator/lib/jj-textile.jar" + os.pathsep +ruta_modulo + "/compiler/src/es.fap.simpleled.generator/lib/jj-wikitext.jar"
+    print classpath
     for f in ficheros:
         if (regexp.search(f)): # Si es un fichero "*.fap", creo su documentacion
             fuente = ruta_ledFap+"\\"+f
@@ -353,11 +357,11 @@ def generateDocumentationHTML(app):
             nombreDoc = f.replace(".fap", "FAPDocumentacion.html")
             destino = ruta_htmlDoc+"/"+nombreDoc
             # Por cada fichero ejecutamos la generacion de su documentacion
-            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
-            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente.replace("\\","/"), destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
             subprocess.call(cmd)
             primero="2"
             print "~ [CREADO]: "+destino
+            
     # Recorro la carpeta en busca de los fichero "*.fap", propios del proyecto
     ficheros = os.listdir(ruta_app)
     for f in ficheros:
@@ -367,8 +371,7 @@ def generateDocumentationHTML(app):
             nombreDoc = f.replace(".fap", "Documentacion.html")
             destino = app.path.replace("\\", "/")+"/documentation/html"+"/"+nombreDoc
             # Por cada fichero ejecutamos la generacion de su documentacion
-            classpath=ruta_clase+";"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\groovy-all-1.7.5.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-textile.jar;"+ruta_modulo+"\\compiler\\src\\es.fap.simpleled.generator\\lib\\jj-wikitext.jar"
-            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente, destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
+            cmd = [app.java_path(), "-Dfile.encoding=utf-8","-classpath", classpath, class_name, fuente.replace("\\","/"), destino, ruta_plantilla, ruta_modulo.replace("\\", "/"), nombreDoc];
             subprocess.call(cmd)
             print "~ [CREADO]: "+destino
 

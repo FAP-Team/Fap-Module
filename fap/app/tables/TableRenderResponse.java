@@ -1,5 +1,6 @@
 package tables;
 
+import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +14,9 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import config.InjectorConfig;
-
 import play.db.jpa.Model;
 import play.mvc.Util;
-
 import flexjson.JSONSerializer;
-
 import messages.Messages;
 import messages.Messages.MessageType;
 import models.Firmante;
@@ -153,32 +151,32 @@ public class TableRenderResponse<T> {
 	@Util
 	public static <T> List<TableRecord<T>> tablaPermisos(List<T> rowsFiltered, boolean permisoEditar, boolean permisoBorrar, boolean permisoLeer, String permisoNombreEditar, String permisoNombreBorrar, String permisoNombreLeer, String accion, Map<String, Long> ids) {
 		List<TableRecord<T>> records = new ArrayList<TableRecord<T>>();
-		Map<String, Object> vars = new HashMap<String, Object>();
 		Secure secure = InjectorConfig.getInjector().getInstance(Secure.class);
 		for (T tablaTipo : rowsFiltered) {
 			TableRecord<T> record = new TableRecord<T>();
 			records.add(record);
 			record.objeto = tablaTipo;
 			String[] nombre = tablaTipo.getClass().getName().split("\\.");
-			vars.put(nombre[nombre.length-1], tablaTipo);
 
 			ResultadoPermiso permisoFilasEditar = null;
 			ResultadoPermiso permisoFilasLeer = null;
 			ResultadoPermiso permisoFilasBorrar = null;
 			
+			Map<String, Object> vars = new HashMap<String, Object>();
 			if (permisoEditar || permisoLeer || permisoBorrar){
 				String paramClass = "id"+ReflectionUtils.getNameClass(tablaTipo);
 				if (!ids.containsKey(paramClass)){
 					ids.put(paramClass, (Long) ReflectionUtils.getValueFromMethodFromClass(tablaTipo, "getId"));
 				}
+				vars.put(Introspector.decapitalize(nombre[nombre.length-1]), tablaTipo);
 			}
 
 			if (permisoEditar)
-				permisoFilasEditar = secure.check(permisoNombreEditar, "editable", accion, ids, null);
+				permisoFilasEditar = secure.check(permisoNombreEditar, "editable", accion, ids, vars);
 			if (permisoLeer)
-				permisoFilasLeer = secure.check(permisoNombreLeer, "visible", accion, ids, null);
+				permisoFilasLeer = secure.check(permisoNombreLeer, "visible", accion, ids, vars);
 			if (permisoBorrar)
-				permisoFilasBorrar = secure.check(permisoNombreBorrar, "editable", accion, ids, null);
+				permisoFilasBorrar = secure.check(permisoNombreBorrar, "editable", accion, ids, vars);
 			
 			if ((permisoFilasLeer != null) && (permisoFilasLeer.checkAcceso("leer")))
 				record.permisoLeer = true;

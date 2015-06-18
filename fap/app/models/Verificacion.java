@@ -35,6 +35,7 @@ public class Verificacion extends FapModel {
 	public String expediente;
 
 	@ValueFromTable("estadosVerificacion")
+	@FapEnum("enumerado.fap.gen.EstadosVerificacionEnum")
 	public String estado;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -117,6 +118,7 @@ public class Verificacion extends FapModel {
 			//return x.compareTo(y);
 
 			//De forma descendente
+
 			if (y == null)
 				return (x == null) ? 0 : -1;
 

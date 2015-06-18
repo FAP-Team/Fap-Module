@@ -30,6 +30,7 @@ public class Participacion extends FapModel {
 	public SolicitudGenerica solicitud;
 
 	@ValueFromTable("TiposParticipacion")
+	@FapEnum("enumerado.fap.gen.TiposParticipacionEnum")
 	public String tipo;
 
 	public void init() {

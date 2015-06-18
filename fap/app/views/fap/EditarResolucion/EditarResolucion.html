@@ -254,7 +254,7 @@
 		
 			#{/fap.grupo}	
 		
-			#{fap.boton id:'enviarFirmaJSPortafirma', titulo:'Enviar al portafirma' /}
+			#{fap.boton id:'enviarFirmaJSPortafirma', titulo:'Enviar al portafirma', waitPopup:true /}
 		
 				#{/form}
 			
@@ -279,7 +279,7 @@
 				
 				#{form play.mvc.Router.reverse('EditarResolucionController.firmaDirectorPortafirma' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"firmaDirectorPortafirma"}
 					
-			#{fap.boton id:'enviarFirmaDirectorPortafirma', titulo:'Solicitar firma al Director' /}
+			#{fap.boton id:'enviarFirmaDirectorPortafirma', titulo:'Solicitar firma al Director', waitPopup:true /}
 		
 				#{/form}
 			
@@ -317,7 +317,7 @@
 		
 				#{form play.mvc.Router.reverse('EditarResolucionController.enviarRegistrarResolucion' , ['idResolucionFAP':resolucionFAP?.id]) , class:"form-horizontal", id:"enviarRegistrarResolucion"}
 					
-			#{fap.boton id:'btnRegistrarResolucion', titulo:'Registrar resolución' /}
+			#{fap.boton id:'btnRegistrarResolucion', titulo:'Registrar resolución', waitPopup:true /}
 		
 				#{/form}
 			

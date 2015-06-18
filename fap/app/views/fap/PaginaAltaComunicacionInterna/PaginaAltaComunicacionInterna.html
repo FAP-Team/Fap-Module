@@ -1,0 +1,100 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'Solicitud', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'PaginaAltaComunicacionInterna', 
+     permiso:'solicitudes', 
+     permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
+     titulo:'Alta de comunicación', 
+     urlBorrar:play.mvc.Router.reverse('PaginaAltaComunicacionInternaController.borrar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]), 
+     urlCrear:play.mvc.Router.reverse('PaginaAltaComunicacionInternaController.crear' , ['idSolicitud':solicitud?.id]), 
+     urlEditar:play.mvc.Router.reverse('PaginaAltaComunicacionInternaController.editar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id])
+}
+    
+                #{form play.mvc.Router.reverse('PaginaAltaComunicacionInternaController.frmNuevoAsiento' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]) , class:"form-horizontal", id:"frmNuevoAsiento"}
+                    
+            #{fap.grupo titulo:'Credenciales de la comunicación'}
+                
+            #{fap.texto campo:'comunicacionInterna.asiento.userId', id:'userID', requerido:true, titulo:'Usuario' /}        
+        
+            #{fap.texto campo:'comunicacionInterna.asiento.password', id:'passwd', password:true, requerido:true, titulo:'Clave' /}     
+        
+            #{/fap.grupo}
+        
+            #{fap.grupo titulo:'Datos adicionales'}
+                
+            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Selección de documentos anexos'}
+                
+            <div class="wiki ">
+<p>Marque todos los documentos anexos y luego seleccione. Cada nueva selección sobrescribirá la anterior.</p>
+
+            </div>
+        
+#{fap.tabla 
+     campo:'Solicitud.documentacion.documentos', 
+     id:'tblDocAdicionales', 
+     idEntidad:'idDocumento', 
+     saveEntity:false, 
+     seleccionable:'Seleccionar', 
+     tipoContainer:'pagina', 
+     titulo:'Seleccione', 
+     urlSeleccionable:'PaginaAltaComunicacionInternaController.seleccionar', 
+     urlTabla:@PaginaAltaComunicacionInternaController.tablatblDocAdicionales(idSolicitud, idComunicacionInterna),
+     idP:idComunicacionInterna
+}
+    
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción', campo:'descripcionVisible', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado', expandir:true /}
+        
+#{/fap.tabla}
+
+            #{/fap.grupo}
+        
+            #{fap.grupo mostrarSi:comunicacionInterna.estado == "docAdjuntos", titulo:'Documentación asociada a la comunicación'}
+                
+#{fap.tabla 
+     campo:'ComunicacionInterna.asiento.uris', 
+     id:'documentosCI', 
+     idEntidad:'idListaUris', 
+     nombreBotonBorrar:'Excluir', 
+     popupBorrar:'PopupBorrarDocumentosAsociadosAltaCI', 
+     saveEntity:false, 
+     tipoContainer:'pagina', 
+     titulo:'Documento y anexos', 
+     urlBorrar:play.mvc.Router.reverse("popups.PopupBorrarDocumentosAsociadosAltaCIController.index" , ['accion':'borrar', 'idSolicitud':solicitud?.id? solicitud?.id:'_idSolicitud_', 'idComunicacionInterna':comunicacionInterna?.id? comunicacionInterna?.id:'_idComunicacionInterna_', 'idListaUris':listaUris?.id? listaUris?.id:'_idListaUris_']), 
+     urlTabla:@PaginaAltaComunicacionInternaController.tabladocumentosCI(idComunicacionInterna)
+}
+    
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descripción del documento', campo:'descripcionVisible', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'enlaceDescarga', expandir:true /}
+        
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar Firmado', campo:'enlaceDescargaFirmado', expandir:true /}
+        
+#{/fap.tabla}
+
+            #{/fap.grupo}
+        
+            #{fap.grupo titulo:'Comentarios'}
+                
+            #{fap.areaTexto campo:'comunicacionInterna.asiento.observaciones', id:'observaciones', titulo:'Observaciones' /}        
+        
+            #{/fap.grupo}
+        
+            #{/fap.grupo}
+        
+            #{fap.boton id:'btnNuevoAsiento', style:'float : right;', titulo:'Enviar', waitPopup:true /}
+        
+                #{/form}
+            
+#{/fap.pagina}
+        

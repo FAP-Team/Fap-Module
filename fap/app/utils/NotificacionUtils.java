@@ -193,7 +193,7 @@ public class NotificacionUtils {
 	public static Documento obtenerDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
 		Documento documento = null;
 		try {
-			documento = notificacionService.obtenerDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+			documento = notificacionService.obtenerDocumentoNotificacion(notificacion.agente.username.toString(), notificacion.uri, tipo);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -203,13 +203,43 @@ public class NotificacionUtils {
 	public static String obtenerUriDocumentos(Notificacion notificacion, DocumentoNotificacionEnumType tipo){
 		String uri = "";
 		try {
-			uri = notificacionService.obtenerUriDocumentoNotificacion(notificacion.agente.id.toString(), notificacion.uri, tipo);
+			uri = notificacionService.obtenerUriDocumentoNotificacion(notificacion.agente.username.toString(), notificacion.uri, tipo);
 			if(uri == null)
 				uri="";
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return uri;
+	}
+	
+	public static String obtenerDescripcionDocumento(String uriDocumento) {
+		String descripcion = "";
+		try {
+			descripcion = gestorDocumentalService.getDescripcionDocumento(uriDocumento);
+		} catch (Exception e) {
+			play.Logger.error("Se ha producido un error obteniendo la descripción del documento");
+		}	
+		return descripcion;
+	}
+	
+	public static String obtenerTipoDocumento(String uriDocumento) {
+		String tipo = "";
+		try {
+			tipo = gestorDocumentalService.getTipoDocumento(uriDocumento);
+		} catch (Exception e) {
+			play.Logger.error("Se ha producido un error obteniendo el tipo del documento");
+		}	
+		return tipo;
+	}
+	
+	public static boolean obtenerFirmadoDocumentoNotificacion(String idUsuario, String uriNotificacion, DocumentoNotificacionEnumType tipoDocumento) {
+		boolean firmado = false;
+		try {
+			firmado = notificacionService.obtenerFirmadoDocumentoNotificacion(idUsuario, uriNotificacion, tipoDocumento);
+		} catch (Exception e) {
+			play.Logger.error("Se ha producido un error comprobando si el documento está firmado");
+		}
+		return firmado;
 	}
 	
 }

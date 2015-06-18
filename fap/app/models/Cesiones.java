@@ -25,6 +25,7 @@ public class Cesiones extends FapModel {
 	public String idUnico;
 
 	@ValueFromTable("listaCesiones")
+	@FapEnum("enumerado.fap.gen.ListaCesionesEnum")
 	public String tipo;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPeticion"), @Column(name = "fechaPeticionTZ") })
@@ -36,9 +37,11 @@ public class Cesiones extends FapModel {
 	public DateTime fechaValidez;
 
 	@ValueFromTable("listaEstados")
+	@FapEnum("enumerado.fap.gen.ListaEstadosEnum")
 	public String estado;
 
 	@ValueFromTable("listaOrigen")
+	@FapEnum("enumerado.fap.gen.ListaOrigenEnum")
 	public String origen;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

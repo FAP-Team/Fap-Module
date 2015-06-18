@@ -29,6 +29,7 @@ public class Alegacion extends FapModel {
 	public String respuestaAlegacion;
 
 	@ValueFromTable("estadoAlegacion")
+	@FapEnum("enumerado.fap.gen.EstadoAlegacionEnum")
 	public String estado;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -424,7 +424,7 @@ public class GTabla extends GElement{
 				param = entidadRaiz.typeId;
 		}
 		
-		String rowsStr = campos.collect { '"' + it.sinEntidad() + '"'  }.join(", ");
+		String rowsStr = campos.minus(null).collect { '"' + it.sinEntidad() + '"'  }.join(", ");
 
 		String finalStrParams = "";
 		if (stringParamsAdded != null && stringParamsAdded.length() > 0) {

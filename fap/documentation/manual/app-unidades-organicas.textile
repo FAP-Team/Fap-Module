@@ -1,12 +1,35 @@
 h1. Unidades Orgánicas
 
-Permite almacenar y mostrar todas las unidades orgánicas disponibles.
+Se necesita el servicio de *Servicios Genéricos* para obtener las unidades orgánicas, en caso que se quieran obtener desde el servicio.
+En el caso de que se quieran obtener desde fichero no haría falta, sí la existencia del fichero.
 
-!images/app-unidades-organicas!
+h2. Carga desde servicio
+
+Se realiza una petición recursiva al servicio, con un retardo de 1s entre llamada para no sobrecargarlo, para obtener todas las unidades orgánicas disponibles.
+
+h2. Carga desde fichero
+
+Se realiza la lectura de un fichero en formato "json" y se cargarán las unidades orgánicas presentes en el mismo.
+La localización de este fichero debe estar en la aplicación en la ruta: 
+*conf/initial-data/unidadesOrganicas.json*.
 
 h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
 
 FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar las Unidades Orgánicas que trae implementada el módulo FAP. 
 Concretamente:
 
-* *UnidadesOrganicas*: Esta es la página que se encarga de cargar, y ver los datos de las unidades orgánicas.
+* *UnidadesOrganicas*: Esta es la página que se encarga gestionar los datos de las unidades orgánicas (HiperReg).
+** Utilizando el servicio de *Servicios Genéricos* de platino
+** Utilizando un fichero en formato "json", bien formateado.
+
+!images/admin-unidades-organicas!
+
+h3. Ejemplo del fichero para la carga de unidades orgánicas
+
+!images/admin-unidades-organicas-ficheroCarga-a!
+!images/admin-unidades-organicas-ficheroCarga-b!
+
+h3. Ejemplo del fichero para el mapeo de unidades orgánicas (HiperReg-Organización)
+
+!images/admin-unidades-organicas-ficheroMapeo-a!
+!images/admin-unidades-organicas-ficheroMapeo-b!

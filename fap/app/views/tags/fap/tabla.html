@@ -89,14 +89,10 @@
 	def primeraAccionMock = "editar";
 	
 	try {
-		String sClazz = 'controllers.'+controllerNameAndPackage;
-		java.lang.Class clazz = java.lang.Class.forName(sClazz);
-		java.lang.reflect.Method m1 = clazz.getMethod("getNamePermiso", null);
-		String namePermisoPagina = m1.invoke(object, null);
+		def namePermisoPagina = tags.ReflectionUtils.callControllerMethodIfExists("getNamePermiso");
 		if (namePermisoPagina != null)
-			primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
+		   primeraAccionMock = config.InjectorConfig.getInjector().getInstance(security.Secure.class).getPrimeraAccion(namePermisoPagina, tags.TagMapStack.top("idParams"), null);
 	} catch (java.lang.Exception e) {
-		//e.printStackTrace();
 		play.Logger.error("tabla.html e-> "+e.getMessage());
 	} catch (java.lang.Throwable t) {
 		play.Logger.error("tabla.html t-> "+t.getMessage());
@@ -314,24 +310,25 @@
 			function ajax2Data (data){
 				var filas=[];
 				var aux;
-				for (var i=0; i<data.length; i++){
-					aux = {};
-				 	#{list campos, as:'columna_campo'}
-				 	try { // Por si el objeto intermedio es null
-				 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
-				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
-				 		} else {
-				 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
-				 		}
-				 	} catch (e) {
-				 	}
-				 	#{/list}
-				 	aux['permisoLeer']=data[i].permisoLeer;
-				 	aux['permisoEditar']=data[i].permisoEditar;
-				 	aux['permisoBorrar']=data[i].permisoBorrar;
+				if (!jQuery.isEmptyObject(data))
+					for (var i=0; i<data.length; i++){
+						aux = {};
+					 	#{list campos, as:'columna_campo'}
+					 	try { // Por si el objeto intermedio es null
+					 		if (data[i].objeto.${columna_campo}_formatFapTabla) {
+					 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo}_formatFapTabla;
+					 		} else {
+					 			aux['#{fap.campo2id columna_campo /}'] = data[i].objeto.${columna_campo};
+					 		}
+					 	} catch (e) {
+					 	}
+					 	#{/list}
+					 	aux['permisoLeer']=data[i].permisoLeer;
+					 	aux['permisoEditar']=data[i].permisoEditar;
+					 	aux['permisoBorrar']=data[i].permisoBorrar;
 				 	
-				 	filas[i] = aux;
-				}
+				 	    filas[i] = aux;
+				    }
 				return filas;				
 			}
 
@@ -356,8 +353,8 @@
 				});
 		    }
 		    
-		    // Para cuando se entra a la pagina
-		    peticionJSON${id}();
+		    // Para cada vez que se renderiza la pagina, realizamos la petición para traer los datos
+            peticionJSON${id}();
 			
 			#{if combo} 
 			    var $combo = $('#${combo}');

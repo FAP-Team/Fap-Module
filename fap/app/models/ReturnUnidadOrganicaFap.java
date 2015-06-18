@@ -49,16 +49,9 @@ public class ReturnUnidadOrganicaFap extends FapModel {
 	@Transient
 	public Long codigoSubNivel3;
 
-	public ReturnUnidadOrganicaFap() {
-		init();
-	}
+	public Long codigoBDOrganizacion;
 
 	public void init() {
-
-		if (error == null)
-			error = new ReturnErrorFap();
-		else
-			error.init();
 
 		postInit();
 	}

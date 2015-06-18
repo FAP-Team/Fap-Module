@@ -23,10 +23,12 @@ Puede ver un ejemplo de las cosas que hace FAP en http://fap-devel.etsii.ull.es/
 
    Integrantes de FAP desde que se usa Play Framework (con asterisco la gente que ya no forma parte del equipo):
 
-      - Eleazar Hernández
-      - Fernando González
-      - Elena Díaz
       - Byron González
+      - Sergio Aafonso
+	  - Tamara Luján
+      - Fernando González (*)
+      - Elena Díaz (*)
+	  - Eleazar Hernández (*)
       - Alejandro Cabrera (*)
       - Javier Cruz (*) 
       - Alejandro Tejera (*)

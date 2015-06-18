@@ -335,3 +335,12 @@ exports.clickEnSelector = function(selector) {
 exports.esperarPorSelector = function(selector) {
     casper.waitForSelector(selector);
 };
+
+exports.seleccionarElemCombo = function (sel, val) {
+	casper.waitForSelector(sel);
+	casper.then(function() {
+        casper.evaluate(function(selector, valor) {
+       		$(selector).val(valor).change();
+        },sel,val);
+    });
+};

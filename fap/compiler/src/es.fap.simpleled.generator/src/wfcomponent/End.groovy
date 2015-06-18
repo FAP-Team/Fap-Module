@@ -11,12 +11,15 @@ import java.util.ArrayList;
 
 import es.fap.simpleled.led.impl.AttributeImpl;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowComponent;
 import org.eclipse.emf.mwe2.runtime.workflow.IWorkflowContext;
 
-import templates.GElement
+import templates.GElement;
+import templates.GMenu
 import templates.GPagina;
 import templates.GPermiso;
 import templates.GPopup;
@@ -26,6 +29,10 @@ import es.fap.simpleled.led.Attribute;
 import es.fap.simpleled.led.Formulario
 import es.fap.simpleled.led.LedFactory;
 import es.fap.simpleled.led.LedPackage;
+import es.fap.simpleled.led.Menu
+import es.fap.simpleled.led.MenuElemento
+import es.fap.simpleled.led.MenuEnlace
+import es.fap.simpleled.led.MenuGrupo
 import es.fap.simpleled.led.Permiso
 import es.fap.simpleled.led.PermisoVar
 import es.fap.simpleled.led.Popup
@@ -36,7 +43,6 @@ import es.fap.simpleled.led.impl.EntityImpl;
 import es.fap.simpleled.led.impl.AttributeImpl;
 import es.fap.simpleled.led.util.LedEntidadUtils;
 import es.fap.simpleled.led.util.ModelUtils;
-
 import generator.utils.*;
 
 public class End implements IWorkflowComponent {
@@ -52,6 +58,7 @@ public class End implements IWorkflowComponent {
 		LedUtils.setFapResources();
 		
 		controllersAndViews();
+		generateMenus()
 		
 		if (!Start.generatingModule){
 			entitySolicitud();
@@ -73,22 +80,100 @@ public class End implements IWorkflowComponent {
 	public void postInvoke() {
 		// TODO Auto-generated method stub
 	}
+	
+	private void generateMenus() {
+		List<Formulario> formularios = ModelUtils.getVisibleNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario(), LedUtils.resource);
+		def formsMenus = filtrarMenus(formularios)
+		formsMenus.each { entry ->
+			def menus = entry.value
+			if (menus.size() == 0) {
+				return
+			}
+			
+			def scriptVariables = new HashSet<String>()
+			def entitiesDeclaration = ""
+			
+			def elementsMenuCode = ""
+			for (Menu menu : menus) {
+				GMenu gMenu = GElement.getInstance(menu, null);
+				for (MenuElemento menuElement : menu.elementos) {
+					elementsMenuCode += gMenu.generateElemento(menuElement, -1, scriptVariables, entitiesDeclaration)
+				}
+			}
+			
+			def code = """
+				<ul class='nav nav-list'>
+				%{
+					${entitiesDeclaration}
+				%}
+				${elementsMenuCode}
+				</ul>"""
+			
+			String menuName = entry.key + ".html"
+			FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), menuName, code)
+		}
+		
+		return
+	}
+	
+	
+	private Map<String,List<Menu>> filtrarMenus(List<Formulario> forms) {
+		def menus = [:]
+		
+		// Filtrar los menus que se mostrarán para cada Formulario
+		for (Formulario form : forms) {
+			def formName = form.getName()
+			
+			def formMenus = menus[formName]
+			if (formMenus == null) {
+				formMenus = []
+				menus[formName] = formMenus
+
+			} else if ((formMenus.size() == 1) && (formMenus[0].getUnico() == "true")) {
+				continue
+			}
+			
+			for (Menu menu : form.getMenus()) {
+				if (menu.getUnico() == "true") {
+					formMenus.clear()
+					formMenus.add(menu)
+					break
+				}
+				
+				formMenus.add(menu)
+			}
+		}
+		
+		// Ordenar los menus el índice de los mismos
+		menus.each{entry ->
+			entry.value.sort{a,b -> a.getIndice() <=> b.getIndice()}
+		}
+		
+		return menus
+	}
 
 	private void controllersAndViews(){
 		for (Formulario formulario: LedUtils.getNodes(LedFactory.eINSTANCE.getLedPackage().getFormulario())){
-			if (!LedUtils.inPath(formulario)) continue;
+			if (!LedUtils.inPath(formulario)) {
+				continue;
+			}
+			
 			for (Pagina pagina: formulario.paginas){
 				GPagina gpagina = GElement.getInstance(pagina, null);
 				gpagina.view();
 				gpagina.controller();
 			}
+			
 			for (Popup popup: formulario.popups){
 				GPopup gpopup = GElement.getInstance(popup, null);
 				gpopup.view();
 				gpopup.controller();
 			}
-			if(formulario.menu)
-				GElement.getInstance(formulario.menu, null).generate();
+			
+//			if(formulario.getMenus().size() > 0) {
+//				// GElement.getInstance(formulario.menu, null).generate();
+//				generateMenu(formulario)
+//			}
 		}
 	}
 	
@@ -164,7 +249,7 @@ public class End implements IWorkflowComponent {
 	private String permisos(){	  
 		String clazzName = Start.generatingModule ? "SecureFap" : "SecureApp"; 
 		String clazzGenName = clazzName + "Gen";
-		String permisosCode = "";
+		StringBuilder permisosCode = new StringBuilder();
 		String switchCode = "";
 		String switchAccionCode = "";
 		String els = "";
@@ -177,23 +262,14 @@ public class End implements IWorkflowComponent {
 				for(PermisoVar var : permiso.permiso.varSection.vars)
 					variables.put(var.tipo.name, var.tipo);
 			}
-			permisosCode += permiso.permisoCode();
+			permisosCode.append(permiso.permisoCode());
 			String permisoName = permiso.permiso.name;	
-			switchCode += """
-				${els} if("${permisoName}".equals(id))
-					return ${permisoName}(grafico, action, ids, vars);
-			""";
-			switchAccionCode += """
-				${els} if("${permisoName}".equals(id))
-					return ${permisoName}Accion(ids, vars);
-			""";
-			els = "else";
 		}
 	  	  
-		String vars = "";
+		StringBuilder vars = new StringBuilder();
 		for (Entity e: variables.values()){
 			Entidad entidad = Entidad.create(e);
-			vars += """
+			vars.append("""
 				public ${entidad.clase} get${entidad.clase}(Map<String, Long> ids, Map<String, Object> vars){
 					if (vars != null && vars.containsKey("${entidad.variable}"))
 						return (${entidad.clase}) vars.get("${entidad.variable}");
@@ -201,7 +277,7 @@ public class End implements IWorkflowComponent {
 						return ${entidad.clase}.findById(ids.get("${entidad.id}"));
 					${entidad.isSingleton()? "return ${entidad.clase}.get(${entidad.clase}.class);" : "return null;"}
 				}
-			""";
+			""");
 		}
 		
 		// Permisos generados
@@ -214,22 +290,10 @@ import controllers.fap.AgenteController;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ${clazzGenName} extends Secure {
+public final class ${clazzGenName} extends Secure {
 
 	public ${clazzGenName}(Secure next) {
 		super(next);
-	}
-
-	@Override
-	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {
-		${switchCode}		
-		return nextCheck(id, grafico, action, ids, vars);
-	}
-
-	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {
-		${switchAccionCode}		
-		return nextAccion(id, ids, vars);
 	}
 	
 	${permisosCode}
@@ -246,21 +310,27 @@ package security;
 
 import java.util.Map;
 
-public class ${clazzName} extends Secure {
+/**
+* Se debe implementar esta clase para extender los permisos que no
+* pueden definirse con el lenguaje FAP
+*/
+public final class ${clazzName} extends Secure {
 	
 	public ${clazzName}(Secure next) {
 		super(next);
 	}
 
-	@Override
-	public ResultadoPermiso check(String id, String grafico, String action, Map<String, Long> ids, Map<String, Object> vars) {		
-		return nextCheck(id, grafico, action, ids, vars);
-	}
+	/**
+	* Para que los permisos puedan ser invocados por reflexión deben de
+	* ser implementados siguiendo las siguientes plantillas
+	*
+	* @SuppressWarnings("unused")
+	* private ResultadoPermiso [NombrePermiso](String grafico, String accion, Map<String, Long> ids, Map<String, Object> vars)
+	*
+	* @SuppressWarnings("unused")
+	* private ResultadoPermiso [NombrePermiso]Accion(Map<String, Long> ids, Map<String, Object> vars)
+	*/
 
-	@Override
-	public ResultadoPermiso accion(String id, Map<String, Long> ids, Map<String, Object> vars) {		
-		return nextAccion(id, ids, vars);
-	}
 }
 """;
 

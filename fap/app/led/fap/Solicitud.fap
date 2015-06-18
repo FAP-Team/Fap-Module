@@ -9,7 +9,7 @@ Formulario Solicitud campo=SolicitudGenerica permiso=solicitudes {
             Columna campo=Documento.tipo titulo="Tipo Documento"expandir
             Columna campo=Documento.enlaceDescarga titulo="Descargar" expandir
             Columna campo=Documento.enlaceDescargaFirmado titulo="Descargar Firmado" expandir
-            Columna campo=Documento.firmadoVisible titulo="Firmado" expandir
+            Columna campo=Documento.firmadoVisibleLocal titulo="Firmado" expandir
         }
 		
 		Grupo documentosExternos borde=false mostrarSiExpresion "properties.FapProperties.getBoolean(\"fap.documentacion.documentosExternos\")"{
@@ -175,11 +175,11 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 		{
 			Columna campo=Documento.fechaSubida titulo="Fecha Subida" ancho="80"
 			Columna campo=Documento.fechaRegistro titulo="Fecha Registro" ancho="80"
-			Columna titulo="Tipo Documento" campo=Documento.tipo
-			Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
-			Columna campo=Documento.uri titulo="Uri"
+			Columna titulo="Tipo Documento" campo=Documento.tipo ancho="80"
+			Columna campo=Documento.descripcionVisible titulo="Descripción" ancho="80"
+			Columna campo=Documento.uri titulo="Uri" ancho="80"
 			Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+			Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" expandir
 		}
 		
 		Enlace titulo="Volver" pagina=Aportacion estilo="btn"
@@ -488,8 +488,8 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 			}
 		}
 
-		Grupo gModificarVerificacion titulo="Modificar la resolución" permiso=modificarRequerimiento{
-			Wiki {"Puede modificar la resolución si necesita cambiar el motivo de requerimiento o gestor que debe firmar."}
+		Grupo gModificarVerificacion titulo="Modificar la verificación" permiso=modificarRequerimiento{
+			Wiki {"Puede modificar la verificación si necesita cambiar el motivo de requerimiento o el gestor que debe firmar"}
 			Form reabrirVerificacion permiso=modificarRequerimiento {
 				Boton botonReabrirVerificacion titulo="Modificar la Verificación" type=warning
             }
@@ -587,7 +587,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				    Boton btnFinalizarVerificacion titulo="Finalizar Verificación"
 				}		
 			
-				Form gnuevoRequerimientoBorradorPreliminar destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminar permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 				
@@ -631,7 +631,7 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 					Columna campo=VerificacionDocumento.linkUrlDescarga titulo="Descargar" ancho="100"	
 				}
 			
-				Form gnuevoRequerimientoBorradorPreliminargR destino="_blank"{ 
+				Form gnuevoRequerimientoBorradorPreliminargR permiso=obtenerBorradorRequerimiento destino="_blank"{ 
 					Boton obtenerBorradorPreliminar titulo="Obtener Borrador Requerimiento"
 				}
 			}
@@ -647,8 +647,12 @@ Esta declaración autoriza a la ACIISI a obtener estos documentos y/o datos alte
 				}
 				
 				Form gPonerADisposicion permiso=requerimientoFirmado {
-					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="boton"
+					Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Descargar Justificante a Notificar" destino="_blank" estilo="btn"
 					Boton ponerADisposicion titulo="Notificar el requerimiento" waitPopup
+				}
+				
+				Form gDescargarNotificacionRequerimiento permiso=requerimientoEnviado {
+				    Enlace campo=SolicitudGenerica.verificacion.requerimiento.justificante.urlDescarga titulo="Obtener Requerimiento" destino="_blank" estilo="btn"
 				}
 			}
 			
@@ -896,82 +900,104 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	// ACEPTAR/RENUNCIAR
 	// *******************************************************************************************
 	
-	Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm permiso=resolucionAceptarRenunciar  perteneceA ="AceptarRenunciar"{
-		
-		Grupo titulo="Aceptación/Renuncia" {
-			Grupo permiso=editarAceptarRenunciar borde=false {
-				Grupo permiso=prepararAceptarRenunciar borde=false {
-					Form formAceptarRenunciar autoEnviar  {
-						Combo comboAceptarRenunciar campo=SolicitudGenerica.aceptarRenunciar.seleccion titulo="Acepta o Renuncia" requerido
-						Grupo titulo = "Renuncia" mostrarSiCombo comboAceptarRenunciar='renuncia' borde=false {
-				    		AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.aceptarRenunciar.motivoRenuncia filas=10
-			    		}
-					}
-					
-					Grupo titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
-						FirmaMasiva documentos titulo="Documentación Aceptación"
-				    	campo=SolicitudGenerica.aceptarRenunciar.documentos
-						popupBorrar=PopUpDocAceptacionRenuncia
-						popupEditar=PopUpDocAceptacionRenuncia
-						popupLeer=PopUpDocAceptacionRenuncia
-						paginaCrear=AportarDocumentacionAceptacionRenuncia
-						{
-							Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
-							Columna titulo="Tipo Documento" campo=Documento.tipo
-							Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
-							Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
-							Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
-						}
-					}
-					
-					Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de aceptación/renuncia" permiso=generarBorradorAceptarRenunciar/*permiso=presentacionPrepararParaFirmar*/ {
-                		Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }                  
-                  		Form prepararFirmar {
-                           Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
-                 		}
-            		}
-				}
-				
-				Grupo titulo="Paso 2. Obtener borrador de la solicitud de Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
-
-                	Wiki {"Puede obtener un borrador de la solicitud de aceptación/renuncia, no válido para su presentación y comprobar que la información introducida es correcta."}
-	                Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
-
-    	            Form deshacer redirigir=PaginaAceptacionRenuncia permiso=modificarAceptarRenunciar {
-        	        	Wiki {"Puede realizar cambios antes de su presentación definitiva."}
-            	    	Boton botonModificar titulo="Modificar aceptación/renuncia"
-                	}
-                  
-//                  	Grupo mensajeIntermedio permiso=mensajeIntermedioAceptarRenunciar borde=false {
-//                        Wiki estilo ="box-warn box" {
-//                             "Se produjo un error en la presentación de la aceptación/renuncia. Pulse otra vez el botón 'Firmar y presentar' para intentar finalizar el proceso."
-//                        }
-//                  	}
-            	}
-			}
-            
-            Grupo grpPresentar titulo="Paso 3. Registrar Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {  
-				// Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado	
-				Form frmPresentar redirigir=AceptacionRenunciaPresentar {
-		 			Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
-					Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
-				}
-			}
-		
-			Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaAceptarRenunciar {
-				Wiki {"Puede obtener un recibo de la presentación de la aceptación/renuncia pulsando el enlace 'Obtener recibo'." }
-				Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton" 	
-			}
-		}
-		
-	}
+    Pagina PaginaAceptacionRenuncia titulo="Aceptación/Renuncia" noForm  permiso=resolucionAceptarRenunciar perteneceA ="AceptarRenunciar"{
+ 
+         Grupo titulo="Aceptación/Renuncia" {
+                Grupo permiso=editarAceptarRenunciar borde=false {
+                       Grupo permiso=prepararAceptarRenunciar borde=false {
+                              Form formAceptarRenunciar autoEnviar  {
+                                    Combo comboAceptarRenunciar campo=SolicitudGenerica.aceptarRenunciar.seleccion titulo="Acepta o Renuncia" requerido
+                                    Grupo titulo = "Renuncia" mostrarSiCombo comboAceptarRenunciar='renuncia' borde=false {
+                                       AreaTexto titulo="Motivo de renuncia" campo=SolicitudGenerica.aceptarRenunciar.motivoRenuncia filas=10
+                                    }
+                              }
+     
+                          Grupo grAceptacion titulo="Aceptación" mostrarSiCombo formAceptarRenunciar.comboAceptarRenunciar='acepta' borde=false {
+                             Grupo grSubvencionesAceptarRenunciar titulo="Declaración de Subvenciones" {
+                                Tabla tblSubvencion titulo="Ayudas y subvenciones concedidas o solicitadas con el mismo objeto." campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones
+                                  popup=PopUpSubvencionAcepta recargarPagina {
+                                        Columna titulo="Tipo" campo=SubvencionFap.tipo  ancho="120"
+                                        Columna titulo="Admón. o Entidad" campo=SubvencionFap.entidad expandir
+                                        Columna titulo="F.Solicitud" campo=SubvencionFap.fechaSolicitud ancho="120"
+                                        Columna titulo="F.Aprobación" campo=SubvencionFap.fechaAprobacion ancho="120"
+                                        Columna titulo="Situación" campo=SubvencionFap.situacion ancho="100"
+                                        Columna titulo="Importe(€)" campo=SubvencionFap.importe ancho="100"
+                                                      }
+ 
+ 
+                                                          Wiki {
+                                                              "<div style=\"width:100%;padding:10px;align:right;background-color: #EEEEEE;\">"
+                                          "<table style=\"width:90%;text-align:right;align:center;\"><tr>"
+                                          "<tr><td><b><i>SUBVENCIÓN</i></b></td><td><b><i>SOLICITADO(€)</i></b></td><td><b><i>CONCEDIDO(€)</i></b></td><td><b><i>TOTAL(€)</i></b></td>"
+                                          "<tr><td><b><i>Pública:</i></b></td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPublicas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPublicas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPublicas + solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPublicas)}</td></tr>"
+                                          "<tr><td><b><i>Privada:</i></b></td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPrivadas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPrivadas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasPrivadas + solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasPrivadas)}</td></tr>"
+                                          "<tr><td><b><i>Minimis:</i></b></td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasMinimis)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasMinimis)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidasMinimis + solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadasMinimis)}</td></tr>"
+                                          "<tr><td><b><i>Total:</i></b></td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidas)}</td><td>${format.FapFormat.formatMoneda(solicitud.aceptarRenunciar.declaracionSubvenciones.totalConcedidas + solicitud.aceptarRenunciar.declaracionSubvenciones.totalSolicitadas)}</td></tr>"
+                                          "</table>"
+                                          "</div>"
+                                        }//end wiki
+                             }//end grSubvencionesAceptarRenunciar
+     
+     
+                             FirmaMasiva documentos titulo="Documentación Aceptación" campo=SolicitudGenerica.aceptarRenunciar.documentos
+                                popupBorrar=PopUpDocAceptacionRenuncia
+                                popupEditar=PopUpDocAceptacionRenuncia
+                                popupLeer=PopUpDocAceptacionRenuncia
+                                paginaCrear=AportarDocumentacionAceptacionRenuncia
+                                {
+                                   Columna campo=Documento.fechaSubida titulo="Fecha" ancho="80"
+                                   Columna titulo="Tipo Documento" campo=Documento.tipo
+                                   Columna campo=Documento.descripcionVisible titulo="Descripción" expandir
+                                   Columna funcion="<a href=\"${Documento.urlDescarga}\" target=\"_blank\">Descargar</a>" titulo="Descargar" ancho="100"
+                                   Columna funcion="${Documento.enlaceDescargaFirmado}" titulo="Descargar Firmado" ancho="110"
+                                }
+     
+     
+                          }//end grAceptacion
+     
+                           Grupo grupoPreparar titulo="Paso 1. Preparar la solicitud de aceptación/renuncia" permiso=generarBorradorAceptarRenunciar/*permiso=presentacionPrepararParaFirmar*/ {
+                              Wiki { "Si su solicitud está lista para firmar, pulse el siguiente botón." }
+                              Form prepararFirmar {
+                                 Boton botonPrepararFirmar titulo="Preparar para firmar" waitPopup
+                              }
+                           }
+                       }//end grPrepararAceptarRenunciar
+     
+                       Grupo titulo="Paso 2. Obtener borrador de la solicitud de Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
+                          Wiki {"Puede obtener un borrador de la solicitud de aceptación/renuncia, no válido para su presentación y comprobar que la información introducida es correcta."}
+                          Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.borrador.urlDescarga titulo="Obtener borrador" destino="_blank" estilo="boton"
+     
+                          Form deshacer redirigir=PaginaAceptacionRenuncia permiso=modificarAceptarRenunciar{
+                              Wiki {"Puede realizar cambios antes de su presentación definitiva."}
+                              Boton botonModificar titulo="Modificar aceptación/renuncia"
+                          }
+                       }
+           }//end grEditarAceptarRenunciar
+     
+           Grupo grpPresentar titulo="Paso 3. Registrar Aceptación/Renuncia" permiso=enBorradorAceptarRenunciar {
+               // Hay que comprobar que se ha guardado formulario antes de pulsar en botonPresentar o que este haga el guardado
+               Form frmPresentar redirigir=AceptacionRenunciaPresentar {
+                    Wiki {"Debe registrar la aceptación/renuncia para que se considere presentada."}
+                    Boton botonPresentar titulo="Presentar Aceptación/Renuncia" pagina=AceptacionRenunciaPresentar waitPopup
+               }
+           }
+ 
+           Grupo grpDescargarRecibo titulo="Paso 4. Descargar el recibo" permiso=clasificadaAceptarRenunciar {
+               Wiki {"Puede obtener un recibo de la presentación de la aceptación/renuncia pulsando el enlace 'Obtener recibo'." }
+               Enlace campo=SolicitudGenerica.aceptarRenunciar.registro.justificante.urlDescarga titulo="Obtener recibo"  destino="_blank" estilo="boton"
+           }
+           
+         }//end grAceptarRenunciar
+     
+       }// end paginaAceptarRenunciar
+ 
 	
-	/*
-	 * AportarDocumentacionAceptacionRenuncia
-	 */
-	Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
-		Accion crear redirigir=PaginaAceptacionRenuncia
-		SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"	
+	 /*
+       * AportarDocumentacionAceptacionRenuncia
+       */
+    Pagina AportarDocumentacionAceptacionRenuncia titulo="Añadir Documentación Aceptación/Renuncia" campo=SolicitudGenerica.aceptarRenunciar.documentos permiso=editarAceptarRenunciar perteneceA ="AceptarRenunciar"{
+        Accion crear redirigir=PaginaAceptacionRenuncia
+        SubirArchivo fileAportacion campo=Documento requerido tramite="Aceptación" aportadoPor="CIUDADANO"
     }
     
     Popup PopUpDocAceptacionRenuncia titulo="Documentación" campo=SolicitudGenerica.aceptarRenunciar.documentos {
@@ -1065,6 +1091,32 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 		}
 		
 	}
+	
+	Popup PopUpSubvencionAcepta titulo="Subvención o ayuda" campo=SolicitudGenerica.aceptarRenunciar.declaracionSubvenciones.subvenciones {
+       Grupo titulo="Datos de Subvención"{
+           Combo cboTipoSubvencion titulo="Tipo Subvención" campo=SubvencionFap.tipo requerido
+           Texto titulo="Administración o Entidad" campo=SubvencionFap.entidad requerido
+           AreaTexto ancho="270px" titulo="Objeto" campo=SubvencionFap.objeto requerido
+           Combo cboSituacion titulo="Situación" campo=SubvencionFap.situacion requerido
+           Fecha titulo="Fecha de solicitud" campo=SubvencionFap.fechaSolicitud requerido
+ 
+           Grupo borde=false mostrarSiCombo cboSituacion="solicitada" {
+              Fecha fAprobacion titulo="Fecha de concesión" campo=SubvencionFap.fechaAprobacion
+           }
+ 
+           Grupo borde=false mostrarSiCombo cboSituacion="concedida" {
+              Fecha fAprobacionRequerida titulo="Fecha de concesión" campo=SubvencionFap.fechaAprobacion requerido
+           }
+ 
+           Grupo cboDatosAux borde=false mostrarSiCombo cboTipoSubvencion="minimis","publica" {
+               Texto titulo="Fondo"campo=SubvencionFap.fondo
+               Texto titulo="Reglamento" campo=SubvencionFap.reglamento
+               Texto titulo="Programa operativo" campo=SubvencionFap.programa
+           }
+ 
+           Texto titulo="Importe(€)" campo=SubvencionFap.importe requerido
+       }
+   }
 	
 	// ******************************************************************************************
 	// ALEGACIÓN
@@ -1792,37 +1844,42 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
    //-------------------------Comunicaciones Internas --------------------------
    //---------------------------------------------------------------------------
 	
-	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" noForm{
+	Pagina ComunicacionesInternas campo=SolicitudGenerica titulo="Comunicaciones Internas" permiso=adminOrGestor noForm{
 		Tabla tablaComunicaciones titulo="Comunicaciones Internas" campo=SolicitudGenerica.comunicacionesInternas 
 		paginaLeer=PaginaDatosLeerComunicacionInterna paginaCrear=PaginaDatosNuevaComunicacionInterna paginaEditar=PaginaDatosNuevaComunicacionInterna
+		popupBorrar=PopupBorrarComunicacionInterna permisoFilas=tblComunicacionesInternas
       {
-			Columna campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-			Columna campo=ComunicacionInterna.estado titulo="Estado"
+			Columna campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino" ancho="150"
+			Columna campo=ComunicacionInterna.asiento.resumen titulo="Resumen" ancho="180"
+			Columna funcion="${ComunicacionInterna.numRegistroHiperReg}" titulo="Número de registro" ancho="100"
+            Columna funcion="${ComunicacionInterna.fechaHiperReg}" titulo="Fecha" ancho="150"
+			Columna campo=ComunicacionInterna.estado titulo="Estado" expandir
 		}
 	}
 	
 	Pagina PaginaDatosLeerComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm {
-	   Grupo titulo="Datos Origen" {
-   		Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-   		Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-   		AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-   		AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
+	   Grupo titulo="Datos petición Comunicación interna " {
+	      Texto usuario campo=ComunicacionInterna.asiento.userId titulo="Usuario"
+   	      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
+   	      Texto uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.descripcion titulo="Unidad orgánica de origen"
+   		  Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica de destino"
+   		  AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
+   		  AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
    		
-   		Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-            Columna campo=ListaUris.uri titulo="Uri del documento" expandir
-         }
-		}
+   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos y anexos" {
+            Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+            Columna titulo="Descargar" campo=Documento.enlaceDescarga
+            Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
+          }
+	   }
 		
-		Grupo titulo="Datos Respuesta" {
+	   Grupo titulo="Datos Respuesta" {
 		   Texto fecha campo=ComunicacionInterna.respuesta.fecha titulo="Fecha de alta"
-         Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
-         Texto ejercicio campo=ComunicacionInterna.respuesta.ejercicio titulo="Ejercicio"
-         Texto tipo campo=ComunicacionInterna.respuesta.tipoComunicacion titulo="Tipo de comunicación"
-         Texto numComunicaion campo=ComunicacionInterna.respuesta.contadorUO titulo="Identificador particular de la comunicación"
-		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número particular del asiento"
-		   AreaTexto error campo=ComunicacionInterna.respuesta.error.descripcion titulo="Descripción del error si lo hubiere" 
+           Texto hora campo=ComunicacionInterna.respuesta.hora titulo="Hora de alta"
+           Texto ejercicio campo=ComunicacionInterna.respuesta.ejercicio titulo="Ejercicio"
+           Texto tipo campo=ComunicacionInterna.respuesta.tipoComunicacion titulo="Tipo de comunicación"
+           Texto numComunicaion campo=ComunicacionInterna.respuesta.contadorUO titulo="ContadorUO"
+		   Texto numRegistro campo=ComunicacionInterna.respuesta.numeroRegistro titulo="Número de registro"
 		}
 		
 		Form frmVolverComunicacionInternas {
@@ -1830,60 +1887,86 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
       }
 	}
 	
-	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas{
+	Popup PopupBorrarComunicacionInterna titulo="Borrar comunicación interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
+	    Accion borrar redirigir=ComunicacionesInternas
+	    Wiki{"¿ Está seguro de borrar la comunicación interna ?"}
+	}
+	
+	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
+      Accion crear redirigir=PaginaNuevaComunicacionInternaDocumentos
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos
-      Grupo titulo="Datos de la Comunicacion Interna"{
-         
-         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado requerido
+      
+       Grupo titulo="Datos de la Comunicacion Interna"{
+         Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
-         
-         Grupo titulo="Unidad Orgánica de destino"{
-            Combo uoDestinoRaiz titulo="Nivel 1" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoRaiz busqueda
-            Combo uoDestinoSubNivel1 titulo="Nivel 2" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel1 busqueda 
-            Combo uoDestinoSubNivel2 titulo="Nivel 3" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel2 busqueda 
-            Combo uoDestinoSubNivel3 titulo="Nivel 4" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigoSubNivel3 busqueda 
-            Texto uoDestino titulo="Código" campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido          
+         Check uoOrigenDefecto titulo="Especificar una unidad orgánica de origen" campo=ComunicacionInterna.asiento.asientoAmpliado 
+         ayuda = "En el caso de que no se especifique una unidad orgánica de origen se utilizará la asignada por defecto." 
+         Grupo titulo="Unidad Orgánica de origen" mostrarSiCheck uoOrigenDefecto = true {
+            ComboUO uoOrigen campo=ComunicacionInterna.asiento.unidadOrganicaOrigen.codigo requerido busqueda 
          }
-      }
-   } 
-   
-   Popup PopupDatosBorrarComunicacionInterna titulo="Datos de la comunicación" campo=SolicitudGenerica.comunicacionesInternas{
-      Texto interesado campo=ComunicacionInterna.asiento.interesado titulo="Interesado"
-      Texto uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.descripcion titulo="Unidad orgánica destino"
-      AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
-      AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
-         
-      Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos Aportados" {
-         Columna campo=ListaUris.uri titulo="Uri del documento" expandir
-      }
+         Grupo titulo="Unidad Orgánica de destino" {
+            ComboUO uoDestino campo=ComunicacionInterna.asiento.unidadOrganicaDestino.codigo requerido busqueda
+         }
+       }
    } 
 
 	Pagina PaginaNuevaComunicacionInternaDocumentos titulo="Aportar documentación" campo=SolicitudGenerica.comunicacionesInternas  noForm{
-		Grupo titulo = "Selección de Documentos"{
-			Wiki{"Selecciones los documentos que desea adjuntar antes de pulsar el botón Seleccionar"}
-			Tabla tablaDocumentos campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Documentos a enviar en la comunicación"{
-				Columna titulo="Descripción" campo=Documento.descripcionVisible
-				Columna titulo="Descargar" campo=Documento.enlaceDescarga
+		Grupo titulo = "Selección del documento principal"{
+			Wiki{"Recuerde que debe seleccionar un documento como máximo. Cada nueva selección sobrescribirá la anterior."}
+			Tabla tblDocPrincipal campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione un documento como máximo"{
+				Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+				Columna titulo="Descargar" campo=Documento.enlaceDescarga 
 				Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
 			}
 		}
-		Form frmNuevaComunicacionInternaDocumentos {
-		   Grupo titulo="No aportar documentación" {
-            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente" pagina=PaginaAltaComunicacionInterna 
+		
+	   Grupo titulo="No aportar documentación" {
+	      Wiki{"Se eliminará cualquier selección de documentos hecha previamente."}
+	      Form frmNoAportarDocumentacion {
+            Boton btnNuevaComunicacionInternaDocumentos titulo="Siguiente"
          }
-		}
+      }
 	}
+	
+	Popup PopupBorrarDocumentosAsociadosAltaCI titulo="Excluir documento asociado al alta de la comunicación interna" campo=SolicitudGenerica.comunicacionesInternas.asiento.uris{
+        Accion borrar redirigir=PaginaAltaComunicacionInterna
+        Wiki{"¿ Está seguro de excluir el documento ?"}
+    }
 	
 	Pagina PaginaAltaComunicacionInterna titulo="Alta de comunicación" campo=SolicitudGenerica.comunicacionesInternas noForm{
 		Accion editar crearSiempre 
 		Form frmNuevoAsiento {
-		   Grupo titulo="Datos adicionales" {
-            //Otros datos adicionales para crear una CI
-            //Texto asunto titulo="Asunto" campo=ComunicacionInterna.asiento.asuntoCodificado
-            AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+		   
+		   Grupo titulo="Credenciales de la comunicación" {
+            Texto userID titulo="Usuario" campo=ComunicacionInterna.asiento.userId requerido
+            Texto passwd titulo="Clave" campo=ComunicacionInterna.asiento.password requerido password
          }
-         Boton btnNuevoAsiento titulo="Enviar" style="float : right;"
+		   
+		   Grupo titulo="Datos adicionales" {
+            Grupo titulo = "Selección de documentos anexos" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\"" {
+               Wiki{"Marque todos los documentos anexos y luego seleccione. Cada nueva selección sobrescribirá la anterior."}
+               Tabla tblDocAdicionales campo=SolicitudGenerica.documentacion.documentos seleccionable="Seleccionar" titulo="Seleccione"{
+                  Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
+                  Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+                  Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
+               }
+            }
+            
+            Grupo titulo="Documentación asociada a la comunicación" mostrarSiExpresion "comunicacionInterna.estado == \"docAdjuntos\""{
+               Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documento y anexos"
+               popupBorrar=PopupBorrarDocumentosAsociadosAltaCI nombreBotonBorrar="Excluir"{
+                  Columna campo=Documento.descripcionVisible titulo="Descripción del documento" expandir
+                  Columna titulo="Descargar" campo=Documento.enlaceDescarga expandir
+                  Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado expandir
+               }
+            }
+            
+            Grupo titulo= "Comentarios" {
+               AreaTexto observaciones titulo="Observaciones" campo=ComunicacionInterna.asiento.observaciones
+            }
+         }
+         
+         Boton btnNuevoAsiento titulo="Enviar" waitPopup style="float : right;"
       }
 	} 
-	
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import reports.Report;
 import services.FirmaService;
@@ -24,16 +25,15 @@ import org.joda.time.DateTime;
 
 import platino.FirmaUtils;
 import play.Play;
+import play.db.jpa.JPA;
 import play.mvc.Util;
 import properties.FapProperties;
-
 import tags.ComboItem;
 import utils.CalcularFirmantes;
 import utils.ComboUtils;
 import utils.NotificacionUtils;
 import validation.CustomValidation;
 import verificacion.VerificacionUtils;
-
 import messages.Messages;
 import models.Agente;
 import models.Documento;
@@ -51,7 +51,6 @@ import models.TramitesVerificables;
 import models.Verificacion;
 import models.VerificacionDocumento;
 import models.VerificacionTramites;
-
 import controllers.fap.AgenteController;
 import controllers.fap.VerificacionFapController;
 import controllers.gen.PaginaVerificacionControllerGen;
@@ -691,57 +690,71 @@ public class PaginaVerificacionController extends PaginaVerificacionControllerGe
 			SolicitudGenerica solicitud = getSolicitudGenerica(idSolicitud);
 			Notificacion notificacion = solicitud.verificacion.requerimiento.notificacion;
 		
+			EntityTransaction tx = JPA.em().getTransaction();
 			if (notificacion.estado.equals(EstadoNotificacionEnum.creada.name())) {
 				// TODO: Está en estado creada, debo notificarla
 				try {
+					if (tx.isActive())
+				    	tx.commit();
+					tx.begin();
 					notificacionService.enviarNotificaciones(notificacion, AgenteController.getAgente());
 					
 					play.Logger.info("Se ha puesto a disposición la notificación "+notificacion.id);
 					notificacion.fechaPuestaADisposicion = new DateTime();
 					notificacion.save();
+					tx.commit();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+					if ( tx != null && tx.isActive() ) tx.rollback();
+					Messages.error("Ha ocurrido un error en el proceso de notificación");
+					play.Logger.error("Ha ocurrido un error en el proceso de notificación para la notificacion: "+notificacion.id+" error: "+e.getMessage());
 					e.printStackTrace();
-					play.Logger.error("No se ha podido enviar la notificación "+notificacion.id+": "+e.getMessage());
-					Messages.error("No se envío la notificación por problemas con la llamada al Servicio Web");
 				}
+				tx.begin();
 			}
-			
-			if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
-		    	NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
 			
 			// Si fue puesta a disposición
 			if (notificacion.estado.equals(EstadoNotificacionEnum.puestaadisposicion.name())) {
+				try{
+					if (tx.isActive())
+				    	tx.commit();
+					tx.begin();
 					
-				if (!solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerido.name())) {
-					solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
-					// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
-					VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
-					// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
-					solicitud.verificaciones.add(solicitud.verificacion);
-					solicitud.save();
-				}
+					if (!solicitud.verificacion.estado.equals(EstadosVerificacionEnum.enRequerido.name())) {
+						solicitud.verificacion.estado = EstadosVerificacionEnum.enRequerido.name();
+						// Ponemos todos los documentos de la verificacion como verificados, para que no se incluyan en sucesivas verificaciones
+						VerificacionUtils.setVerificadoDocumentos(solicitud.verificacion.documentos, solicitud.documentacion.documentos);
+						
+						//Se marca la solicitud como verificada
+						if (solicitud.verificacion.tramiteNombre.nombre.equalsIgnoreCase("Solicitud")) { 
+							if ((solicitud.registro.oficial != null) && (!solicitud.registro.oficial.uri.isEmpty()) && ((solicitud.registro.oficial.verificado == null) || (!solicitud.registro.oficial.verificado))) 
+								VerificacionUtils.setVerificadoDocumento(solicitud.verificacion.documentos, solicitud.registro.oficial); 
+						}
+						
+						// Actualizamos los datos de la verificacion para verificaciones posteriores. Copiamos la verificacionActual a las verificaciones Anteriores para poder empezar una nueva verificación.
+						solicitud.verificaciones.add(solicitud.verificacion);
+						solicitud.save();
+					}
+					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					notificacion.save();
 					
-				try {			
 					play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer.addVariable("solicitud", solicitud);
 					Mails.enviar("emitirRequerimiento", solicitud);
-					notificacion.estado = EstadoNotificacionEnum.enviada.name();
+					tx.commit();
 				} catch (Exception e) {
+					if ( tx != null && tx.isActive() ) tx.rollback();
 					play.Logger.error("No se pudo enviar el mail emitirRequerimiento: "+e.getMessage());
 				}
-					
-				if ((FapProperties.get("fap.notificacion.activa") != null) && (FapProperties.getBoolean("fap.notificacion.activa")) && (FapProperties.get("fap.notificacion.procedimiento") != null) && (!(FapProperties.get("fap.notificacion.procedimiento").trim().isEmpty())))
-			    	NotificacionUtils.recargarNotificacionesFromWS(FapProperties.get("fap.notificacion.procedimiento"));
-					
+				tx.begin();
 			}
 		}
 
 		if (!Messages.hasErrors()) {
 			PaginaVerificacionController.gPonerADisposicionValidateRules();
 		}
+		
 		if (!Messages.hasErrors()) {
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada con éxito");
-			Messages.ok("Notificación enviada correctamente");
+			Messages.ok("El proceso de notificación se ha realizado satisfactoriamente");
 		} else
 			log.info("Acción Editar de página: " + "gen/PaginaVerificacion/PaginaVerificacion.html" + " , intentada sin éxito (Problemas de Validación)");
 		PaginaVerificacionController.gPonerADisposicionRender(idSolicitud, idVerificacion);

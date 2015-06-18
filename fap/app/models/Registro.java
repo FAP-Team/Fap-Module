@@ -41,6 +41,7 @@ public class Registro extends FapModel {
 	public FasesRegistro fasesRegistro;
 
 	@ValueFromTable("tipoFirmaJuridica")
+	@FapEnum("enumerado.fap.gen.TipoFirmaJuridicaEnum")
 	public String tipoFirma;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

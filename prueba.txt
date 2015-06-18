@@ -1,0 +1,16 @@
+ El volumen de la unidad E es VBOX_fap
+ El n£mero de serie del volumen es: CADD-1E68
+
+ Directorio de E:\Fap-Module
+
+19/12/2014  11:41    <DIR>          .
+19/12/2014  11:41    <DIR>          ..
+19/12/2014  11:18    <DIR>          .git
+19/12/2014  09:56             2.768 .gitignore
+19/12/2014  09:56             1.066 .travis.yml
+19/12/2014  09:56    <DIR>          apps
+19/12/2014  09:57    <DIR>          fap
+19/12/2014  11:41                 0 prueba.txt
+19/12/2014  09:56             1.449 README.md
+               4 archivos          5.283 bytes
+               5 dirs  234.520.723.456 bytes libres

@@ -23,6 +23,7 @@ public class PeticionCesiones extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("listaCesiones")
+	@FapEnum("enumerado.fap.gen.ListaCesionesEnum")
 	public String tipo;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -43,9 +44,11 @@ public class PeticionCesiones extends FapModel {
 	public RespuestaCesion respCesion;
 
 	@ValueFromTable("estadosPeticion")
+	@FapEnum("enumerado.fap.gen.EstadosPeticionEnum")
 	public String estado;
 
 	@ValueFromTable("seleccionExpedientesCesion")
+	@FapEnum("enumerado.fap.gen.SeleccionExpedientesCesionEnum")
 	public String seleccion;
 
 	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCorte"), @Column(name = "fechaCorteTZ") })

@@ -28,6 +28,7 @@ public class ExpedienteAed extends FapModel {
 	public String idAed;
 
 	@ValueFromTable("tipoCrearExpedienteAed")
+	@FapEnum("enumerado.fap.gen.TipoCrearExpedienteAedEnum")
 	public String selectCrearExpedienteAed;
 
 	public void init() {

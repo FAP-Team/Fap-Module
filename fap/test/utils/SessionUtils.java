@@ -15,7 +15,8 @@ import play.mvc.Scope;
 
 public class SessionUtils {
 
-    static Pattern sessionParser = Pattern.compile("\u0000([^:]*):([^\u0000]*)\u0000");
+	//static Pattern sessionParser = Pattern.compile("\u0000([^:]*):([^\u0000]*)\u0000");
+    static Pattern sessionParser = Pattern.compile("(([^&]+)=([^&]+))+");
     static final String TS_KEY = "___TS";
 
     public static Scope.Session parseSession(String sessionCookieValue) {
@@ -28,7 +29,7 @@ public class SessionUtils {
                     String sessionData = URLDecoder.decode(data, "utf-8");
                     Matcher matcher = sessionParser.matcher(sessionData);
                     while (matcher.find()) {
-                        session.put(matcher.group(1), matcher.group(2));
+                        session.put(matcher.group(2), matcher.group(3)); 
                     }
                 }catch(Exception e){
                     throw new RuntimeException(e);

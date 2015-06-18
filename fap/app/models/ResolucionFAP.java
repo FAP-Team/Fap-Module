@@ -24,15 +24,19 @@ public class ResolucionFAP extends FapModel {
 	// Código de los atributos
 
 	@ValueFromTable("resolucionesDefinidas")
+	@FapEnum("enumerado.fap.gen.ResolucionesDefinidasEnum")
 	public String tipoDefinidoResolucion;
 
 	@ValueFromTable("modalidadResolucion")
+	@FapEnum("enumerado.fap.gen.ModalidadResolucionEnum")
 	public String modalidad;
 
 	@ValueFromTable("tipoResolucion")
+	@FapEnum("enumerado.fap.gen.TipoResolucionEnum")
 	public String tipo;
 
 	@ValueFromTable("estadoTipoMultiple")
+	@FapEnum("enumerado.fap.gen.EstadoTipoMultipleEnum")
 	public String tipoMultiple;
 
 	public Boolean firmarJefeServicio;
@@ -46,21 +50,27 @@ public class ResolucionFAP extends FapModel {
 	public Boolean permitirPublicar;
 
 	@ValueFromTable("estadoResolucion")
+	@FapEnum("enumerado.fap.gen.EstadoResolucionEnum")
 	public String estado;
 
 	@ValueFromTable("estadoResolucionNotificacion")
+	@FapEnum("enumerado.fap.gen.EstadoResolucionNotificacionEnum")
 	public String estadoNotificacion;
 
 	@ValueFromTable("estadoResolucionPublicacion")
+	@FapEnum("enumerado.fap.gen.EstadoResolucionPublicacionEnum")
 	public String estadoPublicacion;
 
 	@ValueFromTable("estadosDocBaremacion")
+	@FapEnum("enumerado.fap.gen.EstadosDocBaremacionEnum")
 	public String estadoDocBaremacionResolucion;
 
 	@ValueFromTable("estadosDocBaremacion")
+	@FapEnum("enumerado.fap.gen.EstadosDocBaremacionEnum")
 	public String estadoInformeBaremacionConComentarios;
 
 	@ValueFromTable("estadosDocBaremacion")
+	@FapEnum("enumerado.fap.gen.EstadosDocBaremacionEnum")
 	public String estadoInformeBaremacionSinComentarios;
 
 	@Column(length = 2500)
@@ -95,9 +105,11 @@ public class ResolucionFAP extends FapModel {
 	public DateTime fechaRegistroResolucion;
 
 	@ValueFromTable("areasResolucion")
+	@FapEnum("enumerado.fap.gen.AreasResolucionEnum")
 	public String areasResolucion;
 
 	@ValueFromTable("tiposResolucion")
+	@FapEnum("enumerado.fap.gen.TiposResolucionEnum")
 	public String tiposResolucion;
 
 	public String codigoResolucion;

@@ -72,6 +72,7 @@ public class Documento extends FapModel {
 	public Boolean refAed;
 
 	@ValueFromTable("estadoNotificacion")
+	@FapEnum("enumerado.fap.gen.EstadoNotificacionEnum")
 	public String estadoDocumento;
 
 	public Boolean firmado;

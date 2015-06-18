@@ -2,7 +2,7 @@ var utiles = require('./utils-testing.js');
 var x = require('casper').selectXPath;
 
 var selectorNuevo = x("//div[@id='comboTestRef']//button/span[contains(.,'Nuevo')]");
-
+var selectorBorrar = x("//div[@id='comboTestRef']//button/span[contains(.,'Borrar')]");
 
 function crearReferencia(nombreReferencia) {
     casper.then(function () {
@@ -36,6 +36,8 @@ var combosPorDefecto = function(test) {
     utiles.changeRole(casper,"Usuario");
     utiles.abrirUltimaSolicitud();
 
+   	casper.waitForSelector("#ComboseditarForm");
+   		
     casper.then(function() {
         casper.fillSelectors("#ComboseditarForm", {
         "#solicitud_comboTest_list" : "b",
@@ -43,13 +45,16 @@ var combosPorDefecto = function(test) {
         "select#solicitud_comboTest_listSinDuplicados" : "b"
         });
     });
+
+   	casper.waitForSelector("ul.chosen-choices li.search-field");
+   		
     casper.then(function() {
-        casper.click("ul.chzn-choices li.search-field");
+        casper.click("ul.chosen-choices li.search-field");
         casper.click(x('//li[contains(text(),"B")][2]'));
-        casper.click("ul.chzn-choices li.search-field");
+        casper.click("ul.chosen-choices li.search-field");
         casper.click(x('//li[contains(text(),"D")][3]'));
     });
-    utiles.captura("despues rellenar combos");
+
     utiles.clickEnGuardar(casper);
     utiles.assertPaginaGuardada(casper);
     
@@ -71,11 +76,43 @@ var combosPorDefecto = function(test) {
     casper.then(function(){
         casper.test.assertElementCount(selectorFila,nReferencias);
     })
+    
+    
+    //Se borran las referencias creadas con anterioridad
+	for(var i = 0; i < nReferencias; i++ ) {
+		var selectorFilaBorrar = x("//div[@id='comboTestRef']//table//tr/td[contains(.,'Referencia')]");
+	    casper.then(function () {
+	    	casper.waitForSelector(selectorFilaBorrar);
+	    });
+	   
+	    casper.thenClick(selectorFilaBorrar); 
+ 		 
+ 		casper.waitForSelector(selectorBorrar);
+		casper.thenClick(selectorBorrar);
+		
+   		casper.then(function () {
+	       	casper.waitUntilVisible("#Borrar_id_ComboTestRef_popup");
+	   	});    
+		
+	   	casper.thenEvaluate(function () {
+	       	$("#Borrar_id_ComboTestRef_popup").click();
+	   	}); 
+    		
+	   	casper.then(function () {
+	       	casper.waitWhileSelector("#Borrar_id_ComboTestRef_popup");
+	   	})
+	   	
+	   	casper.wait(5000, function() {
+       		
+   		});
+
+	 } 
 
     utiles.changeRole(casper, "Usuario");
     utiles.clickEnGuardar(casper);
+
     utiles.assertPaginaGuardada(casper);
-    utiles.captura("Despues de guardar")
+
 }
 
 utiles.casperBegin("combosPorDefecto", combosPorDefecto);

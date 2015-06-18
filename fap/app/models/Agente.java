@@ -46,12 +46,15 @@ public class Agente extends FapModel {
 
 	@ElementCollection
 	@ValueFromTable("roles")
+	@FapEnum("enumerado.fap.gen.RolesEnum")
 	public Set<String> roles;
 
 	@ValueFromTable("roles")
+	@FapEnum("enumerado.fap.gen.RolesEnum")
 	public String rolActivo;
 
 	@ValueFromTable("accesoAgente")
+	@FapEnum("enumerado.fap.gen.AccesoAgenteEnum")
 	public String acceso;
 
 	public Boolean funcionario;
@@ -63,6 +66,8 @@ public class Agente extends FapModel {
 	public String cargo;
 
 	public String usuarioldap;
+
+	public String sessionHash;
 
 	public Agente() {
 		init();

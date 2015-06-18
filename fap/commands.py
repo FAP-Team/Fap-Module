@@ -115,7 +115,7 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
         log = "file:///" + os.path.join(generatorDir, "config", "log4-debug.properties")
     else:
         log = "file:///" + os.path.join(generatorDir, "config", "log4.properties")
-    
+        
     os.chdir(generatorDir);
     class_name = "org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher"
     
@@ -123,10 +123,17 @@ def execute_workflow(modelPath, targetPath, params, cmd_args, app):
     workflow = "workflow.LedGenerator";
     #cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];    
     cmd = [app.java_path(),"-Dlog4j.configuration=" + log, "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath, "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
-    print ' '.join(cmd)
-    return subprocess.call(cmd);
-        
     
+    try:
+        debug = debugCommand(cmd_args)
+        if (debug != None):
+            cmd.insert(2, debug)
+    except CommandError:
+        sys.exit(2)
+    
+    print ' '.join(cmd)
+    
+    return subprocess.call(cmd);
 
 def run_generate(app, args):
     modelPath = os.path.join(app.path, "app", "led")
@@ -603,3 +610,39 @@ def run_javadoc(app, args, play_env):
     print "Generating Javadoc in " + outdir + "..."
     subprocess.call(javadoc_cmd, env=os.environ, stdout=sout, stderr=serr)
     print "Done! You can open " + os.path.join(outdir, 'overview-tree.html') + " in your browser."
+    
+class CommandError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        repr(self.value)
+
+def debugCommand(argv):
+    if ("--debug" in argv) or ("-d" in argv):
+        # Verifica que se asigno el puerto
+        length = len(argv)
+        try:
+            posDebug = argv.index("--debug") 
+            if posDebug == length - 1:
+                print '--debug <port> or -d <port>'
+                raise CommandError("Argumento incorrecto")
+        except ValueError:
+            try:
+                posDebug = argv.index("-d") 
+                if posDebug == length - 1:
+                    print '--debug <port> or -d <port>'
+                    raise CommandError("Argumento incorrecto")
+            except ValueError:
+                # Este caso no se puede dar
+                pass
+         
+        try:
+            # Verifica que el puerto es un valor entero
+            port = long(argv[posDebug + 1])
+        except ValueError:
+            print '--debug <port> or -d <port>'
+            raise CommandError("Argumento incorrecto")
+        
+        return "-agentlib:jdwp=server=y,transport=dt_socket,address=" + str(port) + ",suspend=y"
+    
+    return None

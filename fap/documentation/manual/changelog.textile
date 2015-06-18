@@ -15,6 +15,7 @@ h3. Versión 2.5.6RC6
 * FixedBug Llamada por reflexión a métodos con o sin argumentos.
 * Mejora de validación de permisos en las tablas.
 * Mejora del tiempo de carga del elemento dirección.
+* Se añaden parámetros a los scripts de generación para activar la depuración remota.
 
 h3. Versión 2.5.6RC5
 

@@ -9,7 +9,6 @@ h3. Versión 2.5.6RC6
 * Se corrige la subida de documentos a Platino para que no sea obligatorio que lleven la firma.
 * Se corrige la asignación de permisos a los objetos cargados en un elemento tabla.
 * El elemento ComboUO muestra la descripción de la Unidad Orgánica seleccionada.
-* Soporte para la definición de múltiples menús en los Formularios.
 * Se añade property "fap.baremacion.iniciar.estados" para iniciar las baremaciones.
 * Se actualiza a la versión 1.4.2 de chosen.
 * Se cambia a la versión 1.2.7.2 de Play Framework

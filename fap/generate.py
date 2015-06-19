@@ -16,13 +16,13 @@ def debugCommand(argv):
         try:
             posDebug = argv.index("--debug") 
             if posDebug == length - 1:
-                print '--debug <port> or -d <port>'
+                print ('--debug <port> or -d <port>')
                 raise CommandError("Argumento incorrecto")
         except ValueError:
             try:
                 posDebug = argv.index("-d") 
                 if posDebug == length - 1:
-                    print '--debug <port> or -d <port>'
+                    print ('--debug <port> or -d <port>')
                     raise CommandError("Argumento incorrecto")
             except ValueError:
                 # Este caso no se puede dar
@@ -32,7 +32,7 @@ def debugCommand(argv):
             # Verifica que el puerto es un valor entero
             port = long(argv[posDebug + 1])
         except ValueError:
-            print '--debug <port> or -d <port>'
+            print ('--debug <port> or -d <port>')
             raise CommandError("Argumento incorrecto")
         
         return "-agentlib:jdwp=server=y,transport=dt_socket,address=" + str(port) + ",suspend=y"

@@ -12,29 +12,29 @@ import es.fap.simpleled.led.util.LedEntidadUtils;
 public class GMenu extends GElement {
 
 	Menu menu;
-//	Set<String> scriptVariables;
-//	String scriptEntidadesDeclaracion = "";
+	Set<String> scriptVariables;
+	String scriptEntidadesDeclaracion = "";
 
 	public GMenu(Menu menu, GElement container){
 		super(menu, container);
 		this.menu = menu;
-//		this.scriptVariables = new HashSet<String>();
+		this.scriptVariables = new HashSet<String>();
 	}
 
 	public void generate(){
-//		scriptVariables = new HashSet<String>();
-//		String viewAntes = "<ul class='nav nav-list'>\n"
-//		String view = ""
-//		for(MenuElemento elemento : menu.elementos){
-//			view += generateElemento(elemento, -1);
-//		}
-//		view +="</ul>"
-//		view = viewAntes+"""
-//			%{
-//				${scriptEntidadesDeclaracion}
-//			%}
-//"""+ view;
-//		FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), getMenuName(), view);
+		scriptVariables = new HashSet<String>();
+		String viewAntes = "<ul class='nav nav-list'>\n"
+		String view = ""
+		for(MenuElemento elemento : menu.elementos){
+			view += generateElemento(elemento, -1);
+		}
+		view +="</ul>"
+		view = viewAntes+"""
+			%{
+				${scriptEntidadesDeclaracion}
+			%}
+"""+ view;
+		FileUtils.overwrite(FileUtils.getRoute('MENU_GEN'), getMenuName(), view);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class GMenu extends GElement {
 	   return f.name + ".html";
    }
 
-	public String generateElemento(MenuGrupo grupo, int profundidad, scriptVariables, scriptEntidadesDeclaracion){
+	public String generateElemento(MenuGrupo grupo, int profundidad){
 		profundidad++;
 		String out = "";
 		if (grupo.permiso != null) {
@@ -63,7 +63,7 @@ public class GMenu extends GElement {
 				<li class="nav-header" ${padding}>${grupo.titulo}</li>
 		""";
 		for(MenuElemento elemento : grupo.elementos){
-			out += generateElemento(elemento, profundidad, scriptVariables, scriptEntidadesDeclaracion);
+			out += generateElemento(elemento, profundidad);
 		}
 		out += """
 		<li class="nav-separator"></li>	
@@ -76,7 +76,7 @@ public class GMenu extends GElement {
 		return out;
 	}
 
-	public String generateElemento(MenuEnlace enlace, int profundidad, scriptVariables, scriptEntidadesDeclaracion){
+	public String generateElemento(MenuEnlace enlace, int profundidad){
 		String titulo = enlace.titulo != null ? enlace.titulo : enlace.pagina?.pagina.name
 		String ref = "";
 		String refSin = "";
@@ -97,11 +97,7 @@ public class GMenu extends GElement {
 		if(enlace.pagina != null){
 			return """
 				${permisoBefore}
-				${scriptUrl(
-					Controller.create(GElement.getInstance(enlace.pagina.pagina, null)),
-					enlace.pagina.accion,
-					scriptVariables,
-					scriptEntidadesDeclaracion)}
+				${scriptUrl(Controller.create(GElement.getInstance(enlace.pagina.pagina, null)), enlace.pagina.accion)}
 				<li class="#{fap.activeRoute href:url, activeClass:'active'/}" ${padding}><a href='\${url}'>${titulo}</a></li>
 				${permisoAfter}
 			""";
@@ -142,15 +138,11 @@ public class GMenu extends GElement {
 		} else if(enlace.url != null) //URL
 			ref = enlace.url;
 		else if(enlace.popup != null) { //Popup
-			script = """${scriptUrl(
-				Controller.create(GElement.getInstance(enlace.popup.popup, null)),
-				enlace.popup.accion,
-				scriptVariables,
-				scriptEntidadesDeclaracion)}""";
+			script = "${scriptUrl(Controller.create(GElement.getInstance(enlace.popup.popup, null)), enlace.popup.accion)}";
 			ref= "javascript:popup_open('${enlace.popup.popup.name}', '\${url}')";
 		}
 		else if(enlace.anterior != null){
-			script = "${scriptAnterior(scriptVariables)}";
+			script = "${scriptAnterior()}";
 			ref= "\${urlAnterior}";
 		}
 		else //Enlace por defecto, para prototipado principalmente
@@ -165,7 +157,7 @@ public class GMenu extends GElement {
 		""";
 	}
 	
-	private String scriptUrl(Controller controller, String accion, scriptVariables, scriptEntidadesDeclaracion){
+	private String scriptUrl(Controller controller, String accion){
 		String link = controller.getRouteIndex(accion);
 		List<Entidad> entidades = new ArrayList<Entidad>();
 		String scriptEntidades = "";
@@ -191,7 +183,7 @@ public class GMenu extends GElement {
 		""";
 	}
 	
-	private String scriptAnterior(scriptVariables){
+	private String scriptAnterior(){
 		String url = "";
 		String key = "key";
 		if (!scriptVariables.contains("urlAnterior")){

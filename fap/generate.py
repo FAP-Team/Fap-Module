@@ -1,9 +1,46 @@
 #!/usr/bin/env python
 import os
 import subprocess
-import sys
+import sys, getopt
 
-def main():
+class CommandError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        repr(self.value)
+
+def debugCommand(argv):
+    if ("--debug" in argv) or ("-d" in argv):
+        # Verifica que se asigno el puerto
+        length = len(argv)
+        try:
+            posDebug = argv.index("--debug") 
+            if posDebug == length - 1:
+                print ('--debug <port> or -d <port>')
+                raise CommandError("Argumento incorrecto")
+        except ValueError:
+            try:
+                posDebug = argv.index("-d") 
+                if posDebug == length - 1:
+                    print ('--debug <port> or -d <port>')
+                    raise CommandError("Argumento incorrecto")
+            except ValueError:
+                # Este caso no se puede dar
+                pass
+         
+        try:
+            # Verifica que el puerto es un valor entero
+            port = long(argv[posDebug + 1])
+        except ValueError:
+            print ('--debug <port> or -d <port>')
+            raise CommandError("Argumento incorrecto")
+        
+        return "-agentlib:jdwp=server=y,transport=dt_socket,address=" + str(port) + ",suspend=y"
+    
+    return None
+    
+def main(argv):
+    
     directorioOriginal = os.getcwd()
     modelPath = os.path.join(directorioOriginal, "app", "led", "fap")
     targetPath =  os.path.join(directorioOriginal)
@@ -42,9 +79,18 @@ def main():
     
     # app.java_path()
     #cmd = ["java", "-Dlog4j.configuration=" + log, "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=f,address=9009", "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    #cmd = ["java", "-Dlog4j.configuration=" + log, "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
     cmd = ["java", "-Dlog4j.configuration=" + log, "-Dfile.encoding=utf-8","-classpath", classpath, class_name, workflow, "-p", "targetPath=" + targetPath+"/", "modelPath=" + modelPath, "fapModelPath=" + fapModelPath, "diffParam=" + diffParam, params];
+    
+    try:
+        debug = debugCommand(argv)
+        if (debug != None):
+            cmd.insert(2, debug)
+    except CommandError:
+        sys.exit(2)
+        
     print (' '.join(cmd));
     subprocess.call(cmd);
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

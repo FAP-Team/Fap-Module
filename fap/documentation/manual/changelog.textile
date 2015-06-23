@@ -1,6 +1,6 @@
 h2. Changelog
 
-h3. Versión ??
+h3. Versión 2.5.6RC6
 
 * Se fuerza a que la firma con caja de platino sea reducible para que no se solapen los datos.
 * Se modifica los parámetros utilizados en la consulta de datos a terceros.
@@ -8,13 +8,13 @@ h3. Versión ??
 * Se corrige la subida de documentos a Platino para que no sea obligatorio que lleven la firma.
 * Se corrige la asignación de permisos a los objetos cargados en un elemento tabla.
 * El elemento ComboUO muestra la descripción de la Unidad Orgánica seleccionada.
-* Soporte para la definición de múltiples menús en los Formularios.
 * Se añade property "fap.baremacion.iniciar.estados" para iniciar las baremaciones.
 * Se actualiza a la versión 1.4.2 de chosen.
 * Se cambia a la versión 1.2.7.2 de Play Framework
-* FixedBug LLamada por reflexión a métodos con o sin argumentos.
+* FixedBug Llamada por reflexión a métodos con o sin argumentos.
 * Mejora de validación de permisos en las tablas.
 * Mejora del tiempo de carga del elemento dirección.
+* Se añaden parámetros a los scripts de generación para activar la depuración remota.
 
 h3. Versión 2.5.6RC5
 

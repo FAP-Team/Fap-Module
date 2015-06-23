@@ -103,19 +103,14 @@ Formulario:
 		& (inicial?="inicial")?
 	)
 	'{'
-		(menus += Menu)*
+		(menu = Menu)?
 		(paginas += Pagina  |  popups += Popup)*
 	'}'
 ;
 
 Menu:
-	elemento='Menu' 
-	(
-		("indice" "=" indice=INT)?
-		& ("unico" "=" unico=("false" | "true"))?
-	)
-	'{'
-		elementos += MenuElemento+
+	elemento='Menu' '{'
+		elementos +=MenuElemento+
 	'}'
 ;
 

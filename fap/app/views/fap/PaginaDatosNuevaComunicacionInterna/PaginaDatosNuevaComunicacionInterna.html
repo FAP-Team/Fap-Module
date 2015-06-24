@@ -1,3 +1,4 @@
+
 #{fap.pagina 
      accion:accion, 
      botonBorrar:'Borrar', 
@@ -10,13 +11,13 @@
      pagina:'PaginaDatosNuevaComunicacionInterna', 
      permiso:'solicitudes', 
      permisoMensaje:'No tiene suficientes privilegios para acceder a esta solicitud', 
-     titulo:'Crear una nueva Comunicacion Interna', 
+     titulo:'Crear una nueva Comunicación Interna', 
      urlBorrar:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.borrar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id]), 
      urlCrear:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.crear' , ['idSolicitud':solicitud?.id]), 
      urlEditar:play.mvc.Router.reverse('PaginaDatosNuevaComunicacionInternaController.editar' , ['idSolicitud':solicitud?.id, 'idComunicacionInterna':comunicacionInterna?.id])
 }
     
-            #{fap.grupo titulo:'Datos de la Comunicacion Interna'}
+            #{fap.grupo titulo:'Datos de la Comunicación Interna'}
                 
             #{fap.texto campo:'comunicacionInterna.asiento.interesado', id:'interesado', titulo:'Nombre completo del interesado' /}     
         
@@ -39,3 +40,4 @@
             #{/fap.grupo}
         
 #{/fap.pagina}
+        

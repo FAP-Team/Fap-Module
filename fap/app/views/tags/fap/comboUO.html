@@ -31,11 +31,7 @@
 #{fap.combo id:"${idnivel3}", campo:"${campoNivel3}", titulo:'Nivel 3:', searchable:"${searchable}" /}      
 #{fap.combo id:"${idnivel4}", campo:"${campoNivel4}", titulo:'Nivel 4:', searchable:"${searchable}" /} 
 #{fap.texto campo:"${campo}", obj:obj , id:"${idCodigo}", titulo:'Código de unidad:', requerido:"${requerido}" /}   
-
-#{if accion != "crear"}
-   #{fap.texto campo:"${campoDescripcion}", obj:obj , id:"${idDescripcion}", titulo:'Descripción de unidad:' /}   
-#{/if}
-
+#{fap.texto campo:"${campoDescripcion}", obj:obj , id:"${idDescripcion}", titulo:'Descripción de unidad:' /}   
 
 <script>
 
@@ -60,10 +56,7 @@ function peticion${id}(combo, codigoUO, subnivelUO){
     
     $( document ).ready(function() {
        $("#${idCodigo}").prop('readonly', true);
-       
-       #{if accion != "crear"}
-          $("#${idDescripcion}").prop('readonly', true);
-       #{/if}
+       $("#${idDescripcion}").prop('readonly', true);
 
        var comboRaiz = $("#${idnivel1}");
        peticion${id}(comboRaiz, 0, 0);
@@ -128,7 +121,7 @@ function peticion${id}(combo, codigoUO, subnivelUO){
     
     function resetCombo${id}(combo){ 
        combo.empty();                     
-       combo.prepend($('<option>', { value: -1, text: 'Selecciona...' }));   
+       combo.prepend($('<option>', { value: -1, text: 'Seleccione...' }));   
        #{if searchable} combo.trigger("chosen:updated"); #{/if}
     }
     

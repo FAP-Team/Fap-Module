@@ -446,7 +446,7 @@ public class PlatinoPortafirmaServiceImpl implements PortafirmaFapService {
 	@Override
 	public boolean comprobarSiSolicitudFirmada(SolicitudFirmaPortafirma solicitudFirmaPortafirma) throws PortafirmaFapServiceException {
 		String estadoSolicitudFirma = obtenerEstadoFirma(solicitudFirmaPortafirma);
-		if ((EstadoSolicitudEnumType.FIRMADA.value().equalsIgnoreCase(estadoSolicitudFirma)) || (EstadoSolicitudEnumType.FIRMADA_Y_REENVIADA.value().equalsIgnoreCase(estadoSolicitudFirma))) {
+		if (EstadoSolicitudEnumType.FIRMADA.value().equalsIgnoreCase(estadoSolicitudFirma)) {
 			play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada.");
 			//play.Logger.info("La solicitud de firma de portafirma "+solicitudFirmaPortafirma.uriSolicitud+" ha sido firmada y finalizada.");
 			return true;

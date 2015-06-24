@@ -131,7 +131,8 @@ public class ResolucionFAP extends FapModel {
 	@Transient
 	public List<Interesado> destinatarios;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne
+	@Transient
 	public ExpedienteAed expedienteAed;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

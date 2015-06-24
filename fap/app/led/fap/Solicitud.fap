@@ -1866,7 +1866,7 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
    		  AreaTexto resumen campo=ComunicacionInterna.asiento.resumen titulo="Resumen"
    		  AreaTexto observaciones campo=ComunicacionInterna.asiento.observaciones titulo="Observaciones" 
    		
-   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documentos y anexos" {
+   		  Tabla documentosCI campo=ComunicacionInterna.asiento.uris titulo="Documento y anexos" {
             Columna titulo="Descripción" campo=Documento.descripcionVisible expandir
             Columna titulo="Descargar" campo=Documento.enlaceDescarga
             Columna titulo="Descargar Firmado" campo=Documento.enlaceDescargaFirmado
@@ -1892,11 +1892,11 @@ Popup PopUpEditarCEconomicosEvaluados titulo="popup" campo=SolicitudGenerica.cec
 	    Wiki{"¿ Está seguro de borrar la comunicación interna ?"}
 	}
 	
-	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicacion Interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
+	Pagina PaginaDatosNuevaComunicacionInterna titulo="Crear una nueva Comunicación Interna" campo=SolicitudGenerica.comunicacionesInternas permiso=ComunicacionesInternas{
       Accion crear redirigir=PaginaNuevaComunicacionInternaDocumentos
       Accion editar redirigir=PaginaNuevaComunicacionInternaDocumentos
       
-       Grupo titulo="Datos de la Comunicacion Interna"{
+       Grupo titulo="Datos de la Comunicación Interna"{
          Texto interesado titulo="Nombre completo del interesado" campo=ComunicacionInterna.asiento.interesado
          AreaTexto resumen titulo="Resumen" campo=ComunicacionInterna.asiento.resumen requerido
          Check uoOrigenDefecto titulo="Especificar una unidad orgánica de origen" campo=ComunicacionInterna.asiento.asientoAmpliado 

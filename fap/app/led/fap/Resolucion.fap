@@ -164,7 +164,7 @@ Entidad ResolucionFAP {
 	Registro registro
 	Boolean copiadoExpedientes default="false"				//Indica si el doc de resolucion ha sido copiado en los expedientes
 	OneToMany Interesado destinatarios transient
-	ExpedienteAed expedienteAed
+	ExpedienteAed expedienteAed transient
 
 	//Lista estadoResolucionConcesion estado				//Estado de la resolución: 1.0:Creada,2.0:Preparada, 3.0:En_Firma, 4.0:Firmada, 5.0:Registrada, 6.0:Publicada
 	//OneToMany ExpedientesAlegados expedientesAlegados

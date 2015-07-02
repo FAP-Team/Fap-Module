@@ -27,9 +27,9 @@ h2. Opciones
 
 h3. Dirección
 
-Permite indicar que la dirección será elegible por el propio solicitante, mediante un combo 'Tipo Dirección'. Los valores de este combo estarán compuestos por los valores parseador de una property situada en el application.conf. Esta property es:
+Permite indicar que la dirección será elegible por el propio solicitante, mediante un combo 'Tipo Dirección'. Los valores de este combo estarán compuestos por los valores parseados de una property situada en el application.conf. Esta property es:
 
-* *fap.direcciones.tipo=* _canaria,nacional,internacional_ , Por defecto tiene los valores que vemos (todos los posibles), si se quiere personalizar dicho combo habrá que sobreescribir la property en nuestro application.conf de la aplicación e indicarle que valores dejaremos seleccionar.
+* *fap.direcciones.tipo=* _canaria,nacional,internacional_. Por defecto tiene los valores que vemos (todos los posibles), si se quiere personalizar dicho combo habrá que sobreescribir la property en nuestro application.conf de la aplicación e indicarle que valores queremos seleccionar.
 
 h3. Dirección Canaria
 
@@ -48,7 +48,7 @@ h3. Dirección Internacional
 
 Permite seleccionar un País, de la lista de todos los países del mundo.
 
-Además de que tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Municipio.
+Además, tiene campos distintos a las otras direcciones, como el Estado, y no tiene campos como Comunidad Autónoma, Provincia y Municipio.
 
 Otros valores que se pueden rellenar son: localidad, código postal, calle, número, otros (puerta,etc.).
 

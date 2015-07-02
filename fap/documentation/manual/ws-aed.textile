@@ -2,16 +2,21 @@ h1. AED
 
 h2. Descripción
 
-El Archivo Electrónico de Documentos (AED) permite almacenar los documentos de la aplicación, tanto los aportados por el ciudadano como los generados por la aplicación.
+El Archivo Electrónico de Documentos (AED) permite almacenar los documentos de la aplicación, tanto si son aportados por el ciudadano como los generados por la aplicación.
 La base es un Alfresco y por encima hay una serie de servicios webs que permite tener los documentos almacenados en expedientes.
 
 El AED está compuesto por una serie de servicios webs, en la actualidad se utilizan:
 * **aed**: Permite manipular los documentos
 * **tipos-documentos**: Permite trabajar con los tipos de los documentos
 
-h2. Documentación del servicio
+h2. Inyección
 
-* Falta añadir enlaces a los PDFs del manual. (Pedir a arte)
+bc. @Override
+    protected void gestorDocumental() {
+        bindLazySingletonOnDev(GestorDocumentalService.class,AedGestorDocumentalServiceImpl.class);
+    }
+    
+* Ir a Administración/Aed, en la aplicación arrancada y pulsar los botones _Configurar gestor documental_ y _Actualizar trámites_.
 
 h2. Configuración en fap
 
@@ -91,12 +96,12 @@ Los tipos de documentos estan asociados a un tramite y se organizan en función 
 * Cuidadano
 * Organismo
 * Otras entidades
- 
-h2. Clases de ayuda
+
+h3. Clases de ayudas
 
 El paquete aed que está dentro del módulo contiene las clases que trabajan con el AED.
-* **aed.AedClient** 
-* **aed.TiposDocumentosClient**
+* *aed.AedClient* 
+* *aed.TiposDocumentosClient*
 
 h2. Tests
 

@@ -1,6 +1,6 @@
 h1. Modificación de Solicitudes
 
-El módulo FAP, tiene una serie de páginas que permiten la modificación de los datos de la solicitud que ya han sido registrados y firmados en la presentación correspondiente, haciendo que estos datos modificados se conviertan en los nuevos datos válidos siendo firmados y registrados nuevamente.
+El módulo FAP, tiene una serie de páginas que permiten la modificación de los datos de la solicitud que ya han sido registrados y firmados en la presentación correspondiente, haciendo que estos datos modificados se conviertan en los nuevos datos válidos, siendo firmados y registrados nuevamente.
 
 Para usar esta funcionalidad hay que utilizar un par de página predefinidas ya en el módulo FAP, así como personalizar ciertos controladores que permiten presentar estas modificaciones en el registro correspondiente.
 
@@ -35,11 +35,11 @@ Esto nos permitirá acceder a una página que se compone de 2 partes:
 
 h2. Permitiendo Modificar las Solicitudes (Modificando los datos permitidos)
 
-Una vez se haya dado permiso, por parte del gestor o administrador, al solicitante para la modificación de ciertos datos. El siguiente paso es que el solicitante entre en las páginas definidas para tal efecto y modifique lo que crea conveniente. En este proceso, el gestor no podrá modificar nada de la solicitud, por lo que deberá esperar a que el solicitante termine y presente para poder volver al comportamiento normal.
+Una vez se haya dado permiso, por parte del gestor o administrador, al solicitante para la modificación de ciertos datos, el siguiente paso es que el solicitante entre en las páginas definidas para tal efecto y modifique lo que crea conveniente. En este proceso, el gestor no podrá modificar nada de la solicitud, por lo que deberá esperar a que el solicitante termine y presente para poder volver al comportamiento normal.
 
 h2. Permitiendo Modificar las Solicitudes (Presentando las Modificaciones)
 
-Por último, se deberán consolidar estos cambios de manera que a efectos oficiales conste como que los datos válidos son los modificados. Para ello se deberá presentar nuevamente la solicitud en un proceso muy parecido al de la presentación. De hecho existe tanto un trámite, como un controlador que permiten la personalización de este proceso a imagen y semejanza de como se hace en la presentación tradicional. Así que si queremos personalizar esta parte deberemos documentarnos como se hace en la presentación normal ("Presentación":app-presentacion) conociendo que el trámite que debemos sobreescribir para esta parte se llama ahora *TramiteSolicitudModificacionFAP* y el controlador que rige este trámite es *PresentacionModificacionFAPController*
+Por último, se deberán consolidar estos cambios de manera que a efectos oficiales conste como que los datos válidos son los modificados. Para ello se deberá presentar nuevamente la solicitud en un proceso muy parecido al de la presentación. De hecho existe tanto un trámite como un controlador que permiten la personalización de este proceso a imagen y semejanza de como se hace en la presentación tradicional. Así que si queremos personalizar esta parte deberemos documentarnos como se hace en la presentación normal ("Presentación":app-presentacion) conociendo que el trámite que debemos sobreescribir para esta parte se llama ahora *TramiteSolicitudModificacionFAP* y el controlador que rige este trámite es *PresentacionModificacionFAPController*
 
 Los parámetros propios de este Trámite son los siguientes:
 
@@ -59,7 +59,7 @@ _*Mail a Enviar al Finalizar*_
 
 h2. Permitiendo Modificar las Solicitudes (Restaurando los datos modificados)
 
-Puede ser que debamos restaurar los datos, por diferentes motivos, al registro justo anterior donde fue presentada correctamente. Para ello se hace de dos formas:
+Puede ser que debamos restaurar los datos, por diferentes motivos, al registro justo anterior donde fue presentada correctamente. Esto se puede hacer de dos formas:
 
 * *Manual*: De manera que el gestor o administrador selecciona la fecha de restauración en un combo dentro de la página explicada anteriormente _ActivarModificacionSolicitudes_, siendo el valor que siempre muestra el combo la última presentación con éxito de la solicitud, ya sea presentación básica o presentación de modificación.
 
@@ -70,7 +70,7 @@ Puede ser que debamos restaurar los datos, por diferentes motivos, al registro j
 
 h2. Elementos no soportados en la modificación de solicitudes
 
-Algunos de los elemetos que pueden emplearse en los ficheros .fap, no están soportados en la seccion de modificación de solicitudes, de manera que deberán adaptarse para obtener código equivalente.
+Algunos de los elemetos que pueden emplearse en los ficheros .fap, no están soportados en la sección de modificación de solicitudes, de manera que deberán adaptarse para obtener código equivalente.
 
 * *Solicitante:* El elemento Solicitante/SolicitantePersonaFisica/SolicitantePersonaJuridica no está soportado en la modificación. Para obtener un código equivalente, puede hacerse lo siguiente:
 *Sustituir:*

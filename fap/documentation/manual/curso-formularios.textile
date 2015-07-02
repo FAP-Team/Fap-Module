@@ -2,17 +2,18 @@ h1. Las Vistas (Formularios y Páginas)
 
 h2. Formularios
 
-Vale, ahora que sabemos construir entidades y relacionarlas entre ellas, ¿cómo permitimos al usuario rellenar dichas entidades?, es decir, rellenar datos en nuestra aplicación web. Para ello en *FAP* existen los _Formularios_. Una aplicación FAP, puede tener tantos formularios como queramos.
+Ya sabemos construir entidades y relacionarlas entre ellas, ahora nos queda explicar como se rellenan dichas entidades, es decir, rellenar datos en nuestra aplicación web. Para ello en *FAP* existen los _Formularios_. Una aplicación FAP, puede tener tantos formularios como queramos.
 
-Los formularios tienen asociado un *permiso* (opcional), un *Menu* (opcional), cero o varias *páginas* y *popups*.
+Los formularios tienen asociado un *permiso* (opcional), un *menu* (opcional), cero o varias *páginas* y *popups*.
 
 !images/curso_formulario_1!
 
-Le definición en la gramática de los fomularios, más información "aquí":dsl-formulario.
+Le definición en la gramática de los fomularios, más información siguiendo el enlace "Click aquí":dsl-formulario.
 
 h3. Formulario Solicitud
 
-Existe un formulario _especial_, llamado formulario *Solicitud* (será el formuario principal de la aplicación FAP). Este formulario, el cual tiene partes definidas ya en el módulo *FAP* (como, por ejemplo, la página de _Aportación de documentación_), es y debe ser redefinido en nuestra aplicación añadiéndole las páginas necesarias para que los usuarios rellenen datos en la aplicación. Así, antes de redefinir el formulario _Solicitud_, internamente tendrá un esquema parecido al siguiente.
+Existe un formulario _especial_, llamado formulario *Solicitud* (será el formuario principal de la aplicación FAP). Este formulario, el cual tiene partes definidas ya en el módulo *FAP* (como, por ejemplo, la página de _Aportación de documentación_), es y debe ser redefinido en nuestra aplicación añadiéndole las páginas necesarias para que los usuarios rellenen datos en la aplicación. 
+Así, antes de redefinir el formulario _Solicitud_, internamente tendrá un esquema parecido al siguiente.
 
 !images/curso_formulario_2-SolicitudInicial!
 
@@ -64,7 +65,8 @@ El menú tiene el siguiente contenido:
 # Un grupo de navegación "Instrucción" con un único enlace a una página, en concreto a la página "Aportación", incluida por defecto en el módulo FAP.
 # Un enlace a la Ayuda de la aplicación, en concreto, a la página "Soporte" del formulario "Soporte". Se indica en "_pagina=NombreFormulario/NombreDePagina_".
 
-En la definción de la página de _Solicitante_, se establecen una serie de opciones (para su comportamiento), en concreto *guardarParaPreparar* (indica que la página deberá ser "guardada" para poder presentar más adelante la solicitud) e *inicial* (indica que será la página principal de la solicitud, es decir, la primera página que se enlazará desde la lista de Solicitudes). Mas información sobre las páginas "aquí":dsl-pagina.
+En la definción de la página de _Solicitante_, se establecen una serie de opciones (para su comportamiento), en concreto *guardarParaPreparar* (indica que la página deberá ser "guardada" para poder presentar más adelante la solicitud) e *inicial* (indica que será la página principal de la solicitud, es decir, la primera página que se enlazará desde la lista de Solicitudes). 
+Si tienes dudas sobre las páginas, te recomendamos que mires la documentación correspondiente "aquí":dsl-pagina.
 
 En la página _Solicitante_ creada por nosotros, permitimos rellenar varios campos:
 
@@ -91,7 +93,8 @@ La creación de otros formularios en nuestra aplicación se hará básicamente d
 
 h3. Añadir popups a los formularios
 
-Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizados en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir, de sus elementos. Más información sobre las tablas "aquí":dsl-tabla.
+Los "Popups":dsl-popup en las aplicaciones FAP pueden ser utilizados en los enlaces del menú, en los botones de la aplicación web y por último, pero más importante, en las tablas. En este caso, utilizaremos los Popups para mostrar, editar o eliminar información de cada una de las "filas" de la tabla, es decir, de sus elementos. 
+Más información sobre las tablas "aquí":dsl-tabla.
 
 Pongamos un ejemplo, supongamos que tenemos una tabla en la cual llevaremos la cuenta de los pagos que vamos haciendo, con las columnas concepto y cantidad. Lo primero será crear las entidades, la cual llamaremos *Pago* que tendrá dos atributos, *concepto* y *cantidad* (cuyos tipos serán _String_ y _Moneda_, respectivamente).
 
@@ -151,7 +154,15 @@ h2. Ciclo de vida de los formularios
 
 Nos referiremos en concreto al ciclo de vida de las páginas (ya que cada una tiene un controlador diferente). El ciclo de vida de una página es el que provee Play. Todos los controladores de las páginas tendrán un método *index* que hace la carga de la solicitud, y a partir de ésta realiza el render de la misma (se "dibuja" en pantalla la página con los datos incluidos).
 
-Las páginas que permitan "guardar" algo, tendrán también los siguientes métodos (por defecto): *editar*, *#ValidateCopy* y *editarRender*, los cuales podemos sobreescribir su comportamiento. El método *editar* es el que se ejecuta cuando pulsamos sobre el botón guardar de una página (éste botón se crea por defecto en las páginas siempre y cuando tenga un campo asociado, a no ser que la página tenga un *noForm* especificado), y él es el que se encarga de realizar las otras 2 llamadas a *#ValidateCopy* y a *editarRender* si se cumplen los requisitos necesarios (no hay errores de validación, los permisos se cumplen, ...)  
+Las páginas que permitan "guardar" algo, tendrán también los siguientes métodos (por defecto): 
+
+* *Editar*
+* *#ValidateCopy* 
+* *editarRender* 
+
+los cuales podemos sobreescribir su comportamiento. 
+
+El método *editar* es el que se ejecuta cuando pulsamos sobre el botón guardar de una página (éste botón se crea por defecto en las páginas siempre y cuando tenga un campo asociado, a no ser que la página tenga un *noForm* especificado), y él es el que se encarga de realizar las otras 2 llamadas a *#ValidateCopy* y a *editarRender* si se cumplen los requisitos necesarios (no hay errores de validación, los permisos se cumplen, ...)  
 
 h2. Relación con las entidades
 
@@ -212,7 +223,8 @@ Veamos por ejemplo como escribir un formulario de Soporte (el cual ya viene defi
 # Enlace a la lista de solicitudes.
 # Enlace a si mismo (página de soporte)
 
-Y en el formulario definiremos una página Soporte, indicándole mediante opciones que no cree un form para toda la página (*noForm*), y que el usuario no necesite estar logueado para poder visualizar la página (*noAutenticar*). La página tendrá un texto fijo, el cual lo definimos como "wiki":dsl-wiki, y un "Form":dsl-form con varios campos y un botón que realice el submit. "Más información":dsl-pagina.
+Y en el formulario definiremos una página Soporte, indicándole mediante opciones que no cree un _form_ para toda la página (*noForm*), y que el usuario **no** necesite estar logueado para poder visualizar la página (*noAutenticar*). La página tendrá un texto fijo, el cual lo definimos como "wiki":dsl-wiki, y un "Form":dsl-form con varios campos y un botón que realice el submit. 
+Más información sobre las páginas "aquí":dsl-pagina.
 
 bc. Formulario Soporte {
 	Menu {

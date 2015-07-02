@@ -1,6 +1,6 @@
 h1. Utilizando permisos
 
-En nuestra aplicación,...
+En nuestra aplicación:
 
 * ¿Todas las partes de la aplicación son vistas por todos los usuarios? 
 * ¿Qué pasa si necesitamos que en la aplicación algunos usuarios puedan ver o efectuar cosas que otros no? 
@@ -44,16 +44,16 @@ Para consultar por una acción en concreto es necesario utilizar la variable pre
 h3. Cláusula Return
 
 La sección *return* establece lo que el permiso va a devolver cuando se cumplan las condiciones que están justo encima. Debe tenerse en cuenta, que el permiso puede considerarse que está dividido en dos partes:
-* _**Permiso de Acción**_: Indica que acciones pueden realizarse sobre las entidades utilizadas en la sección donde el permiso es efectivo (_all / crear / editar / borrar / leer_).
-* _**Permiso de Gráfico**_: Indica que acciones pueden realizarse sobre los elementos gráficos que están actuado en la sección donde el permiso es efectivo (_editable / visible / oculto_). Si no se especifica, depende de la acción con la que consultemos el permiso y no es aplicable al _Permiso de Acción_ denegar.
+* _**Permiso de Acción**_: Indica qué acciones pueden realizarse sobre las entidades utilizadas en la sección donde el permiso es efectivo (_all / crear / editar / borrar / leer_).
+* _**Permiso de Gráfico**_: Indica qué acciones pueden realizarse sobre los elementos gráficos que están actuando en la sección donde el permiso es efectivo (_editable / visible / oculto_). Si no se especifica, depende de la acción con la que consultemos el permiso y no es aplicable al _Permiso de Acción_ denegar.
 
-A continuación, se explica en que consiste cada _Permiso de Acción_:
+A continuación, se explica en qué consiste cada _Permiso de Acción_:
 
 * **all**: Permite las operaciones de crear, editar, borrar y leer sobre los elementos en los que está actuando el permiso.
 * **crear**: Permite las operación de crear y leer sobre los elementos en los que está actuando el permiso.
 * **editar**: Permite las operaciones de leer y editar sobre los elementos en los que está actuando el permiso.
-* **leer**: Permite la operacion de leer sobre los elementos en los que está actuando el permiso.
-* **borrar**: Permite la operaccion de borrar sobre los elementos en los que está actuando el permiso.
+* **leer**: Permite la operación de leer sobre los elementos en los que está actuando el permiso.
+* **borrar**: Permite la operación de borrar sobre los elementos en los que está actuando el permiso.
 * **denegar**: No permite realizar ninguna operación sobre los elementos en los que está actuando el permiso.
 
 A continuación, se explica en que consiste cada _Permiso de Gráfico_:
@@ -87,7 +87,7 @@ bc. Permiso permisoAccionGrafico{
 		all:editable
 }
 
-En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar cualquier accion de crear, editar, leer o borrar sobre los elementos en los que actúa el permiso y, que todos los elementos gráficos web sean editables y visibles.
+En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá realizar cualquier acción de crear, editar, leer o borrar sobre los elementos en los que actúa el permiso y, que todos los elementos gráficos web sean editables y visibles.
 
 h4. Empleando _Permiso de Acción_:
 
@@ -113,7 +113,7 @@ bc. Permiso permisoGrafico{
 		editable
 }
 
-En este ejemplo, se indica que que cuando solicitud.mientidad.campo1 sea true, permitirá que todos los elemetos gráficos web sean editables y visibles.
+En este ejemplo, se indica que cuando solicitud.mientidad.campo1 sea true, permitirá que todos los elemetos gráficos web sean editables y visibles.
 
 
 Los permisos son mucho más potentes que lo que hemos explicado aquí, pudiendo referirnos a las entidades utilizadas en la aplicación, utilizar variables a partir de una consulta SQL, referirnos dentro de un permiso a otro, etc. Más información sobre los mismos "aquí":dsl-permisos.
@@ -274,4 +274,4 @@ Cuando la acción es *editar* :
 
 !images/curso_permisos_editar!
 
-En este caso la tabla si aparece, pero el campo de texto que se encuentra a continuación no es editable, solo visible.
+En este caso la tabla sí aparece, pero el campo de texto que se encuentra a continuación no es editable, solo visible.

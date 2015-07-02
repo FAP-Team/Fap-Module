@@ -32,13 +32,13 @@ bc. MenuEnlace:
 
 h2. Ejemplos de uso
 
-h3. Menú con enlace a una pagina del formulario
+h3. Menú con enlace a una página del formulario
 
 bc. Menu {
    Enlace "Solicitante" pagina=Solicitud.Solicitante
 }
 
-h3. Menú con enlace a una pagina de otro formulario
+h3. Menú con enlace a una página de otro formulario
 
 bc. Menu {
    Enlace "Volver" pagina=Solicitudes

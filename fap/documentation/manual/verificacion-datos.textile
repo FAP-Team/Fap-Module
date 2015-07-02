@@ -1,0 +1,45 @@
+h1. Verificación de datos
+
+h2. Descripción
+
+El servicio web SVD (Servicio de Verificación de Datos) permite comunicarse con otras aplicaciones que ofrecen/consumen servicios de datos a través de servicios web que siguen el estándar SCSP.
+
+Las funcionalidades que realiza, de manera transparente para el consumo de datos son:
+
+* Composición  de  un  mensaje  válido  para  SCSP.
+
+* Adaptación de los campos específicos según las versiones.
+
+* Envío de la petición al Endpoint de cada servicio.
+
+* Recepción de  la  respuesta  y  transformación  de  la misma en  una  simplificada  que espera el usuario. 
+
+* Auditoría de los campos pertinentes. 
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. Platino
+
+bc. @Override
+	protected void verificarDatos(){
+		bindLazySingletonOnDev(VerificarDatosService.class, PlatinoVerificarDatosServiceImpl.class);
+	}
+
+h4. File System
+
+bc. protected void verificarDatos() {
+		bindLazySingletonOnDev(VerificarDatosService.class, FileSystemVerificarDatosServiceImpl.class);
+	}
+
+h3. Configuración
+
+bc. # Verificación de Datos (SVD)
+fap.platino.svd.url=http://buger.gobiernodecanarias.net:8077/svd/
+
+h2. "Documentación del servicio":ws-verificacion
+
+h2. Ejemplo de uso
+
+h2. "Documentación de Platino":http://www.gobiernodecanarias.org/platino/docs/verificacion_de_datos_pre.pdf

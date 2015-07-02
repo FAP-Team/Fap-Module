@@ -8,7 +8,7 @@ h2. Parámetros
 
 * **_[name]_** : Identificador de la tabla.
 * **campo = _[campo]_** : Atributo donde se encuentra la lista de elementos a mostrar en la tabla.
-* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla, si no se especifica se mostrará el nombre del campo.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como cabecera de la tabla. Si no se especifica se mostrará el nombre del campo.
 * **columnasAutomaticas** (opcional) : Simplifica la creación de columnas generando automáticamente una columna para cada uno de los atributos de la entidad especificada en el campo.
 * **exclude = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la exclusión de aquellos atributos de las columnas de la tabla que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
 * **include = _[atributos]_** (opcional) : Complemento de columnas automáticas que permite la inclusión en las columnas de la tabla, sólo de aquellos atributos que se especifiquen. [atributos], será una lista de atributos de la entidad, que define la tabla, separados por ','.
@@ -21,7 +21,7 @@ h2. Parámetros
 * **popupEditar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Editar para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupCrear = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Crear para abrirlo. "Ver documentación Popup":dsl-popup.
 * **popupBorrar = _[popup]_** (opcional) : Asigna un popup a la tabla, creando el botón Borrar para abrirlo. "Ver documentación Popup":dsl-popup.
-* **permisoFilas = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizaran para filtrar las filas que se muestran en la tabla.
+* **permisoFilas = _[permiso]_** (opcional) : Permite asignar permisos a la tabla, estos permisos se utilizarán para filtrar las filas que se muestran en la tabla.
 * **recargarPagina** (opcional) : Si se define, hace que la página se recargue al pulsar el botón actualizar de la tabla. (Por defecto solo se actualiza la tabla).
 * **pagina = _[pagina]_** (opcional) : Asigna una página a la tabla, creando todos los botones disponibles. "Ver documentación Pagina":dsl-pagina.
 * **paginaLeer = _[pagina]_** (opcional) : Asigna una página a la tabla, creando el botón Ver para abrirla. "Ver documentación Pagina":dsl-pagina.
@@ -118,7 +118,7 @@ bc. Tabla conexionesBandaAnchaServ titulo="Conexiones de Banda Ancha en Servicio
 
 p.  
 
-h3. Columnas automaticas utilizando exclude
+h3. Columnas automáticas utilizando exclude
 
 bc. Tabla tablaNombres campo=Solicitud.tablaDeNombres titulo="Solicitantes"
 	popupLeer=popupNombre	

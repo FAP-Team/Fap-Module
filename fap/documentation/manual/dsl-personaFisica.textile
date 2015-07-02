@@ -14,7 +14,7 @@ h2. Parámetros
 * **sexo** (opcional) : Si se indica aparece el atributo sexo.
 * **nacimiento** (opcional) : Si se indica aparece el atributo fechaNacimiento.
 * **noSexo** (opcional) : Si se indica no aparece el atributo sexo (opción por defecto).
-* **noNacimiento** (opcional) : Si se indica no aparece el atributo fechaNacimiento (opción por defecto)..
+* **noNacimiento** (opcional) : Si se indica no aparece el atributo fechaNacimiento (opción por defecto).
 
 h2. Definición
 

@@ -29,7 +29,7 @@ El Gestor o Administrador, debe poner en marcha el proceso de petición de cesio
 !images/app-cesiondatos-nueva!
 
 * El siguiente paso es enviar el fichero de petición generado al organismo cedente, pero primero, debemos descargarlo. Para ello accederemos a la petición de cesión que acabamos de crear y pulsaremos el botón _Descargar_. Ahora ya se dispone en la máquina local del fichero de petición de cesiones que deberá ser enviado al organismo pertinente.
-* Una vez enviado el fichero de petición y obtenida la respuesta, esta debe ser subida para poder procesar su contenido. En caso de que un interesado disponga de varios expedientes y sólo haya autorizado la comunicación en uno de ellos, se entenderá que ha autorizado para todos los expedientes en los que conste como solicitante.
+* Una vez enviado el fichero de petición y obtenida la respuesta, ésta debe ser subida para poder procesar su contenido. En caso de que un interesado disponga de varios expedientes y sólo haya autorizado la comunicación en uno de ellos, se entenderá que ha autorizado para todos los expedientes en los que conste como solicitante.
 * Para subir el fichero, accedemos a la petición correspondiente y en la sección _Datos de Cesión: Subir fichero de respuesta_, donde rellenamos los datos que se piden, seleccionamos el archivo correspondiente a la respuesta y pulsamos el botón _Subir fichero de respuesta_. En este momento, la petición pasa al estado _respondida_.
 
 !images/app-cesiondatos-subirFich!
@@ -46,7 +46,7 @@ En la Tabla de Peticiones de Cesiones, pueden verse todas las peticiones realiza
 
 h2. Obtención manual de certificados
 
-El interesado debe haber adjuntado los certificados pertienentes a la documentación añadida a la solicitud. De manera que el Gestor y Administrador debe de realizar la correspondencia, esto sólo será posible en la fase de instrucción. Para ello, deben seguirse los siguientes pasos:
+El interesado debe haber adjuntado los certificados pertienentes a la documentación añadida a la solicitud. El Gestor y Administrador deben realizar la correspondencia, cosa que sólo será posible en la fase de instrucción. Para ello, deben seguirse los siguientes pasos:
 
 * Dentro de la solicitud, debe acceder a la página _Cesiones de Datos_, donde pueden verse las cesiones de datos asignadas a dicho expediente (ya sean automáticas o manuales).
 * Pulsando el botón *Nuevo*, se abrirá un popup en el que podrá rellenar los campos correspondientes a la cesión manual de datos y elegir el documento con el que se corresponde de los aportados por el interesado.

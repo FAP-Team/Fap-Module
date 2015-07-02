@@ -23,7 +23,7 @@ Permite comprobar que el solicitante indicado está al corriente en el cumplimie
 
 h1. Añadir nuevas cesiones
 
-El Petición Base, es la clase de mayor nivel en la Herencia de las clases de Petición de Cesiones de Datos. Se puede crear una clase que herede de Petición Base, para sobreescribir las funciones que define Petición Base y que son usadas por Fap, de manera que se pueda otorgar un comportamiento distinto a través de nuestra propia clase que herede de Petición Base. Para ello, se explican a continuación las funciones que componen Petición Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepción de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Petición Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesites ya que las otras tendrán el comportamiendo por defecto que tiene definido Petición Base.
+Petición Base es la clase de mayor nivel en la Herencia de las clases de Petición de Cesiones de Datos. Se puede crear una clase que herede de Petición Base, para sobreescribir las funciones que define Petición Base y que son usadas por Fap, de manera que se pueda otorgar un comportamiento distinto a través de nuestra propia clase que herede de Petición Base. Para ello, se explican a continuación las funciones que componen Petición Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepción de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Petición Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesites ya que las otras tendrán el comportamiendo por defecto que tiene definido Petición Base.
 
 !images/app-jerarquiacesionesNueva!
 
@@ -53,7 +53,7 @@ h3. firmarDocumentoBase(solicitud, cesion); Sobreescritura: Opcional
 
 bc. public void firmarDocumentoBase(SolicitudGenerica solicitud, Cesiones cesion) {
 
-Es la funcion encargada asociar una cesión a una solicitud y firmar el documento correspondiente a la cesión.
+Es la funcion encargada de asociar una cesión a una solicitud y firmar el documento correspondiente a la cesión.
 
 h3. getTipoId(dato); Sobreescritura: Opcional
 
@@ -71,5 +71,5 @@ h3. String getBodyReport();
 
 bc. public abstract String getBodyReport();
 
-Es la función encargada de obtener cual será el body correcto en caso de que se quiera generar un pdf con los datos de respuesta. Es dependiente de cada respuesta de cesión.
+Es la función encargada de obtener cuál será el body correcto en caso de que se quiera generar un pdf con los datos de respuesta. Es dependiente de cada respuesta de cesión.
 

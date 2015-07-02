@@ -1,0 +1,43 @@
+h1. Firma electrónica y sellado de tiempo
+
+h2. Descripción
+
+El servicio de _*Firma*_ proporciona una serie de funcionalidades, tales como: la firma de documentos, la validación de un certificado, la validación de la firma de un documento, la autenticación y el sellado de tiempo (_timestamp_).
+Para llevar a cabo cualquier interacción con el Servicio de Firma Electrónica y Sellado de Tiempo es imprescindible hacer uso de algún *certificado electrónico*, expedido por una autoridad certificadora reconocida, que identifique al ciudadano que está interactuando con la Administración. 
+
+h2. Inyección
+
+Para poder usar este servicio, deberemos inyectarlo en nuestro archivo _AppModule.java_ de la siguiente forma.
+
+bc. @Override
+    protected void firma() {
+        bindLazySingletonOnDev(FirmaService.class, PlatinoFirmaServiceImpl.class);
+    }
+
+En el caso de querer usar el servicio proporcionado por "FileSystem":ws-fs-gd deberiamos cambiar el parametro 
+_PlatinoFirmaServiceImpl.class_ por _FileSystemFirmaServiceImpl.class_
+
+h2. Configuración en FAP
+
+bc. # Firma
+#------------------------------------------------------------------------------
+# Dirección de los javascripts que se van a utilizar.Valores: [pre, pro]
+# por defecto se utiliza pro
+fap.platino.firma.js=pre
+fap.platino.firma.url=http://buger.gobiernodecanarias.net:8077/firma/
+fap.platino.firma.invokingApp=undefined
+fap.platino.firma.alias=undefined
+fap.platino.websigner63=false
+
+Los valores *pre* y *pro* hacen referencia a donde se va a usar la aplicacion.
+* _*Pre*_ Preproducción, la aplicación se encuentra en desarrollo. Los servicios y datos se traeran de _buger_. En el código anterior podemos ver un ejemplo.
+* _*Pro*_ Explotación, la aplicación está lista para usarse. Los servicios y datos se traerán de la maquina _pavo_. 
+
+El resto de datos se rellenarán según las necesidades de la aplicación.
+
+h2. Documentación
+
+Si desea saber más acerca del servicio de _*Firma*_, recomendamos leerse la documentación aportada por Platino. 
+Cabe destacar que a fecha de hoy _30_ / _06_ / _2015_ el servicio de _*Firma*_ se está migrando, es por ello, que facilitamos ambos enlaces, tanto a la documentación actual, como a la documentación futura.
+* El servicio *actual* dispone de la siguiente documentación "Firma":http://www.gobiernodecanarias.org/platino/docs/firma_electronica_sellado_tiempo_pre.pdf
+* El servicio *futuro* dispondrá de esta documentación "Firma":http://www.gobiernodecanarias.org/platino/docs/firma_electronica_sellado_tiempo_SFST_pre.pdf

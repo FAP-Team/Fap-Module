@@ -2,7 +2,7 @@ h1. Wiki
 
 h2. Descripción
 
-Convierte el texto escrito en formato Textile a HTML. Puedes consultar la sintaxis del formato en el siguiente enlace: <a href="http://thresholdstate.com/articles/4312/the-textile-reference-manual">Documentación Textile</a>.
+Convierte el texto escrito en formato Textile a HTML. Puedes consultar la sintaxis del formato en el siguiente enlace: <a href="http://txstyle.org/">Documentación Textile</a>.
 
 h2. Parámetros
 

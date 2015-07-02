@@ -8,9 +8,9 @@ h2. Sintaxis
 
 h3. Variables por defecto
 
-Para la definición de permisos se tendrán una serie de variables especiales.
+Para la definición de permisos se tendrá una serie de variables especiales.
 *  **agente** : Agente conectado actualmente. Puede ser null.
-*  **_accion** : Acción para la que se está consulta el permiso (leer, editar, crear, borrar).
+*  **_accion** : Acción para la que se está consultando el permiso (leer, editar, crear, borrar).
 
 h3. Varibles definidas por el usuario
 

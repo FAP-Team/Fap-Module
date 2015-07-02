@@ -13,7 +13,7 @@ A la hora de personalizar una página, debemos buscarla en la lista de páginas 
 * Info
 * Wiki
 
-En el cuadro de texto disponible escribimos el mensaje deseado y obtenemos la visualización bajo el botón guardar.
+En el cuadro de texto disponible escribimos el mensaje deseado, el cual, podremos previsualizar en la parte final de la página, bajo el botón _"Guardar"_.
 Para que sea visible el mensaje en la página, debe activarse el check de habilitación.
 Sólo se permite un mensaje por página, independientemente del tipo que se le asigne.
 

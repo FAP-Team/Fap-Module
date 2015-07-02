@@ -1,11 +1,13 @@
 h1. Servicios
 
-A partir de la versión 2.0 de FAP, los servicios se implementan mediante inyección de dependencias, utilizando Google Guice. Para más infomación "aquí.":http://www.playframework.org/modules/guice Ésta implementación facilita la depuración, cambio de implementaciones, ...
+En la actualidad, los servicios se implementan mediante inyección de dependencias, utilizando Google "Guice"::https://playframework.com/modules/guice , facilita la depuración, cambio de implementaciones, ...
 
-Ahora tanto la seguridad en los permisos como los servicios que utiliza FAP (GestorDocumental, Firma, Registro, Notificaciones, ...) utilizan esta inyección de dependencias. Pero... _¿qué es lo que nos permite hacer la inyección de dependencias?_ Fácil: Nosotros definimos la interfaz de un servicio, y tú en tu aplicación puedes utilizar la implementación que desees oportuna, alguna de las disponibles en el módulo FAP o cualquieras que tu quieras implementar.
+Ahora tanto la seguridad en los permisos como los servicios que utiliza FAP (GestorDocumental, Firma, Registro, Notificaciones, ...) utilizan esta inyección de dependencias.
+¿ _Qué es lo que nos permite hacer la inyección de dependencias_ ?
+Definimos la interfaz de un servicio, y en la aplicación puedes utilizar la implementación del servicio que desees oportuna,  alguna de las disponibles en el módulo FAP o cualquieras que tu quieras implementar.
 
-Utilizando la clase *AppModule* configuramos los diferentes servicios que utilizaremos. Esta clase hereda de la configuración que está definida en el módulo donde se declaran todos los servicios.
-
+Utilizando la clase *AppModule* indicamos los diferentes servicios que utilizaremos y con qué implementación.  Esta clase hereda de la configuración que está definida en el módulo donde se declaran todos los servicios.
+ 
 !images/servicios!
 
 _¿No me puedes poner un ejemplo?_ ... Por supuesto. Uno de los servicios es el *GestorDocumentalService*. Las aplicaciones que utilizan FAP deben tener un gestor documental donde guardar los documentos que se suban a la aplicación o que se generen por la misma, así que tenemos definida en el módulo la interfaz de ese Gestor Documental.
@@ -67,26 +69,30 @@ Un esquema que complementa la anterior explicación es el siguiente:
 
 !images/gestorDocumentalService!
 
-Vemos que el módulo FAP tiene 2 implementaciones del servicio, y nuestra aplicación puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.
+Vemos que el módulo FAP tiene dos implementaciones del servicio, y nuestra aplicación puede a su vez tener todas las implementaciones que queramos. Usaremos la que configuremos en el _AppModule.java_.
 
 h2. Tipos de Servicios
 
-h3. Gestor Documental: 
+En este apartado, diferenciamos los servicios dependiendo de quien nos los proporcione. Así, nos encontramos con los servicios proporcionados por _Platino_ y por la _ACIISI_.
 
-* Puede tratarse del "Aed":ws-aed-gd o del "FileSystem":ws-fs-gd.
-h3. Firma:
+h3. Platino
 
-* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.	
-h3. Notificaciones:
+* "Firma":ws-firma
+* "Registro":ws-registro
+* "BDD Organización":ws-bd-org
+* *Portafirmas*
+* *Verificación de datos*
+* *BDD Terceros*
 
-* Puede utilizarse el servicio de la ACIISI o el "FileSystem":ws-fs-gd.
-h3. Registro: 
+h3. ACIISI
 
-* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
-h3. BDD Terceros: 
+* *Comunicaciones Internas*
+* "Notificaciones":ws-notificacion 
+* *Servicios Genéricos*
+* "Ticketing":ws-ticketing
+* "Registro en libro de resoluciones":ws-resoluciones
+* "Gestor documental":ws-gd
 
-* Puede utilizarse "Platino":ws-platino o el "FileSystem":ws-fs-gd.
-Para más infomación acerca del servicio de la base de datos a terceros vaya a su "documentación.":app-terceros
 
 h2. Mostrar errores al usuario
 

@@ -1,0 +1,33 @@
+h1. Servicios genéricos
+
+h2. Descripción
+
+
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. ACIISI
+
+bc. @Override
+	protected void serviciosGenericos(){
+		bindLazySingletonOnDev(ServiciosGenericosService.class, ServiciosGenericosServiceImpl.class);
+	}
+
+h4. File System
+
+bc. protected void serviciosGenericos(){
+		bindLazySingletonOnDev(ServiciosGenericosService.class, FileSystemServicioGenericosImpl.class);
+	}
+
+h3. Configuración
+
+bc. #Servicios Genéricos
+fap.services.genericos.comunicaciones.internas.url=https://www-pre.gobiernodecanarias.org/serviciosweb/hiperregV3/Service.asmx
+
+h2. Documentación del servicio
+
+h2. "Ejemplo de uso":app-unidades-organicas
+
+

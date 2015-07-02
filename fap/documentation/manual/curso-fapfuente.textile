@@ -1,6 +1,6 @@
 h1. Trabajando con el Código Fuente del Módulo FAP
 
-Si eres un aventurero, y quieres trabajar en crudo con el Módulo FAP, teniendo todo su código como un proyecto en tu ordenador, basta con bajartelo de GitHub haciendo un _git clone https://github.com/FAP-Team/Fap-Module.git_. Ahora, para trabajar utilizandolo en tus aplicaciones simplemente debes actualizar el _dependecies.yml_ de tu aplicación como sigue, y tener en cuenta un par de detalles a la hora de generar y demás, que a continuación explicamos.
+Si quieres trabajar con el Módulo FAP, teniendo todo su código como un proyecto en tu ordenador, basta con bajartelo de GitHub haciendo un _git clone https://github.com/FAP-Team/Fap-Module.git_. Ahora, para trabajar utilizandolo en tus aplicaciones simplemente debes actualizar el _dependecies.yml_ de tu aplicación como sigue, y tener en cuenta un par de detalles a la hora de generar y demás, que a continuación explicamos.
 
 Fichero "dependencies.yml"
 

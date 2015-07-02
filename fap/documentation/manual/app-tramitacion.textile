@@ -30,7 +30,7 @@ Enlace "Alegación" pagina=Alegaciones
 
 h2. ¿Qué debo sobreescribir para personalizar un Trámite?
 
-En el caso de que se quiera personalizar algunos métodos concretos de un trámite, hay que tener en cuenta el nuevo trámite tiene que extender de algunos de los trámites existentes en FAP.
+En el caso de que se quiera personalizar algunos métodos concretos de un trámite, hay que tener en cuenta que el nuevo trámite tiene que extender de algunos de los trámites existentes en FAP.
 
 bc.  TramiteNuevo -->  TramiteBase/TramiteAlegacion/TramiteDesistimiento/TramiteAceptacionRenuncia
 
@@ -40,5 +40,5 @@ bc. public class TramiteNuevo extends TramiteBase {
 ...
 }
 
-Una vez se escriba esto, podrás sobreescribir los métodos que quiera del trámite.
+Una vez se escriba esto, podrás sobreescribir los métodos que quieras del trámite.
 

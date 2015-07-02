@@ -5,7 +5,7 @@ El módulo FAP, tiene una serie de páginas y popups que integran la funcionalid
 Las verificaciones pueden ser múltiples y estarán asociadas a la solicitud. Simultáneamente sólo se podrá llevar a cabo una única verificación, no pudiendo empezar una nueva hasta que se haya dado por finalizada la que está actualmente en curso. El proceso de verificación puede concluir satisfactoriamente, o insatisfactoriamente en cuyo caso se generará un requerimiento.
 
 Matizar que para poder utilizarla en las aplicaciones que se desarrollen en FAP, simplemente habrá que instanciar a la Página FAP: 'AccesoVerificaciones'. Nombrándola en la parte del .fap, que se quiera, ya tendremos acceso a todo lo concerniente a ello. 
-Por ejemplo, estoy creando una aplicación FAP y deseo utilizar la parte de Verificación de Documentación del módulo FAP. En el Solicitud.fap, por ejemplo, de mi aplicación, podría poner un Enlace en el menú como sigue:
+Por ejemplo, estoy creando una aplicación FAP y deseo utilizar la parte de Verificación de Documentación del módulo FAP. En Solicitud.fap, por ejemplo, de mi aplicación, podría poner un Enlace en el menú como sigue:
 
 bc. Grupo "Instruccion" permiso=instruccion {
 	...
@@ -36,13 +36,13 @@ _NOTA: Para llamar a los métodos que sobreescribamos deberemos llamarlos de la 
 
 h3. Lista de todos los documentos a verificar
 
-Si se quiere indicar que documentos se deben verificar, se deberá sobreescribir la función siguiente (_getNuevosDocumentosVerificar_) que deberá devolver una lista de Documentos con todos aquellos Documentos que se quieran tener en cuenta para su verificación.
+Si se quiere indicar qué documentos se deben verificar, se deberá sobreescribir la función siguiente (_getNuevosDocumentosVerificar_) que deberá devolver una lista de Documentos con todos aquellos Documentos que se quieran tener en cuenta para su verificación.
 
 bc. public static List<Documento> getNuevosDocumentosVerificar(Long idVerificacion, Long idSolicitud){
    ...
 }
 
-Por defecto, el módulo FAP, verificará todos los documentos que se encuentren en _solicitud.documentacion.documentos_ y en caso de que se esté verificando en el trámite _Trámite_, se añadirá a esa lista el _solicitud.registro.oficial_, que es el documento generado al presentar una solicitud.
+Por defecto, el módulo FAP, verificará todos los documentos que se encuentren en _solicitud.documentacion.documentos_ y en caso de que se esté verificando en el trámite _Trámite_, se añadirá a esa lista el documento _solicitud.registro.oficial_, que es el documento generado al presentar una solicitud.
 
 h3. Marcar como verificados una serie de Documentos
 
@@ -64,7 +64,7 @@ bc. public static List<String> getDocumentosNoAportadosCondicionadosAutomaticos 
    ...
 }
 
-Por defecto, el módulo FAP, devuelve todos los documentos que sean Condicionados Automáticos del trámite que se esté evaluando en la verificación en cuestión. Es un comportamiento erróneo, pero es un comportamiento definido por defecto, para obligar a que cada aplicación se encargue de discernir que documentos obligatorios automáticos no ha aportado el solicitante.
+Por defecto, el módulo FAP, devuelve todos los documentos que sean Condicionados Automáticos del trámite que se esté evaluando en la verificación en cuestión. Es un comportamiento erróneo, pero es un comportamiento definido por defecto, para obligar a que cada aplicación se encargue de discernir qué documentos obligatorios automáticos no ha aportado el solicitante.
 
 h2. Personalizar PDF Requerimiento
 

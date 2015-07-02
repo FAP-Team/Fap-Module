@@ -14,7 +14,7 @@ En esta clase tendremos la posibilidad de configurar 2 funciones que llevan toda
 
 Las funciones en cuestión son:
 
-* *Autenticarse con certificado:* Si queremos cambiar la forma de autenticarnos con certificado, deberemos indicarselo en esta función. Tiene 3 parámetros que nos darán:
+* *Autenticarse con certificado:* Si queremos cambiar la forma de autenticarnos con certificado, deberemos indicárselo en esta función. Tiene 3 parámetros que nos darán:
 ** *certificado* String con el certificado con el que estamos intentando acceder
 ** *token* String con el token (UUID) para firmar y acceder por certificado
 ** *firma* String con la firma correspondiente a nuestro certificado

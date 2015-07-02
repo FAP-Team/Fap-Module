@@ -8,7 +8,7 @@ h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
 * **titulo = _[string]_** (opcional) : Etiqueta que se mostrará como nombre del selector.
-* **valor = _[string]_** : Valor que será asignado al campo del elemento GrupoRadioButtons al que pertenece este radio
+* **valor = _[string]_** : Valor que será asignado al campo del elemento GrupoRadioButtons al que pertenece este radio.
 
 h2. Ejemplo de uso
 

@@ -1,0 +1,62 @@
+h1. Ejemplo
+
+Uno de los servicios es el *GestorDocumentalService*. Las aplicaciones que utilizan FAP deben tener un gestor documental donde guardar los documentos que se suban a la aplicación o que se generen por la misma, así que tenemos definida en el módulo la interfaz de ese Gestor Documental.
+
+bc. public interface GestorDocumentalService {
+    public void configure() throws GestorDocumentalServiceException;
+    public boolean isConfigured();
+    public String crearExpediente(SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
+    public List<String> getDocumentosEnExpediente(String expediente) throws GestorDocumentalServiceException;
+    public List<models.Documento> getDocumentosPorTipo(String tipoDocumento) throws AedExcepcion;
+    public BinaryResponse getDocumento(Documento documento) throws GestorDocumentalServiceException;
+    public String saveDocumentoTemporal(models.Documento documento, InputStream inputStream, String filename)
+            throws GestorDocumentalServiceException;
+    public String saveDocumentoTemporal(models.Documento documento, File file) throws GestorDocumentalServiceException;
+    public void updateDocumento(Documento documento) throws GestorDocumentalServiceException;
+    public void deleteDocumento(Documento documento) throws GestorDocumentalServiceException;
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos,
+            InformacionRegistro informacionRegistro, boolean notificable) throws GestorDocumentalServiceException;
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos,
+            InformacionRegistro informacionRegistro) throws GestorDocumentalServiceException;
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos)
+            throws GestorDocumentalServiceException;
+    public void clasificarDocumentos(SolicitudGenerica solicitud, List<models.Documento> documentos, boolean notificable)
+            throws GestorDocumentalServiceException;
+    public void agregarFirma(Documento documento, Firma firma) throws GestorDocumentalServiceException;
+    public Firma getFirma(Documento documento) throws GestorDocumentalServiceException;
+    public List<Tramite> getTramites() throws GestorDocumentalServiceException;
+    public void actualizarCodigosExclusion();
+    public List<TipoDocumentoEnTramite> getTiposDocumentosAportadosCiudadano (models.Tramite tramite);
+    // Devuelve la expresión regular que queremos que case con parte de la URI del trámite de la verificación, para componer el nombre de la plantilla que se utilizará como cabecera del PDF del requerimiento.
+    public String getExpReg();
+    public List<TipoDocumento> getListTiposDocumentosAportadosCiudadano (models.Tramite tramite);
+	 String crearExpediente(ExpedienteAed expedienteAed) throws GestorDocumentalServiceException;
+	 String modificarInteresados(ExpedienteAed expedienteAed, SolicitudGenerica solicitud) throws GestorDocumentalServiceException;
+    BinaryResponse getDocumentoByUri(String uriDocumento) throws GestorDocumentalServiceException;
+	 public void duplicarDocumentoSubido(String uriDocumento, SolicitudGenerica solicitud) throws AedExcepcion, GestorDocumentalServiceException;
+}
+
+Y también tenemos definida dos implementaciones (las cuales no incluiremos todo el codigo aquí por el tamaño del mismo) AedGestorDocumentalServiceImpl y FileSystemGestorDocumentalServiceImpl. El primero utiliza un AED como gestor documental, que se deberá configurar correctamente en las properties; mientras que el segundo utiliza el sistema de ficheros local como gestor documental.
+
+Como vimos anteriormente, la configuración se hereda del módulo FAP, y la configuración en el módulo es la siguiente:
+
+bc. protected void gestorDocumental() {
+	bindLazySingletonOnDev(GestorDocumentalService.class, FileSystemGestorDocumentalServiceImpl.class);
+}
+
+Vemos que utiliza el gestor documental del sistema de ficheros, pero... ¿y si queremos que utilice el AED (que ya configuramos todas sus properties en el fichero _application.conf_)? Pues simplemente en nuestra aplicación, en el fichero _AppModule.java_ haríamos algo como lo siguiente:
+
+bc. public class AppModule extends FapModule {
+    @Override
+    protected void gestorDocumental() {
+       bindLazySingletonOnDev(GestorDocumentalService.class, AedGestorDocumentalServiceImpl.class);
+    }
+}
+
+Y ya automáticamente nuestra aplicación utilizaría el AED. Evidentemente, si nosotros queremos utilizar otro gestor documental en la aplicación simplemente tendremos que crear otra implementación de la interfaz *GestorDocumentalService.java* y configurarla de la misma manera en la aplicación.
+
+Un esquema que complementa la anterior explicación es el siguiente:
+
+!images/gestorDocumentalService!
+
+Vemos que el módulo FAP tiene 2 implementaciones del servicio, y nuestra aplicación puede a su vez tener todas las implementaciones que queramos y usaremos la que configuremos en el _AppModule.java_.

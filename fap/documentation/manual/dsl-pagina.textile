@@ -1,14 +1,14 @@
-h1. Pagina
+h1. Página
 
 h2. Descripción
 
-Crea una página dentro de un Formulario. Por defecto la pagina define un Form que contendra todos los elementos de la página.
+Crea una página dentro de un Formulario. Por defecto la página define un Form que contendrá todos los elementos de la página.
 
 h2. Parámetros
 
 * **_[name]_** : Identificador de la página.
 * **noForm** (opcional) : No se crea el Form por defecto, permite definir manualmente Forms dentro de la página.
-* **noAutenticar** (opcional) : Los usuario no registrados pueden acceder a la página. 
+* **noAutenticar** (opcional) : Los usuarios no registrados pueden acceder a la página. 
 * **guardarParaPreparar** (opcional) : Guarda en base de datos si la página fue guardada, sirve para comprobar que todas las páginas fueron guardadas antes de presentar la solicitud.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado a la página.
 * **campo = _[campo]_** (opcional) : Define la entidad que se puede usar en los campos que se sitúen dentro de la página. Si no se especifica este parámetro, ni en el formulario que contiene a la página, entonces no se crearán los botones asociados a cada una de las acciones.
@@ -39,18 +39,18 @@ bc.. Pagina:
 
 h2. Ejemplo de uso
 
-h3. Pagina estandar
+h3. Página estándar
 
-bc. Pagina Solicitante campo=Solicitud{
+bc. Página Solicitante campo=Solicitud{
 	Persona personaSolicitante titulo="Datos solicitante" ...
 	Direccion titulo="Domicilio Social" ... 
 	Texto titulo="Teléfono" ...
 	Texto titulo="Teléfono Móvil" ...
 }
 
-h3. Pagina donde el usuario define Form dentro de la pagina
+h3. Página donde el usuario define Form dentro de la página
 
-bc. Pagina Solicitudes campo=Solicitud noForm{
+bc. Página Solicitudes campo=Solicitud noForm{
 	....
 	Form nuevaSolicitud {
 		Boton titulo="Nueva Solicitud"
@@ -60,7 +60,7 @@ bc. Pagina Solicitudes campo=Solicitud noForm{
 	}
 }
 
-h3. Pagina perteneciente a un modulo
+h3. Página perteneciente a un módulo
 
 bc. Pagina Combos inicial campo=Solicitud perteneceA = "verificacion"{
 	Grupo titulo="Campos sin sobreescribir los controladores manuales" {

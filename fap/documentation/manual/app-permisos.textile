@@ -19,7 +19,7 @@ Las clases que intervienen en la definición de los permisos son:
 
 h2. Cadena de mando 
 
-Para poder sobreescribir los permisos definidos en el módulo en las aplicaciones o poder sobreescribir de forma manual los permisos generados se ha implementando un sistema de cadena de mando. La cadena de mando que se genera por defecto es la siguiente:
+Para poder sobreescribir los permisos definidos en el módulo en las aplicaciones o poder sobreescribir de forma manual los permisos generados, se ha implementando un sistema de cadena de mando. La cadena de mando que se genera por defecto es la siguiente:
 
 bc. SecureApp --> SecureAppGen --> SecureFap --> SecureFapGen --> [false]
 
@@ -40,7 +40,7 @@ bc. bc. SecureApp --> SecureAppGen --> SecureFap --> SecureFapGen --> [false]
 
 El parámetro que recibe como constructor es el siguiente elemento de la cadena de mando.
 
-Si queremos personalizar la cadena de mando, tenemos que sobreescribir esta configuración. En el fichero **config.AppModule** sobrescribimos el método **secure**. Por ejemplo si quisieramos utilizar únicamente los permisos de la aplicación definiríamos algo así:
+Si queremos personalizar la cadena de mando, tenemos que sobreescribir esta configuración. En el fichero **config.AppModule** sobrescribimos el método **secure**. Por ejemplo si quisiéramos utilizar únicamente los permisos de la aplicación definiríamos algo así:
 
 
 bc.. @Override
@@ -66,8 +66,8 @@ Los parámetros del método son:
 * **id** - Nombre del permiso que se va a comprobar.
 * **grafico** - permiso del elemento gráfico que se está consultando (editable, visible, none).
 * **accion** - Acción del permiso que se está consultando (leer, editar, crear, borrar).
-* **ids** - Mapa con clave idNombreVariable y valor el id de la variable que debe recuperar de base de datos.
-* **vars** - Mapa con clave nombreDeVariable y valor el objeto que se asignará a la variable.
+* **ids** - Mapa con clave idNombreVariable y valor del id de la variable que debe recuperar de base de datos.
+* **vars** - Mapa con clave nombreDeVariable y valor del objeto que se asignará a la variable.
 
 A la hora de asignar valores a las variables, se puede utilizar tanto el "ids" como "vars" pero tiene prioridad "vars".
 

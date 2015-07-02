@@ -1,6 +1,10 @@
 h1. Controladores en FAP (PopUps)
 
-Al igual que en las páginas, existen dos controladores: el generado y el manual. El controlador generado se escribe en el paquete **controllers.popups.gen** mientras que el manual se sitúa en el paquete **controllers.popups**. Para un popup que se llame PopupNombre tendrá los siguientes controladores: controllers.popup.gen.PopupNombreControllerGen controllers.PopupNombreController.
+Al igual que en las páginas, existen dos controladores: el generado y el manual. El controlador generado se escribe en el paquete **controllers.popups.gen** mientras que el manual se sitúa en el paquete **controllers.popups**. 
+Para un popup que se llame PopupNombre tendrá los siguientes controladores: 
+
+* controllers.popup.gen.PopupNombreControllerGen 
+* controllers.PopupNombreController
 
 h2. Algunos métodos que se generan
 
@@ -105,4 +109,4 @@ Al igual que en las páginas existen otros métodos que se utilizan como utilida
 
 h2. Validaciones en PopUps
 
-Otra clase que se utiliza mucho en los controladores de Páginas y Popups es la que se encarga de validar que los datos introducidos por el usuario son datos válidos para almacenar en Base de Datos. (Comprobación de campos requeridos, de que (por ejemplo) el email tiene el formato adecuado, que los Doubles están correctamente expresados, etc.). Podemos ver algunas de las funciones de esta clase en el siguiente enlace: "validacion":validacion.
+Otra clase que se utiliza mucho en los controladores de Páginas y Popups es la que se encarga de validar que los datos introducidos por el usuario son datos válidos para almacenar en Base de Datos. (Comprobación de campos requeridos, de que (por ejemplo) el email tiene el formato adecuado, que los Doubles están correctamente expresados, etc.). Podemos ver algunas de las funciones de esta clase en el siguiente enlace: "Validación":validacion.

@@ -1,0 +1,13 @@
+h1. Gestor documental
+
+h2. Descripción
+
+Para poder gestionar el uso y almacenamiento de los documentos necesarios en nuestra aplicación podermos usar el _*AED*_ proporcionado por la _ACIISI_ o el de _FileSystem_.
+Ambos tienen el mismo objetivo y funcionan de forma similar.
+
+Para informarse mejor acerca de ellos, tanto su configuración como la forma de usarlos, recomendamos que lean la siguiente documentacion:
+
+* Para usar "FileSystem":ws-fs-gd
+* Para usar el "AED":ws-aed
+
+

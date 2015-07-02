@@ -7,19 +7,26 @@ El servicio de Registro en el Libro de Resoluciones es un servicio que permite r
 * Registrar resolución.
 * ...
 
-h2. Servicios disponibles
+h2. Inyección
 
 En FAP tenemos 2 posibles servicios a utilizar:
 
 * **RegistroLibroResolucionesServiceImpl**: Utiliza el servicio web creado por la ACIISI.
 * **FileSystemRegistroLibroResolucionesServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
 
+En la siguiente imagen se muestra como sería la llamada si optasemos por el servicio proporcionado por la ACIISI.
+
+bc. @Override
+    protected void registroLibroResoluciones() {
+        bindLazySingletonOnDev(RegistroLibroResolucionesService.class, RegistroLibroResolucionesServiceImpl.class);
+    }
+
 h2. Configuración en FAP
 
 bc. 
-# -----------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # Configuración de Notificaciones
-# -----------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 fap.resoluciones.usuario=uwsaciisi
 fap.resoluciones.idAreaFuncional=136
 fap.resoluciones.url=http://www-pre.gobiernodecanarias.net/resoluc/services/resolucionesWe

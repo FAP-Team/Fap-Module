@@ -13,11 +13,11 @@ bc. cd holamundo
 3. Sobreescribe las dependencias en el fichero "conf/dependencies.yml" (Nota: Cambia el número de versión por la última versión disponible del módulo):
 
 bc. require:
-    - play
-    - fap -> fap 2.0
+    - play 1.2.7.2
+    - fap -> fap
     - fap-modules -> guice 1.3
     - play -> pdf 0.6
-    - play -> less 0.3
+    - play -> less 0.9
     - play -> recaptcha 1.2
     - play -> mockito 0.1
     - play -> webdrive 0.2:
@@ -84,4 +84,4 @@ También puedes lanzar la aplicación desde Eclipse, sin necesidad de hacer un _
 
 h2. Trabajar con el Código Fuente del Módulo FAP
 
-Si eres de los que no puedes esperar a que saquemos una nueva versión y quieres tener lo último ¡ya!, o simplemente te gusta ayudar a la comunidad de software libre, y te sientes con ganas de experimentar con FAP y ver todo lo que se esconde detrás para aprender sobre ello e incluso para intentar ayudar al proyecto, te damos unas pautas de como obtener el código fuente de FAP y trabajar con él desde tu ordenador. "Aquí tienes toda la información":curso-fapfuente
+Si eres de los que no puedes esperar a que saquemos una nueva versión y quieres tener lo último ya, o simplemente te gusta ayudar a la comunidad de software libre, y te sientes con ganas de experimentar con FAP y ver todo lo que se esconde detrás para aprender sobre ello e incluso para intentar ayudar al proyecto, te damos unas pautas de como obtener el código fuente de FAP y trabajar con él desde tu ordenador. "Aquí tienes toda la información":curso-fapfuente

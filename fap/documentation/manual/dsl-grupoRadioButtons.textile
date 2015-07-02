@@ -2,7 +2,7 @@ h1. GrupoRadioButtons
 
 h2. Descripción
 
-Permite definir un grupo de selectores de tipo radio que están asociados al mismo campo
+Permite definir un grupo de selectores de tipo radio que están asociados al mismo campo.
 
 h2. Parámetros
 
@@ -21,7 +21,7 @@ h4. Tipo simple
 
 h4. Listas
 
-Cuando el atributo es de tipo lista, se creará automáticamente tantos selectores de tipo radio como elementos definidos en la lista.
+Cuando el atributo es de tipo lista, se crearán automáticamente tantos selectores de tipo radio como elementos definidos en la lista.
 
 h4. Referencias
 

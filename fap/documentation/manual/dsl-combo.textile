@@ -27,7 +27,7 @@ h4. Listas
 
 Cuando el atributo es de tipo lista, los elementos del desplegable mostrarán todos los elementos definidos en la lista.
 
-h4. Tipo simples
+h4. Tipos simples
 
 Por ejemplo _String_ o _Long_. Este caso está pensado para crear un método en el controlador manual donde se especifiquen los elementos que debe contener el desplegable.
 
@@ -144,7 +144,7 @@ h3. Resultado
 h2. Método para especificar la lista de elementos
 
 Es posible especificar mediante código cuales son los elementos que van a aparecer en un combo, para ello es necesario crear un método en el controlador manual de la página donde aparece el combo.
-El método definido en el controlador devuelva una lista de **ComboItem**. Es importante que la clave de los elementos ComboItem coincida con el tipo de dato definido en la entidad donde se va a guardar el dato. En caso contrario dará error.
+El método definido en el controlador devuelve una lista de **ComboItem**. Es importante que la clave de los elementos ComboItem coincida con el tipo de dato definido en la entidad donde se va a guardar el dato. En caso contrario dará error.
 
 h4. Esqueleto del método sobreescrito
 

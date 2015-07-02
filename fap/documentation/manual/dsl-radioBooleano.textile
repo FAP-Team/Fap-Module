@@ -7,7 +7,7 @@ Permite definir un radio booleano (con dos botones/opciones y sólo se puede sel
 h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del elemento.
-* **titulo = _[string]_** : Etiqueta que se mostrará al lado del radio, si no se especifica se mostrara el nombre del campo.
+* **titulo = _[string]_** : Etiqueta que se mostrará al lado del radio, si no se especifica se mostrará el nombre del campo.
 * **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
 * **campo = _[campo]_** : Atributo donde se almacenará el valor del radio.
 * **ayuda = _[string]_** (opcional) : Ayuda asociada al radio booleano.

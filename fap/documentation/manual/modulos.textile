@@ -18,15 +18,15 @@ Añade una página a las aplicaciones que permite al solicitante pedir ciertos t
 
 h2. "Aportación":app-aportacion
 
-Permite añadir todas las páginas necesarias para la aportación de documentación en nuestra aplicación. Esta funcionalidad es usada, normalmente, después de que el solicitante haya presentado correctamente la solicitud. Se utiliza para que el solicitante pueda seguir aportando documentos (ya sea porque se despistó de subir alguno en la fase de Presentación, o porque alguno de los que subió no sea correcto y se le haya requerido por parte de la administración o incluso porque esta última le solicita un nuevo documento a subir que no se tenía contemplado previamente.)
+Permite añadir todas las páginas necesarias para la aportación de documentación en nuestra aplicación. Esta funcionalidad es usada, normalmente, después de que el solicitante haya presentado correctamente la solicitud. Se utiliza para que el solicitante pueda seguir aportando documentos (ya sea porque se despistó de subir alguno en la fase de Presentación, o porque alguno de los que subió no sea correcto y se le haya requerido por parte de la administración o incluso porque esta última le solicita un nuevo documento a subir que no se tenía contemplado previamente).
 
 h2. "Baremación":app-baremacion
 
-Funcionalidad que suelen necesitar bastantes aplicaciones telemáticas de administración eletrónica. Su cometido es el de poder evaluar las solicitudes siguiendo el baremo que se haya estipulado en la convocatoria pertinente, para así poder calcular que solicitudes son supceptibles de percibir lo que piden. Se usa mucho en convocatorias de procedimientos competitivos.
+Funcionalidad que suelen necesitar bastantes aplicaciones telemáticas de administración eletrónica. Su cometido es el de poder evaluar las solicitudes siguiendo el baremo que se haya estipulado en la convocatoria pertinente, para así poder calcular qué solicitudes son supceptibles de percibir lo que piden. Se usa mucho en convocatorias de procedimientos competitivos.
 
 h2. "Desistimiento":app-tramitacion
 
-Esta funcionalidad, también está orientada al solicitante. Permite que este desista la solicitud, una vez la haya presentado correctamente, en cualquier momento. De forma que la administración no la va a seguir teniendo en cuenta en sucesivas fases del proceso administrativos. Obviamente el desestimiento tiene una vida de uso, que va desde que se presenta la solicitud hasta justo antes de resolverse la convocatoria en cuestión, ese es el tiempo que tiene el solicitante para desistir su solicitud si así lo ve conveniente.
+Esta funcionalidad también está orientada al solicitante. Permite que éste desista la solicitud, una vez la haya presentado correctamente, en cualquier momento. De forma que la administración no la va a seguir teniendo en cuenta en sucesivas fases del proceso administrativo. Obviamente el desestimiento tiene una vida de uso, que va desde que se presenta la solicitud hasta justo antes de resolverse la convocatoria en cuestión, ese es el tiempo que tiene el solicitante para desistir su solicitud si así lo ve conveniente.
 
 h2. "Documentación":app-documentacionfap
 
@@ -38,19 +38,19 @@ Esta funcionalidad está pensada para que la utilicen los gestores de las aplica
 
 h2. "Firma y Registro por Funcionario Habilitado":app-funcionariohabilitado
 
-Existe la posibilidad de qu epor diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problemas con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
+Existe la posibilidad de que por diversos motivos un solicitante no pueda firmar ni registrar la solicitud, ya sea por un problema con su navegador o cualquier otra causa. En estos casos, existe la posibilidad de utilizar una funcionalidad que trae FAP implementada y que permite que un usuario delegue estas acciones en un Funcionario Público (denominado Habilitado).
 
 h2. "Login":app-login
 
-Este módulo es el que permite loguearte a la aplicación. FAP por defecto permite el login de dos tipos: con certificado digital y con usuario y contraseña, permitiendo usar estos métodos de forma totalmente independientes, usar uno sólo o ambos. También FAP está preparado para que mediante al sobreescritura de unos métodos concretos, podamos implementar otro tipos de autenticaciones, como pueden ser por ejemplo con OpenID o incluso con las cuentas de las Redes Sociales.
+Este módulo es el que permite loguearte a la aplicación. FAP por defecto permite el login de dos tipos: con certificado digital y con usuario y contraseña, permitiendo usar estos métodos de forma totalmente independiente, usar uno sólo o ambos. También FAP está preparado para que mediante la sobreescritura de unos métodos concretos, podamos implementar otro tipos de autenticaciones, como pueden ser por ejemplo con OpenID o incluso con las cuentas de las Redes Sociales.
 
 h2. "Modificación de Solicitudes":app-modificacionSolicitudes
 
-El proceso de Modificación de Solicitudes es el que permite modificar un dato concreto en las solicitudes una vez se haya presentado esta. Este es un proceso complicado porque se modificará un dato que ha sido firmado y registrado por lo que se deberá tener muy en cuenta que permitimos y que no modificar en fases posteriores a la presentación, aunque FAP tiene la seguridad de ir guardando siempre el historial de lo que se va modificando entre presentación y presentación. Una vez que el solicitante modifique los datos oportunos se deberá volver a presentar la solicitud (en este caso se presentarán las modificaciones de la solicitud), realizando pasos casi homónimos a la presentación normal que conllevan a firmar y registrar la misma.
+El proceso de Modificación de Solicitudes es el que permite modificar un dato concreto en las solicitudes una vez se haya presentado ésta. Este es un proceso complicado porque se modificará un dato que ha sido firmado y registrado por lo que se deberá tener muy en cuenta qué permitimos y qué no permitimos modificar en fases posteriores a la presentación, aunque FAP tiene la seguridad de ir guardando siempre el historial de lo que se va modificando entre presentación y presentación. Una vez que el solicitante modifique los datos oportunos se deberá volver a presentar la solicitud (en este caso se presentarán las modificaciones de la solicitud), realizando pasos casi homónimos a la presentación normal que conllevan a firmar y registrar la misma.
 
 h2. "Presentación":app-presentacion
 
-El proceso de Presentación, permite realizar todos los pasos que se llevan a acabo para que el solicitante pueda presentar correctamente su solicitud que habrá tenido que rellenar previamente. En esta fase se comprueba que todo lo introducido por parte del solicitante es correcto para la convocatoria del procedimiento en cuestión (tanto los datos como los tipos de documentos que ha subido), se firma con su certificado digital la solicitud y se registra de entrada en la Plataforma de Interoperabilidad del Gobierno de Canarias (Platino), para que surja los efectos correspondientes. Como resultado de que todo ha ido correctamente, se le devolverá un documento en PDF que será el recibo de que ha presentado en plazo y de forma adecuada lo que se le solicitaba para participar en dicha convocatoria.
+El proceso de Presentación, permite realizar todos los pasos que se llevan a cabo para que el solicitante pueda presentar correctamente su solicitud que habrá tenido que rellenar previamente. En esta fase se comprueba que todo lo introducido por parte del solicitante es correcto para la convocatoria del procedimiento en cuestión (tanto los datos como los tipos de documentos que ha subido), se firma con su certificado digital la solicitud y se registra de entrada en la Plataforma de Interoperabilidad del Gobierno de Canarias (Platino), para que surja los efectos correspondientes. Como resultado de que todo ha ido correctamente, se le devolverá un documento en PDF que será el recibo de que ha presentado en plazo y de forma adecuada lo que se le solicitaba para participar en dicha convocatoria.
 
 h2. "Resolución":app-resolucion
 
@@ -67,9 +67,3 @@ La Verificación es el proceso que se lleva a cabo normalmente en la fase de Ins
 h2. "Cesión de datos":app-cesiondatos
 
 El módulo de Cesión de Datos permite la obtención de certificado de que los beneficiarios están al corriente en las obligaciones con el INSS, la ATC y la AEAT.
-
-
-
-
-
-

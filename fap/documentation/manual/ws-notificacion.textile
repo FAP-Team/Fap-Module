@@ -11,19 +11,26 @@ El servicio de Notificación es un servicio que permite notificar a los usuarios
 * Poner a disposición un documento
 * ...
 
-h2. Servicios disponibles
+h2. Inyección
 
-En FAP tenemos 2 posibles servicios a utilizar:
+En FAP tenemos dos posibles servicios a utilizar:
 
 * **NotificacionServiceImpl**: Utiliza el servicio web creado por la ACIISI.
 * **FileSystemNotificacionServiceImpl**: Es un mock del servicio web, que valdrá para hacer pruebas.
 
+En la siguiente imagen se muestra como sería la llamada si optasemos por el servicio proporcionado por la ACIISI.
+
+bc. @Override   
+    protected void notificacion() {
+        bindLazySingletonOnDev(NotificacionService.class, NotificacionServiceImpl.class);
+    }
+
 h2. Configuración en FAP
 
 bc. 
-# -----------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # Configuración de Notificaciones
-# -----------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 fap.notificacion.activa=false
 fap.notificacion.procedimiento=FAP
 fap.notificacion.backoffice=FAP20120002

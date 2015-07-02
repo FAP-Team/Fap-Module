@@ -2,7 +2,7 @@ h1. Comunicaciones Internas
 
 El servicio de Comunicaciones Internas tiene actualmente 2 métodos implementados:
 
-* NuevaAsiento
+* NuevoAsiento
   Datos de entrada:
 !images/app-comunicaciones-internas-nuevoAsientoEntrada!
   Datos de respuesta:
@@ -23,7 +23,7 @@ por tanto, que podemos usar el servicio.
 
 h3. Asiento simple
 
-Se considera un asiento simple a aquél asiento que sólo requiere la unidad orgánica de destino. 
+Se considera un asiento simple aquel asiento que sólo requiere la unidad orgánica de destino. 
 Si se especificara un asunto codificado no haría falta especificar la unidad orgánica de destino, en caso contrario, es obligatoria.
 
 h3. Asiento ampliado
@@ -40,11 +40,11 @@ Concretamente:
 
 !images/app-comunicaciones-internas!
 
-h2. Ejemplo de creacion de una nueva comunicación.
+h2. Ejemplo de creación de una nueva comunicación.
 
 h3. Nueva
 
-Se solicitan los datos obligatorios para la creación de la comunicación interna. Existe 2 alternativas:
+Se solicitan los datos obligatorios para la creación de la comunicación interna. Existen 2 alternativas:
 
 * Asiento simple, sin unidad orgánica de origen, la cuál la decidirá el servicio.
 

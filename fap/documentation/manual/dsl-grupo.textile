@@ -15,7 +15,7 @@ h2. Parámetros
 * **mostrarSiExpresion _[string]_** (opcional) : Muestra el grupo si el valor de la expresión que se especifique es verdadero.
 * _Nota: Sólo se permitirá indicar un 'mostrarSi...' en un combo_
 * **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
-* **borde = true | false** (opcional) : Si es false no se mostrara el cuadro que engloba a los elementos del grupo.
+* **borde = true | false** (opcional) : Si es false no se mostrará el cuadro que engloba a los elementos del grupo.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al grupo.
 
 h2. Definición
@@ -61,7 +61,7 @@ Grupo titulo="Persona física" mostrarSiCombo combotipoSolicitante = "fisica" {
 
 h3. Grupo con mostrarSiExpresion
 
-Permite mostrar el grupo si la expresión que se le asigna es verdadera (Ej: _"4 == 4", "true", ...) o un valor válido para el *if* de los templates de play ("Ver aquí":http://www.playframework.org/documentation/1.2.3/tags#if).
+Permite mostrar el grupo si la expresión que se le asigna es verdadera (Ej: _"4 == 4", "true", ...) o un valor válido para el *if* de los templates de play ("Ver aquí":http://www.playframework.org/documentation/1.2.7.2/tags#if).
 
 bc. 	Grupo testSiExpresion titulo="Grupo 1: Mostrar Si Expression" mostrarSiExpresion "4 == 4"{
 	Texto ifTexto titulo="Texto" campo=Solicitud.testGrupo.nombre

@@ -1,0 +1,34 @@
+h1. Comunicaciones internas
+
+h2. Descripción
+
+
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. ACIISI
+
+bc. @Override
+	protected void comunicacionesInternas(){
+		bindLazySingletonOnDev(ComunicacionesInternasService.class, ComunicacionesInternasServiceImpl.class);
+	}
+
+h4. File System
+
+bc. protected void comunicacionesInternas(){
+		bindLazySingletonOnDev(ComunicacionesInternasService.class, FileSystemComunicacionesInternasServiceImpl.class);
+	}
+
+h3. Configuración
+
+bc. #Comunicaciones Internas
+fap.services.comunicaciones.internas.url=https://www-pre.gobiernodecanarias.org/serviciosweb/hiperregV3/CIServices.asmx
+fap.services.genericos.comunicaciones.internas.url=https://www-pre.gobiernodecanarias.org/serviciosweb/hiperregV3/Service.asmx
+fap.services.entrada.comunicaciones.internas.url=https://www-pre.gobiernodecanarias.org/serviciosweb/hiperregV3/EntradaServices.asmx
+fap.services.salida.comunicaciones.internas.url=https://www-pre.gobiernodecanarias.org/serviciosweb/hiperregV3/SalidaServices.asmx
+
+h2. Documentación del servicio
+
+h2. "Ejemplo de uso":app-comunicaciones-internas

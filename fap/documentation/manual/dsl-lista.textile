@@ -73,7 +73,7 @@ bc. Lista ListaClavesValores {
    cuatro: "4"
 }
 
-h3. Lista con claves y valores, especificando la creacion del Enumerado
+h3. Lista con claves y valores, especificando la creación del Enumerado
 
 bc. Lista ListaClavesValores crearEnumerado {
    1: "clave1" 

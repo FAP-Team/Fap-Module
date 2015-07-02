@@ -1,0 +1,39 @@
+h1. Registro electrónico de entrada y salida
+
+h2. Descripción
+
+El servicio de _*Registro*_  está basado en el intercambio de mensajes en formato XML dentro del bus de integración de servicios de _PLATINO_. 
+Para que el programador pueda hacer uso del servicio deberá hacerlo a través de un punto de acceso a este bus (el servicio web).
+
+h2. Inyección
+
+Para poder usar este servicio, deberemos inyectarlo en nuestro archivo _AppModule.java_ de la siguiente forma.
+
+bc. @Override
+    protected void registro(){
+        bindLazySingletonOnDev(RegistroService.class, PlatinoRegistroServiceImpl.class);
+    }
+
+En el caso de querer usar el servicio proporcionado por "FileSystem":ws-fs-gd deberiamos cambiar el parametro 
+_PlatinoRegistroServiceImpl.class_ por _FileSystemRegistroService.class_
+
+h2. Configuración en FAP
+
+bc. # Registro de entrada y salida
+fap.platino.registro.url=http://buger.gobiernodecanarias.net:8076/registro/
+fap.platino.registro.username=undefined
+fap.platino.registro.password=undefined
+fap.platino.registro.asunto=undefined
+fap.platino.registro.unidadOrganica=0
+fap.platino.registro.aliasServidor=undefined
+fap.platino.registro.tipoTransporte=undefined 
+
+
+*Aclarar* que los campos habrá que rellenarlos según las necesidades de la aplicación.
+
+h2. Documentación
+
+Si desea saber más acerca del servicio de _*Registro*_, recomendamos leerse la documentación aportada por Platino.
+
+Para ello, siga este enlace "Click aquí":http://www.gobiernodecanarias.org/platino/docs/registro_electronico_entrada_salida_pre.pdf
+

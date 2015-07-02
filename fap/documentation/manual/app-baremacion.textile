@@ -1,12 +1,12 @@
 h1. Baremación
 
-Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describen a continuación. Toda la gestión de la Baremación, se hará a través de la modificación de una serie de ficheros .json que se describen más adelante, y de la interacción con la página _Gestionar Baremación_ de Administración.
+Para realizar la parte de la aplicación que se encargue del proceso de Baremación se deben seguir una serie de pautas que se describen a continuación. Toda la gestión de la Baremación, se hará a través de la modificación de una serie de ficheros _.json_ que se describen más adelante, y de la interacción con la página _Gestionar Baremación_ de Administración.
 
-El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento Baremación, que listará todas las evaluaciones, para poder aceptarlas y después evaluarlas. Estas evaluaciones serán visibles en una tabla, una vez que se presione el Botón "Iniciar Evaluación de Baremación", que estará visible en la página _Gestionar Baremación_ de Administración, una vez se haya iniciado el Tipo de Evaluación. (Presionando el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración)
+El gestor/revisor, podrá ver en el menú lateral de la aplicación un elemento *Baremación*, que listará todas las evaluaciones, para poder aceptarlas y después evaluarlas. Estas evaluaciones serán visibles en una tabla, una vez que se presione el Botón _*"Iniciar Evaluación de Baremación"*_, que estará visible en la página _Gestionar Baremación_ de Administración, una vez se haya iniciado el Tipo de Evaluación. (Presionando el botón _*"Cargar Tipo Evaluación"*_, de la página _Gestionar Baremación_ de Administración)
 
 !images/admin-Baremacion-tablaBaremacion!
 
-El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón "Cargar Tipo Evaluación", de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón "Iniciar Evaluación de Baremación", de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
+El solicitante/usuario, podrá ver la página de conceptos económicos que puede rellenar (si procede), una vez se haya presionado el botón _*"Cargar Tipo Evaluación"*_, de la página _Gestionar Baremación_ de Administración. Estos datos que rellene el usuario se tendrán en cuenta sólo la primera vez que se Inicie la Baremación a través del botón _*"Iniciar Evaluación de Baremación"*_, de la página _Gestionar Baremación_ de Administración, que aparecerá cuando se haya iniciado el Tipo de Evaluación, en la misma página de Administración.
 
 Esta página, así como otras, deberán ser referenciadas en las aplicaciones por el desarrollador, para que se incluyan en estas.
 
@@ -16,7 +16,7 @@ h2. Flujo de trabajo
 
 h2. Páginas por Defecto de FAP para incluir en nuestras Aplicaciones
 
-FAP posee una serie de Páginas por defecto que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Baremación que trae implementada el módulo FAP. Son concretamente 2 páginas:
+FAP posee una serie de Páginas por defecto, que deberán ser referenciadas en los menús pertinentes de cada aplicación que quiera usar la Baremación que trae implementada el módulo FAP. Son concretamente 2 páginas:
 
 * *PCEconomicos*: Esta es la página que se encarga de permitir al solicitante rellenar los conceptos económicos con los valores que el va a Solicitar, así como le permitirá crear nuevos Conceptos Económicos Manuales para personalizar la información de las cantidades que solicita.
 
@@ -24,15 +24,15 @@ Para usar la página en nuestra aplicación simplemente deberemos crear un Enlac
 
 bc. Enlace "Conceptos Económicos Solicitados" pagina=PCEconomicos	
 
-* *PaginaCEconomicosEvaluados*: Esta en la página se utilizará exclusivamente por gestores y cuando finalicen correctamente todas la evaluaciones de un tipo de Evaluación en curso (Botón Finalizar Todas las Evaluaciones) que se encarga de permitir a los gestores cumplimentar los dos últimos valores de cada Concepto Económico. Por un lado tendremos ya relleno el valor Solicitado por el Solicitante, y el valor Estimado por el Evaluador. Faltará que el Gestor cumplimente el Valor Propuesto y el Valor Concedido. Esta será la página encargado para ello que contendrá una tabla a semenjanza de la de FichaEvaluación. Realmente el Gestor tendrá potestad para modificar cualquier valor (incluido el Solicitado y el Estimado aunque aparecerán sombreados para indicar que no es lo más adecuado, modificar esos valores), así que se tendrá que tener esto en cuenta.
+* *PaginaCEconomicosEvaluados*: Esta en la página se utilizará exclusivamente por gestores y cuando finalicen correctamente todas la evaluaciones de un tipo de Evaluación en curso (Botón _Finalizar Todas las Evaluaciones_) que se encarga de permitir a los gestores cumplimentar los dos últimos valores de cada Concepto Económico. Por un lado tendremos ya relleno el valor solicitado por el _Solicitante_, y el valor estimado por el _Evaluador_. Faltará que el _Gestor_ cumplimente el "Valor Propuesto" y el "Valor Concedido". Esta será la página encargada para ello que contendrá una tabla a semenjanza de la de _FichaEvaluación_. Realmente el _Gestor_ tendrá potestad para modificar cualquier valor (incluido el solicitado y el estimado aunque aparecerán sombreados para indicar que no es lo más adecuado) así que se tendrá que tener esto en cuenta.
 
-Para usar la página en nuestra aplicación simplemente deberemos crear un Enlace que la referencie, en algún menú. Por ejemplo:
+Para usar la página en nuestra aplicación simplemente deberemos crear un enlace que la referencie, en algún menú. Por ejemplo:
 
 bc. Enlace "Conceptos Económicos Evaluados" pagina=PaginaCEconomicosEvaluados	
 
 h2. Creación de los ficheros JSON asociados
 
-Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json, tiposDocumentos.json) pulsar "aqui":app-baremacion-creacionJSON
+Para conocer la estructura que deben tener los ficheros JSON (tipoEvaluacion.json, conceptosEconomicos.json, criterios.json, datosAdicionales.json, tiposDocumentos.json) sigue este enlace: "Click aquí":app-baremacion-creacionJSON
 
 h2. Iniciar el Tipo de Evaluación
 
@@ -44,49 +44,55 @@ Además de que se activará en ese momento el botón pertinente para Iniciar la 
 
 h2. Inicializar la Baremación
 
-Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se debe sobreescribir una clase tal y como se describe "aqui":app-baremacion-inicio
-Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta "Iniciar Evaluación de Baremación", que contiene un botón con el mismo nombre que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos que se utilizan en este método sólo son cargados una única vez.
+Como el proceso de Baremación es muy dependiente del procedimiento en cuestión, para llevar a cabo el inicio de la misma de forma personalizada se debe sobreescribir una clase tal y como se describe en el siguiente enlace. "Click aquí":app-baremacion-inicio
+Para llevar a cabo el inicio de la baremación, en la parte de Administración, esta el botón *"Iniciar Evaluación de Baremación"*, que permite el Inicio de la Baremación. Una vez activada la Baremación, no se podrá volver a Iniciar, lo que conlleva a que los datos genericos que se utilizan en este método sólo son cargados una única vez.
 
 !images/admin-Baremacion-iniciarEvaluacion!
 
-Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón "Actualizar Baremación", y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json, datosAdicionales.json y tiposDocumentos.json). Al actualizar la baremación, si existen nuevas solicitudes sin evaluación, pero que cumplen los requisitos para tenerla, se creará su evaluación correspondiente.
+Una vez Iniciada la Baremación, se podrá Actualizar la misma tantas veces como se requiera, a través del botón *"Actualizar Baremación"*, y modificando los ficheros variables .json de la Baremación (criterios.json, conceptosEconomicos.json, datosAdicionales.json y tiposDocumentos.json). Al actualizar la baremación, si existen nuevas solicitudes sin evaluación pero que cumplen los requisitos para tenerla, se creará su evaluación correspondiente.
 
 !images/admin-Baremacion-actualizarBaremacion!
 
-Por defecto FAP, para el inicio de la baremación lo que se hace es a través del tipo de evaluación que se ha cargado en Base de Datos a partir del fichero _tipoEvaluacion.json_, se recorren todas las solicitudes y se buscan aquellas que no tengan evaluaciones creadas para crear dichas evaluaciones por primera vez a partir del Tipo de Evaluación.
+Por defecto en FAP, para el inicio de la baremación lo que se hace es, a través del tipo de evaluación que se ha cargado en la Base de Datos a partir del fichero _tipoEvaluacion.json_, se recorren todas las solicitudes y se buscan aquellas que no tengan evaluaciones creadas para crear dichas evaluaciones por primera vez a partir del Tipo de Evaluación.
 
 h2. Actualizar la Baremación
 
 Si queremos actualizar algún dato variable de nuestra Baremación (o insertar nuevos datos), se deberá:
 
 * *Primero:* Modificar o Insertar los nuevos datos en los fichero pertinentes (criterios.json, conceptosEconomicos.json, datosAdicionales.json o tiposDocumentos.json).
-* *Después:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración/_Gestionar Baremación_ para que se cambie en los modelos FAP.
+* *Después:* Pulsar el Botón de "Actualizar Baremación" de la página de Administración/ _Gestionar Baremación_ para que se cambie en los modelos FAP.
 
-Este paso, también crea las evaluaciones que se deban crear de solicitudes que en ese instante son propensas a evaluar y que todavía no se habían creado sus evaluaciones correspondientes.
+Este paso, también creará las evaluaciones que se deban crear de las solicitudes que en ese instante son propensas a evaluar y que todavía no se habían creado sus evaluaciones correspondientes.
 
-Si queremos personalizar la actualización de la baremación, en lo referente a la creación de las nuevas evaluaciones de las solicitudes que no la tengan, podremos sobreescribir el método que se encarga de ello visitando la siguiente "documentacion":app-baremacion-actualizarNuevasEvaluaciones
+Si queremos personalizar la actualización de la baremación, en lo referente a la creación de las nuevas evaluaciones de las solicitudes que no la tengan, podremos sobreescribir el método que se encarga de ello. Para saber más, vistita el siguiente enlace: "Click aquí":app-baremacion-actualizarNuevasEvaluaciones
 
 h2. ¿Qué debo sobreescribir para personalizar la Baremación?
 
-Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer "aqui":app-baremacion-sobreescribir
+Si quieres que algunos comportamientos por defecto, como el cálculo de los criterios no hoja o cualquier otro aspecto, sea uno propio, se deberán sobreescribir una serie de métodos y funciones que puede conocer en la siguiente documentación: "Click aquí":app-baremacion-sobreescribir
 
 h2. ¿Cómo puedo personalizar las distintas validaciones que se realizan para los conceptos económicos?
 
 h3. Validación de los conceptos económicos que cumplimente el solicitante
 
-Se puede sobreescribir el método que se ejecuta cuando el usuario _guarda_ la página de conceptos económicos que tiene la tabla que debe rellenar. Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona _guardar_ de dicha página de conceptos económicos. Para ello, ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos
+Se puede sobreescribir el método que se ejecuta cuando el usuario *guarda* la página de conceptos económicos que tiene la tabla que debe rellenar. 
+Para corroborar que todo lo que ha guardado y rellenado se ciñe a lo que debería ser, se deberá sobreescribir el método que se ejecuta cuando el solicitante presiona *guardar* de dicha página de conceptos económicos. Para ello, ver qué hay que sobreescribir.
+Si no recuerda como se hacía, en el siguiente enlace puede consultar la cocumentacón "Click aquí":app-baremacion-validarceconomicos
 
 h3. Los documentos en los que se busquen los tipos de Documentos de ese tipo de Evaluación
 
-Se puede también personalizar aquellos documentos que se utilicen en la Evaluación para buscar los tipos de documentos que serán accesibles al evaluador para llevar a cabo su cometido y así restringir también el acceso de este a todos los documentos de una determinada solicitud. Por defecto, FAP, tiene en cuenta los documentos almacenados en *solicitud.documentacion.documentos* más el documento *solicitud.registro.oficial*, si se quiere personalizar esto, vea lo que debe sobreescribir "aqui":app-baremacion-validarceconomicos#LosdocumentosenlosquesebusquenlostiposdeDocumentosdeesetipodeEvaluacin
+Se puede también personalizar aquellos documentos que se utilicen en la Evaluación para buscar los tipos de documentos que serán accesibles al evaluador, para llevar a cabo su cometido y así restringir también el acceso de este a todos los documentos de una determinada solicitud. 
+Por defecto, FAP, tiene en cuenta los documentos almacenados en *solicitud.documentacion.documentos* más el documento *solicitud.registro.oficial*, si se quiere personalizar esto, habrá que sobreescribir.
+Si no recuerda como se hacía, en el siguiente enlace puede consultar la cocumentacón "Click aquí":app-baremacion-validarceconomicos#LosdocumentosenlosquesebusquenlostiposdeDocumentosdeesetipodeEvaluacin
 
 h3. Finalización de todas las evaluaciones
 
-Se puede sobreescribir el método que se ejecuta cuando el administrador/gestor _finaliza todas las evaluaciones_ en la página Consultar Evaluaciones. Ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos#Finalizacindetodaslasevaluaciones
+Se puede sobreescribir el método que se ejecuta cuando el _administrador_ / _gestor_ finaliza todas las evaluaciones en la página Consultar Evaluaciones. Para ello, habrá que sobreescribir alguna cosas.
+Si no recuerda como se hacía, en el siguiente enlace puede consultar la cocumentacón "Click aquí":app-baremacion-validarceconomicos#Finalizacindetodaslasevaluaciones
 
 h3. Validación de los conceptos económicos evaluados
 
-Se puede sobreescribir el método que se ejecuta cuando el administrador/gestor _guarda_ la página de Conceptos Económicos Evaluados. Ver qué hay que sobreescribir "aqui":app-baremacion-validarceconomicos#Validacindelosconceptoseconmicosevaluados
+Se puede sobreescribir el método que se ejecuta cuando el _administrador_ / _gestor_ guarda la página de Conceptos Económicos Evaluados. Para ello, habrá que sobreescribir alguna cosas.
+Si no recuerda como se hacía, en el siguiente enlace puede consultar la cocumentacón "Click aquí":app-baremacion-validarceconomicos#Validacindelosconceptoseconmicosevaluados
 
 h2. Ejemplo de Baremación de la aplicacion de Test
 
@@ -107,10 +113,10 @@ bc. {
 }
 
 Para definir los conceptos económicos (_conceptosEconomicos.json_), se quiso realizar ejemplos generalizados para cada _clase_, _jerarquia_ y _tipoOtro_. 
-* El _Concepto Económico A_, se compone de dos subconceptos manuales que rellena el solicitante. 
-* El _Concepto Económico B_, se compone de tres subconceptos, dos de ellos manuales y uno auto de tipoOtros.
+* El _*Concepto Económico A*_, se compone de dos subconceptos manuales que rellena el solicitante. 
+* El _*Concepto Económico B*_, se compone de tres subconceptos, dos de ellos manuales y uno auto de tipoOtros.
 
-El tercer subconcepto de B, al ser de @tipoOtros@ permite al solicitante dividir el criterio en tantos como desee.
+El tercer subconcepto de *B*, al ser de @tipoOtros@ permite al solicitante dividir el criterio en tantos como desee.
 
 Véase que todos los conceptos del primer nivel de la jerarquía (_A_ y _B_), son de @clase: "auto"@, ya que dependen de sus subconceptos hijos.
 
@@ -175,8 +181,8 @@ bc. [
 
 A la hora de definir los criterios (_criterios.json_), se optó por realizar un ejemplo generalizado de cada @tipoValor@ disponible, _cantidad/lista_
 
-* El criterio _Criterio numero uno_ esta asignado como @tipoValor: "cantidad"@, lo que indica que será un valor numérico y al ser @claseCriterio: "auto"@, deberá indicarse en el lugar correspondiente como se calcula dicho valor.   
-* El criterio _Criterio numero dos_ esta asignado como @tipoValor: "lista"@, lo que indica que le corresponde un valor de la lista definida en el campo @listaValores@. Como @claseCriterio: "manual"@, el valor será elegido por el encargado de realizar la evaluación.
+* El criterio _*Criterio numero uno*_ esta asignado como @tipoValor: "cantidad"@, lo que indica que será un valor numérico y al ser @claseCriterio: "auto"@, deberá indicarse en el lugar correspondiente como se calcula dicho valor.   
+* El criterio _*Criterio numero dos*_ esta asignado como @tipoValor: "lista"@, lo que indica que le corresponde un valor de la lista definida en el campo @listaValores@. Como @claseCriterio: "manual"@, el valor será elegido por el encargado de realizar la evaluación.
 bc. [
 	{
 		nombre: "Criterio numero uno",
@@ -212,7 +218,7 @@ bc. [
 	}
 ]
 
-También se añadieron 3 datos adicionales (_datosAdicionales.json_).
+También se añadieron tres datos adicionales (_datosAdicionales.json_).
 
 bc. [
 	{
@@ -232,7 +238,8 @@ bc. [
 	}
 ]
 
-Finalmente, para completar la configuración de las características de este ejemplo de baremación simple, se han configurado 2 tipos de documentos como los que pertenecen a este tipo de Evaluación, y que serán los que pueda descargarse y ver el Evaluador en cuestión de la lista de documentos que ha subido el solicitante. Para que el evaluador puede ver el documento que ha subido el solicitante del tipo quí definido, debe de estar 'verificado' correctamente.
+Finalmente, para completar la configuración de las características de este ejemplo de baremación simple, se han configurado dos tipos de documentos como los que pertenecen a este tipo de Evaluación, y que serán los que pueda descargarse y ver el _Evaluador_ en cuestión de la lista de documentos que ha subido el solicitante. 
+Para que el evaluador pueda ver el documento que ha subido el solicitante del tipo quí definido, debe de estar 'verificado' correctamente.
 
 bc. [
 	{
@@ -243,14 +250,15 @@ bc. [
 	}
 ]
 
-Si no se desee rellenar alguno de estos fichero anteriores, porque no procede su utilización, bastará con definir en el fichero que no queramos utilizar, la lista vacía, como sigue:
+Si no se desea rellenar alguno de estos fichero anteriores, porque no procede su utilización, bastará con definir en el fichero que no queramos utilizar, la lista vacía, como sigue:
 
 bc. []
 
 
 h3. Inicio de Baremación
 
-Como se ha explicado en la documentación anterior, la Baremación es un proceso muy dependiente de la aplicación en que se está llevando a cabo, por ello, debe ser personalizada en cada caso. Para la aplicación de Test, no se va a llevar a cabo una personalización, se utilizará la inicialización por defecto disponible en el módulo Fap. Aún así debemos crear nuestra propia clase _IniciarBaremaciónTest_ que extienda de _IniciarBaremacion_.
+Como se ha explicado en la documentación anterior, la Baremación es un proceso muy dependiente de la aplicación en que se está llevando a cabo, por ello, debe ser personalizada en cada caso. 
+Para la aplicación de *Test*, no se va a llevar a cabo una personalización, se utilizará la inicialización por defecto disponible en el módulo Fap. Aún así debemos crear nuestra propia clase _IniciarBaremaciónTest_ que extienda de _IniciarBaremacion_.
 
 bc. public class IniciarBaremacionTest extends IniciarBaremacion{
 	public static void iniciar(){
@@ -261,7 +269,7 @@ bc. public class IniciarBaremacionTest extends IniciarBaremacion{
 
 h3. Resultados
 
-A continuación se muestran diversas imágenes de como quedaría la _Ficha del Evaluador_ con la configuración elegida para Test.
+A continuación se muestran diversas imágenes de como quedaría la _Ficha del Evaluador_ con la configuración elegida para *Test*.
 
 h4. Información del expediente:
 

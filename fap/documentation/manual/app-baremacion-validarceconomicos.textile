@@ -1,13 +1,17 @@
 h1. ¿Qué debo sobreescribir para personalizar las validaciones de las diferentes páginas referentes a Conceptos Económicos?
 
-En primer lugar, se deberá crear una clase (si no la hemos creado previamente para "personalizar el inicio de la Baremación":app-baremacion-inicio) en la ruta _${PATH_APLICACION}/app/baremacion/${NOMBRE_CLASE_BAREMACION}_ donde ${NOMBRE_CLASE_BAREMACION} será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de validación de los conceptos económicos y que deberá extender de _BaremacionFAP_. Por ejemplo: _MiClaseBaremacion_, de forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
+En primer lugar, se deberá crear una clase (si no la hemos creado previamente para personalizar el inicio de la Baremación. Si no sabes como hacerlo sigue este enlace: "Click aquí":app-baremacion-inicio) en la siguiente ruta: 
+* _$_{_PATH_ _ _APLICACION_} / _app_ / _baremacion_ / _$_{_NOMBRE_ _ _CLASE_ _ _BAREMACION_}  
+donde *${NOMBRE_CLASE_BAREMACION}* será el nombre que le queramos dar a nuestra clase que utilizaremos para sobreescribir el proceso de validación de los conceptos económicos y que deberá extender de _BaremacionFAP_. 
+Por ejemplo: 
+* *_MiClaseBaremacion_* De forma que tendremos en el fichero java que representa dicha clase ("_MiClaseBaremacion.java_):
 
 bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
 }
 
 h2. Validación de los conceptos económicos que cumplimente el solicitante
 
-Mediante la sobreescritura del método que aquí se explica, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _GUARDAR_ que aparece en la página de Conceptos Económicos que tendrá que rellenar el usuario y que será dispensable guardar correctamente para poder realizar con éxito el Preparar Para Firmas antes de Presentar la Solicitud.
+Mediante la sobreescritura del método que aquí se explica, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _*Guardar*_ que aparece en la página de Conceptos Económicos que tendrá que rellenar el usuario y que será dispensable guardar correctamente para poder realizar con éxito el _Preparar Para Firmas_ antes de _Presentar la Solicitud_.
 
 bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 	public static void validarCEconomicos(long idSolicitud, List<CEconomico> ceconomicos){
@@ -40,7 +44,7 @@ bc. public class MiClaseIniciarBaremacion extends BaremacionFAP{
 
 h2. Finalización de todas las evaluaciones
 
-Al sobreescribir el método @finalizarEvaluaciones@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _Finalizar Todas las Evaluaciones_ que aparece en la página de Consultar Evaluaciones y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
+Al sobreescribir el método @finalizarEvaluaciones@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _*Finalizar Todas las Evaluaciones*_ que aparece en la página de Consultar Evaluaciones y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
 
 bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
 	public static void finalizarEvaluaciones() {
@@ -51,7 +55,7 @@ bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
 
 h2. Recalcular Evaluaciones
 
-Se puede sobreescribir también el método de recalcular evaluaciones, que se ejecutará cuando se pulse sobre el botón _Recalcular Evaluaciones_, el cual por defecto realiza de nuevo el cálculo de totales de cada una de las evaluaciones en la baremación, pero *ojo*: _por defecto no guarda esos datos recalculados_. Se suele utilizar en caso de añadir nuevos criterios manuales;
+Se puede sobreescribir también el método de recalcular evaluaciones, que se ejecutará cuando se pulse sobre el botón _*Recalcular Evaluaciones*_, el cual por defecto realiza de nuevo el cálculo de totales de cada una de las evaluaciones en la baremación, pero *ojo*: _por defecto no guarda esos datos recalculados_. Se suele utilizar en caso de añadir nuevos criterios manuales;
 
 bc. 
 	public static void recalcularEvaluaciones() {
@@ -68,7 +72,7 @@ bc.
 
 h2. Validación de los conceptos económicos evaluados
 
-Al sobreescribir el método @validarCEconomicosEvaluados@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _Guardar_ que aparece en la página de Conceptos Económicos Evaluados y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
+Al sobreescribir el método @validarCEconomicosEvaluados@, se podrá personalizar las acciones llevadas a cabo al pulsar el botón _*Guardar*_ que aparece en la página de Conceptos Económicos Evaluados y a la que tendrán acceso aquellos con roles de Administrador o Gestor.
 
 bc. public class MiClaseIniciarBaremacion extends BaremacionFAP {
 	public static void validarCEconomicosEvaluados(long idSolicitud, List<CEconomico> ceconomicos) {

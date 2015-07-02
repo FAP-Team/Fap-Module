@@ -4,19 +4,19 @@ Para crear un entorno para poder utilzar FAP necesita una serie de requerimiento
 
 h2. Instalación de Play Framework
 
-FAP en su versión 2.1 está construido sobre Play 1.2.4, así que deberías instalar esa versión de Play. Para instalarlo solamente sigue los pasos que se indican en "http://www.playframework.org/documentation/1.2.2/install":http://www.playframework.org/documentation/1.2.2/install
+FAP en su versión 2.5.6 está construido sobre Play 1.2.7.2, así que deberías instalar esa versión de Play. Para instalarlo solamente sigue los pasos que se indican en "http://www.playframework.org/documentation/1.2.7.2/install":http://www.playframework.org/documentation/1.2.7.2/install
 
 h2. Instalación de FAP
 
-Tranquilo... FAP es un módulo de Play, así que no hace falta ningún paso adicional de configuración para instalarlo. Al crear un nuevo proyecto, diremos que queremos utilizar el módulo y Play se encargará de todo.
+FAP es un módulo de Play, así que no hace falta ningún paso adicional de configuración para instalarlo. Al crear un nuevo proyecto, diremos que queremos utilizar el módulo y Play se encargará de todo.
 
 h2. Configuración Avanzada
 
-Opcionalmente te recomendamos seguir estos pasos en la configuración, pero para nada son obligatorios.
+Opcionalmente te recomendamos seguir estos pasos en la configuración.
 
 h3. Configuración de Eclipse
 
-Playframework se integra con varios IDEs. Puedes consultar cómo integrarlos en "http://www.playframework.org/documentation/1.2.4/ide":http://www.playframework.org/documentation/1.2.4/ide
+Playframework se integra con varios IDEs. Puedes consultar cómo integrarlos en "http://www.playframework.org/documentation/1.2.7.2/ide":http://www.playframework.org/documentation/1.2.7.2/ide
 
 Si tu elección es Eclipse, FAP-SDK incluye un plugin para ese IDE que permite resaltado de sintaxis para escribir el DSL. Para utilizarlo sigue "estos pasos":curso-plugin
 
@@ -34,7 +34,7 @@ Si quieres ayudar a desarrollar el módulo, o simplemente quieres ver como funci
 h3. Instalación del FAP-SDK
 
 * Crea una nueva variable de entorno con el nombre FAPSDK y el valor de la ruta donde descromprimió el SDK.
-** Windows : Click derecho Equipo > Propiedades, Configuracion Avanzada del Sistema (en el lateral izquierdo), (Pestaña Opciones Avanzadas) Botón Variables de entorno. Se deberan crear/modificar dos variables de entorno: FAPSDK=C:\fap-sdk\ y modificar la variable de entorno "PATH" añadir la ruta del framework play! (p.e. ...;C:\fap-sdk\play-1.2.4;...).
+** Windows : Click derecho Equipo > Propiedades, Configuracion Avanzada del Sistema (en el lateral izquierdo), (Pestaña Opciones Avanzadas) Botón Variables de entorno. Se deberan crear/modificar dos variables de entorno: FAPSDK=C:\fap-sdk\ y modificar la variable de entorno "PATH" añadir la ruta del framework play! (p.e. ...;C:\fap-sdk\play-1.2.7.2;...).
 ** Mac/Linux: Editar ~/.bashrc y añadir   export FAPSDK=/ruta/a/fap-sdk/
 
 * Entorno para modificar el generador:

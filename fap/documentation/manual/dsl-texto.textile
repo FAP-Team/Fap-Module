@@ -8,13 +8,13 @@ h2. Parámetros
 
 * **_[name]_** (opcional) : Identificador del campo de texto.
 * **campo = _[campo]_** : Atributo donde se almacenará el texto.
-* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto, si no se especifica se mostrará el nombre del campo.
+* **titulo = _[string]_** (opcional) : Etiqueta que se mostrará al lado del campo de texto. Si no se especifica se mostrará el nombre del campo.
 * **ancho = _[string]_** (opcional) : Permite especificar el ancho del campo de texto.
 * **ayuda = _[string]_** (opcional) : Muestra, bajo la etiqueta del título, el texto de ayuda especificado.
 * **requerido** (opcional) : Si se especifica, indica que el campo deberá ser obligatorio rellenarlo.
-* **password** (opcional) : Si se especifica, indica que el campo es una contraseña, y no se mostraran caracteres sino puntos.
+* **password** (opcional) : Si se especifica, indica que el campo es una contraseña, y no se mostrarán caracteres sino puntos.
 * **duplicar** (opcional) : Si se especifica, indica que se duplicará la caja de texto justo debajo de la original
-* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de titulo.
+* **anchoTitulo = _[string]_** (opcional) : Permite indicar el ancho de la etiqueta de título.
 
 h2. Definición
 

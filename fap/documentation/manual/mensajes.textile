@@ -1,0 +1,49 @@
+h1. Mensajes
+
+h2. Descripción
+
+El Servicio de Mensajes de PLATINO permite realizar las siguientes acciones:
+
+* Envío de comunicaciones a un sólo tercero o a un conjunto de ellos (a través de una remesa). La definición de los destinatarios de las comunicaciones se puede especificar de diferentes maneras: a través de una lista de identificadores de terceros, a través de una lista de números de teléfonos y/o correos electrónicos y a través de una lista de distribución.
+
+* Crear listas de distribución para conformar conjuntos de terceros que serán potenciales destinatarios de diversas comunicaciones en distintos momentos a lo largo del tiempo.
+
+* Definir áreas que categorizan algún tema de interés (un procedimiento en concreto o algún tema general). Los terceros interesados en esas áreas pueden suscribirse para así poder recibir toda la información relacionada con esa área. Cuando haya algún evento o noticia sobre un área, la Administración puede enviar un mensaje que recibirán todos los terceros suscritos a esa área.
+
+* Que los terceros puedan realizar consultas o pedir información sobre algunas de las áreas de tipo procedimiento a las que se haya suscrito previamente. De esta forma, un tercero se puede suscribir a un área que represente a un procedimiento en particular y posteriormente puede solicitar en cualquier momento conocer el estado de los expedientes de ese procedimiento que el tercero tiene abierto con la Administración. 
+
+* Que los terceros, cuando realizan una suscripción a un área, decidan el canal de comunicación (correo electrónico o SMS) por el que quieren recibir los mensajes. En los mensajes que la Administración envía directamente a los terceros (sin previa suscripción) es ésta la que decide por qué canal desea enviar los mensajes.
+
+* Consultar el estado en el que se encuentra cada mensaje o remesa, tanto antes como después de que se haya enviado.
+
+Destacar que el envío de mensajes SMS a través del servicio se realiza de forma asíncrona a través de la pasarela SMS del Gobierno de Canarias. Los consumidores del servicio podrán consultar el estado de envío de los mensajes a través de los métodos proporcionados por el servicio. 
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. Platino
+
+bc. @Override
+	protected void mensaje() {
+		bindLazySingletonOnDev(MensajeService.class, PlatinoMensajeServiceImpl.class);
+	}
+
+h4. File System
+
+bc. protected void mensaje() {
+		bindLazySingletonOnDev(MensajeService.class, FileSystemMensajeServiceImpl.class);
+	}
+
+h3. Configuración
+
+bc. # Mensajes 
+fap.platino.mensajes.url=http://buger.gobiernodecanarias.net:8077/edmyce/mensaje/
+
+h2. Documentación del servicio
+
+
+
+h2. Ejemplo de uso
+
+h2. "Documentación de Platino":http://www.gobiernodecanarias.org/platino/docs/mensajes_moviles_correo_electronico_pre.pdf

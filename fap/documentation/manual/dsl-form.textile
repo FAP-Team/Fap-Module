@@ -9,8 +9,8 @@ h2. Parámetros
 * **_[name]_** : Identificador del elemento. En el controlador de la página correspondiente se creará un método con este nombre.
 * **autoEnviar** (opcional) : Reenvía el formulario cada vez que un elemento input o select del form cambia de estado.
 * **permiso = _[permiso]_** (opcional) : Nombre del permiso asociado al form.
-* **redirigir = _[pagina]_** (opcional) : Cuando termina la acción del boton del form, se produce una redirección a la página especificada.
-* **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse, si quiere abrirse en una pagina distinta (campo target en html).
+* **redirigir = _[pagina]_** (opcional) : Cuando termina la acción del botón del form, se produce una redirección a la página especificada.
+* **destino = _[string]_** (opcional) : Indica al enlace donde tiene que abrirse, si quiere abrirse en una página distinta (campo target en html).
 
 h2. Definición
 

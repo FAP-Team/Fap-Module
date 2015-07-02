@@ -1,12 +1,12 @@
 h1. Los Modelos o Entidades
 
-En esta sección veremos cómo crear y relacionar entidades. Las entidades permiten definir el modelo de datos que componen la aplicación, por defecto, una entidad representa una tabla en la base de datos. *FAP* nos ofrece un conjunto de entidades ya definidas como *Solicitante*, *Persona*, *Documentacion* ... (Ver todas en el fichero Entidades.fap del módulo FAP), que definen los componentes básicos que posee cualquier aplicación. Además, en las aplicaciones el desarrollador puede crear tantas entidades como sean necesarias para representar el modelo.
+En esta sección veremos cómo crear y relacionar entidades. Las entidades permiten definir el modelo de datos que componen la aplicación, por defecto, una entidad representa una tabla en la base de datos. *FAP* nos ofrece un conjunto de entidades ya definidas como *Solicitante*, *Persona*, *Documentacion* ... (Ver todas en el fichero _Entidades.fap_ del módulo +*FAP*+), que definen los componentes básicos que posee cualquier aplicación. Además, en las aplicaciones el desarrollador puede crear tantas entidades como sean necesarias para representar el modelo.
 
 !images/curso_2_2-entidades!
 
 h2. Crear una entidad
 
-Las entidades se definen en el fichero Entidades.fap de nuestra aplicación, todas las entidades deben tener un *nombre* y al menos un *atributo*. La definición completa de una entidad se puede ver en "entidad":dsl-entity.
+Las entidades se definen en el fichero _Entidades.fap_ de nuestra aplicación, todas las entidades deben tener un *nombre* y al menos un *atributo*. La definición completa de una entidad se puede ver en el siguiente enlace "Click aquí":dsl-entity.
 
 !images/nuevaApp-entidades!
 
@@ -33,5 +33,6 @@ Existen diferentes tipos de los que una Entidad FAP puede extender para personal
 
 h2. Atributos
 
-Dentro de las Entidades, se definen los diferentes atributos que queremos representar y que nos servirá para almacenar todo tipo de información en nuestro Modelo. Para ver más detallado todos los aspectos de los atributos que podemos declarar dentro de nuestrar Entidades FAP, visita la sección "Atributos de las Entidades":atributos-entidades
+Dentro de las Entidades, se definen los diferentes atributos que queremos representar y que nos servirá para almacenar todo tipo de información en nuestro Modelo. 
+Para saber más acerca de todos los aspectos de los atributos que podemos declarar dentro de nuestras Entidades FAP, visita la sección "Atributos de las Entidades":atributos-entidades
 

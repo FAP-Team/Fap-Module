@@ -10,7 +10,7 @@ h2. Parámetros
 * **boton = _[string]_** (opcional): Permite personalizar la etiqueta del botón. Si no se le especifica pondrá en la etiqueta el _name_.
 * **redirigir = _[string]_ | _[Pagina]_ | anterior** (opcional): Permite redirigir a una Página en concreto, a la página anterior o a una URL, al darle al botón de la acción, siempre y cuando la acción en cuestión se haya podido realizar con éxito, en otro caso, redirigiría a la misma página.
 * **mensajeOk = _[string]_** (opcional): Permite personalizar los mensajes de éxito que apareceran en la página al realizar sin problemas la acción en cuestión.
-* **noBorrarEntidad** (opcional): Si se especifica, en la acción de borrar no se borra la entidad seleccionada, sino sólo se desenlaza de la lista en la que estaba. Por ejemplo, si la entidad está un OneToMany, la quita del OneToMany, pero no la elimina de base de datos.
+* **noBorrarEntidad** (opcional): Si se especifica, en la acción de borrar no se borra la entidad seleccionada, sino sólo se desenlaza de la lista en la que estaba. Por ejemplo, si la entidad está en un OneToMany, la quita del OneToMany, pero no la elimina de base de datos.
 * **crearSiempre** (opcional): Indica que crearemos por defecto en el controlador los métodos correspondientes a la acción que se está configurando, aún cuando dicha acción no se utilice nunca en el ámbito del DSL. 
 
 h2. Definición

@@ -19,7 +19,7 @@ h2. Parámetros
 * **representantePersonaFisica** (opcional) : Indica que en el caso de que haya representantes, éstos sólo pueden ser de tipo PersonaFisica.
 * **conDireccion** (opcional): Permite incluir todos los campos necesarios para representar un elemento Dirección.
 * **noEmail** (opcional) : Si se indica no aparece el atributo email.
-* **noTelefono** (opcional) : Si se indica no aparece el atributo telefono.
+* **noTelefono** (opcional) : Si se indica no aparece el atributo teléfono.
 * **sexo** (opcional) : Si se indica aparece el atributo sexo.
 * **nacimiento** (opcional) : Si se indica aparece el atributo fechaNacimiento.
 * **noSexo** (opcional) : Si se indica no aparece el atributo sexo (opción por defecto).
@@ -51,7 +51,7 @@ bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicita
 
 !images/dsl-solicitante1!
 
-h4. Sin atributo telefono
+h4. Sin atributo teléfono
 
 bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noTelefono
 
@@ -63,7 +63,7 @@ bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicita
 
 !images/dsl-solicitante3!
 
-h4. Sin atributos telefono y email
+h4. Sin atributos teléfono y email
 
 bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono
 
@@ -71,13 +71,13 @@ bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicita
 
 !images/dsl-solicitante6!
 
-h4. Sin atributos telefono y email (con representante PersonaFisica en el caso de que haya)
+h4. Sin atributos teléfono y email (con representante PersonaFisica en el caso de que haya)
 
 bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono representantePersonaFisica
 
 !images/dsl-solicitante9!
 
-h4. Sin atributos telefono y email (sin representante)
+h4. Sin atributos teléfono y email (sin representante)
 
 bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noRepresentante
 
@@ -89,7 +89,7 @@ bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicita
 
 !images/dsl-solicitante13!
 
-h4. Sin atributos telefono y email (con dirección)
+h4. Sin atributos teléfono y email (con dirección)
 
 bc. Solicitante personaSolicitante2 campo=Solicitud.solicitante titulo="Solicitante" requerido noEmail noTelefono noSexo noNacimiento conDireccion
 
@@ -117,7 +117,7 @@ Para ello, debemos sobreescribir el método @validateCopy@ del controlador del p
 
 Luego tendremos que añadirle la línea de comprobación.
 
-En el caso de que sea el representante de una persona física:
+En el caso de que sea el representante de una persona jurídica:
 
 bc. CustomValidation.notEqual(dbSolicitud.solicitante.getNumeroId(), representantePersonaJuridica.getNumeroId());
 

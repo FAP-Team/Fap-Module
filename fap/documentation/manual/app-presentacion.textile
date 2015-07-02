@@ -16,27 +16,27 @@ h2. Crear una clase que herede de TramiteBase.
 
 Para conocer la jerarquía de trámites sería conveniente visitar la "página de Tramitación.":app-tramitacion
 
-Además de ver los métodos que implemente el Trámite Base y que podemos "sobreescribir":app-tramiteBase
+Además, ver los métodos que implementa el Trámite Base y que podemos "sobreescribir.":app-tramiteBase
 
-Es común que los métodos a implementar y usar en la presentación dependan del trámite al cual está asociada la misma. Por ello para personalizar esto, podemos crear una clase que herede de TramiteBase. Por ejemplo, si queremos crear una clase para personalizar los métodos de presentación de nuestra aplicación, esta clase deberá extender directa (ser hija) o indirectamente (ser nieta, etc.) de la clase TramiteBase. Además, a la hora de usar la presentación por defecto de FAP, esta tendrá en cuenta sólos los métodos de la clase TramiteBase, por lo que si se quiere modificar alguno de estos métodos por defecto, se deberá sobreescribir en nuestra clase hereditaria de TramiteBase recién creada. En ese caso, la página Presentación de FAP, llamará a los métodos que hayamos sobreescrito en vez de a los métodos que tiene por defecto TramiteBase. En el siguiente punto, se explica como especificarle a FAP, que tenemos nuestra propia clase que extiende de TramiteBase (a través de un método de la clase PresentacionFapController).
+Es común que los métodos a implementar y usar en la presentación dependan del trámite al cual está asociada la misma. Por ello para personalizar esto, podemos crear una clase que herede de TramiteBase. Por ejemplo, si queremos crear una clase para personalizar los métodos de presentación de nuestra aplicación, esta clase deberá extender directa (ser hija) o indirectamente (ser nieta, etc.) de la clase TramiteBase. Además, a la hora de usar la presentación por defecto de FAP, ésta tendrá en cuenta sólos los métodos de la clase TramiteBase, por lo que si se quiere modificar alguno de estos métodos por defecto, se deberá sobreescribir en nuestra clase hereditaria de TramiteBase recién creada. En ese caso, la página Presentación de FAP, llamará a los métodos que hayamos sobreescrito en vez de a los métodos que tiene por defecto TramiteBase. En el siguiente punto, se explica como especificarle a FAP, que tenemos nuestra propia clase que extiende de TramiteBase (a través de un método de la clase PresentacionFapController).
 
 Existe una clase denominada TramiteSolicitudFap, que extiende de TramiteSolicitud, que a su vez extiende de TramiteBase, que es la que se usa en el módulo FAP, por defecto, para todos los métodos propios de la Presentación. Si se quiere otorgar otra dinámica y funcionalidad a esta parte, deberemos, como se ha nombrado anteriormente, crear una clase que extienda directa o indirectamente de TramiteBase como lo hace la clase por defecto de Fap (TramiteSolicitudFap).
 
-Algunos métodos que tiene definido la clase TramiteBase, y que por ende se pueden sobreescribir en nuestra clase hereditaria de TramiteBase, ya tienen implementaciones listas para funcionar (como el método registrar(), que registra las solicitudes), y otros métodos están definidos como abstract debido a su naturaleza que depende de la aplicación en cuestión y no es generalizable, y deberemos sobreescribir en nuestra clase tal y como hace Fap en la suya por defecto (TramiteSolicitudFap).
+Algunos métodos que tiene definidos la clase TramiteBase, y que por ende se pueden sobreescribir en nuestra clase hereditaria de TramiteBase, ya tienen implementaciones listas para funcionar (como el método registrar(), que registra las solicitudes), y otros métodos están definidos como abstract debido a su naturaleza que depende de la aplicación en cuestión y no es generalizable, y deberemos sobreescribir en nuestra clase tal y como hace Fap en la suya por defecto (TramiteSolicitudFap).
 
 Se puede ver el contenido de la clase TramiteSolicitudFap, así como de su padre TramiteSolicitud y su abuelo TramiteBase para ver todo lo explicado con más detalle, así como para ver los métodos que implementa TramiteBase y podemos personalizar para la Presentación, mediante su sobreescritura.
 
 h2. Crear una clase que extienda de PresentacionFapController.
 
-La clase PresentacionFapController, tiene implementados una serie de métodos que personalizan más aún la Presentación. Por ello, se deberá sobreescribir los métodos de esta clase, mediante la creación de una clase hija que extienda de esta, y que tenga implementado/sobreescritos los métodos de la clase padre (PresentacionFapController).
+La clase PresentacionFapController, tiene implementados una serie de métodos que personalizan más aún la Presentación. Por ello, se deberá sobreescribir los métodos de esta clase, mediante la creación de una clase hija que extienda de ésta, y que tenga implementado/sobreescritos los métodos de la clase padre (PresentacionFapController).
 
-Los métodos que posee esta clase, y que se deberan sobreescribir en la clase hija que debemos crear son:
+Los métodos que posee esta clase, y que se deberán sobreescribir en la clase hija que debemos crear son:
 
 * *1. Método para gestionar la clase encargada de las funciones propias del trámite específico.*
 
 bc. public static TramiteBase getTramiteObject (Long idSolicitud)
 
-Esta función deberá devolver el objeto que hayamos implementado (si lo hemos hecho) para personalizar aún más la presentación dependiendo el trámite específico que queramos tratar. Por defecto hay un objeto creado en el módulo FAP, que es el que devuelve esta función, también por defecto, y que de forma genérica da cabida a todas las funcionalidades necesarias para la presentación. Como siempre, si queremos que nuestra aplicación se comporte de forma distintas, deberemos crear nuestra propia clase que extienda, por ejemplo, de TramiteSolicitud o cualquier otra clase que extienda de TramiteBase como vimos en el punto anterior, para personalizar el comportamiento de la presentación en el trámite Solicitud. FAP, tiene configurada una clase propia, que extiende de TramiteSolicitud, para realizar la presentación en base a ella, y si no sobreescribimos este método, es el que se cogerá por defecto para la Presentación.
+Esta función deberá devolver el objeto que hayamos implementado (si lo hemos hecho) para personalizar aún más la presentación dependiendo del trámite específico que queramos tratar. Por defecto hay un objeto creado en el módulo FAP, que es el que devuelve esta función, también por defecto, y que de forma genérica da cabida a todas las funcionalidades necesarias para la presentación. Como siempre, si queremos que nuestra aplicación se comporte de forma distintas, deberemos crear nuestra propia clase que extienda, por ejemplo, de TramiteSolicitud o cualquier otra clase que extienda de TramiteBase como vimos en el punto anterior, para personalizar el comportamiento de la presentación en el trámite Solicitud. FAP, tiene configurada una clase propia, que extiende de TramiteSolicitud, para realizar la presentación en base a ella, y si no sobreescribimos este método, es el que se cogerá por defecto para la Presentación.
 
 _Ejemplo (Comportamiento por defecto de FAP):_
 
@@ -65,7 +65,7 @@ Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta nada e
 
 bc. public static void beforeFirma(Long idSolicitud)
 
-Esta función se utiliza para ejecutar código que sea necesario ejecutar antes del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo antes de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con la firma (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple para que no se firme), o cualquier otra cosa.
+Esta función se utiliza para ejecutar código que sea necesario ejecutar antes del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo antes de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con la firma (en este caso debemos especificar en esta función mediante Messages.error(...) que la condición no se cumple para que no se firme), o cualquier otra cosa.
 
 Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni comprueba nada especial antes de firmar.
 
@@ -73,7 +73,7 @@ Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni com
 
 bc. public static void afterFirma(Long idSolicitud)
 
-Esta función se utiliza para ejecutar código que sea necesario ejecutar después del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo después de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con el registro (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple para que no se haga nada posteriormente), o cualquier otra cosa.
+Esta función se utiliza para ejecutar código que sea necesario ejecutar después del proceso de Firma en la Presentación. De esta manera, lo que en esta función pongamos, se ejecutará siempre justo después de firmar las solicitudes. Puede ser, por ejemplo, indicar alguna condición que se debe dar para proseguir con el registro (en este caso debemos especificar en esta función mediante Messages.error(...) que la condición no se cumple para que no se haga nada posteriormente), o cualquier otra cosa.
 
 Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni comprueba nada especial después de firmar.
 
@@ -81,11 +81,11 @@ Por defecto en Fap, esta función no tiene nada, por lo que no se ejecuta ni com
 
 bc. public static void comprobarFechaLimitePresentacion(Long idSolicitud)
 
-Esta función se utiliza para ejecutar el código que verifique que la Presentación todavía sigue vigente, o sea que su fecha límite no ha expirado, por lo que se seguirá permitiendo firmar, registrar y presentar. En caso contrario, en el que ya no se puedan hacer ninguna de las acciones descritas anteriormente, será labor del programador poner en esta función aquello que vea oportuno (en este caso debemos especificar en esta función mediante Messages.error(...) que la condicion no se cumple).
+Esta función se utiliza para ejecutar el código que verifique que la Presentación todavía sigue vigente, o sea que su fecha límite no ha expirado, por lo que se seguirá permitiendo firmar, registrar y presentar. En caso contrario, en el que ya no se puedan hacer ninguna de las acciones descritas anteriormente, será labor del programador poner en esta función aquello que vea oportuno (en este caso debemos especificar en esta función mediante Messages.error(...) que la condición no se cumple).
 
 Por defecto en Fap, esta función tiene implementado que a través del valor indicado en la property *fap.app.presentacion.fechacierre* con un formato de fecha como el que sigue _yyyy-MM-dd HH:mm:ss_, se permitirá seguir Presentando mientras la fecha del sistema no sobrepase (o iguale) la fecha indicada en dicha property. Si se ha llegado a dicha fecha, ya no se seguirá admitiendo más solicitudes a ser presentadas. Si la property no se define (por defecto el módulo FAP no lo tiene definida), se dejará presentar siempre.
 
-* *7. Método para comprobar si se ha guardado las páginas asociadas a la fase que se va a Presentar.*
+* *7. Método para comprobar si se han guardado las páginas asociadas a la fase que se va a Presentar.*
 
 bc. public static boolean comprobarPaginasGuardadas(Long idSolicitud)
 
@@ -95,7 +95,7 @@ Por defecto en Fap, este método siempre devuelve _true_, por lo que no se compr
 
 h2. Plantillas que se pueden sobreeescribir
 
-Para personalizar el documento generado en la presentación se deberá sobreescribir una serie de plantillas, que deberan ir en la ruta _app/views/reports/_ situada en la raiz de nuestra aplicación.
+Para personalizar el documento generado en la presentación se deberá sobreescribir una serie de plantillas, que deberán ir en la ruta _app/views/reports/_ situada en la raiz de nuestra aplicación.
 
 Para la generación del documento de presentación, se hará uso de la plantilla que se indique en una de las funciones de la clase TramiteBase: _getBodyReport()_, así que si nos creamos una clase que herede de TramiteBase y no queremos usar el nombre por defecto de la plantilla que indica FAP, deberemos sobreescribir dicho método. También existen métodos para indicar la cabecera y el pie de página de dicho documento.
 

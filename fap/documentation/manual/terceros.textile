@@ -1,0 +1,48 @@
+h1. BDD Terceros
+
+h2. Descripción
+
+Se trata de un servicio que ofrece a los usuarios un directorio de terceros unificado.
+El servicio ofrecerá la siguiente funcionalidad:
+* Creación, baja, modificación y consulta de terceros.
+* Búsqueda de terceros.
+* Especificar relaciones de representación entre terceros.
+
+La implementación de este servicio se apoya en un modelo de datos que contempla un dominio de información de terceros compuesto por un conjunto mínimo común de las bases de datos de terceros de los organismos de la administración pública canaria. No pretende ser sustituto de las bases de datos de terceros de los distintos organismos de la administración pública canaria, sino permitir el intercambio de información de terceros entre los sistemas.
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. Platino
+
+bc. @Override
+    protected void terceros() {
+      bindLazySingletonOnDev(TercerosService.class, PlatinoTercerosServiceImpl.class);
+    } 
+
+h4. File System
+
+bc. protected void terceros() {
+		bindLazySingletonOnDev(TercerosService.class, FileSystemTercerosServiceImpl.class);
+	}
+
+h3. Configuración
+
+bc. # BDD De Terceros
+#---------------------------------------------------------------------------------
+fap.platino.terceros.url=undefined
+# Para activar o no el servicio de BDD de Terceros de Platino
+fap.platino.tercero.activa=true
+# Localizaciones
+fap.platino.localizaciones.url=undefined
+# Agencia firmante (firma en el servidor)
+fap.platino.firmante.nombre=Agencia Canaria de Investigación Innovacion y Sociedad de la información
+fap.platino.firmante.documento=123456789A
+fap.servicios.httpTimeout=240000
+
+h2. Documentación del servicio
+
+h2. "Ejemplo de uso":app-terceros
+
+h2. "Documentación de Platino":http://www.gobiernodecanarias.org/platino/docs/base_datos_terceros_pre.pdf

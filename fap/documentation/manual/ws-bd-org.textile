@@ -1,0 +1,37 @@
+h1. Base de datos de organización
+
+h2. Descripción
+
+El servicio de _*BDO*_ cuya finalidad es ofrecer información sobre la estructura organizativa de la Administración Pública Canaria al resto de servicios y aplicaciones integradas con _PLATINO_ que así lo requieran.
+La *BDO* permite establecer una nomenclatura común para _PLATINO_, permitiendo identificar dentro del mismo unidades orgánicas, para lo cual se emplean “URIs de unidad”. De este modo los servicios integrados con _PLATINO_ podrán identificar de manera única y común las unidades organizativas.
+
+Los escenarios de uso de este servicio son los siguientes:
+* Conocer la jerarquía de unidades orgánicas que dependen de una unidad determinada
+* Conocer el personal adscrito a una unidad orgánica
+* Mantener un histórico de la estructura organizativa del Gobierno de Canarias, de modo que sea posible conocer esta estructura en una fecha concreta
+* Mantener un histórico para una unidad orgánica, de manera que se pueda acceder a sus antecedentes
+
+h2. Inyección
+
+Para poder usar este servicio, deberemos inyectarlo en nuestro archivo _AppModule.java_ de la siguiente forma.
+
+bc. @Override
+    protected void dborganizacion(){
+        bindLazySingletonOnDev(BDOrganizacionService.class, PlatinoBDOrganizacionServiceImpl.class);
+    }
+
+En el caso de querer usar el servicio proporcionado por "FileSystem":ws-fs-gd deberiamos cambiar el parametro 
+_PlatinoBDOrganizacionServiceImpl.class_ por _FileSystemBDOrganizacionServiceImpl.class_
+
+h2. Configuración en FAP
+
+bc.. # BDD De Organizacion
+fap.platino.organizacion.url=http://buger.gobiernodecanarias.net:8077/dborganizacion/
+
+
+h2. Documentación
+
+Si desea saber más acerca del servicio de _*BDO*_, recomendamos leerse la documentación aportada por Platino.
+
+Para ello, siga este enlace "Click aquí":http://www.gobiernodecanarias.org/platino/docs/base_datos_organizacion_pre.pdf
+

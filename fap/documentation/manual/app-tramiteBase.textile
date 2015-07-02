@@ -2,7 +2,8 @@ h1. Tramite Base
 
 El Trámite Base, es la clase de mayor nivel en la Herencia de las clases de Trámite. Es usada en páginas de FAP, como en toda la parte de Presentación.
 
-Se puede crear una clase que herede de Trámite Base, para sobreescribir las funciones que define Trámite Base y que son usadas por FAP en Presentación, de manera que se pueda otorgar un comportamiento distinto a la Presentación a través de nuestra propia clase hereditaria de Trámite Base. Para ello se explican a continuación las funciones que tiene Trámite Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepcion de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Trámite Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesite, ya que las otras tendran el comportamiento por defecto que tiene definido Trámite Base.
+Se puede crear una clase que herede de Trámite Base, para sobreescribir las funciones que define Trámite Base y que son usadas por FAP en Presentación, de manera que se pueda otorgar un comportamiento distinto a la Presentación a través de nuestra propia clase hereditaria de Trámite Base. 
+Para ello se explican a continuación las funciones que tiene Trámite Base y que se pueden sobreescribir. No es necesario sobreescribir todas las funciones aquí explicadas (a excepcion de todos aquellos métodos implementados como Abstract y que la propia definición de la clase hija de Trámite Base te obliga a sobreescribir). Puedes sobreescribir sólo aquellas que necesite, ya que las otras tendran el comportamiento por defecto que tiene definido Trámite Base.
 
 h2. Constructor
 
@@ -83,7 +84,8 @@ h3. getDocumentos(); Sobreescritura: Obligatoria
 
 bc. public abstract List<Documento> getDocumentos(); 
 
-Devuelve la lista de documentos aportados por el solicitante que se tienen que tener en cuenta para presentar la Solicitud. De esta lista se verificará que los documentos imprescindibles han sido aportados (dando un mensaje de error e impidiendo que continue el proceso de Presentación, en caso de que hubiese algun tipo de documento de tipo imprescindible no aportado por el solicitante), y los documentos condicionados automáticos, condicionados manuales y obligatorios (dando un mensaje de Warning, si falta algún tipo de documento de estos y que el solicitante no ha aportado, pero no impidiendo que se continue con la Presentación).
+Devuelve la lista de documentos aportados por el solicitante que se tienen que tener en cuenta para presentar la Solicitud. 
+De esta lista se verificará que los documentos imprescindibles han sido aportados (dando un mensaje de error e impidiendo que continue el proceso de Presentación, en caso de que hubiese algun tipo de documento de tipo imprescindible no aportado por el solicitante), y los documentos condicionados automáticos, condicionados manuales y obligatorios (dando un mensaje de Warning, si falta algún tipo de documento de estos y que el solicitante no ha aportado, pero no impidiendo que se continue con la Presentación).
 
 h3. getDocumentosExternos(); Sobreescritura: Obligatoria
 
@@ -139,7 +141,7 @@ h3. validar(); Sobreescritura: Opcional
 bc. public void validar(){
 }
 
-Función que se ejecuta al inicio del prepararFirmar, por si se quiere hacer alguna comprobación previa, siguiendo utilizando el prepararFirmar implementado por el Trámite Base. Por defecto, como vemos en la líneas superiores, no se realiza nada.
+Función que se ejecuta al inicio del _prepararFirmar_, por si se quiere hacer alguna comprobación previa, siguiendo utilizando el _prepararFirmar_ implementado por el Trámite Base. Por defecto, como vemos en la líneas superiores, no se realiza nada.
 
 h3. getPrefijoJustificantePdf(); Sobreescritura: Obligatoria
 
@@ -167,7 +169,7 @@ bc. public void eliminarBorrador(){
     }
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe eliminar el documento borrador, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Debe eliminar el documento borrador, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. eliminarOficial(); Sobreescritura: Opcional
 
@@ -186,7 +188,7 @@ bc. public void eliminarOficial() {
     }
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe eliminar el documento oficial, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Debe eliminar el documento oficial, si existiera, para crear el nuevo que se va a generar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. generarBorrador(); Sobreescritura: Opcional
 
@@ -208,7 +210,7 @@ bc. public File generarBorrador(){
     return borrador;
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe generar el documento borrador. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Debe generar el documento borrador. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. generarOficial(); Sobreescritura: Opcional
 
@@ -229,7 +231,7 @@ bc. public File generarOficial(){
     return oficial;
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe generar el documento oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Debe generar el documento oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. almacenarEnGestorDocumental(File borrador, File oficial); Sobreescritura: Opcional
 
@@ -245,7 +247,7 @@ bc. public void almacenarEnGestorDocumental(File borrador, File oficial){
     }
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Debe almacenar en el gestor documental que usemos tanto el documento borrador generado como el oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Debe almacenar en el gestor documental que usemos tanto el documento borrador generado como el oficial. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. calcularFirmantes(); Sobreescritura: Opcional
 
@@ -255,7 +257,7 @@ bc. public void calcularFirmantes(){
     }
 }
 
-Una de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Su misión es calcular los firmantes válidos para presentar la solicitud, almacenándolos en el registro, para su comprobación posteriormente cuando se vaya a firmar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Su misión es calcular los firmantes válidos para presentar la solicitud, almacenándolos en el registro, para su comprobación posteriormente cuando se vaya a firmar. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. avanzarFaseBorrador(); Sobreescritura: Opcional
 
@@ -266,7 +268,7 @@ bc. public void avanzarFaseBorrador(){
     }
 }
 
-Última de las funciones utilizadas en el prepararFirmar() por defecto del Trámite Base. Indica que se ha terminado de prepararFirmar y está todo listo para firmar y registrar, de manera que se puedan ocultar algunos grupos del DSL y mostrar otros en función de los permisos utilizados. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Última de las funciones utilizadas en el _prepararFirmar()_ por defecto del Trámite Base. Indica que se ha terminado de prepararFirmar y está todo listo para firmar y registrar, de manera que se puedan ocultar algunos grupos del DSL y mostrar otros en función de los permisos utilizados. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. deshacer(); Sobreescritura: Opcional
 
@@ -275,7 +277,8 @@ bc. public void deshacer() {
     registro.fasesRegistro.save();
 }
 
-Función encargada de ejecutarse cuando el solicitante quiere modificar algún dato de la solicitud una vez ha presionado el botón de Preparar para Firmar. Su misión es volver a atrás y 'deshacer' el preparar para Firmar. Lo que se hace por defecto es resetear las variables pertinentes utilizadas en los permisos que muestran u ocultan unos grupos u otros, dejando los permisos igual que estaban antes de presionar a preparar para Firmar. No se debe hacer nada más por defecto, ya que después el propio prepararFirmar(), que vimos más arriba se encarga de las tareas de eliminar los documentos generados previamente (si hubiera), y esas cositas.
+Función encargada de ejecutarse cuando el solicitante quiere modificar algún dato de la solicitud una vez ha presionado el botón de Preparar para Firmar. 
+Su misión es volver a atrás y 'deshacer' el preparar para Firmar. Lo que se hace por defecto es resetear las variables pertinentes utilizadas en los permisos que muestran u ocultan unos grupos u otros, dejando los permisos igual que estaban antes de presionar a preparar para Firmar. No se debe hacer nada más por defecto, ya que después el propio prepararFirmar(), que vimos más arriba se encarga de las tareas de eliminar los documentos generados previamente (si hubiera), y el resto de tareas.
 
 h3. almacenarFirma(String firma, Documento documento, Firmante firmante); Sobreescritura: Opcional
 
@@ -288,7 +291,7 @@ bc. public void almacenarFirma(String firma, Documento documento, Firmante firma
     }
 }
 
-Una de las funciones que usa la función firmar() del propio Trámite Base (que también es sobreescribible). Su cometido es almacenar la firma de la presentación en el gestor documental pertinente. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
+Una de las funciones que usa la función _firmar()_ del propio Trámite Base (que también es sobreescribible). Su cometido es almacenar la firma de la presentación en el gestor documental pertinente. Como siempre, por defecto se realiza lo que está en el fragmento de código superior.
 
 h3. firmar(String firma); Sobreescritura: Opcional
 
@@ -309,7 +312,7 @@ bc. public void firmar(String firma){
     }
 }
 
-Función encargada de firmar la solicitud (el documento oficial generado) en la Presentación. Llama a su vez al almacenarFirma descrito arriba, si todo ha ido bien y si ya se ha firmado correctamente por todos los que deberían hacerlo, se llama a otra función sobreescribible que explicaremos justo a continuación.
+Función encargada de firmar la solicitud (el documento oficial generado) en la Presentación. Llama a su vez al _almacenarFirma_ descrito arriba, si todo ha ido bien y si ya se ha firmado correctamente por todos los que deberían hacerlo, se llama a otra función sobreescribible que explicaremos justo a continuación.
 
 h3. avanzarFaseFirmada(); Sobreescritura: Opcional
 
@@ -460,7 +463,9 @@ h3. prepararNuevo(); Sobreescritura: Opcional
 bc. public void prepararNuevo() {
 }
 
-Función que se encarga en el proceso de registrar de preparar un nuevo trámite y añadirlo a la variable actual. Por defecto, actualmente en el módulo FAP no se hace nada, como puede verse en el fragmento de código anterior. Se deberá sobreescribir si se quiere que se comporte como debería.
+Función que se encarga en el proceso de registrar a la hora preparar un nuevo trámite y añadirlo a la variable actual. 
+Por defecto, como puede verse en el fragmento de código anterior, aparece vacío, ya que actualmente en el módulo FAP no se hace nada.
+Se deberá sobreescribir si se quiere que se comporte como debería.
 
 h3. crearExpedienteAed(); Sobreescritura: Obligatoria
 

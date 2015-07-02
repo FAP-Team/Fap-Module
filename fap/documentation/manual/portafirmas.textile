@@ -1,0 +1,50 @@
+h1. Portafirmas
+
+h2. Descripción
+
+Se trata de una herramienta ampliamente demandada en los sistemas de administración electrónica para facilitar la usabilidad del sistema.
+
+Necesaria si se quiere mejorar los procesos de negocio con el fin de contribuir a la mejora del funcionamiento interno de las Administraciones Públicas, incrementando la eficacia y la eficiencia de las mismas mediante el uso de las tecnologías de la información, con las debidas garantías legales en la realización de sus funciones. 
+
+h2. Inyección y configuración
+
+h3. Inyección
+
+h4. Platino
+
+bc. @Override
+    protected void portafirma() {
+    	bindLazySingletonOnDev(PortafirmaFapService.class, PlatinoPortafirmaServiceImpl.class);
+    }
+
+h4. ACIISI
+
+bc. @Override
+    protected void portafirma() {
+    	bindLazySingletonOnDev(PortafirmaFapService.class, PortafirmaImpl.class);
+    }
+
+h4. File System
+
+bc. protected void portafirma() {
+		bindLazySingletonOnDev(PortafirmaFapService.class, FileSystemPortafirmaImpl.class);
+	}
+
+h3. Configuración
+
+bc. # Portafirmas
+fap.platino.portafirma.url=http://buger.gobiernodecanarias.net:8077/portafirmas/solicitudfirma/
+# Indica si se usa el portafirma de Platino
+fap.platino.portafirma=false 
+# Especifica los usuarios destinatarios. Añada parejas id usuario destinatario y nombre usuario destinatario. Todo separado por comas (no dejar espacios antes y después de una coma).
+fap.platino.portafirma.destinatarios=idUsuario1,nombreUsuario1,idUsuario2,nombreUsuario2
+# Especifica el número de días máximo para obtener la firma de la Resolución en el portafirma.
+fap.platino.portafirma.plazoMaximo=undefined
+# Especifica el número de días máximo para obtener la firma de los Oficios de Remisión en el portafirma
+fap.platino.portafirma.plazoMaximoOficios=undefined
+
+h2. "Documentación del servicio":ws-portafirma
+
+h2. Ejemplo de uso
+
+h2. "Documentación de Platino":http://www.gobiernodecanarias.org/platino/docs/portafirmas_pre.pdf

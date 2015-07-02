@@ -18,12 +18,12 @@ FAP provee diferentes tipos de resolución por defecto:
 
 h2. Personalizar la resolución.
 
-Se pueden personalizar los distintos tipos de resolucion sobreescribiendo una serie de métodos que se encuentran en la Resolución Base.
+Se pueden personalizar los distintos tipos de resolución sobreescribiendo una serie de métodos que se encuentran en la Resolución Base.
 La Resolución Base es la clase de mayor nivel en la herencia de las clases de Resolución.
 
 * getHeaderReport(): Debe devolver la plantilla HTML de la cabecera del documento oficial y borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
 
-* getFooterReport(): Debe devolver la plantilla HTML del pie de pagina del documento borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
+* getFooterReport(): Debe devolver la plantilla HTML del pie de página del documento borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
 
 * getBodyReport(): Debe devolver la plantilla HTML del documento oficial y borrador de la Resolución. Se debe conocer que la ruta es relativa a partir de app/views.
 
@@ -53,14 +53,14 @@ bc. resolucion.estado = EstadoResolucionEnum.borrador.name();
 
 * cambiaEstadoProvisional(LineaResolucionFAP linea): Cambia el tipo de resolución al estado correspondiente.
 
-Para avanzar a las distintas fases de una resolución se han creado los siguientes métodos para facilitar su manejo:
+Para avanzar a las distintas fases de una resolución, se han creado los siguientes métodos para facilitar su manejo:
 
 * avanzarFase_Borrador(ResolucionFAP resolucion): Permite avanzar del estado *"borrador"* al estado *"creada"*.
 * avanzarFase_Creada(ResolucionFAP resolucion): Permite avanzar a los siguientes estados dependiendo de la inicialización de la resolución. Si se permite firmar al Jefe de Servicio pasa de *"creada"* a *"preparada"*. Si no se permite firmar al Jefe de Servicio, pero sí al Director pasa de *"creada"* a *"firmadaJefeServicio"*. Si no se permite firmar al Jefe de Servicio y tampoco al Director pasa de *"creada"* a *"firmada"*.
 * avanzarFase_Preparada(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"pendienteFirmaJefeServicio"*.
 * avanzarFase_Preparada_FirmaJefeServicio(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"firmadaJefeServicio"*.
 * avanzarFase_Preparada_Portafirma(ResolucionFAP resolucion): Permite avanzar del estado *"preparada"* al estado *"pendienteFirmaDirector"*.
-* avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion): Permite avanzar a dos estados diferentes dependiendo de las circunstancias. Si se permite firmar al Director para del estado *"pendienteFirmaJefeServicio"* al estado *"firmadaJefeServicio"*. Si no se permite firmar al Director pasa al estado *"firmada"*.
+* avanzarFase_PendienteFirmarJefeServicio(ResolucionFAP resolucion): Permite avanzar a dos estados diferentes dependiendo de las circunstancias. Si se permite firmar al Director pasa del estado *"pendienteFirmaJefeServicio"* al estado *"firmadaJefeServicio"*. Si no se permite firmar al Director pasa al estado *"firmada"*.
 * avanzarFase_FirmadaJefeServicio(ResolucionFAP resolucion): Permite avanzar del estado *"firmadaJefeServicio"* al estado *"pendienteFirmaDirector"*.
 * avanzarFase_PendienteFirmarDirector(ResolucionFAP resolucion): Permite avanzar del estado *"pendienteFirmaDirector"* al estado *"firmada"*.
 * avanzarFase_Firmada(ResolucionFAP resolucion): Permite avanzar del estado *"firmada"* al estado *"registrada"*.
@@ -73,7 +73,7 @@ Para avanzar a las distintas fases de una resolución se han creado los siguient
 
 h2. Crear una clase que extienda de ResolucionControllerFAP.
 
-La clase ResolucionControllerFAP tiene implementados una serie de métodos que personalizan más aún la Resolución. Por ello, si se quiere personalizar se deberá sobreescribir los métodos de esta clase mediante la creación de una clase hija que extienda de esta, y que tenga implementado los métodos de la clase padre.
+La clase ResolucionControllerFAP tiene implementados una serie de métodos que personalizan más aún la Resolución. Por ello, si se quiere personalizar se deberá sobreescribir los métodos de esta clase mediante la creación de una clase hija que extienda de ésta, y que tenga implementado los métodos de la clase padre.
 
 Los métodos que posee esta clase, y que se deberán sobreescribir en la clase hija son:
 

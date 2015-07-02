@@ -2,7 +2,7 @@ h1. Properties relevantes para la Aplicación
 
 Consideraciones previas:
 
-* La properties se pueden configurar en entornos, así de esta manera podemos diferenciar cuando queremos usar unas properties y cuando otras, o simplemente que una misma property tenga valores distintos dependiendo el entorno de ejecución de la aplicación. Si arrancamos la aplicación con:
+* La properties se pueden configurar en entornos, así de esta manera podemos diferenciar cuando queremos usar unas properties y cuando otras, o simplemente que una misma property tenga valores distintos dependiendo del entorno de ejecución de la aplicación. Si arrancamos la aplicación con:
 ** play run (ó bien play start): Esto indicará el entorno por defecto, y se utilizarán en él las properties cuyo nombre este descrito tal cual.
 ** play run --%ENTORNO (ó bien play start --%ENTORNO): Esto indicaran que se utilizarán además de las de por defecto, las properties que esten construidas con el nombre: %ENTORNO.NOMBRE_PROPERTY, de este modo podemos tener una property llamada 'prod', que represente la aplicación en modo producción, y arrancar la misma de la forma: _play run --%prod_, y utilizará como properties las definidas por defecto y las propias que empiecen por %prod.NOMBRE_PROPERTY.
 
@@ -16,7 +16,7 @@ h2. Properties más útiles de Play!
 # Arranque de la base de datos (Patrón DDL de generación): *jpa.ddl=* _[ create | drop |...]_
 # Pools de ejecución a utilizar: *play.pool=* _Numero del tamaño del pool de ejecución_
 
-Para más información de las properties de Play!, así como un listado con todas las disponibles, visite su "documentación":http://playdoces.appspot.com/documentation/1.2.4/configuration
+Para más información de las properties de Play!, así como un listado con todas las disponibles, visite su "documentación":http://playdoces.appspot.com/documentation/1.2.7.2/configuration
 
 h2. Properties originarias de FAP
 
@@ -156,5 +156,5 @@ h3. Baremación
 | Valor mínimo valoración Valor Añadido | *fap.baremacion.evaluacion.valoracionValorAnadido.min* | _Integer_ | fap.baremacion.evaluacion.valoracionValorAnadido.min=10 |
 | Valor máximo para el cálculo de la fecha de antigüedad | *fap.baremacion.evaluacion.valoracionAntiguedad.max* | _Integer_ | fap.baremacion.evaluacion.valoracionAntiguedad.max=6 |
 | Valor mínimo para el cálculo de la fecha de antigüedad | *fap.baremacion.evaluacion.valoracionAntiguedad.min* | _Integer_ | fap.baremacion.evaluacion.valoracionAntiguedad.min=2 |
-| Valor máximo de la valoración del porcejtaje de la Estructura Financiera | *fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.max* | _Integer_ | fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.max=50 |
-| Valor mínimo de la valoración del porcejtaje de la Estructura Financiera | *fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.min* | _Integer_ | fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.min=25 |     
+| Valor máximo de la valoración del porcentaje de la Estructura Financiera | *fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.max* | _Integer_ | fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.max=50 |
+| Valor mínimo de la valoración del porcentaje de la Estructura Financiera | *fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.min* | _Integer_ | fap.baremacion.evaluacion.valoracionPorcentajeEstructuraFinanciera.min=25 |     

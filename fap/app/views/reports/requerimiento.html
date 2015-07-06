@@ -85,7 +85,7 @@ ul {
 #{if dbSolicitud.verificacion.requerimiento.motivo != null && !dbSolicitud.verificacion.requerimiento.motivo.trim().isEmpty()}
 	<div id="divMotivoGeneralRequerimiento">
     	<h2>Motivo General de Requerimiento:</h2> 
-		<p>${dbSolicitud.verificacion.requerimiento.motivo}</p>
+		<p>${dbSolicitud.verificacion.requerimiento.motivo.replace("\n", "</p><p>").raw().nl2br()}</p>
 	</div>
 #{/if}
 
@@ -111,8 +111,8 @@ ul {
    		#{list items:noPresentados, as:"documento"}
            <p  class="myarrow"> ${documento.descripcion}</p>                               
            <ul style="margin-left: 20px;">
-           #{if documento.motivoRequerimiento}
-              <li> ${documento.motivoRequerimiento.nl2br()} </li> </br>
+           #{if documento.motivoRequerimiento != null && !documento.motivoRequerimiento.cut("").equals("")}
+              <li><p> ${documento.motivoRequerimiento.replace("\n", "</p><p>").raw().nl2br()} </p></li> </br>
            #{/if}
            #{list items:documento.codigosRequerimiento, as:"requerimiento"}
               <li> ${requerimiento.descripcion} </li> </br>
@@ -129,8 +129,8 @@ ul {
    		#{list items:noValidos, as:"documento"}
            <p  class="myarrow"> ${documento.descripcion}</p>                               
            <ul style="margin-left: 20px;">
-           #{if documento.motivoRequerimiento}
-              <li> ${documento.motivoRequerimiento.nl2br()} </li> </br>
+           #{if documento.motivoRequerimiento != null && !documento.motivoRequerimiento.cut("").equals("")}
+              <li><p> ${documento.motivoRequerimiento.replace("\n", "</p><p>").raw().nl2br()} </p></li> </br>
            #{/if}
            #{list items:documento.codigosRequerimiento, as:"requerimiento"}
               <li> ${requerimiento.descripcion} </li> </br>

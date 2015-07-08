@@ -9,23 +9,45 @@ Entidad PeticionSVDFAP{
    Lista NombreServicioSVDFAP nombreServicio
 }
 
+Entidad AtributosSVDFAP {   
+  String idPeticion
+  String codigoCertificado
+  String timestamp
+  Integer numElementos
+  EstadoSVDFAP estado
+}
+
+Entidad EstadoSVDFAP{
+  String codigoEstado
+  String literalError
+  String codigoEstadoSecundario
+  Integer tiempoEstimadoRespuesta
+}
 
 /******* Solicitud de Transmision *******/
 
 Entidad SolicitudTransmisionSVDFAP{
-   DatosGenericosPeticionSVDFAP datosGenericos
+   DatosGenericosSVDFAP datosGenericos
    DatosEspecificosSVDFAP datosEspecificos
    ManyToOne SolicitudGenerica solicitud
-   TransmisionDatosRespuestaSVDFAP respuesta noConstruct
    Lista NombreServicioSVDFAP nombreServicio
    String estado
    DateTime fechaCreacion
-   String descargarPDF transient
+   DateTime fechaPeticion
+   DateTime fechaRespuesta
+   Documento justificanteSVD noConstruct
 }
 
-Entidad DatosGenericosPeticionSVDFAP{
+Entidad DatosGenericosSVDFAP{
+   EmisorSVDFAP emisor
    SolicitanteSVDFAP solicitante
    TitularSVDFAP titular
+   TransmisionSVDFAP transmision
+}
+
+Entidad EmisorSVDFAP{
+ String nif
+ String nombreEmisor
 }
 
 Entidad SolicitanteSVDFAP{
@@ -36,7 +58,32 @@ Entidad SolicitanteSVDFAP{
    String unidadTramitadora
    ProcedimientoSVDFAP procedimiento
    FuncionarioSVDFAP funcionario
-   Lista TipoConsentimiento consentimiento
+   Lista TipoConsentimientoSVDFAP consentimiento
+}
+
+Entidad TitularSVDFAP{
+ String documentacion
+ String nombreCompleto
+ String nombre
+ String apellido1
+ String apellido2
+ Lista TipoDocumentacionSVDFAP tipoDocumentacion
+ String identificador
+ String numeroSoporte
+ String nacionalidad
+ String nombrePadre
+ String nombreMadre
+ DateTime fechacaducidad
+ SexoSVDFAP sexo
+ NacimientoSVDFAP datosNacimiento
+ DatosDireccionSVDFAP datosDireccion
+}
+
+Entidad TransmisionSVDFAP{
+ String codigoCertificado
+ String idSolicitud
+ String idTransmision
+ DateTime fechaGeneracion
 }
 
 Entidad ProcedimientoSVDFAP {
@@ -48,19 +95,19 @@ Entidad FuncionarioSVDFAP{
    String nombreCompletoFuncionario
 }
 
-Entidad TitularSVDFAP{
- String documentacion
- String nombreCompleto
- String nombre
- String apellido1
- String apellido2
- Lista TipoDocumentacion tipoDocumentacion
+Entidad DatosEspecificosSVDFAP {
+   DatosEspecificosIdResiSVDFAP datosEspecificosIdResi
+   EstadoSVDFAP estado
+   EstadoSVDFAP estadoResultado
 }
 
-Entidad DatosEspecificosSVDFAP {
-	String tipoSolicitante
-	SolicitudEspecificaSVDFAP solicitud
+Entidad DatosEspecificosIdResiSVDFAP {
+  String tipoSolicitante
+  SolicitudEspecificaSVDFAP solicitud
+  DomicilioSVDFAP domicilio
+  TitularSVDFAP datosTitular 
 }
+
 
 Entidad SolicitudEspecificaSVDFAP{
    ResidenciaSVDFAP residencia
@@ -83,84 +130,6 @@ Entidad NacimientoSVDFAP{
   Lista municipios municipio
 }
 
-/********** Entidades Respuesta - Peticion Sincrona  *************/
-
-Entidad TransmisionDatosRespuestaSVDFAP{
-    DateTime fechaRespuesta
-    DatosGenericosRespuestaSVDFAP datosGenericos
-    DatosEspecificosRespuestaSVDFAP datosEspecificos
-}
-
-/* Datos genericos Respuesta */
-
-Entidad DatosGenericosRespuestaSVDFAP{
-   EmisorSVDFAP emisor
-   SolicitanteSVDFAP solicitante
-   TitularSVDFAP titular
-   TransmisionSVDFAP transmision
-}
-
-/* Datos especificos Respuesta */
-
-Entidad DatosEspecificosRespuestaSVDFAP {
-	EstadoSVDFAP estado
-  	EstadoResultadoSVDFAP estadoResultado
- 	DomicilioRespuestaSVDFAP domicilio
- 	DatosTitularRespuestaSVDFAP datosTitular 
-}
-
-Entidad AtributosSVDFAP {   
-  String idPeticion
-  String codigoCertificado
-  String timestamp
-  Integer numElementos
-  EstadoRespuestaSVDFAP estado
-}
-
-Entidad EstadoRespuestaSVDFAP {
-  String codigoEstado
-  String literalError
-  String codigoEstadoSecundario
-  Integer tiempoEstimadoRespuesta
-}
-
-Entidad EmisorSVDFAP{
- String nif
- String nombreEmisor
-}
-
-Entidad TransmisionSVDFAP{
- String codigoCertificado
- String idSolicitud
- String idTransmision
- DateTime fechaGeneracion
-}
-
-Entidad DatosTitularRespuestaSVDFAP{
-  String identificador
-  String numeroSoporte
-  String nombre
-  String apellido1
-  String apellido2
-  String nacionalidad
-  String nombrePadre
-  String nombreMadre
-  DateTime fechacaducidad
-  SexoSVDFAP sexo
-  NacimientoSVDFAP datosNacimiento
-  DatosDireccionSVDFAP datosDireccion
-}
-
-Entidad EstadoSVDFAP{
-  String codigoEstado
-  String literalError
-}
-
-Entidad EstadoResultadoSVDFAP{
-  String codigoEstado
-  String literalError
-}
-
 Entidad SexoSVDFAP {
   String nombre
   String valor
@@ -172,7 +141,7 @@ Entidad DatosDireccionSVDFAP {
   ViaSVDFAP datosVia
 }
 
-Entidad DomicilioRespuestaSVDFAP {
+Entidad DomicilioSVDFAP {
   Lista provincias provincia
   Lista municipios municipio
   EntidadColectivaSVDFAP entColectiva
@@ -234,6 +203,33 @@ Entidad UltimaVariacionSVDFAP{
    DateTime fecha
 }
 
+Entidad ComboNombreServicioSVDFAP extends Singleton  {
+	Lista NombreServicioSVDFAP nombreServicio
+}
+
+Entidad ComboFiltroExpedientesSVDFAP extends Singleton{
+    Lista FiltroExpedientesSVDFAP filtroExpedientes
+}
+
+/******* Para los parámetros de Administración *******/
+
+Entidad ParametroSVDFAP {
+    String descripcion
+    String clave
+    String valor
+}
+
+Entidad ParametrosServicioSVDFAP {
+    String nombreServicio
+    String codigoProcedimiento
+    String nombreProcedimiento
+    String codigoCertificado
+    Boolean consentimientoLey
+    Lista CaducidadCertificadosSVDFAP caducidadCertificados
+}
+
+/******* Listas *******/
+
 Lista tipoEstadoPeticionSVDFAP crearEnumerado {
    creada: "Creada"
    enviada : "Enviada"
@@ -244,47 +240,40 @@ Lista tipoEstadoPeticionSVDFAP crearEnumerado {
 }
 
 Lista NombreServicioSVDFAP crearEnumerado {
-	identidad: "Identidad"
-	residencia: "Residencia"
-}
-
-Entidad ComboNombreServicioSVDFAP extends Singleton  {
-	Lista NombreServicioSVDFAP nombreServicio
+    identidad: "Identidad"
+    residencia: "Residencia"
 }
 
 Lista Espanol crearEnumerado {
-	s: "Sí"
-	n: "No"
+    s: "Sí"
+    n: "No"
 }
 
-Lista FiltroExpedientes crearEnumerado {
-    caducados: "Caducados"
+Lista FiltroExpedientesSVDFAP {
+     fecha: "Por fecha"
+     caducados: "Caducados"
+}
+
+Lista FiltroExpedientesCaducidadSVDFAP crearEnumerado {
     un_dia: "Caduca en un día"
     una_semana: "Caduca en una semana"
     un_mes: "Caduca en un mes"
 }
 
-Entidad ComboFiltroExpedientes {
-    Lista FiltroExpedientes filtroExpedientes
-}
-
-
-/******* Para los parámetros de Administración *******/
-
-Entidad ParametroSVD {
-    String descripcion
-    String clave
-    String valor
-}
-
-Entidad ParametrosServicio {
-    String nombreServicio
-    String codigoCertificado
-    Boolean consentimientoLey
-    Lista CaducidadCertificados caducidadCertificados
-}
-
-Lista CaducidadCertificados crearEnumerado {
+Lista CaducidadCertificadosSVDFAP crearEnumerado {
     seis_meses: "6 meses"
     un_anio: "1 año"
+}
+
+Lista TipoDocumentacionSVDFAP crearEnumerado {
+    CIF: "CIF"
+    NIF: "NIF"
+    DNI: "DNI"
+    PASAPORTE: "PASAPORTE"
+    NIE: "NIE"
+}
+
+Lista TipoConsentimientoSVDFAP crearEnumerado {
+    Si: "Si"
+    Ley: "Ley"
 }

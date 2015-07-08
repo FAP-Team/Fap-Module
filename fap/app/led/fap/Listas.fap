@@ -77,19 +77,6 @@ Lista tipoCentros {
     tipo53:"Tipo 5.3 CIDE de proximidad, sector turismo-rural (islas no capitalinas)"
 }
 
-Lista TipoDocumentacion crearEnumerado {
-	CIF: "CIF"
-	NIF: "NIF"
-	DNI: "DNI"
-	PASAPORTE: "PASAPORTE"
-	NIE: "NIE"
-}
-
-Lista TipoConsentimiento crearEnumerado {
-	Si: "Si"
-	Ley: "Ley"
-}
-
 Lista TiposParticipacion crearEnumerado {
 	creador : "Creador"
 	solicitante: "Solicitante"

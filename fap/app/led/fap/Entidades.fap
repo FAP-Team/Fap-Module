@@ -63,12 +63,14 @@ Entidad SolicitudGenerica tableName = "solicitud" auditable{
 	String fechaARestaurarStr transient
 	DateTime fechaFinDeAceptacion
 	DateTime fechaFinDeAlegacion
-	Respuesta respuestaSvd
-	PeticionSVD peticion
+//	Respuesta respuestaSvd
+//	PeticionSVD peticion
 	OneToMany Registro registros
 
+//  Verificacion de datos SVD
 	Lista NombreServicioSVDFAP nombreServicio transient
 	Lista tipoEstadoPeticionSVDFAP estadoPeticionSVD
+//  Verificacion de datos SVD
 
 	//Subvenciones
 	DeclaracionSubvenciones declaracionSubvenciones

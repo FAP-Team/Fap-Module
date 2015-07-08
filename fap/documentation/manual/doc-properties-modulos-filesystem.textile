@@ -1,0 +1,4 @@
+h2. FileSystem Gestor Documental
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| FileSystem Gestor Documental | *fap.fs.gestorDocumental.path* | _String_ | fap.fs.gestorDocumental. path=gestorDocumental |

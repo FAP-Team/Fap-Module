@@ -1,6 +1,6 @@
 h1. Configuración de logs
 
-Para los logs de las aplicaciones se utiliza log4j. La documentación completa de la configuración de la librería está en "http://logging.apache.org/log4j/1.2/manual.html":http://logging.apache.org/log4j/1.2/manual.html.
+Para los logs de las aplicaciones se utiliza log4j. La documentación completa de la configuración de la librería está en el siguiente enlace "Click aquí":http://logging.apache.org/log4j/1.2/manual.html.
 
 En este sección se resumen algunas configuraciones que pueden ser útiles:
 

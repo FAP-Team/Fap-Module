@@ -10,7 +10,7 @@ bc. play new holamundo
 
 bc. cd holamundo
 
-3. Sobreescribe las dependencias en el fichero "conf/dependencies.yml" (Nota: Cambia el número de versión por la última versión disponible del módulo):
+3. Sobreescribe las dependencias en el fichero @conf/dependencies.yml@ (*Nota:* Cambia el número de versión por la última versión disponible del módulo):
 
 bc. require:
     - play 1.2.7.2
@@ -43,7 +43,7 @@ bc. play deps
 
 bc. play fap:init
 
-8. Edita el fichero *app/led/Solicitud.fap* y añade un nuevo mensaje:
+8. Edita el fichero @app/led/Solicitud.fap@ y añade un nuevo mensaje:
 
 bc. Formulario Solicitud {
 	Pagina Solicitante inicial {
@@ -51,7 +51,8 @@ bc. Formulario Solicitud {
 	}
 }
 
-9. Genera la aplicación. Este paso lo tendrás que repetir cada vez que modifiques algún fichero *.fap*. Puedes generar la aplicación mientras está arrancada. Actualiza la página en el navegador para ver los cambios reflejados. Existen diferentes opciones que puedes pasar al generar la aplicación, documentate acerca de ella "aqui":curso-generar 
+9. Genera la aplicación. Este paso lo tendrás que repetir cada vez que modifiques algún fichero *.fap*. Puedes generar la aplicación mientras está arrancada, siempre y cuando, actualices la página en el navegador despúes de hacerlo, si no, no podrás ver los cambios reflejados. 
+Existen diferentes opciones que puedes pasar al generar la aplicación, puedes documentarte acerca de ella siguiendo este enlace "Click aquí":curso-generar 
 
 bc. play fap:generate
 
@@ -59,9 +60,10 @@ bc. play fap:generate
 
 bc. play run
 
-11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo, en producción la contraseña es *123456*. Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
+11. A partir de este momento tenemos la aplicación ejecutándose. Por defecto, la dirección es "http://localhost:9000":http://localhost:9000. El usuario por defecto es *admin* y la contraseña no se comprueba cuando se está en modo desarrollo, en producción la contraseña es *123456*. 
+Crea una nueva solicitud e irás a la página con el mensaje que acabas de crear.
 
-Si quiere crear el proyecto de forma automática, pinche "aquí":creacion-automatica-proyecto
+Si quieres  saber como se crea un proyecto de forma automática, sigue la sicuiente documentación "Click aquí":creacion-automatica-proyecto
 
 h2. Configuración de Eclipse
 
@@ -74,13 +76,14 @@ h3. Configuración para generar desde Eclipse
 Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
 * Abrir Run/External Tools/External Tools Configurations...
 * Añadir un nuevo Program
-** Location (ruta a Play): ruta_play/play.bat
+** Location (ruta a Play): @ruta_play/play.bat@
 ** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
-** Arguments: fap:generate --opciones
+** Arguments: @fap:generate --opciones@
 
 h3. Arrancar aplicación desde Eclipse
 
-También puedes lanzar la aplicación desde Eclipse, sin necesidad de hacer un _play run_ en una consola (Esta opción sólo es para modo desarrollo _play run_, si quieres ejecutar la aplicación en modo producción te aconsejamos que lo hagas en una consola con _play run --%prod_). Para ello basta con ir a la carpeta Eclipse de tu aplicación, desde el Package Explorer de tu Eclipse, y dentro de esta clickar con el botón derecho sobre el archivo *_${NombreApp}_.launch* y en el menú desplegable que aparecerá, ir a _Run as_ y pulsar sobre el *_${NombreApp}_* que te saldrá con un icono Java.
+También puedes lanzar la aplicación desde Eclipse, sin necesidad de hacer un @play run@ en una consola (La opción de @play run@ sólo es para modo desarrollo, si quieres ejecutar la aplicación en modo producción te aconsejamos que lo hagas en una consola con @play run --%prod@). 
+Para ello basta con ir a la carpeta Eclipse de tu aplicación, desde el Package Explorer de tu Eclipse, y dentro de esta clickar con el botón derecho sobre el archivo *_${NombreApp}_.launch* y en el menú desplegable que aparecerá, ir a _Run as_ y pulsar sobre el *_${NombreApp}_* que te saldrá con un icono Java.
 
 h2. Trabajar con el Código Fuente del Módulo FAP
 

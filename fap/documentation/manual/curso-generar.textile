@@ -9,20 +9,20 @@ h2. Configuración para generar desde Eclipse
 Puedes configurar Eclipse para generar la aplicación y no tener que hacerlo desde la consola:
 * Abrir Run/External Tools/External Tools Configurations...
 * Añadir un nuevo Program
-** Location (ruta a Play): ruta_play/play.bat
+** Location (ruta a Play): @ruta_play/play.bat@
 ** Working directory: Ruta raíz del proyecto (Seleccionar con Browse Workspace)
-** Arguments: fap:generate --opciones
+** Arguments: @fap:generate --opciones@
 
 h2. Desarrollo
 
 h3. Opciones adicionales
 
-*  **--dev**: No añade en el classpath las librerías compiladas y añade las rutas $FAPSDK/compiler-src/es.fap.simpleled.generator/bin y $FAPSDK/compiler-src/es.fap.simpleled/bin de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
+*  **--dev**: No añade en el classpath las librerías compiladas y añade las rutas @$FAPSDK/compiler-src/es.fap.simpleled.generator/bin@ y @$FAPSDK/compiler-src/es.fap.simpleled/bin@ de manera que permite trabajar directamente con el generador compilado con Eclipse, sin tener que exportar el jar.
 bc. play fap:generate --dev
 
-*  **--debug**: Por defecto, se utiliza el fichero de log que está en $modulofap/compiler/config/log4.properties. Pasando este parámetro se utiliza $modulofap/compiler/config/log4-debug.properties
+*  **--debug**: Por defecto, se utiliza el fichero de log que está en @$modulofap/compiler/config/log4.properties@. Pasando este parámetro se utiliza @$modulofap/compiler/config/log4-debug.properties@
 bc. play fap:generate --debug
 
-*  **--diff**: Indica que queremos generar el fichero .patch (app/DiffGen.patch) con las diferencias que pueda haber entre lo que tenemos actualmente y lo que se va a generar, respecto a los ficheros GEN. Además de aquellos ficheros GEN que vayan a cambiar, guarda una copia de lo que tiene el fichero antes de cambiar, en el subdirectorio Diff, dentro de donde se encuentra el fichero GEN en cuestión. Este parámetro es compatible con los dos anteriores.
+*  **--diff**: Indica que queremos generar el fichero ._patch_ (@app/DiffGen.patch@) con las diferencias que pueda haber entre lo que tenemos actualmente y lo que se va a generar, respecto a los ficheros GEN. Además de aquellos ficheros GEN que vayan a cambiar, guarda una copia de lo que tiene el fichero antes de cambiar, en el subdirectorio Diff, dentro de donde se encuentra el fichero GEN en cuestión. Este parámetro es compatible con los dos anteriores.
 bc. play fap:generate --diff
 

@@ -10,7 +10,6 @@ Formulario Administracion permiso=administrador{
 			Enlace "Tramites Verificables" pagina=TramitesVerificables
 			Enlace "Gestionar Baremación" pagina=ActivarBaremacion
 			Enlace "Configuración SVD" permiso=adminOrGestor pagina=ConfiguracionSVD
-			Enlace "Cesion de Datos" permiso=adminOrGestor pagina=GenerarFichCesiones
 			Enlace "Requerimientos" pagina=ConfiguracionQuartz
 			Enlace "Tipos Certificados" pagina=ConfigurarCertificados
 			Enlace "Tabla de tablas" pagina=TablaDeTablas
@@ -557,102 +556,6 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 		Fecha final campo=TipoCertificado.fechaFin titulo="Fecha fin de la emisión"
 	}
 
-
-	
-	//Muestra todas las peticiones de cesion de datos realizadas sobre las solicitudes de la aplicacion
-	Pagina GenerarFichCesiones titulo= "Peticiones de Cesiones de Datos"{
-		Tabla tblCesiones campo=PeticionCesiones titulo="Tabla de Peticiones de Cesiones" paginaCrear=NuevaCesion paginaEditar=EditarCesion paginaLeer=LeerCesion color: porDefecto{
-			Columna titulo="Tipo" campo=PeticionCesiones.tipo
-			Columna titulo="Fecha Generación" campo=PeticionCesiones.fechaGen
-			Columna titulo="Fecha de Validez" campo=PeticionCesiones.fechaValidez
-			Columna titulo="Estado" campo=PeticionCesiones.estado
-		}
-	}
-	
-	//Nueva petición de cesión de datos
-	Pagina NuevaCesion campo=PeticionCesiones titulo="Nueva Petición de Cesión de Datos" noForm{
-		Form formTipoCesion{
-			Grupo permiso=permisoTipoElegido borde=true titulo="Filtrar expedientes"{
-				Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión" requerido
-				Boton btnGuardar titulo="Guardar"
-			}
-		}
-
-		//Elegir de entre todas las solicitudes a cuales quiero generar la cesion de datos
-		Grupo permiso=permisoTipo titulo="Expedientes autorizados"{
-			Grupo borde=true titulo="Seleccionar Expedientes"{
-				Combo cmbSeleccion campo=PeticionCesiones.seleccion titulo="Tipo de selección"
-				Grupo borde=false mostrarSiCombo cmbSeleccion="certificadoFecha"{
-				Fecha fechaLimite campo=PeticionCesiones.fechaCorte titulo="Fecha límite"
-			} 
-			Enlace seleccion titulo="Seleccionar" estilo="btn" codigojs="" //Sobreescrito
-			}
-			Tabla tblSolicitudes campo=SolicitudGenerica seleccionable="Generar Peticion" {
-				Columna titulo="ID" campo=SolicitudGenerica.id
-				Columna titulo="Expediente" campo=SolicitudGenerica.expedienteAed.idAed
-				Columna titulo="Estado Interno" campo=SolicitudGenerica.estadoValue
-				Columna titulo="Estado" campo=SolicitudGenerica.estado
-				Columna titulo="Estado Usuario" campo=SolicitudGenerica.estadoUsuario
-				Columna titulo="ID Solicitante" campo=SolicitudGenerica.solicitante.id
-				Columna titulo="Nombre Solicitante" campo=SolicitudGenerica.solicitante.nombreCompleto
-			}
-		}
-	}
-	
-	Pagina LeerCesion campo=PeticionCesiones titulo="Petición de Cesión de Datos"{
-		Grupo titulo = "Petición de Cesión de Datos" permiso=noEditable{
-			Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
-			Grupo grupoFicheros titulo="Ficheros disponibles"{
-				Grupo borde=false permiso=verPeticionCesion{
-					Enlace descargarFicheroP campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar fichero de petición" destino="_blank"
-				}
-				Grupo borde=false permiso=verRespuestaCesion{
-					Enlace descargarFicheroR campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Descargar fichero de respuesta" destino="_blank"
-				}
-			}
-		}
-		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
-	}
-	
-	Pagina EditarCesion campo=PeticionCesiones permiso=ultimaEditable noForm titulo="Petición de Cesión de Datos"{
-		Accion editar redirigir=anterior
-			Grupo titulo="Datos de cesion: Descargar fichero de petición" { 
-				Enlace descargarFichero campo=PeticionCesiones.fichPeticion.urlDescarga titulo="Descargar" destino="_blank" estilo="btn"
-			}
-		Grupo titulo="Datos de Cesión: subir fichero de respuesta"{
-			Form formCesionFichSubida{
-					Grupo borde=false permiso=tipoAsignado{
-						Grupo borde=false permiso=noEditable{
-							Combo cmbTipo campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
-						}
-						Boton btnGuardar titulo="Guardar" 
-					}
-				}
-		
-			Form formCesionFichRespuesta{
-				Grupo borde=false permiso=responderPeticion{
-					SubirArchivo subirArchivo campo=PeticionCesiones.fichRespuesta mimes="text/plain"
-					Boton tratarFich titulo="Subir fichero de respuesta"
-				}
-			}
-			
-			Form formCesionAplicarCambios{
-				Grupo borde=false permiso=aplicarCambios {
-					Enlace verFichero campo=PeticionCesiones.fichRespuesta.urlDescarga titulo="Ver el fichero subido" destino="_blank" estilo="btn"
-					Boton cambiarFichero titulo="Subir otro documento de respuesta"
-					Boton aplicarCambios titulo="Aplicar cambios"
-				}
-			}
-			Grupo permiso=cesionTerminada titulo="Cesion Finalizada"{
-				Grupo borde=false permiso=noEditable{
-					Combo cmbTipoFin campo=PeticionCesiones.tipo titulo="Tipo de Cesión"
-				}
-			}
-		}
-		//Boton btnVolver titulo="Volver"
-		Enlace enlaceVolver titulo="Volver" pagina=GenerarFichCesiones estilo="btn"
-	}
-	
 	//---------------------------------------------------------------------------
    //------------------------- Unidades Orgánicas ------------------------------
    //---------------------------------------------------------------------------
@@ -692,32 +595,40 @@ En los campos **Para** y **CC** puede poner varios destinatarios separados por \
 	   Texto codigoReceptora campo=ReturnUnidadOrganicaFap.codigoReceptora titulo="Codigo Receptora"
 	}
 
+   //---------------------------------------------------------------------------
+   //------------------------- Verificación de datos (SVD) ---------------------
+   //---------------------------------------------------------------------------
+    
 	
     Pagina ConfiguracionSVD titulo="Configuración SVD" perteneceA="Administracion" {
-       Tabla tablaPropiedadesGenerales titulo="Tabla de parámetros Generales de Configuración" campo=ParametroSVD popup=PopupParametrosSVD {
-            Columna campo=ParametroSVD.descripcion titulo="Descripción"
-            Columna campo=ParametroSVD.clave titulo="Clave" ancho="120"
-            Columna campo=ParametroSVD.valor titulo="Valor" expandir
+       Tabla tablaPropiedadesGenerales titulo="Tabla de parámetros Generales de Configuración" campo=ParametroSVDFAP popup=PopupParametrosSVD {
+            Columna campo=ParametroSVDFAP.descripcion titulo="Descripción"
+            Columna campo=ParametroSVDFAP.clave titulo="Clave" ancho="120"
+            Columna campo=ParametroSVDFAP.valor titulo="Valor" expandir
         }
         
-        Tabla tablaPropiedadesEspecificas titulo="Tabla de parámetros Específicos por Servicio" campo=ParametrosServicio popup=PopupParametrosServicio {
-            Columna campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio"
-            Columna campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" ancho="120"
-            Columna campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley" expandir
-            Columna campo=ParametrosServicio.caducidadCertificados titulo="Vigencia certificado" expandir
+        Tabla tablaPropiedadesEspecificas titulo="Tabla de parámetros Específicos por Servicio" campo=ParametrosServicioSVDFAP popup=PopupParametrosServicio {
+            Columna campo=ParametrosServicioSVDFAP.nombreServicio titulo="Nombre del Servicio" ancho="120"
+            Columna campo=ParametrosServicioSVDFAP.consentimientoLey titulo="Consentimiento por Ley" ancho="120"
+            Columna campo=ParametrosServicioSVDFAP.codigoCertificado titulo="Código Certificado" ancho="120"
+            Columna campo=ParametrosServicioSVDFAP.caducidadCertificados titulo="Vigencia certificado" ancho="120"
+            Columna campo=ParametrosServicioSVDFAP.codigoProcedimiento titulo="Código de Procedimiento" ancho ="180"
+            Columna campo=ParametrosServicioSVDFAP.nombreProcedimiento titulo="Nombre del Procedimiento" expandir
         }
 	}
 	
-	Popup PopupParametrosSVD campo=ParametroSVD titulo="Parámetros Generales SVD"{
-        Texto campo=ParametroSVD.descripcion titulo="Descripción"
-        Texto campo=ParametroSVD.clave titulo="Clave" requerido
-        Texto campo=ParametroSVD.valor titulo="Valor" requerido
+	Popup PopupParametrosSVD campo=ParametroSVDFAP titulo="Parámetros Generales SVD"{
+        Texto campo=ParametroSVDFAP.descripcion titulo="Descripción"
+        Texto campo=ParametroSVDFAP.clave titulo="Clave" requerido
+        Texto campo=ParametroSVDFAP.valor titulo="Valor" requerido
     }
     
-    Popup PopupParametrosServicio campo=ParametrosServicio titulo="Parámetros Específicos Servicio"{
-        Texto campo=ParametrosServicio.nombreServicio titulo="Nombre del Servicio" requerido
-        Texto campo=ParametrosServicio.codigoCertificado titulo="Código Certificado" requerido
-        Check campo=ParametrosServicio.consentimientoLey titulo="Consentimiento por Ley"
-        Combo campo=ParametrosServicio.caducidadCertificados titulo="Vigencia certificado"
+    Popup PopupParametrosServicio campo=ParametrosServicioSVDFAP titulo="Parámetros Específicos Servicio"{
+        Texto campo=ParametrosServicioSVDFAP.nombreServicio titulo="Nombre del Servicio" requerido
+        Texto campo=ParametrosServicioSVDFAP.codigoCertificado titulo="Código Certificado" requerido
+        Texto campo=ParametrosServicioSVDFAP.nombreProcedimiento titulo="Nombre del Procedimiento" 
+        Texto campo=ParametrosServicioSVDFAP.codigoProcedimiento titulo="Código del Procedimiento" 
+        Check campo=ParametrosServicioSVDFAP.consentimientoLey titulo="Consentimiento por Ley"
+        Combo campo=ParametrosServicioSVDFAP.caducidadCertificados titulo="Vigencia certificado"
     }
 }

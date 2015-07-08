@@ -14,7 +14,6 @@ import services.PortafirmaFapService;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
-import services.SVDService;
 import services.TercerosService;
 import services.MensajeService;
 import services.VerificarDatosService;
@@ -32,7 +31,6 @@ import services.filesystem.FileSystemPortafirmaImpl;
 import services.filesystem.FileSystemPublicarServiceImpl;
 import services.filesystem.FileSystemRegistroLibroResolucionesServiceImpl;
 import services.filesystem.FileSystemRegistroService;
-import services.filesystem.FileSystemSVDServiceImpl;
 import services.filesystem.FileSystemTercerosServiceImpl;
 import services.filesystem.FileSystemVerificarDatosServiceImpl;
 import services.filesystem.FilesystemTicketingServiceImpl;
@@ -43,6 +41,8 @@ import services.openofice.OpenOfficeConversor;
 import services.platino.PlatinoTercerosServiceImpl;
 import services.platino.PlatinoMensajeServiceImpl;
 import services.ticketing.TicketingService;
+import services.verificacionDatos.FileSystemSVDServiceImpl;
+import services.verificacionDatos.SVDService;
 import services.NotificacionService;
 
 public class FapModule extends PlayAbstractModule {

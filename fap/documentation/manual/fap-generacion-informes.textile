@@ -2,7 +2,8 @@ h1. Generación de informes en PDF
 
 h2. Introducción
 
-Para la generación de los informes de play se utiliza el modulo "pdf":http://www.playframework.org/modules/pdf. También está disponible la clase **reports.Report** del módulo que contiene algunos métodos de ayuda para crear los informes.
+Para la generación de los informes de play se utiliza el modulo PDF cuya documentación se puede esncontrar sifuiendo este enlace "Click aquí":http://www.playframework.org/modules/pdf. 
+No obstante, también está disponible la clase **reports.Report** del módulo, la cual contiene algunos métodos de ayuda para crear los informes.
 
 h2. Renderizar la plantilla
 
@@ -46,9 +47,7 @@ Los parámetros que se les pasen a *renderTmpFile* y a *renderResponse* son a lo
 
 h2. Escribir la plantilla
 
-Las plantillas se definen utilizando HTML, CSS y los tags de play. Puedes consultar la lista de tags disponibles en:
-"http://www.playframework.org/documentation/1.2.2/templates":http://www.playframework.org/documentation/1.2.2/templates 
-"http://www.playframework.org/documentation/1.2.2/tags":http://www.playframework.org/documentation/1.2.2/tags
+Las plantillas se definen utilizando HTML, CSS y los tags de play. Puedes consultar la lista de tags disponibles en los siguientes enlaces: "Templates":http://www.playframework.org/documentation/1.2.2/templates y "Tags":http://www.playframework.org/documentation/1.2.2/tags
 
 h3. Ejemplo de plantilla
 
@@ -158,7 +157,6 @@ h3. CSS de impresión
 
 Existen una serie de propiedades de CSS específicas para la impresión que es conveniente utilizar a la hora de darle formato a la plantilla.
 
-Enlaces a documentación CSS:
-* "Paged Media w3c":http://www.w3.org/TR/CSS21/page.html
+Si requiere algún tipo de documentación sobre CSS recomendamos encarecidamente la siguiente web: "Paged Media w3c":http://www.w3.org/TR/CSS21/page.html
 
 

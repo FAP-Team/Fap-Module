@@ -4,4 +4,4 @@ Para crear un war que se pueda desplegar en un contenedor de aplicación, ejecut
 
 bc. play war --zip -o <destino_del_war> --%prod
 
-Puedes consultar más información acerca de cómo desplegar las aplicación en la "documentación de play":http://www.playframework.org/documentation/1.2.2/deployment
+Puedes consultar más información acerca de cómo desplegar las aplicación en la documentación de play "Click aquí":http://www.playframework.org/documentation/1.2.2/deployment

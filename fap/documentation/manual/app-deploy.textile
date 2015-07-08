@@ -19,7 +19,7 @@ Deshabilita el login por usuario y contraseña en el modo producción.
 
 h2. Configuración de los logs
 
-Es importante configurar los logs cuando la aplicación se pone en modo producción. En "esta":app-logs sección se explica como realizar esta configuración.
+Es importante configurar los logs cuando la aplicación se pone en modo producción. En  el siguiente enlace se explica como realizar dicha configuración "Click aquí":app-logs .
 
 Alguna de las configuraciones que utilizamos nosotros es:
 
@@ -29,7 +29,7 @@ Alguna de las configuraciones que utilizamos nosotros es:
 
 h2. Comprobar que todo funciona en local
 
-Antes de desplegar la aplicación es neceasrio comprobar que todo funciona correctamente en modo de producción. 
+Antes de desplegar la aplicación es necesario comprobar que todo funciona correctamente en modo de producción. 
 
 bc.. play run --%prod
 
@@ -57,7 +57,8 @@ Para iniciar y parar la aplicación en segundo plano se puede utilizar los coman
 bc.. play start
 play stop
 
-p. Cuando se ejecuta el comando @start@ se crea un fichero @server.pid@ que contiene el pid del proceso del servidor. Mientras este fichero exista, la aplicación no se podrá volver a arrancar. Con el comando @play stop@, el servidor se para y se elimina este fichero. Si el servidor se para de forma incorrecta y el fichero server.pid no se borra es necesario borrarlo a mano antes de poder volver a arrancar la aplicación. 
+p. Cuando se ejecuta el comando @start@ se crea un fichero @server.pid@ que contiene el pid del proceso del servidor. Mientras este fichero exista, la aplicación no se podrá volver a arrancar. Con el comando @play stop@, el servidor se para y se elimina este fichero. 
+Si el servidor se para de forma incorrecta y el fichero @server.pid@ no se borra es necesario borrarlo a mano antes de poder volver a arrancar la aplicación. 
 
 h2. Instalar la aplicación como un servicio de windows
 

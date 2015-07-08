@@ -1,22 +1,24 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-import validation.ValueFromTable;
+import java.util.*;
+import javax.persistence.*;
+import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.data.validation.*;
+import org.joda.time.DateTime;
+import models.*;
+import messages.Messages;
+import validation.*;
+import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 
 // === IMPORT REGION END ===
 
-/***** Peticion ******/
+/***** Peticion al Servicio ******/
 
 @Entity
 public class PeticionSVDFAP extends FapModel {
@@ -34,16 +36,17 @@ public class PeticionSVDFAP extends FapModel {
 	public List<SolicitudTransmisionSVDFAP> solicitudesTransmision;
 
 	@ValueFromTable("tipoEstadoPeticionSVDFAP")
+	@FapEnum("enumerado.fap.gen.TipoEstadoPeticionSVDFAPEnum")
 	public String estadoPeticion;
 
 	@ValueFromTable("NombreServicioSVDFAP")
+	@FapEnum("enumerado.fap.gen.NombreServicioSVDFAPEnum")
 	public String nombreServicio;
 
 	public PeticionSVDFAP() {
 		init();
 	}
 
-	@Override
 	public void init() {
 
 		if (atributos == null)
@@ -59,53 +62,11 @@ public class PeticionSVDFAP extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	public void rellenarSolicitud(List<SolicitudGenerica> solicitudes) {
-
-		for (SolicitudGenerica solicitud : solicitudes) {
-			DatosGenericosPeticionSVDFAP datosGenericos = rellenarDatosGenericos(solicitud);
-			SolicitudTransmisionSVDFAP solicitudTransmision = new SolicitudTransmisionSVDFAP(solicitud, datosGenericos, null);
-			this.solicitudesTransmision.add(solicitudTransmision);
-		}
-
-	}
-
-	public DatosGenericosPeticionSVDFAP rellenarDatosGenericos(SolicitudGenerica solicitud) {
-		return null;
-
-		//		FuncionarioSVDFAP funcionario = new FuncionarioSVDFAP(AgenteController.getAgente().username, AgenteController.getAgente().name);
-		//		ProcedimientoSVDFAP procedimiento = new ProcedimientoSVDFAP("codigoProcedimiento", "nombreProcedimiento");
-		//
-		//		SolicitanteSVDFAP solicitante = new SolicitanteSVDFAP(FapProperties.get("identificadorSolicitante"), FapProperties.get("nombreCompleto"), solicitud.expedienteAed.idAed, "SI", "finalidad", "unidadTramitadora", funcionario, procedimiento);
-		//
-		//		TitularSVDFAP titular = new TitularSVDFAP("nombre del titular", "nombre completo del titular anterior", "primer apellido", "segundo apellido", "nif del titular del expediente de la solicitudGenerica", "Tipo de documento (NIF, DNI, NIE, CIF)");
-		//
-		//		DatosGenericosPeticionSVDFAP datosGenericos = new DatosGenericosPeticionSVDFAP(solicitante, titular);
-		//
-		//		return datosGenericos;
-	}
-
-	public DatosEspecificosPeticionSVDFAP rellenarDatosEspecificos(SolicitudGenerica solicitud) {
-		return null;
-		//		SolicitanteDatosSVDFAP solicitanteDatos = new SolicitanteDatosSVDFAP("app/fun");
-		//
-		//		MunicipioSVDFAP municipio = new MunicipioSVDFAP("codigo", "nombre");
-		//		ProvinciaSVDFAP provincia = new ProvinciaSVDFAP("codigo", "nombre");
-		//
-		//		ResidenciaSVDFAP residencia = new ResidenciaSVDFAP(municipio, provincia);
-		//		NacimientoSVDFAP nacimiento = new NacimientoSVDFAP(new DateTime(), municipio, provincia);
-		//
-		//		SolicitudSVDFAP solicitudEspecifica = new SolicitudSVDFAP(residencia, nacimiento, "espaniol");
-		//
-		//		DatosEspecificosPeticionSVDFAP datosEspecificos = new DatosEspecificosPeticionSVDFAP(solicitanteDatos, solicitudEspecifica);
-		//
-		//		return datosEspecificos;
-	}
-
 	public AtributosSVDFAP getAtributos() {
 		return atributos;
 	}
 
-	public void setAtributos (AtributosSVDFAP atributos) {
+	public void setAtributos(AtributosSVDFAP atributos) {
 		this.atributos = atributos;
 	}
 

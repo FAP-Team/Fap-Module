@@ -19,34 +19,40 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class SolicitudEspecificaSVDFAP extends FapModel {
+public class DatosEspecificosIdResiSVDFAP extends FapModel {
 	// Código de los atributos
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public ResidenciaSVDFAP residencia;
+	public String tipoSolicitante;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public NacimientoSVDFAP solicitudNacimiento;
+	public SolicitudEspecificaSVDFAP solicitud;
 
-	@ValueFromTable("Espanol")
-	@FapEnum("enumerado.fap.gen.EspanolEnum")
-	public String espanol;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DomicilioSVDFAP domicilio;
 
-	public SolicitudEspecificaSVDFAP() {
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public TitularSVDFAP datosTitular;
+
+	public DatosEspecificosIdResiSVDFAP() {
 		init();
 	}
 
 	public void init() {
 
-		if (residencia == null)
-			residencia = new ResidenciaSVDFAP();
+		if (solicitud == null)
+			solicitud = new SolicitudEspecificaSVDFAP();
 		else
-			residencia.init();
+			solicitud.init();
 
-		if (solicitudNacimiento == null)
-			solicitudNacimiento = new NacimientoSVDFAP();
+		if (domicilio == null)
+			domicilio = new DomicilioSVDFAP();
 		else
-			solicitudNacimiento.init();
+			domicilio.init();
+
+		if (datosTitular == null)
+			datosTitular = new TitularSVDFAP();
+		else
+			datosTitular.init();
 
 		postInit();
 	}

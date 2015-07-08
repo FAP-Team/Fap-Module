@@ -147,21 +147,17 @@ public class SolicitudGenerica extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaFinDeAlegacion;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Respuesta respuestaSvd;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public PeticionSVD peticion;
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "solicitudgenerica_registros")
 	public List<Registro> registros;
 
 	@ValueFromTable("NombreServicioSVDFAP")
+	@FapEnum("enumerado.fap.gen.NombreServicioSVDFAPEnum")
 	@Transient
 	public String nombreServicio;
 
 	@ValueFromTable("tipoEstadoPeticionSVDFAP")
+	@FapEnum("enumerado.fap.gen.TipoEstadoPeticionSVDFAPEnum")
 	public String estadoPeticionSVD;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -289,16 +285,6 @@ public class SolicitudGenerica extends FapModel {
 
 		if (registroModificacion == null)
 			registroModificacion = new ArrayList<RegistroModificacion>();
-
-		if (respuestaSvd == null)
-			respuestaSvd = new Respuesta();
-		else
-			respuestaSvd.init();
-
-		if (peticion == null)
-			peticion = new PeticionSVD();
-		else
-			peticion.init();
 
 		if (registros == null)
 			registros = new ArrayList<Registro>();

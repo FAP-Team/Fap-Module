@@ -19,16 +19,22 @@ import java.text.SimpleDateFormat;
 // === IMPORT REGION END ===
 
 @Entity
-public class EstadoSVDFAP extends FapModel {
+public class ParametrosServicioSVDFAP extends FapModel {
 	// Código de los atributos
 
-	public String codigoEstado;
+	public String nombreServicio;
 
-	public String literalError;
+	public String codigoProcedimiento;
 
-	public String codigoEstadoSecundario;
+	public String nombreProcedimiento;
 
-	public Integer tiempoEstimadoRespuesta;
+	public String codigoCertificado;
+
+	public Boolean consentimientoLey;
+
+	@ValueFromTable("CaducidadCertificadosSVDFAP")
+	@FapEnum("enumerado.fap.gen.CaducidadCertificadosSVDFAPEnum")
+	public String caducidadCertificados;
 
 	public void init() {
 

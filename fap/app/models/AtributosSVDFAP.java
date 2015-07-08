@@ -1,9 +1,18 @@
 package models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import java.util.*;
+import javax.persistence.*;
+import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.data.validation.*;
+import org.joda.time.DateTime;
+import models.*;
+import messages.Messages;
+import validation.*;
+import audit.Auditable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 
@@ -22,17 +31,16 @@ public class AtributosSVDFAP extends FapModel {
 	public Integer numElementos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public EstadoRespuestaSVDFAP estado;
+	public EstadoSVDFAP estado;
 
 	public AtributosSVDFAP() {
 		init();
 	}
 
-	@Override
 	public void init() {
 
 		if (estado == null)
-			estado = new EstadoRespuestaSVDFAP();
+			estado = new EstadoSVDFAP();
 		else
 			estado.init();
 
@@ -72,8 +80,6 @@ public class AtributosSVDFAP extends FapModel {
 	public void setNumElementos(Integer numElementos) {
 		this.numElementos = numElementos;
 	}
-
-
 
 	// === MANUAL REGION END ===
 

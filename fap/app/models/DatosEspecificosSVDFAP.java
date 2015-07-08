@@ -22,10 +22,14 @@ import java.text.SimpleDateFormat;
 public class DatosEspecificosSVDFAP extends FapModel {
 	// Código de los atributos
 
-	public String tipoSolicitante;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosEspecificosIdResiSVDFAP datosEspecificosIdResi;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public SolicitudEspecificaSVDFAP solicitud;
+	public EstadoSVDFAP estado;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public EstadoSVDFAP estadoResultado;
 
 	public DatosEspecificosSVDFAP() {
 		init();
@@ -33,10 +37,20 @@ public class DatosEspecificosSVDFAP extends FapModel {
 
 	public void init() {
 
-		if (solicitud == null)
-			solicitud = new SolicitudEspecificaSVDFAP();
+		if (datosEspecificosIdResi == null)
+			datosEspecificosIdResi = new DatosEspecificosIdResiSVDFAP();
 		else
-			solicitud.init();
+			datosEspecificosIdResi.init();
+
+		if (estado == null)
+			estado = new EstadoSVDFAP();
+		else
+			estado.init();
+
+		if (estadoResultado == null)
+			estadoResultado = new EstadoSVDFAP();
+		else
+			estadoResultado.init();
 
 		postInit();
 	}

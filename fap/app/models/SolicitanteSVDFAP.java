@@ -38,7 +38,8 @@ public class SolicitanteSVDFAP extends FapModel {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public FuncionarioSVDFAP funcionario;
 
-	@ValueFromTable("TipoConsentimiento")
+	@ValueFromTable("TipoConsentimientoSVDFAP")
+	@FapEnum("enumerado.fap.gen.TipoConsentimientoSVDFAPEnum")
 	public String consentimiento;
 
 	public SolicitanteSVDFAP() {

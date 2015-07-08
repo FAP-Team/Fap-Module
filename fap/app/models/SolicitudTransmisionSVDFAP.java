@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION START ===
 
+import services.verificacionDatos.SVDUtils;
+
 // === IMPORT REGION END ===
 
 /******* Solicitud de Transmision *******/
@@ -25,7 +27,7 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	// Código de los atributos
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public DatosGenericosPeticionSVDFAP datosGenericos;
+	public DatosGenericosSVDFAP datosGenericos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public DatosEspecificosSVDFAP datosEspecificos;
@@ -33,10 +35,8 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	@ManyToOne(fetch = FetchType.LAZY)
 	public SolicitudGenerica solicitud;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public TransmisionDatosRespuestaSVDFAP respuesta;
-
 	@ValueFromTable("NombreServicioSVDFAP")
+	@FapEnum("enumerado.fap.gen.NombreServicioSVDFAPEnum")
 	public String nombreServicio;
 
 	public String estado;
@@ -45,8 +45,16 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
 	public DateTime fechaCreacion;
 
-	@Transient
-	public String descargarPDF;
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPeticion"), @Column(name = "fechaPeticionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaPeticion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRespuesta"), @Column(name = "fechaRespuestaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaRespuesta;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public Documento justificanteSVD;
 
 	public SolicitudTransmisionSVDFAP() {
 		init();
@@ -55,7 +63,7 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 	public void init() {
 
 		if (datosGenericos == null)
-			datosGenericos = new DatosGenericosPeticionSVDFAP();
+			datosGenericos = new DatosGenericosSVDFAP();
 		else
 			datosGenericos.init();
 
@@ -72,7 +80,7 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 
 	// === MANUAL REGION START ===
 
-	public SolicitudTransmisionSVDFAP(SolicitudGenerica solicitud, DatosGenericosPeticionSVDFAP datosGenericos, DatosEspecificosSVDFAP datosEspecificos) {
+	public SolicitudTransmisionSVDFAP(SolicitudGenerica solicitud, DatosGenericosSVDFAP datosGenericos, DatosEspecificosSVDFAP datosEspecificos) {
 		init();
 		this.datosGenericos = datosGenericos;
 		this.datosEspecificos = datosEspecificos;
@@ -81,10 +89,8 @@ public class SolicitudTransmisionSVDFAP extends FapModel {
 
 	@Override
 	public void postInit() {
-
 		fechaCreacion = new DateTime();
 		estado = "creada";
-
 	}
 
 	// === MANUAL REGION END ===

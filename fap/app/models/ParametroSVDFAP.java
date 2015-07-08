@@ -18,17 +18,17 @@ import java.text.SimpleDateFormat;
 
 // === IMPORT REGION END ===
 
+/******* Para los parámetros de Administración *******/
+
 @Entity
-public class EstadoSVDFAP extends FapModel {
+public class ParametroSVDFAP extends FapModel {
 	// Código de los atributos
 
-	public String codigoEstado;
+	public String descripcion;
 
-	public String literalError;
+	public String clave;
 
-	public String codigoEstadoSecundario;
-
-	public Integer tiempoEstimadoRespuesta;
+	public String valor;
 
 	public void init() {
 

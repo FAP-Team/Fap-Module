@@ -32,19 +32,58 @@ public class TitularSVDFAP extends FapModel {
 
 	public String apellido2;
 
-	@ValueFromTable("TipoDocumentacion")
+	@ValueFromTable("TipoDocumentacionSVDFAP")
+	@FapEnum("enumerado.fap.gen.TipoDocumentacionSVDFAPEnum")
 	public String tipoDocumentacion;
 
+	public String identificador;
+
+	public String numeroSoporte;
+
+	public String nacionalidad;
+
+	public String nombrePadre;
+
+	public String nombreMadre;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechacaducidad"), @Column(name = "fechacaducidadTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechacaducidad;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public SexoSVDFAP sexo;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public NacimientoSVDFAP datosNacimiento;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public DatosDireccionSVDFAP datosDireccion;
+
+	public TitularSVDFAP() {
+		init();
+	}
+
 	public void init() {
+
+		if (sexo == null)
+			sexo = new SexoSVDFAP();
+		else
+			sexo.init();
+
+		if (datosNacimiento == null)
+			datosNacimiento = new NacimientoSVDFAP();
+		else
+			datosNacimiento.init();
+
+		if (datosDireccion == null)
+			datosDireccion = new DatosDireccionSVDFAP();
+		else
+			datosDireccion.init();
 
 		postInit();
 	}
 
 	// === MANUAL REGION START ===
-
-	public TitularSVDFAP() {
-		init();
-	}
 
 	public TitularSVDFAP(String nombre, String nombreCompleto, String apellido1, String apellido2, String nif, String tipoDocumentacion) {
 		init();

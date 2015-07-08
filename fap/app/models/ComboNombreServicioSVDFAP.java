@@ -23,6 +23,7 @@ public class ComboNombreServicioSVDFAP extends Singleton {
 	// Código de los atributos
 
 	@ValueFromTable("NombreServicioSVDFAP")
+	@FapEnum("enumerado.fap.gen.NombreServicioSVDFAPEnum")
 	public String nombreServicio;
 
 	public void init() {

@@ -97,7 +97,6 @@ import services.PortafirmaFapServiceException;
 import services.PublicarService;
 import services.RegistroLibroResolucionesService;
 import services.RegistroService;
-import services.SVDService;
 import services.TercerosService;
 import services.MensajeService;
 import services.BDOrganizacion.BDOrganizacionService;
@@ -108,6 +107,7 @@ import services.VerificarDatosService;
 import services.VerificarDatosServiceException;
 import swhiperreg.ciservices.ArrayOfString;
 import services.responses.PortafirmaCrearSolicitudResponse;
+import services.verificacionDatos.SVDService;
 import utils.BaremacionUtils;
 import utils.JsonUtils;
 import utils.ModelUtils;
@@ -145,7 +145,7 @@ public class Start extends Job {
             play.test.Fixtures.loadModels(consultasFile);
         }
 
-		if (ParametroSVD.count() == 0 && ParametrosServicio.count() == 0){
+		if (ParametroSVDFAP.count() == 0 && ParametrosServicioSVDFAP.count() == 0){
             Fixtures.delete();
             String parametrosSVDFile = "listas/initial-data/parametrosSVD.yml";
             Logger.info("Cargando parámetros SVD desde %s", parametrosSVDFile);

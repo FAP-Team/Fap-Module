@@ -1,6 +1,6 @@
 h1. Configuración de mensajes
 
-En la versión actual, se ofrece la posibilidad de personalizar los mensajes de las diferentes páginas de la aplicación. En "Configurar mensajes" del apartado de Administración, puede verse una tabla con todas las páginas de la aplicación a las que se les puede añadir un mensaje personalizado.
+En la versión actual, se ofrece la posibilidad de personalizar los mensajes de las diferentes páginas de la aplicación. Para ello, nos dirigiremos a "Configurar mensajes" del apartado de _Administración_, donde podrá verse una tabla con todas las páginas de la aplicación a las que se les puede añadir un mensaje personalizado.
 
 !images/admin-configurar-mensajes!
 
@@ -15,6 +15,6 @@ A la hora de personalizar una página, debemos buscarla en la lista de páginas 
 
 En el cuadro de texto disponible escribimos el mensaje deseado, el cual, podremos previsualizar en la parte final de la página, bajo el botón _"Guardar"_.
 Para que sea visible el mensaje en la página, debe activarse el check de habilitación.
-Sólo se permite un mensaje por página, independientemente del tipo que se le asigne.
+*Recuerda* Sólo se permite un mensaje por página, independientemente del tipo que se le asigne.
 
 !images/admin-rellenar-mensajes!

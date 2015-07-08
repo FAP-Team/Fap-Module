@@ -1,49 +1,48 @@
-ParametroSVD(parametro-uidUsuario):
+ParametroSVDFAP(parametro-uidUsuario):
     descripcion: "Identificador único del usuario"
     clave: "uidUsuario"
     valor: "undefined"
     
-ParametroSVD(parametro-nifFuncionario):
+ParametroSVDFAP(parametro-nifFuncionario):
     descripcion: "Nif del Funcionario que hace la consulta"
     clave: "nifFuncionario"
     valor: "undefined"
 
-ParametroSVD(parametro-identificadorSolicitante):
+ParametroSVDFAP(parametro-identificadorSolicitante):
     descripcion: "CIF del Organismo Solicitante"
     clave: "identificadorSolicitante"
     valor: "undefined"
     
-ParametroSVD(parametro-nombreSolicitante):
+ParametroSVDFAP(parametro-nombreSolicitante):
     descripcion: "Nombre del Organismo/Órgano que Solicita la Información"
     clave: "nombreSolicitante"
     valor: "MINISTERIO DE HACIENDA Y AP"
     
-ParametroSVD(parametro-unidadTramitadora ):
+ParametroSVDFAP(parametro-unidadTramitadora ):
     descripcion: "Nombre de la Unidad a la que está asociado el funcionario"
     clave: "unidadTramitadora"
     valor: "SG COORD ESTUDIOS E IMPULSO ADM ELECLT(MINHAP)"
-    
-ParametroSVD(parametro-codProcedimiento):
-    descripcion: "Código del Procedimiento en virtud del cual se hace la Consulta. En el caso de los servicios de Residencia este valor vendrá fijado por el organismo cedente."
-    clave: "codProcedimiento"
-    valor: "undefined"
 
-ParametroSVD(parametro-nombreProcedimiento):
+ParametroSVDFAP(parametro-nombreProcedimiento):
     descripcion: "Nombre del Procedimiento en virtud del cual se hace la Consulta"
     clave: "nombreProcedimiento"
     valor: "PRUEBAS PARA LA INTEGRACION SVD"
    
-ParametroSVD(parametro-finalidad):
+ParametroSVDFAP(parametro-finalidad):
     descripcion: "Descripción de la finalidad por la que se hace la consulta, (Nombre del Procedimiento)"
     clave: "finalidad"
     valor: "PRUEBAS DE INTEGRACION SVD"
 
-ParametrosServicio(parametros-identidad):
+ParametrosServicioSVDFAP(parametros-identidad):
     nombreServicio: "Identidad"
+    codigoProcedimiento: "S3511001D_TEST_00001"
+    nombreProcedimiento: "PROC.S3511001D_TEST_00001 DE PRUEBAS D. GRAL DE TELECOMUNICACIONES Y N.T. G. CANARIAS"
     codigoCertificado: "CDISFWS01"
     consentimientoLey: false
     
-ParametrosServicio(parametros-residencia):
+ParametrosServicioSVDFAP(parametros-residencia):
     nombreServicio: "Residencia"
-    codigoCertificado: "VDRSFWS01"
+    codigoProcedimiento: "CODSVDA_GCA_20140910"
+    nombreProcedimiento: "PRUEBAS E INTEGRACION PARA EL GOBIERNO DE CANARIAS AMBITO"
+    codigoCertificado: "VDRSFWS02"
     consentimientoLey: false

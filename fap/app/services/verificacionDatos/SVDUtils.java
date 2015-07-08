@@ -11,8 +11,6 @@ import messages.Messages.MessageType;
 import models.Agente;
 import models.DatosEspecificosIdResiSVDFAP;
 import models.DatosEspecificosSVDFAP;
-import models.DatosGenericosPeticionSVDFAP;
-import models.DatosGenericosRespuestaSVDFAP;
 import models.DatosGenericosSVDFAP;
 import models.NacimientoSVDFAP;
 import models.ParametroSVDFAP;

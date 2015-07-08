@@ -2,48 +2,47 @@ h1. Modificar estilo de páginas
 
 h2. Cambiar el aspecto de las páginas
 
-Para poder modificar el aspecto visual de las páginas, es necesario seguir una serie de pautas, que veremos a continuación, ya que se debe sobreescribir ciertos ficheros.
+Para poder modificar el aspecto visual de las páginas, es necesario seguir una serie de pautas que veremos a continuación, ya que se deben sobreescribir ciertos ficheros.
 
 h2. Cambiar aspectos en páginas HTML
 
 Todas las páginas HTML generadas por la aplicación siguen como esquema general una plantilla HTML que personaliza dicha página.
 
-Así de esta manera, todas las páginas tienen como elementos en común las mismas cabeceras y pie de páginas con los distintos logos y colores, como podemos ver en la siguiente imagen que muestra la estructura visual que implementa cualquier pagina de FAP.
+Así de esta manera, todas las páginas tienen como elementos en común las mismas cabeceras y pie de páginas con los distintos logos y colores ( como podemos ver en la siguiente imagen que muestra la estructura visual que implementa cualquier pagina de FAP).
 
-Imagen: Estructura visual de una página html de FAP
 !images/curso-modificarPlantillaHTML-EstructuraPlantilla!
 
-Para modificar esta platilla, debemos de crear/modificar el fichero asociada a la misma en nuestro proyecto. Para ello:
+Para modificar esta plantilla, debemos de crear/modificar el fichero asociado a la misma en nuestro proyecto. Para ello:
 * Debemos posicionarnos en la carpeta del proyecto
-* Ir a la carpeta /app/views
-* Crear (si no existe), dentro de /views, la carpeta /fap
-* Crear (si no existe), el fichero "template.html"
+* Ir a la carpeta / _app_ / _views_
+* Crear (si no existe), dentro de / _views_, la carpeta / _fap_
+* Crear (si no existe), el fichero _template.html_
 
-El fichero "template.html", es el fichero del cual extienden todas las demás páginas HTML, por lo que es el que permite personalizar en común nuestras páginas HTML.
+El fichero _*template.html*_, es el fichero del cual extienden todas las demás páginas HTML, por lo que es el que permite personalizar en común nuestras páginas HTML.
 
-Si queremos que un elemento visual se muestre en todas nuestras páginas HTML deberemos de indicarselo en este fichero, o en los ficheros de cabecera y de pie de pagina (header.html y footer.html), que también se indican en este fichero, por lo que el header y el footer siempre aparecerán en cualquier pagina html generada por FAP, tal y como se explicó visualmente antes en la primera imagen.
+Si queremos que un elemento visual se muestre en todas nuestras páginas HTML deberemos de indicarselo en este fichero, o en los ficheros de cabecera y de pie de pagina (_*header.html*_ y _*footer.html*_), que también se indican en este fichero, por lo que el _header_ y el _footer_ siempre aparecerán en cualquier pagina html generada por FAP, tal y como se explicó visualmente antes en la primera imagen.
 
-Podemos fijarnos en la estructura del fichero "template.html" por defecto de fap, que se encuentra en:
-* ${APP}/modules/fap/app/views/fap/template.html
+Podemos fijarnos en la estructura del fichero _*template.html*_ por defecto de fap, que se encuentra en:
+* *${APP}/modules/fap/app/views/fap/template.html*
 
-Donde ${FAP}, es el directorio de nuestro proyecto.
+Donde *${FAP}*, es el directorio de nuestro proyecto.
 
 De esta manera, en la carpeta:
 
-* ${APP}/modules/fap/app/views/
+* *${APP}/modules/fap/app/views/*
 
 Podemos ver todas las plantillas HTML que utiliza nuestra aplicación, así que si queremos modificar, por ejemplo, la página que saltaría ante un error 404, simplemente debemos fijarnos en que en la carpeta:
 
-* ${APP}/modules/fap/app/views/errors/
+* *${APP}/modules/fap/app/views/errors/*
 
-Existe una página "404.html", que es la que se muestra en las aplicaciones FAP por defecto ante dicho error. Sobreescribiendo esta página en nuestro proyecto, cambiaríamos este comportamiento y cuando ocurriese el error 404 se mostraría nuestra nueva página de error.
+Existe una página _*404.html*_, que es la que se muestra en las aplicaciones FAP por defecto ante dicho error. Sobreescribiendo esta página en nuestro proyecto, cambiaríamos este comportamiento y cuando ocurriese el error 404 se mostraría nuestra nueva página de error.
 
-Recordemos que para sobreescribir la página, haremos análogamente lo mismo que lo que hemos explicado para el "template.html":
+Recordemos que para sobreescribir la página, haremos análogamente lo mismo que lo que hemos explicado para el _*template.html*_:
 * Situarnos en la carpeta del proyecto
-* Ir a la carpeta /app/views
-* En este caso como la página a sobreescribir está en una carpeta denominada /errors pues:
-** Si no existe la carpeta, deberemos crearla, dentro de /views
-** Dentro de ella, deberemos crear el fichero "404.html" si no existe y personalizarlo 
+* Ir a la carpeta /_app_ / _views_
+* En este caso como la página a sobreescribir está en una carpeta denominada / _errors_ pues:
+** Si no existe la carpeta, deberemos crearla, dentro de / _views_
+** Dentro de ella, deberemos crear el fichero _*404.html*_ si no existe y personalizarlo 
 
 Esto nos permitirá sobreescribir cualquier página HTML que queramos personalizar a nuestro gusto. Como vemos en el siguiente ejemplo:
 
@@ -54,13 +53,13 @@ Imagen 2: tenemos el comportamiento de la plantilla "template.html" sobreescrita
 !images/curso-modificarPlantillaHTML-2!
 
 Como vemos, en la Imagen 2 hemos hecho los siguientes cambios:
-* Actualizar el título de la página a: "Estilo de paginas HTML"
+* Actualizar el título de la página a: *Estilo de paginas HTML*
 * Eliminar el pie de página
 * Eliminar la imagen de la bandera de la unión Europea
-* Eliminar la barra de Roles
-* Desplazar la imagen del logo de la ACIISI
+* Eliminar la barra de _Roles_
+* Desplazar la imagen del logo de la _ACIISI_
 
-En el código que se ha tenido que sobreescribir para lograr dicho comportamiento (que se muestra a continuación), se ha tenido en cuenta como guía la plantilla "template.html" por defecto del FAP.
+En el código que se ha tenido que sobreescribir para lograr dicho comportamiento (que se muestra a continuación), se ha tenido en cuenta como guía la plantilla _*template.html*_ por defecto del FAP.
 
 bc. <!DOCTYPE html>
 <html>
@@ -114,7 +113,7 @@ bc. <!DOCTYPE html>
     </body>
 </html>
 
-Y en el fichero de cabecera del template.html, el fichero 'header.html', se ha sobreescrito como sigue
+Y en el fichero de cabecera del _*template.html*_, el fichero _*header.html*_, se ha sobreescrito como sigue
 
 bc. <div id="banderaue">
    <img src="@{'/public/images/aciisi_gris.gif'}" width="147px" height="64px"/>
@@ -122,26 +121,26 @@ bc. <div id="banderaue">
 
 h2. Cambiar estilos CSS
 
-Las páginas HTML utilizan hojas de estilo CSS, que describen las propiedades que deben tener los elementos que aparecen en la página (color, formato de letra, tamaño letra, etc.)
+Las páginas HTML utilizan hojas de estilo CSS, que describen las propiedades que deben tener los elementos que aparecen en dicha página (color, formato de letra, tamaño letra, etc.)
 
-Podemos crear nuestras propias hojas de estilo y cuando sobreescribamos las páginas HTML que queramos modificar, pues indicarle la hoja de estilo que queramos utilizar.
+Podemos crear nuestras propias hojas de estilo y cuando sobreescribamos las páginas HTML que queramos modificar, indicarle que hoja de estilo queremos utilizar.
 
 Por defecto se aconseja que la ruta donde se guarden nuestras propias hojas de estilo sea:
-* ${APP}/public/stylesheets/
+* *${APP}/public/stylesheets/*
 
 Se puede dar el caso que sólo se quiera modificar la hoja de estilo y dejar las páginas HTML sin sobreescribir. Pues bien, conociendo la hoja de estilo que deseamos modificar o añadir, simplemente nos bastaría con añadirla al directorio:
-* ${APP}/public/stylesheets/
+* *${APP}/public/stylesheets/*
 
 Para sobreescribirla, y personalizarla a nuestro gusto.
 
 Las hojas de estilo que tiene el FAP por defecto estan en la ruta:
-* ${APP}/modules/fap/public/stylesheets
+* *${APP}/modules/fap/public/stylesheets*
 
 Podemos verlas y utilizarlas de guía para poder modificar los estilos a nuestro antojo.
 
-Existe una hoja de estilo que usa la plantilla "template.html" por defecto del FAP, denominada "main.css", que está ideada para sobreescribirla. Es decir:
-* Nos situamos en: ${APP}/public/stylesheets/
-* Creamos el fichero "main.css", si no existe
+Existe una hoja de estilo que usa la plantilla _*template.html*_ por defecto, denominada _*main.css*_, que está ideada para sobreescribirla. Es decir:
+* Nos situamos en: *${APP}/public/stylesheets/*
+* Creamos el fichero _*main.css*_, si no existe
 
 Y en ese fichero podemos sobreescribir cualquier aspecto visual que queramos modificar respecto al estilo por defecto del FAP.
 
@@ -153,7 +152,7 @@ Imagen 3: Estilos por defecto de las páginas HTML del FAP. (Pie de página de c
 Imagen 4: Estilos sobreescritos de las páginas HTML. (Pie de página de color Azul)
 !images/curso-modificarPlantillaHTML-4!
 
-Para cambiar el color del pie de página de esta manera, simplemente se tiene que sobreescribir el fichero "main.css" del que hablamos, de la siguiente manera:
+Para cambiar el color del pie de página de esta manera, simplemente se tiene que sobreescribir el fichero _*main.css*_ del que hablamos, de la siguiente manera:
 
 bc. .footer {
 	background-color: #0077EE;
@@ -161,31 +160,32 @@ bc. .footer {
 
 h2. Cambiar el aspecto de login.html
 
-Existe la posibilidad de personalizar la página de login (primera página de cualquier aplicación), para poner a parte de las cabeceras y pies de paginas (header y footer), que vimos antes y existen en cualquier pagina FAP, que queramos.
+Existe la posibilidad de personalizar la página de _*login*_ (primera página de cualquier aplicación), para poner los elenemtos que queramos, a parte de las cabeceras y pies de paginas (header y footer), que vimos antes y existen en cualquier pagina FAP.
 
-La estructura de la pagina de login, visualmente hablando es la siguiente:
+La estructura de la pagina de _*login*_, visualmente hablando es la siguiente:
 
 !images/curso-modificarPlantillaHTML-Login!
 
-De esta manera vemos que existen dos secciones totalmente personalizables de dicha página como son, Intrucciones y Ayuda. Sobreescribiendo dichas plantillas (instrucciones.html y help.html), podemos poner en esos sitios lo que realmente nos plazca.
+De esta manera vemos que existen dos secciones totalmente personalizables de dicha página como son, _Intrucciones_ y _Ayuda_. Sobreescribiendo dichas plantillas (_*instrucciones.html*_ y _*help.html*_), podemos poner en esos sitios lo que realmente nos plazca.
 
 Estas plantillas deberán crearse, si no existen, en el path: 
 * Debemos posicionarnos en la carpeta del proyecto
 * Ir a la carpeta /app/views
-* Crear (si no existe), dentro de /views, la carpeta /fap
-* Crear (si no existe), dentro de /views/fap, la carpeta /Secure
-* Crear (si no existe), el fichero "instrucciones.html" y "help.html"
+* Crear (si no existe), dentro de / _views_, la carpeta / _fap_
+* Crear (si no existe), dentro de / _views_ / _fap_, la carpeta / _Secure_
+* Crear (si no existe), el fichero _*instrucciones.html*_ y _*help.html*_
 
 O directamente podemos sobreescibir, conociendo los riesgos que eso conlleva, las plantillas que trae el módulo FAP para esas secciones. Estas plantillas se encuentran en:
-* ${APP}/modules/fap/app/views/Secure/
+* *${APP}/modules/fap/app/views/Secure/*
 
 h3. Mensajes configurables en contenido y estilo
 
-También existe una parte configurable en esta pagina de login.html, que permite la introducción de mensajes en diversos estilos. 
+También existe una parte configurable en esta pagina de _*login.html*_, que permite la introducción de mensajes en diversos estilos. 
 
-Estos mensajes (de última hora), con sus estilos, y que se situan justo encima de la parte de _Instrucciones_, se configuran en la parte de *Administración*.
+Estos mensajes (de última hora), con sus estilos, y que se situan justo encima de la parte de _Instrucciones_, se configuran en la parte de *Administración*.Concretamente en _Mensaje de Login_. 
+Para activarlos y que salgan en dicha página de login se deberá marcar el check que los habilita en la misma página de administracion: _Mensaje de Login_. Si queremos que no se muestre, bastará con desactivar dicho check y guardar los cambios de la página. 
 
-Concretamente en _Mensaje de Login_. Para activarlos y que salgan en dicha página de login se deberá marcar el check que los habilita en la misma página de administracion: _Mensaje de Login_. Si queremos que no se muestre, bastará con desactivar dicho check y guardar los cambios de la página. El Área de Texto que permite introducir el contenido del mensaje, admitirá sintaxis en Textile para formatear el texto y poder personalizarlo más amigablemente.
+El Área de Texto que permite introducir el contenido del mensaje, admitirá sintaxis en Textile para formatear el texto y poder personalizarlo más amigablemente.
 
 Además en esta página se podrá divisar una previsualización de cómo quedaría (con estilos y demás) el mensaje, a medida que lo vamos confeccionando.
 

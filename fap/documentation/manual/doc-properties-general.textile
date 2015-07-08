@@ -1,0 +1,15 @@
+h1. Properties originarias de FAP: General
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Nombre de la aplicación | *fap.app.name* | _NOMBRE_ |  _fap.app.name=Mi Aplicación_ |
+| Pagina inicial de la aplicación. | *fap.app.firstPage* | _Nombre pagina DSL_ | _fap.app.firstPage=DatosProyecto_ |
+| Configurar los logs: _Ruta del log4j de configuración_ |  *app.log.path* |  | app.log.path=/log4j-logsApp. properties_ | 
+| Almacenar los log en la carpeta que se indica en fap.compresslogs.path | *fap.compresslogs. properties* | _[true / false]_ | _fap.compresslogs.properties = false_ |
+| Ruta del manual de la aplicación (A partir de /public/) | *fap.manual.aplicacion* |  | _fap.manual.aplicacion = manuales/manualApp1.pdf_ |
+| Permitir Login con Certificado Digital | *fap.login.type.cert* | _[true / false]_ | _fap.login.type.cert=true_ |
+| Permitir Login con Usuario y Contraseña | *fap.login.type.user* | _[true / false]_ | _fap.login.type.user=true_ |
+| Permitir Login mediante Ticketing | *fap.login.type.ticketing* | _[true / false]_ | _fap.login.type.ticketing=true_ |
+| Configurar Tamaño mínimo de las contraseñas | *fap.password.min* | _Integer_ | _fap.login.type.min=6_ |
+| Configurar Tamaño máximo de las contraseñas | *fap.password.max* | _Integer_ |  _fap.login.type.max=10_ |
+| Inicializar todas las relaciones a _null_ de la solicitud | *fap.start.initSolicitud* | _[true / false]_ | _fap.start.initSolicitud=true_ |
+| Establecer descripcion justificante de requerimiento | *fap.app.name. requerimiento. justificante. descripcion* | | fap.app.name.requerimiento. justificante.descripcion=undefined |   

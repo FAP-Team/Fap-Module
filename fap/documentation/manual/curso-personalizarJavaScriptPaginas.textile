@@ -1,15 +1,15 @@
 h1. Personalizar el código JavaScript de las páginas
 
-El código JavaScript que se ejecuta por cada página es posible personalizarlo, determinando nosotros mismos que código queremos ejecutar en JavaScript por cada una de las diferentes páginas que tengamos.
+Es posible personalizar el código JavaScript que se ejecuta por cada página, determinando nosotros mismos que código queremos ejecutar en JavaScript por cada una de las diferentes páginas que tengamos.
 Para ello, simplemente tendremos que seguir los siguientes pasos:
 
-* **1.-** Una vez sepamos a qué página queremos personalizarle el código JavaScript que se ejecuta, nos bastará con saber cual es su nombre (el que definimos en el .fap), y a que formulario pertenece (tambien lo definimos en el .fap). Con estos dos nombres (Por ejemplo: Mi formulario se llama: **Solicitud**, y la página que quiero personalizar mediante JavaScript es: **DatosProyecto**), podemos continuar.
-* **2.-** Lo primero, será crear una carpeta (si no existe), que tendrá que llevar el nombre del formulario en cuestion (en nuestro caso de ejemplo **Solicitud**), y deberá crearse en: **${PATH}/public/javascripts**. Esta carpeta creada nos servirá para meter los fichero JavaScript que queramos que se carguen en las páginas.
-* **3.-** Por último, lo que habrá que hacer será meter el código que queramos JavaScript en un fichero que se llamara como nuestra página a personalizar añadiendole el sufijo .js. (Es decir, en nuestro caso de ejemplo, deberemos crear un fichero **DatosProyecto.js**). Este fichero se situará en **${PATH}/public/javascripts/${Formulario}**
+* **1.-** Primero deberemos tener claro dos conceptos. A que *Página* queremos aplicarle el JavaScript y a que *Formulario* pertenece dicha página. Por ejemplo: La *página* que deseamos personalizar se llama _DatosProyecto_ y pertenece al *formulario* _Solicitud_.
+* **2.-** A continuación, se creará una carpeta (si no existe), que tendrá que llevar el nombre del *formulario* en cuestion (en nuestro caso de ejemplo _Solicitud_), y deberá crearse en: 
+** *${PATH}/public/javascripts*. (Esta carpeta creada nos servirá para meter los fichero JavaScript que queramos que se carguen en las páginas)
+* **3.-** El último paso, será meter el código JavaScript que queramos en un fichero, al cual llamaremos como nuestra *página* a personalizar añadiendole el sufijo .js. (Es decir, en nuestro caso de ejemplo, deberemos crear un fichero *DatosProyecto.js*). Este fichero se situará en 
+** *${PATH}/public/javascripts/${Formulario}* Donde *${PATH}*, es la ruta de nuestro proyecto y *${Formulario}* es el nombre del formulario en cuestion (en nuestro caso de ejemplo *Solicitud*)
 
-* Donde **${PATH}**, es la ruta de nuestro proyecto y **${Formulario}**, es el nombre del formulario en cuestion (en nuestro caso de ejemplo **Solicitud**)
-
-Con esto, podremos ver que lo que hemos añadido en JavaScript, se cargará al entrar en la página en cuestión, permitiendonos personalizar la misma.
+Con esto, podremos ver que lo que hemos añadido en JavaScript se cargará al entrar en la página en cuestión, permitiendonos personalizar la misma.
 
 
 

@@ -1,0 +1,18 @@
+h2. General
+
+Para habilitar o deshabilitar los diferentes módulos de FAP. Por defecto están todos habilitados.
+
+|_. Módulo |_. Nombre |_. Valor |
+| Verificación | *fap.modulo.Verificacion* | _[true/false]_ |
+| Administración | *fap.modulo.Administracion* | _[true/false]_ |
+| Principal | *fap.modulo.Principal* | _[true/false]_ |
+| Seguimiento | *fap.modulo.Seguimiento* | _[true/false]_ |
+| Documentación | *fap.modulo.Documentacion* | _[true/false]_ |
+| Aportación | *fap.modulo.Aportacion* | _[true/false]_ |
+| Justificación | *fap.modulo.Justificacion* | _[true/false]_ |
+| Presentación | *fap.modulo.Presentacion* | _[true/false]_ |
+| Exclusión | *fap.modulo.Exclusion* | _[true/false]_ |
+| Baremación | *fap.modulo.Baremacion* | _[true/false]_ |
+| Desistimiento | *fap.modulo.Desistimiento* | _[true/false]_ |
+| AceptarRenunciar | *fap.modulo.AceptarRenunciar* | _[true/false]_ |
+| Alegación | *fap.modulo.Alegacion* | _[true/false]_ |

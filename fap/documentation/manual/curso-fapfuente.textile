@@ -1,8 +1,9 @@
 h1. Trabajando con el Código Fuente del Módulo FAP
 
-Si quieres trabajar con el Módulo FAP, teniendo todo su código como un proyecto en tu ordenador, basta con bajartelo de GitHub haciendo un _git clone https://github.com/FAP-Team/Fap-Module.git_. Ahora, para trabajar utilizandolo en tus aplicaciones simplemente debes actualizar el _dependecies.yml_ de tu aplicación como sigue, y tener en cuenta un par de detalles a la hora de generar y demás, que a continuación explicamos.
+Si quieres trabajar con el Módulo FAP, teniendo todo su código como un proyecto en tu ordenador, basta con bajartelo de GitHub haciendo un @git clone https://github.com/FAP-Team/Fap-Module.git@. 
+Ahora, para trabajar utilizandolo en tus aplicaciones simplemente debes actualizar el @dependecies.yml@ de tu aplicación como sigue, y tener en cuenta un par de detalles a la hora de generar y demás, que a continuación explicamos.
 
-Fichero "dependencies.yml"
+Fichero *dependencies.yml*
 
 bc. # Application dependencies
 require:
@@ -41,7 +42,7 @@ La generación del módulo ahora se realiza mediante el fichero python *generate
 
 *Generación de la aplicación*
 
-Para generar tu aplicación, deberás indicarle que estás utilizando el módulo FAP de desarrollo, es decir el código fuente, con la opción --dev. Para conocer más opciones del _play fap:generate_ puede acceder a su "documentación":curso-generar
+Para generar tu aplicación, deberás indicarle que estás utilizando el módulo FAP de desarrollo, es decir el código fuente, con la opción *_--dev_*. Para conocer más opciones del @play fap:generate@ puede acceder a la siguiente documentación "Click aquí":curso-generar.
 
 bc. play fap:generate --dev
 

@@ -1,11 +1,8 @@
-package services.filesystem;
+package services.verificacionDatos;
 
 import java.util.List;
-
 import models.PeticionSVDFAP;
 import models.SolicitudTransmisionSVDFAP;
-import services.SVDService;
-import services.SVDServiceException;
 import es.gobcan.platino.servicios.svd.Respuesta;
 import es.gobcan.platino.servicios.svd.RespuestaPdf;
 
@@ -24,25 +21,20 @@ public class FileSystemSVDServiceImpl implements SVDService {
 		else
 			play.Logger.info("El servicio de SVD ha sido inyectado con FileSystem y NO está operativo.");
 	}
+
 	@Override
-	public void crearPeticion(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes, String tipoServicio) {
+	public void peticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void peticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void enviarPeticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void enviarPeticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void solicitarRespuestaAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
+	public void solicitudRespuesta(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
 	}
 
@@ -53,7 +45,7 @@ public class FileSystemSVDServiceImpl implements SVDService {
 	}
 
 	@Override
-	public Respuesta peticionRecover() throws SVDServiceException {
+	public Respuesta peticionRecover(PeticionSVDFAP peticion) throws SVDServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

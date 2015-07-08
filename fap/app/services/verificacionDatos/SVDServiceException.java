@@ -1,4 +1,4 @@
-package services;
+package services.verificacionDatos;
 
  public class SVDServiceException extends Exception {
    public SVDServiceException(String msg){

@@ -1,0 +1,7 @@
+h2. Comunicaciones internas
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Comunicaciones Internas | *fap.services. comunicaciones. internas.url* | _String_ | fap.services.comunicaciones.internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/CIServices.asmx |
+| Comunicaciones Internas | *fap.services. genericos. comunicaciones. internas.url* | _String_ | fap.services.genericos.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/Service.asmx |
+| Comunicaciones Internas | *fap.services. entrada. comunicaciones. internas.url* | _String_ | fap.services.entrada.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/EntradaServices.asmx |
+| Comunicaciones Internas | *fap.services. salida. comunicaciones. internas.url* | _String_ | fap.services.salida.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/SalidaServices.asmx |

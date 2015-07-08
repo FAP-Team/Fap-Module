@@ -1,0 +1,17 @@
+h2. Baremación
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Documento de evaluación de solicitud de baremación | *fap.baremacion. evaluacion.documento. solicitud* | _String_ | fap.baremacion.evaluacion.documento. solicitud=eadmon://gobcan.es/ tiposDocumentos/ TDC000000000000000163/v01 |
+| Tasa de actualización de baremación | *fap.baremacion. evaluacion. tasaActualizacion* | _Float_ | fap.baremacion.evaluacion. tasaActualizacion =3.07 |
+| Valor máximo valoración TIR | *fap.baremacion. evaluacion. valoracionTIR.max* | _Integer_ | fap.baremacion.evaluacion. valoracionTIR. max=20 |
+| Valor mínimo valoración TIR | *fap.baremacion. evaluacion. valoracionTIR.min* | _Integer_ | fap.baremacion.evaluacion. valoracionTIR. max=5 |
+| Valor máximo para calcular el porcentaje del presupuesto actual (entre el max*Psto y min*Psto) | *fap.baremacion.evaluacion. valoracionPorcentaje VAN.max* | _Integer_ | fap.baremacion.evaluacion. valoracionPorcentajeVAN.max=10 |
+| Valor mínimo para calcular el porcentaje del presupuesto actual (entre el max*Psto y min*Psto) | *fap.baremacion.evaluacion. valoracionPorcentaje VAN.min* | _Integer_ | fap.baremacion.evaluacion. valoracionPorcentajeVAN.min=1 |
+| Valor máximo de la tasa de esfuerzo teconológico | *fap.baremacion. evaluacion. valoracionEsfuerzo Tecnologico.max* | _Long_ | fap.baremacion.evaluacion.valoracion EsfuerzoTecnologico.max=20000 |
+| Valor mínimo de la tasa de esfuerzo teconológico | *fap.baremacion. evaluacion. valoracionEsfuerzo Tecnologico.min* | _Long_ | fap.baremacion.evaluacion.valoracion EsfuerzoTecnologico.min=10000 |
+| Valor mínimo valoración Valor Añadido | *fap.baremacion. evaluacion. valoracionValorAnadido. min* | _Integer_ | fap.baremacion.evaluacion. valoracion ValorAnadido.min=10 |
+| Valor máximo para el cálculo de la fecha de antigüedad | *fap.baremacion. evaluacion. valoracionAntiguedad. max* | _Integer_ | fap.baremacion.evaluacion. valoracionAntiguedad.max=6 |
+| Valor mínimo para el cálculo de la fecha de antigüedad | *fap.baremacion. evaluacion. valoracionAntiguedad. min* | _Integer_ | fap.baremacion.evaluacion. valoracionAntiguedad.min=2 |
+| Valor máximo de la valoración del porcentaje de la Estructura Financiera | *fap.baremacion. evaluacion. valoracionPorcentaje EstructuraFinanciera. max* | _Integer_ | fap.baremacion.evaluacion. valoracionPorcentaje EstructuraFinanciera.max=50 |
+| Valor mínimo de la valoración del porcentaje de la Estructura Financiera | *fap.baremacion. evaluacion. valoracionPorcentaje EstructuraFinanciera. min* | _Integer_ | fap.baremacion.evaluacion. valoracionPorcentaje EstructuraFinanciera.min=25 |
+| Estados posibles para iniciar la baremación, deben ir separados por comas | *fap.baremacion. iniciar.estados* | _String_ | fap.baremacion.iniciar.estados= iniciada, verificada |

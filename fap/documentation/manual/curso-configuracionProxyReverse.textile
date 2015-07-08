@@ -2,7 +2,7 @@ h1. Configuración de Apache, para desplegar aplicaciones
 
 h2. Configuración Path aplicacion, para subsanar el problema de cambio de rutas al redireccionar
 
-Para ello en el fichero **application.conf** tenemos una propiedad que se llama **http.path** y que está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
+Para ello en el fichero **application.conf** tenemos una propiedad que se llama **http.path** la cual está comentada. La descomentamos y ponemos la ruta donde estará nuestra aplicacion, es decir:
 
 Si queremos que la aplicacion se despliegue en **localhost/app** pondremos la propiedad:
 
@@ -14,11 +14,11 @@ bc. ProxyRequests Off
 ProxyPass /app http://localhost:9000/app
 ProxyPassReverse /app http://localhost:9000/app
 
-y así no tener el problema de las rutas.
+y así solventar el problema de las rutas.
 
 h2. Balanceador de Carga
 
-Para configurar Apache de manera que nos permita tener una aplicación desplegada en dos aplicaciones independientes para poder repartir la carga entre ellas y poder subir aplicaciones a producción sin tener que detener el servidor Apache, deberemos hacer los siguientes pasos:
+Para configurar Apache de manera que nos permita tener una aplicación desplegada en dos aplicaciones independientes, repartiendo la carga entre ellas y pudiendo así subir aplicaciones a producción sin tener que detener el servidor Apache, deberemos hacer los siguientes pasos:
 
 **1.-** En el fichero: **httpd.conf**, que se encuentra en **${RUTA_APACHE}/conf**, incluir:
 

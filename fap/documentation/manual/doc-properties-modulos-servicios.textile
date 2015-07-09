@@ -1,0 +1,11 @@
+h2. Servicios
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Permitir definir el HttpTimeout de los servicios | *fap.servicios.httpTimeout* | _long_ | _fap.servicios.httpTimeout=240000_ (Se activa el timeout de los servicios cada 24 segundos (se representa en milisegundos.) |
+| Configuración del AED | *fap.aed.[...]*  | | Más información sobre la configuración del AED, "aquí":ws-aed |
+| Configuración de Platino | *fap.platino.[...]* | | Más información sobre la configuración de Platino, "aquí":ws-platino |
+| Configuración del servicio de Notificaciones | *fap.notificaciones.[...]* | | Más información sobre la configuración del servicio "aquí":ws-notificacion |
+| Configuración del servicio de Ticketing | *fap.login.ticketing.[...]* | | Más información sobre la configuración del servicio "aquí":ws-ticketing |
+| Configuración del servicio de Verificación de datos | *fap.verificacion.[...]* | | Más información sobre la configuración del servicio "aquí":ws-verificacion |
+| Configuración del servicio de Portafirma | *fap.portafirma.[...]* | | Más información sobre la configuración del servicio "aquí":ws-portafirma |
+| Configuración del servicio de Registro en el Libro de Resoluciones | *fap.resoluciones.[...]* | | Más información sobre la configuración del servicio "aquí":ws-resoluciones |

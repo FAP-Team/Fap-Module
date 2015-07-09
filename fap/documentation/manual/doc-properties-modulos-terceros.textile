@@ -1,0 +1,5 @@
+h2. Terceros
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| BDD De Terceros | *fap.platino. terceros.url* |  | fap.platino.terceros.url= undefined |
+| Para activar o no el servicio de BDD de Terceros de Platino | *fap.platino.tercero. activa* | _[true/false]_ | fap.platino.tercero.activa= true |

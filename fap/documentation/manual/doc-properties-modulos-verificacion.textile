@@ -1,0 +1,15 @@
+h2. Verificación de datos
+
+h4. Properties antiguas
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Verificación | *fap.verificacion.locationURI* |  | fap.verificacion.locationURI= undefined |
+| Verificación | *fap.verificacion. procedimientoURI* |  | fap.verificacion.procedimientoURI= undefined |
+| Verificación | *fap.verificacion.tramiteURI* |  | fap.verificacion.tramiteURI= undefined |
+
+h2. Realizando migración a un nuevo servicio de verificación de datos
+
+h4. Properties nuevas
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Verificación de Datos (SVD) | *fap.platino. svd.url* | _String_ | fap.platino.svd.url= http://buger.gobiernodecanarias.net:8077/ svd/ |

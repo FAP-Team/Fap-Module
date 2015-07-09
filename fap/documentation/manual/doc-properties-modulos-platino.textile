@@ -1,0 +1,16 @@
+h2. Platino
+
+|_. Definición |_. Nombre |_. Valor |_. Ejemplo |
+| Seguridad | *fap.platino.security. backoffice.uri* | _String_ | fap.platino.security.backoffice. uri= http://platino.gobcan.es/ pre/backoffice/ASCIISI |
+| Seguridad | *fap.platino.security. certificado.alias* | _String_ | fap.platino.security.certificado. alias= PRE_ASCIISI |
+| Seguridad | *fap.platino.security. procedimiento.uri* | _String_ | fap.platino.security. procedimiento.uri= undefined |
+| Firma | *fap.platino.websigner63* | _[true/false]_ | fap.platino.websigner63= false |
+| GestorDocumental | *fap.platino. gestordocumental. url* | _String_ | fap.platino.gestordocumental. url= http://buger.gobiernodecanarias. net: 8076/sgrde/ |
+| GestorDocumental | *fap.platino. gestordocumental. expediente.descripcion* | _String_ | fap.platino.gestordocumental. expediente.descripcion= ACIISI |
+| GestorDocumental | *fap.platino. gestordocumental. procedimiento* | _String_ | fap.platino.gestordocumental. procedimiento= P_S002.3308710 |
+| Mensajes | *fap.platino.mensajes. url* | _String_ | fap.platino.mensajes.url= http://buger.gobiernodecanarias. net:8077/edmyce/mensaje/ |
+| BDD De Procedimientos | *fap.platino. procedimientos. url* | _String_ | fap.platino.procedimientos.url= http://buger.gobiernodecanarias. net:8077/dbprocedimientos/ |
+| BDD De Organizacion | *fap.platino.organizacion. url* | _String_ | fap.platino.organizacion.url= http://buger.gobiernodecanarias. net:8077/dborganizacion/ |
+| Localizaciones | *fap.platino.localizaciones. url* | _String_ | fap.platino.localizaciones.url= undefined |
+| Agencia firmante (firma en el servidor) | *fap.platino.firmante. nombre* | _String_ | fap.platino.firmante.nombre= Agencia Canaria de Investigación Innovacion y Sociedad de la información |
+| Agencia firmante (firma en el servidor) | *fap.platino.firmante. documento* | _String_ | fap.platino.firmante.documento= 123456789A |

@@ -3,11 +3,11 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
+import services.verificacionDatos.SVDService;
 import messages.Messages;
 import models.Agente;
 import models.PeticionSVDFAP;
 import models.SolicitudTransmisionSVDFAP;
-import services.SVDService;
 import config.InjectorConfig;
 import controllers.fap.AgenteController;
 import controllers.gen.EditarPeticionSVDFAPControllerGen;
@@ -52,7 +52,7 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "descargarPDF"));
+		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "justificanteSVD.enlaceDescarga"));
 	}
 
 
@@ -65,7 +65,7 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "descargarPDF"));
+		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "justificanteSVD.enlaceDescarga"));
 	}
 
 
@@ -98,7 +98,7 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 		PeticionSVDFAP peticionSVDFAP = EditarPeticionSVDFAPController.getPeticionSVDFAP(idPeticionSVDFAP);
 
 		try {
-			svdService.solicitarRespuestaAsincrona(peticionSVDFAP);
+			svdService.solicitudRespuesta(peticionSVDFAP);
 		} catch (Exception ex) {
 			play.Logger.error("Se ha producido un error realizando la solicitud de respuesta asíncrona");
 			Messages.error("Error solicitando respuesta");

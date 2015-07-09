@@ -6,8 +6,8 @@ import java.util.Map;
 import messages.Messages;
 import models.PeticionSVDFAP;
 import play.mvc.Util;
-import services.SVDService;
-import services.SVDServiceException;
+import services.verificacionDatos.SVDService;
+import services.verificacionDatos.SVDServiceException;
 import config.InjectorConfig;
 import controllers.gen.CesionDatosSVDListarControllerGen;
 
@@ -33,7 +33,7 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 			for (Long idPeticion: idsSeleccionados) {
 				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
 				try {
-					svdService.enviarPeticionAsincrona(peticion);
+					svdService.peticionAsincrona(peticion);
 				} catch (SVDServiceException e) {
 					Messages.error("Error al enviar la petición asíncrona");
 					play.Logger.error("Error al enviar la petición asíncrona: " + e);
@@ -73,7 +73,7 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 			for (Long idPeticion: idsSeleccionados) {
 				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
 				try {
-					svdService.enviarPeticionAsincrona(peticion);
+					svdService.peticionAsincrona(peticion);
 				} catch (SVDServiceException e) {
 					Messages.error("Error al enviar la petición asíncrona");
 					play.Logger.error("Error al enviar la petición asíncrona: " + e);

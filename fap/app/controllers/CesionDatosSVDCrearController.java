@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import play.mvc.Util;
+import services.verificacionDatos.SVDService;
+import services.verificacionDatos.SVDUtils;
 import messages.Messages;
-import models.ParametrosServicio;
+import models.ParametrosServicioSVDFAP;
 import models.PeticionSVDFAP;
 import models.SolicitudGenerica;
 import models.SolicitudTransmisionSVDFAP;
-import play.mvc.Util;
-import services.SVDService;
-import utils.SVDUtils;
 import config.InjectorConfig;
 import controllers.gen.CesionDatosSVDCrearControllerGen;
+import enumerado.fap.gen.NombreServicioSVDFAPEnum;
 
 public class CesionDatosSVDCrearController extends CesionDatosSVDCrearControllerGen {
 
 	public static void tablatablaSolicitudesIdentidadAutorizadas() {
 
-		boolean consentimientoLey = ParametrosServicio.find("select consentimientoLey from ParametrosServicio parametrosServicio where nombreServicio=?", "identidad").first();
+		boolean consentimientoLey = ParametrosServicioSVDFAP.find("select consentimientoLey from ParametrosServicioSVDFAP parametrosServicio where nombreServicio=?", "identidad").first();
 
 		java.util.List<SolicitudGenerica> rows;
 
@@ -64,11 +65,11 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 			//Se comprueba que se haya seleccionado al menos un expediente
 			if (idsSeleccionados != null) {
 				for (Long idExpediente: idsSeleccionados) {
-					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
+					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP(NombreServicioSVDFAPEnum.identidad.name(), idExpediente);
 					listaSolicitudesTransmision.add(solicitudTransmision);
 				}
 
-				svdService.crearPeticion(peticion, listaSolicitudesTransmision, "identidad");
+				SVDUtils.crearPeticion(peticion, listaSolicitudesTransmision, NombreServicioSVDFAPEnum.identidad.name());
 
 				for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
 					solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
@@ -92,7 +93,7 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 
 	public static void tablatablaSolicitudesResidenciaAutorizadas() {
 
-		boolean consentimientoLey = ParametrosServicio.find("select consentimientoLey from ParametrosServicio parametrosServicio where nombreServicio=?", "residencia").first();
+		boolean consentimientoLey = ParametrosServicioSVDFAP.find("select consentimientoLey from ParametrosServicioSVDFAP parametrosServicio where nombreServicio=?", "residencia").first();
 
 		java.util.List<SolicitudGenerica> rows;
 
@@ -135,11 +136,11 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 			//Se comprueba que se haya seleccionado al menos un expediente
 			if (idsSeleccionados != null) {
 				for (Long idExpediente: idsSeleccionados) {
-					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP("identidad", idExpediente);
+					SolicitudTransmisionSVDFAP solicitudTransmision = SVDUtils.crearSolicitudTransmisionSVDFAP(NombreServicioSVDFAPEnum.residencia.name(), idExpediente);
 					listaSolicitudesTransmision.add(solicitudTransmision);
 				}
 
-				svdService.crearPeticion(peticion, listaSolicitudesTransmision, "residencia");
+				SVDUtils.crearPeticion(peticion, listaSolicitudesTransmision, NombreServicioSVDFAPEnum.residencia.name());
 
 				for(SolicitudTransmisionSVDFAP solicitudTransmision: listaSolicitudesTransmision) {
 					solicitudTransmision.solicitud.estadoPeticionSVD = "creada";
@@ -163,10 +164,8 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 	@Util
 	public static void crearRender(String accion) {
 		if (!Messages.hasMessages()) {
-
-			Messages.ok("Petición creada correctamente");
 			Messages.keep();
-
+			redirect("CesionDatosSVDListarController.index", "editar", getComboNombreServicioSVDFAP());
 		}
 		Messages.keep();
 		redirect("CesionDatosSVDCrearController.index", "editar", getComboNombreServicioSVDFAP());

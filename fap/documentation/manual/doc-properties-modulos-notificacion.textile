@@ -1,15 +1,15 @@
 h2. Notificación
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Configuración de Notificaciones | *fap.notificacion.activa* | _[true/false]_ | fap.notificacion.activa=false |
-| Configuración de Notificaciones | *fap.notificacion. procedimiento* | _String_ | fap.notificacion.procedimiento= FAP |
-| Configuración de Notificaciones | *fap.notificacion. backoffice* | _String_ | fap.notificacion.backoffice= FAP20120002 |
-| Configuración de Notificaciones | *fap.notificaciones.url* | _String_ | fap.notificaciones.url= http://vespa:8180/ sncse-des/ servicios/ NotificacionService? wsdl |
-| Configuración de Notificaciones | *fap.notificacion. plazoacceso* | _Integer_  | fap.notificacion.plazoacceso=10 |
-| Configuración de Notificaciones | *fap.notificacion. plazorespuesta* | _Integer_ | fap.notificacion.plazorespuesta=10 |
+| Estado actual | *fap.notificacion.activa* | _[true/false]_ | fap.notificacion.activa=false |
+| Tipo de procedimiento | *fap.notificacion. procedimiento* | _String_ | fap.notificacion.procedimiento= FAP |
+| Desarrollo del servicio | *fap.notificacion. backoffice* | _String_ | fap.notificacion.backoffice= FAP20120002 |
+| Servicio de Notificaciones | *fap.notificaciones.url* | _String_ | fap.notificaciones.url= http://vespa:8180/ sncse-des/ servicios/ NotificacionService? wsdl |
+| Plazo de acceso | *fap.notificacion. plazoacceso* | _Integer_  | fap.notificacion.plazoacceso=10 |
+| Plazo de respuesta | *fap.notificacion. plazorespuesta* | _Integer_ | fap.notificacion.plazorespuesta=10 |
 | Configuración de Notificaciones | *fap.notificacion. frecuenciarecordatorio acceso* | _Integer_ | fap.notificacion. frecuenciarecordatorioacceso=2 |
 | Configuración de Notificaciones | *fap.notificacion. frecuenciarecordatorio respuesta* | _Integer_ | fap.notificacion. frecuenciarecordatoriorespuesta=2 |
 | Configuración de Notificaciones | *fap.notificacion. enlaceSede* | _String_ | fap.notificacion.enlaceSede= http://10.140.209.253:9007/ aciisi/ jano/ pre/ sede/ areapersonal/ |
 | Configuración de Notificaciones | *fap.notificacion. refrescoBaseDeDatos FromWS* | _Integer_ | fap.notificacion. refrescoBaseDeDatosFromWS=1 |
 | Configuración de Notificaciones | *fap.notificacion. schedulerestado. delayed* | _Integer_ | fap.notificacion.schedulerestado. delayed=100 |
-| Configuración de Notificaciones | *fap.notificacion. activarModificacion* | _[true/false]_ | fap.notificacion.activarModificacion= false |
+| Activación de la notificación | *fap.notificacion. activarModificacion* | _[true/false]_ | fap.notificacion.activarModificacion= false |

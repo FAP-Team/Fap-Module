@@ -1,22 +1,22 @@
 h2. Tramitación
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Prefijo PDF Justificante | *fap.tramitacion. prefijojustificantepdf. solicitud* | _String_ | fap.tramitacion. prefijojustificantepdf.solicitud= justificanteSolicitud |
-| Prefijo PDF Justificante | *fap.tramitacion. prefijojustificantepdf. solicitudModificacion* | _String_ | fap.tramitacion. prefijojustificantepdf. solicitudModificacion= justificanteSolicitudModificacion |
-| Documentos para el Desistimiento | *fap.tramitacion. desistimiento. fechafin* | _Fecha_ | fap.tramitacion.desistimiento. fechafin= 30/07/2014 |
-| Plantilla para los nombre los ficheros de justificantes | *fap.tramitacion.aceptacion. prefijojustificantepdf* | _String_ | fap.tramitacion.aceptacion. prefijo justificantepdf= JustificanteAceptacion |
-| Plantilla para los nombre los ficheros de justificantes | *fap.tramitacion.renuncia. prefijojustificantepdf* | _String_ | fap.tramitacion.renuncia. prefijo justificantepdf= JustificanteRenuncia |
-| Plantilla para los nombre los ficheros de justificantes | *fap.tramitacion.reformulacion. prefijojustificantepdf* | _String_ | fap.tramitacion.reformulacion. prefijojustificantepdf= JustificanteReformulacion |
-| Plantilla para los nombre los ficheros de justificantes | *fap.tramitacion.alegacion. prefijojustificantepdf* | _String_ | fap.tramitacion.alegacion. prefijojustificantepdf= JustificanteAlegacion |
-| Plantilla para los nombre los ficheros de justificantes | *fap.tramitacion.desistimiento. prefijojustificantepdf* | _String_ | fap.tramitacion.desistimiento. prefijojustificantepdf= JustificanteDesistimiento |
-| Identificadores para los correos | *fap.tramitacion. aceptacion. identificadoremail* | _String_ | fap.tramitacion.aceptacion. identificadoremail= aceptacionRealizada |
-| Identificadores para los correos | *fap.tramitacion. renuncia. identificadoremail* | _String_ | fap.tramitacion.renuncia. identificadoremail= renunciaRealizada |
-| Identificadores para los correos | *fap.tramitacion. reformulacion. identificadoremail* | _String_ | fap.tramitacion.reformulacion. identificadoremail= reformulacionRealizada |
-| Identificadores para los correos | *fap.tramitacion. alegacion. identificadoremail* | _String_ | fap.tramitacion.alegacion. identificadoremail= alegacionRealizada |
-| Identificadores para los correos | *fap.tramitacion. desistimiento. identificadoremail* | _String_ | fap.tramitacion.desistimiento. identificadoremail= desistimientoRealizada |
-| Identificadores para los correos | *fap.tramitacion. aportacion. identificadoremail* | _String_ | fap.tramitacion.aportacion. identificadoremail= aportacionRealizada |
-| Identificadores para los correos | *fap.tramitacion. justificacion. identificadoremail* | _String_ | fap.tramitacion.justificacion. identificadoremail= justificacionRealizada |
-| Identificadores para los correos | *fap.tramitacion. iniciada. identificadoremail* | _String_ | fap.tramitacion.iniciada. identificadoremail= solicitudIniciada |
-| Identificadores para los correos | *fap.tramitacion. modificada. identificadoremail* | _String_ | fap.tramitacion.modificada. identificadoremail= solicitudModificada |
-| Configuración de Notificaciones | *fap.tramitacion.tramite.tipo* | _String_ | fap.tramitacion.tramite.tipo= Solicitud |
-| Configuración de Notificaciones | *fap.tramitacion.tramite. modificacion.tipo* | _String_ | fap.tramitacion.tramite. modificacion. tipo= SolicitudModificacion |
+| Prefijo PDF Justificante de solicitud | *fap.tramitacion. prefijojustificantepdf. solicitud* | _String_ | fap.tramitacion. prefijojustificantepdf.solicitud= justificanteSolicitud |
+| Prefijo PDF Justificante de solicitud de modificación | *fap.tramitacion. prefijojustificantepdf. solicitudModificacion* | _String_ | fap.tramitacion. prefijojustificantepdf. solicitudModificacion= justificanteSolicitudModificacion |
+| Fecha de fin del documento para el desistimiento | *fap.tramitacion.desistimiento. fechafin* | _Fecha_ | fap.tramitacion.desistimiento. fechafin= 30/07/2014 |
+| Plantilla para los nombre de los ficheros de justificantes de aceptación | *fap.tramitacion.aceptacion. prefijojustificantepdf* | _String_ | fap.tramitacion.aceptacion. prefijojustificantepdf= JustificanteAceptacion |
+| Plantilla para los nombre de los ficheros de justificantes de renuncia | *fap.tramitacion.renuncia. prefijojustificantepdf* | _String_ | fap.tramitacion.renuncia. prefijojustificantepdf= JustificanteRenuncia |
+| Plantilla para los nombre de los ficheros de justificantes de reformulación | *fap.tramitacion.reformulacion. prefijojustificantepdf* | _String_ | fap.tramitacion.reformulacion. prefijojustificantepdf= JustificanteReformulacion |
+| Plantilla para los nombre de los ficheros de justificantes de alegación | *fap.tramitacion.alegacion. prefijojustificantepdf* | _String_ | fap.tramitacion.alegacion. prefijojustificantepdf= JustificanteAlegacion |
+| Plantilla para los nombre de los ficheros de justificantes de desistimiento | *fap.tramitacion.desistimiento. prefijojustificantepdf* | _String_ | fap.tramitacion.desistimiento. prefijojustificantepdf= JustificanteDesistimiento |
+| Identificadores para los correos de aceptación | *fap.tramitacion.aceptacion. identificadoremail* | _String_ | fap.tramitacion.aceptacion. identificadoremail= aceptacionRealizada |
+| Identificadores para los correos de renuncia | *fap.tramitacion.renuncia. identificadoremail* | _String_ | fap.tramitacion.renuncia. identificadoremail= renunciaRealizada |
+| Identificadores para los correos de reformulación | *fap.tramitacion.reformulacion. identificadoremail* | _String_ | fap.tramitacion.reformulacion. identificadoremail= reformulacionRealizada |
+| Identificadores para los correos de alegación | *fap.tramitacion.alegacion. identificadoremail* | _String_ | fap.tramitacion.alegacion. identificadoremail= alegacionRealizada |
+| Identificadores para los correos de desistimiento | *fap.tramitacion.desistimiento. identificadoremail* | _String_ | fap.tramitacion.desistimiento. identificadoremail= desistimientoRealizada |
+| Identificadores para los correos de aportación | *fap.tramitacion.aportacion. identificadoremail* | _String_ | fap.tramitacion.aportacion. identificadoremail= aportacionRealizada |
+| Identificadores para los correos de justificación | *fap.tramitacion.justificacion. identificadoremail* | _String_ | fap.tramitacion.justificacion. identificadoremail= justificacionRealizada |
+| Identificadores para los correos de tramitación iniciada | *fap.tramitacion.iniciada. identificadoremail* | _String_ | fap.tramitacion.iniciada. identificadoremail= solicitudIniciada |
+| Identificadores para los correos de tramitación modificada | *fap.tramitacion.modificada. identificadoremail* | _String_ | fap.tramitacion.modificada. identificadoremail= solicitudModificada |
+| Tipo de trámite | *fap.tramitacion.tramite.tipo* | _String_ | fap.tramitacion.tramite.tipo= Solicitud |
+| Modificación de tipo de trámite | *fap.tramitacion.tramite. modificacion.tipo* | _String_ | fap.tramitacion.tramite. modificacion.tipo= SolicitudModificacion |

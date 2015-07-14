@@ -2,9 +2,9 @@ h2. Registro
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Registro de entrada y salida | *fap.platino.registro. url* | _String_ | fap.platino.registro.url= http://buger.gobiernodecanarias.net: 8076/registro/ |
-| Registro de entrada y salida | *fap.platino.registro. username* | _String_ | fap.platino.registro.username=PLATIN |
-| Registro de entrada y salida | *fap.platino.registro. password* |  | fap.platino.registro.password= undefined |
-| Registro de entrada y salida | *fap.platino.registro. asunto* | _String_ | fap.platino.registro.asunto=RE Convocatoria Préstamos Reembolsables 2012 |
-| Registro de entrada y salida | *fap.platino.registro. unidadOrganica* | _Integer_ | fap.platino.registro.unidadOrganica= 23193 |
-| Registro de entrada y salida | *fap.platino.registro. aliasServidor* | _String_ | fap.platino.registro.aliasServidor= aciisi-7177660 |
-| Registro de entrada y salida | *fap.platino.registro. tipoTransporte* | _String_ | fap.platino.registro.tipoTransporte= DA |
+| Nombre de usuarios | *fap.platino.registro. username* | _String_ | fap.platino.registro.username=PLATIN |
+| Contraseña del usuario | *fap.platino.registro. password* | _String_ | fap.platino.registro.password= undefined |
+| Descripción del asunto | *fap.platino.registro. asunto* | _String_ | fap.platino.registro.asunto=RE Convocatoria Préstamos Reembolsables 2012 |
+| Unidad que realiza el servicio | *fap.platino.registro. unidadOrganica* | _Integer_ | fap.platino.registro.unidadOrganica= 23193 |
+| Certificado con el que se realizara la firma del justificante de registro | *fap.platino.registro. aliasServidor* | _String_ | fap.platino.registro.aliasServidor= aciisi-7177660 |
+| Tipo de transporte utilizado en el registro | *fap.platino.registro. tipoTransporte* | _String_ | fap.platino.registro.tipoTransporte= DA |

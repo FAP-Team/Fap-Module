@@ -3,9 +3,9 @@ h2. Documentación
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Configurar filtro por tipo MIMES  |  *fap.gestordocumental. mimes* | _String_ | _fap.gestordocumental.mimes=image/ png, image/jpg, application/pdf_
 | Configurar filtro por extensiones  | *fap.gestordocumental. extensions* | _String_ | _fap.gestordocumental.extensions= pdf, png, jpg_
-| Tamaño maximo permitido de los ficheros a subir | *fap.file.maxsize* | _Integer_ | fap.file.maxsize=100000 
+| Tamaño máximo permitido de los ficheros a subir | *fap.file.maxsize* | _Integer_ | fap.file.maxsize=100000 
 | Tipos de facturas | *fap.gestordocumental. tiposfacturas.url* | _String_ | fap.gestordocumental.tiposfacturas. url=fs://facturatipo1/v01, fs://facturatipo2/v01
-| Documentos dependientes del trámite | *fap.gestordocumental. documentacion.tramite* | _String_ | fap.gestordocumental. documentacion. tramite=Solicitud
-| Nombre del interesado al consultar el Portafirmas | *fap.docConsulta. portaFirma.interesado. nombre* | _String_ | fap.docConsulta.portaFirma. interesado. nombre=Agencia Canaria de Investigación, Innovación y Sociedad de la Información(ACIISI)
+| Documentos dependientes del trámite | *fap.gestordocumental. documentacion.tramite* | _String_ | fap.gestordocumental. documentacion.tramite=Solicitud
+| Nombre del interesado al consultar el Portafirmas | *fap.docConsulta. portaFirma.interesado. nombre* | _String_ | fap.docConsulta.portaFirma. interesado.nombre=Agencia Canaria de Investigación, Innovación y Sociedad de la Información(ACIISI)
 | CIF del interesado al consultar el Portafirmas | *fap.docConsulta. portaFirma.interesado. cif* | _String_ | fap.docConsulta.portaFirma. interesado.cif=ACIISI
 | Para permitir o no documentos externos (que se han presentado por otras administraciones) | *fap.documentacion. documentosExternos* | _[true/false]_ | fap.documentacion. documentosExternos=false |

@@ -2,6 +2,6 @@ h2. Jobs
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Cada cuanto se debe ejecutar el Job encargado de actualizar las Notificaciones (en minutos) | *fap.notificacion. refrescoBaseDe DatosFromWS* | _Integer_ | _fap.notificacion.refrescoBaseDeDatosFromWS=1_ (Valor por defecto que trae el módulo FAP) |
-| Cada cuanto se debe ejecutar el Job encargado de gestionar lo del Seguimiento (en minutos) | *fap.seguimiento. notificarAlertar. anotaciones* | _Integer_ | _fap.seguimiento.notificarAlertar.anotaciones=1_ (Valor por defecto que trae el módulo FAP) |
+| Cada cuanto se debe ejecutar el Job encargado de gestionar el Seguimiento (en minutos) | *fap.seguimiento. notificarAlertar. anotaciones* | _Integer_ | _fap.seguimiento.notificarAlertar.anotaciones=1_ (Valor por defecto que trae el módulo FAP) |
 | Cada cuanto se debe ejecutar el Job encargado de comprimir los logs (en horas) | *fap.log. compress.every* | _Integer_ | _fap.log.compress.every=24_ (Valor por defecto que trae el módulo FAP) |
 | Cada cuanto se debe ejecutar el Job encargado de eliminar los archivos temporales antiguos (en horas) | *fap.delete. temporals.every* | _Integer_ | _fap.delete.temporals.every=5_ (Valor por defecto que trae el módulo FAP) |

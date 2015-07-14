@@ -2,6 +2,6 @@ h2. Formato
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
 | Número mínimo de decimales a mostrar en los doubles | *fap.format.double.min* | Integer | _fap.format.double.min=2_ |
-| Número maximo de decimales a mostrar en los doubles | *fap.format.double.max* | Integer | _fap.format.double.max=5_ |
-| Número mínimo de decimales a mostrar en los doubles | *fap.format.moneda.min* | Integer | _fap.format.moneda.min=2_ |
+| Número máximo de decimales a mostrar en los doubles | *fap.format.double.max* | Integer | _fap.format.double.max=5_ |
+| Número mínimo de decimales a mostrar en las monedas | *fap.format.moneda.min* | Integer | _fap.format.moneda.min=2_ |
 | Número máximo de decimales a mostrar en las monedas | *fap.format.moneda.max* | Integer | _fap.format.moneda.min=5_ |

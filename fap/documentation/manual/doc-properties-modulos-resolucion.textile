@@ -1,12 +1,12 @@
 h2. Resolución
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Resolucion | *fap.resoluciones. usuario* | _String_ | fap.resoluciones.usuario=uwsaciisi |
+| Nombre de usuario | *fap.resoluciones. usuario* | _String_ | fap.resoluciones.usuario=uwsaciisi |
 | Resolucion | *fap.resoluciones. idAreaFuncional* | _Integer_ | fap.resoluciones.idAreaFuncional= 136 |
 | Resolucion | *fap.resoluciones.url* | _String_ | fap.resoluciones.url= http://www-pre.gobiernodecanarias.net/ resoluc/services/ resolucionesWeb |
-| Resolucion | *fap.resoluciones. generarDocumento Resolucion* | _[true/false]_ | fap.resoluciones. generarDocumentoResolucion= false |
-| Resolucion | *fap.resoluciones. publicarTablonAnuncios* | _[true/false]_ | fap.resoluciones. publicarTablonAnuncios= true |
-| Resolucion | *fap.resoluciones. notificar* | _[true/false]_ | fap.resoluciones.notificar= true |
-| Resolucion | *fap.resoluciones. descripcionNotificacion* | _String_ | fap.resoluciones. descripcionNotificacion= Notificación de resolución |
-| Resolucion | *fap.resoluciones. aportacion.tramite* | _String_ | fap.resoluciones.aportacion. tramite= Resolucion |
+| Generar el documento de resolución | *fap.resoluciones. generarDocumento Resolucion* | _[true/false]_ | fap.resoluciones. generarDocumentoResolucion= false |
+| Publicar la resolución en el tablón de anuncios | *fap.resoluciones. publicarTablonAnuncios* | _[true/false]_ | fap.resoluciones. publicarTablonAnuncios= true |
+| Notificar la resolución | *fap.resoluciones. notificar* | _[true/false]_ | fap.resoluciones.notificar= true |
+| Descripción que se envia en la notificacion | *fap.resoluciones. descripcionNotificacion* | _String_ | fap.resoluciones. descripcionNotificacion= Notificación de resolución |
+| Especifica el tramite por donde se obtienen los documentos necesarios | *fap.resoluciones. aportacion.tramite* | _String_ | fap.resoluciones.aportacion. tramite= Resolucion |
 | Resolucion | *fap.resolucion. baremacion.permitida* | _[true/false]_ | fap.resolucion.baremacion. permitida= true |

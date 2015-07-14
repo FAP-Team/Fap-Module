@@ -7,7 +7,7 @@ h4. Properties antiguas
 | Verificación | *fap.verificacion. procedimientoURI* |  | fap.verificacion.procedimientoURI= undefined |
 | Verificación | *fap.verificacion.tramiteURI* |  | fap.verificacion.tramiteURI= undefined |
 
-h2. Realizando migración a un nuevo servicio de verificación de datos
+h2. Actualmente nos encontramos realizando  la migración a un nuevo servicio de verificación de datos
 
 h4. Properties nuevas
 

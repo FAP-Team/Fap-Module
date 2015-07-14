@@ -1,10 +1,10 @@
 h2. Portafirma
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Personalizacion de mensajes de Error | *fap.portafirma. secret.key* |  | fap.portafirma. secret.key=undefined |
-| Portafirma | *portafirma.usuario* | _String_ | portafirma.usuario= PRESTAMOS |
-| Portafirma | *portafirma. webservice.wsdlURL* |  | portafirma.webservice. wsdlURL=undefined |
-| Portafirmas | *fap.platino.portafirma. url* | _String_ | fap.platino. portafirma.url= http://buger.gobiernodecanarias. net: 8077/ portafirmas/solicitudfirma/ |
+| Personalizacion de mensajes de Error | *fap.portafirma. secret.key* | _String_ | fap.portafirma. secret.key=undefined |
+| Nombre de usuario | *portafirma.usuario* | _String_ | portafirma.usuario= PRESTAMOS |
+| Portafirma | *portafirma. webservice.wsdlURL* | _String_ | portafirma.webservice. wsdlURL=undefined |
+| Servicio portafirmas | *fap.platino.portafirma. url* | _String_ | fap.platino. portafirma.url= http://buger.gobiernodecanarias. net: 8077/ portafirmas/solicitudfirma/ |
 | Indica si se usa el portafirma de Platino | *fap.platino.portafirma* | _[true/false]_ | fap.platino.portafirma= true  |
 | Especifica los usuarios destinatarios. Añada parejas id usuario destinatario y nombre usuario destinatario. Todo separado por comas | *fap.platino.portafirma. destinatarios* | _String_ | fap.platino.portafirma. destinatarios= dgonmor, Daniel Gonzalez Morales |
 | Especifica el número de días máximo para obtener la firma de la Resolución en el portafirma | *fap.platino.portafirma. plazoMaximo* | _Integer_ | fap.platino.portafirma. plazoMaximo= undefined |

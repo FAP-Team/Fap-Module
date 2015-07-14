@@ -1,8 +1,8 @@
 h2. Firma
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Firma | *fap.platino.firma.js* | _String_ | fap.platino.firma.js= pre |
-| Firma | *fap.platino.firma.url* | _String_ | fap.platino.firma.url= http://buger.gobiernodecanarias.net: 8077/ firma/ |
-| Firma | *fap.platino.firma. invokingApp* | _String_ | fap.platino.firma.invokingApp=PLATINO |
-| Firma | *fap.platino.firma.alias* | _String_ | fap.platino.firma.alias=camerfirma |
-| Firma | *fap.platino.firma. baseJavascript* |  |  |
+| Entorno | *fap.platino.firma.js* | _String_ | fap.platino.firma.js= pre |
+| Servicio firma | *fap.platino.firma.url* | _String_ | fap.platino.firma.url= http://buger.gobiernodecanarias.net: 8077/ firma/ |
+| Código de la aplicación que realiza la invocación al servicio | *fap.platino.firma. invokingApp* | _String_ | fap.platino.firma.invokingApp=PLATINO |
+| Alias del certificado | *fap.platino.firma.alias* | _String_ | fap.platino.firma.alias=camerfirma |
+| Firma | *fap.platino.firma. baseJavascript* | _String_ | fap.platino.firma.url = www3.gobiernodecanarias.org  |

@@ -1,7 +1,7 @@
 h2. Servicios
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Permitir definir el HttpTimeout de los servicios | *fap.servicios.httpTimeout* | _long_ | _fap.servicios.httpTimeout=240000_ (Se activa el timeout de los servicios cada 24 segundos (se representa en milisegundos.) |
+| Permite definir el HttpTimeout de los servicios | *fap.servicios.httpTimeout* | _long_ | _fap.servicios.httpTimeout=240000_ (Se activa el timeout de los servicios cada 24 segundos (se representa en milisegundos.) |
 | Configuración del AED | *fap.aed.[...]*  | | Más información sobre la configuración del AED, "aquí":ws-aed |
 | Configuración de Platino | *fap.platino.[...]* | | Más información sobre la configuración de Platino, "aquí":ws-platino |
 | Configuración del servicio de Notificaciones | *fap.notificaciones.[...]* | | Más información sobre la configuración del servicio "aquí":ws-notificacion |

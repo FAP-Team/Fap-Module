@@ -1,7 +1,7 @@
 h2. Comunicaciones internas
 
 |_. Definición |_. Nombre |_. Valor |_. Ejemplo |
-| Comunicaciones Internas | *fap.services. comunicaciones. internas.url* | _String_ | fap.services.comunicaciones.internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/CIServices.asmx |
-| Comunicaciones Internas | *fap.services. genericos. comunicaciones. internas.url* | _String_ | fap.services.genericos.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/Service.asmx |
-| Comunicaciones Internas | *fap.services. entrada. comunicaciones. internas.url* | _String_ | fap.services.entrada.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/EntradaServices.asmx |
-| Comunicaciones Internas | *fap.services. salida. comunicaciones. internas.url* | _String_ | fap.services.salida.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/SalidaServices.asmx |
+| Comunicaciones Internas. Servicio | *fap.services. comunicaciones. internas.url* | _String_ | fap.services.comunicaciones.internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/CIServices.asmx |
+| Servicios genéricos | *fap.services. genericos. comunicaciones. internas.url* | _String_ | fap.services.genericos.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/Service.asmx |
+| Ruta hacia donde se encuentran los datos de entrada | *fap.services. entrada. comunicaciones. internas.url* | _String_ | fap.services.entrada.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/EntradaServices.asmx |
+| Ruta hacia donde se encuentran los datos de salida | *fap.services. salida. comunicaciones. internas.url* | _String_ | fap.services.salida.comunicaciones. internas.url= https://www-pre.gobiernodecanarias.org/ serviciosweb/hiperregV3/SalidaServices.asmx |

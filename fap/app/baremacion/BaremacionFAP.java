@@ -64,7 +64,7 @@ public class BaremacionFAP {
 			List<String> lstEstadosSolicitud = null;
 			
 			if (FapProperties.get("fap.baremacion.iniciar.estados") != null && !FapProperties.get("fap.baremacion.iniciar.estados").isEmpty())
-			   estadosSolicitud = FapProperties.get("fap.baremacion.iniciar.estados").trim().split(",");
+			   estadosSolicitud = FapProperties.get("fap.baremacion.iniciar.estados").replaceAll("\\s", "").trim().split(",");
 			if (estadosSolicitud != null) 
                lstEstadosSolicitud = Arrays.asList(estadosSolicitud);
 			
@@ -72,7 +72,7 @@ public class BaremacionFAP {
 			
 				final String query = "select solicitud from Solicitud solicitud " +
 				                     "where solicitud.estado in (:estadosSolicitud) and " +
-				                     "not exists (select evaluacion from Evaluacion evaluacion " +
+				                     "exists (select evaluacion from Evaluacion evaluacion " +
 				                     "where evaluacion.tipo.id=:tipoEvaluacion and evaluacion.solicitud = solicitud)";
 	
 				//Comprueba que todas las solicitudes tengan su evaluación creada

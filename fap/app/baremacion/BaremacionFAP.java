@@ -72,7 +72,7 @@ public class BaremacionFAP {
 			
 				final String query = "select solicitud from Solicitud solicitud " +
 				                     "where solicitud.estado in (:estadosSolicitud) and " +
-				                     "exists (select evaluacion from Evaluacion evaluacion " +
+				                     "not exists (select evaluacion from Evaluacion evaluacion " +
 				                     "where evaluacion.tipo.id=:tipoEvaluacion and evaluacion.solicitud = solicitud)";
 	
 				//Comprueba que todas las solicitudes tengan su evaluación creada

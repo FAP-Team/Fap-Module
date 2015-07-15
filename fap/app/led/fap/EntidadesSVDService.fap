@@ -7,6 +7,10 @@ Entidad PeticionSVDFAP{
    OneToMany SolicitudTransmisionSVDFAP solicitudesTransmision
    Lista tipoEstadoPeticionSVDFAP estadoPeticion
    Lista NombreServicioSVDFAP nombreServicio
+   DateTime fechaCreacion
+   DateTime fechaPeticion
+   DateTime fechaConfirmacion
+   DateTime fechaRespuesta
 }
 
 Entidad AtributosSVDFAP {   

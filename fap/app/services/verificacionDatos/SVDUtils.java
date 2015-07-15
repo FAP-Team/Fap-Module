@@ -104,9 +104,10 @@ public class SVDUtils {
 
 		//Solicitudes
 		Solicitudes solicitudesPlatino = new Solicitudes();
-		SolicitudTransmision solicitudTransmision = solicitudTransmisionFAPToSolicitudTransmisionPlatino(peticion, peticion.solicitudesTransmision.get(0));
-		solicitudesPlatino.getSolicitudTransmision().add(solicitudTransmision);
-
+		for (SolicitudTransmisionSVDFAP solicitudTransmisionFAP: peticion.solicitudesTransmision) {
+			SolicitudTransmision solicitudTransmision = solicitudTransmisionFAPToSolicitudTransmisionPlatino(peticion, solicitudTransmisionFAP);
+			solicitudesPlatino.getSolicitudTransmision().add(solicitudTransmision);
+		}
 		peticionPlatino.setSolicitudes(solicitudesPlatino);
 
 		return peticionPlatino;
@@ -350,6 +351,7 @@ public class SVDUtils {
 				actual++;
 			}
 
+			peticion.fechaRespuesta = parseFecha(peticion.atributos.timestamp);
 			peticion.estadoPeticion = TipoEstadoPeticionSVDFAPEnum.recibida.name();
 			peticion.solicitudesTransmision.get(0).estado = TipoEstadoPeticionSVDFAPEnum.recibida.name();
 		} catch (Exception ex){
@@ -523,6 +525,7 @@ public class SVDUtils {
 			peticion.atributos.codigoCertificado = ParametrosServicioSVDFAP.find("select codigoCertificado from ParametrosServicioSVDFAP parametrosServicio where nombreServicio=?", tipoServicio).first();
 			peticion.nombreServicio = tipoServicio;
 			peticion.solicitudesTransmision = solicitudes;
+			peticion.fechaCreacion = new DateTime().now();
 			peticion.estadoPeticion = TipoEstadoPeticionSVDFAPEnum.creada.name();
 		} catch (Exception ex) {
 			throw new SVDServiceException("Se ha producido un error creando la petición SVD", ex);
@@ -606,6 +609,7 @@ public class SVDUtils {
 				//PROVISIONAL PRUEBAS, CAMBIAR POR AGENTE ACTUAL
 	//			solicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario = agente.name;
 				solicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario = "Daniel";
+				solicitudTransmisionSVDFAP.estado = TipoEstadoPeticionSVDFAPEnum.creada.name();
 			} 
 		} catch(Exception e){
 			throw new SVDServiceException("Se ha producido un error asignando los datos de la solicitud de transmisión SVD", e);

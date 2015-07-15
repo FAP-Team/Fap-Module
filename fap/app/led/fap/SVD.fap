@@ -1,9 +1,11 @@
+
+//CESIONES DE DATOS SINCRONAS
 Formulario CesionDatosExpediente campo=SolicitudGenerica permiso=solicitudes {
 	
 	Menu{
-		Enlace "Volver" anterior
+		Enlace "Volver" pagina=CesionDatosExpedienteSVD
 		Grupo "Solicitud"  {
-		      Enlace "Documentos" pagina=DocumentacionFAP
+		      Enlace "Documentos" pagina=DocumentacionFAP //Añadida como posibilidad para subir la cesión de datos manualmente, (No implementada).
 		      Enlace "Cesiones de datos" pagina=CesionDatosExpedienteSVD
 		      Enlace "Autorizar Cesión de datos" pagina=CesionDatos
 	    }
@@ -19,12 +21,11 @@ Formulario CesionDatosExpediente campo=SolicitudGenerica permiso=solicitudes {
     		
     		Grupo GrupoTablaIdentidad borde=false mostrarSiCombo tipoServicioSVD="identidad" {
     			Tabla solicitudesPeticionIdentidad titulo="Cesiones de datos de identidad" campo=SolicitudTransmisionSVDFAP seleccionable="Enviar Solicitudes Identidad" 
-    			paginaLeer=VerCesionesDatosIdentidadExpedienteSVD paginaCrear=EditarCesionesDatosIdentidadExpedienteSVD paginaEditar=EditarCesionesDatosIdentidadExpedienteSVD
+    			paginaLeer=VerCesionesDatosIdentidadExpedienteSVD paginaEditar=EditarCesionesDatosIdentidadExpedienteSVD
     			{
     				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.transmision.idTransmision titulo="Identificador de cesión" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="Expediente asociado" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" expandir
-    				Columna campo=SolicitudTransmisionSVDFAP.fechaPeticion titulo="Fecha de petición" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" expandir
@@ -33,12 +34,11 @@ Formulario CesionDatosExpediente campo=SolicitudGenerica permiso=solicitudes {
     		
     		Grupo GrupoTablaResidencia borde=false mostrarSiCombo tipoServicioSVD="residencia"{
     			Tabla solicitudesPeticionResidencia titulo="Cesiones de datos de residencia" campo=SolicitudTransmisionSVDFAP seleccionable="Enviar Solicitudes Residencia" 
-    			paginaLeer=VerCesionesDatosIdentidadExpedienteSVD paginaCrear=EditarCesionesDatosResidenciaExpedienteSVD paginaEditar=EditarCesionesDatosResidenciaExpedienteSVD
+    			paginaLeer=VerCesionesDatosIdentidadExpedienteSVD paginaEditar=EditarCesionesDatosResidenciaExpedienteSVD
     			{
     				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.transmision.idTransmision titulo="Identificador de cesión" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="Expediente asociado" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" expandir
-    				Columna campo=SolicitudTransmisionSVDFAP.fechaPeticion titulo="Fecha de petición" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar" expandir
     				Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" expandir
@@ -188,27 +188,26 @@ Formulario CesionDatosExpediente campo=SolicitudGenerica permiso=solicitudes {
 	
 }
 
-
-//CESIONES DE DATOS AS�?NCRONAS
+//CESIONES DE DATOS ASINCRONAS
 Formulario CesionDatos {
     
     Menu {
-        Enlace "Volver" anterior
+        Enlace "Mis Solicitudes" pagina=Solicitudes 
         Grupo "Cesiones de datos"  {
-              Enlace "Crear peticiones" pagina=CesionDatosSVDCrear
-              Enlace "Listar peticiones" pagina=CesionDatosSVDListar
+              Enlace "Cesiones de datos" pagina=CesionDatosSVDListar
         }
         
+        Enlace "Volver" anterior
         Enlace "Ayuda" pagina=Soporte crear
         Enlace "Salir" accion=logout    
     }
     
-    Pagina CesionDatosSVDCrear titulo="Crear Peticiones de Cesión de Datos" permiso=adminOrGestor {
+    Pagina CesionDatosSVDCrear titulo="Crear transmisiones para la cesión de datos" permiso=adminOrGestor {
        Grupo gprTipoServicioSVD titulo="Seleccione el tipo de Servicio" {
           Combo tipoServicioSVD titulo="Servicio: " campo=ComboNombreServicioSVDFAP.nombreServicio requerido                         
           //Combo filtroExpedientes titulo="Filtrar por: " campo=ComboFiltroExpedientesSVD.filtroExpedientes   
           Grupo GrupoTablaSolicitudesAutorizadasIdentidad borde=false mostrarSiCombo tipoServicioSVD="identidad" {
-                Tabla tablaSolicitudesIdentidadAutorizadas titulo="Solicitudes de Identidad Autorizadas" campo=SolicitudGenerica
+                Tabla tablaSolicitudesIdentidadAutorizadas titulo="Expedientes autorizados" campo=SolicitudGenerica
                  seleccionable="Crear peticion Identidad" paginaLeer=LeerSolicitud {
                     Columna campo=SolicitudGenerica.id titulo="ID" ancho="30"
                     Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
@@ -221,7 +220,7 @@ Formulario CesionDatos {
            }     
            
           Grupo GrupoTablaSolicitudesAutorizadasResidencia borde=false mostrarSiCombo tipoServicioSVD="residencia" {
-                Tabla tablaSolicitudesResidenciaAutorizadas titulo="Solicitudes de Residencia Autorizadas" campo=SolicitudGenerica
+                Tabla tablaSolicitudesResidenciaAutorizadas titulo="Expedientes autorizados" campo=SolicitudGenerica
                  seleccionable="Crear peticion Residencia" paginaLeer=LeerSolicitud {
                     Columna campo=SolicitudGenerica.id titulo="ID" ancho="30"
                     Columna campo=SolicitudGenerica.expedienteAed.idAed titulo="Expediente" ancho="150"
@@ -235,31 +234,35 @@ Formulario CesionDatos {
        }
     }
     
-    
-    Pagina CesionDatosSVDListar titulo="Peticiones de Cesión de Datos" permiso=adminOrGestor {
+    Pagina CesionDatosSVDListar titulo="Peticiones de cesiones de datos" permiso=adminOrGestor {
         Grupo gprTipoServicioSVD titulo="Seleccione el tipo de Servicio" {
             Combo tipoServicioSVD titulo="Servicio: " campo=ComboNombreServicioSVDFAP.nombreServicio requerido
             
             Grupo GrupoTablaCesionesIdentidad borde=false mostrarSiCombo tipoServicioSVD="identidad" {
-                Tabla tablaCesionesIdentidad titulo="Peticiones de Identidad" campo=PeticionSVDFAP
+                Tabla tablaCesionesIdentidad titulo="Peticiones para la cesión de datos de identidad" campo=PeticionSVDFAP
                  seleccionable="Enviar peticiones Identidad" paginaLeer=EditarPeticionSVDFAP paginaEditar=EditarPeticionSVDFAP {
                      Columna campo=PeticionSVDFAP.id titulo="ID" ancho="40"
+                     Columna campo=PeticionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="120"
+                     Columna campo=PeticionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
+                     Columna campo=PeticionSVDFAP.atributos.idPeticion titulo="Referencia" expandir           
                      Columna campo=PeticionSVDFAP.estadoPeticion titulo="Estado" expandir
                 }      
             }
             
             Grupo GrupoTablaCesionesResidencia borde=false mostrarSiCombo tipoServicioSVD="residencia" {
-                Tabla tablaCesionesResidencia titulo="Peticiones de Residencia" campo=PeticionSVDFAP
+                Tabla tablaCesionesResidencia titulo="Peticiones para la cesión de datos de residencia" campo=PeticionSVDFAP
                  seleccionable="Enviar peticiones Residencia" paginaLeer=EditarPeticionSVDFAP paginaEditar=EditarPeticionSVDFAP  {
                      Columna campo=PeticionSVDFAP.id titulo="ID" ancho="40"
+                     Columna campo=PeticionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="120"
+                     Columna campo=PeticionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
+                     Columna campo=PeticionSVDFAP.atributos.idPeticion titulo="Referencia" expandir               
                      Columna campo=PeticionSVDFAP.estadoPeticion titulo="Estado" expandir
                 }   
             }   
         }
     }
     
-    
-    Pagina EditarPeticionSVDFAP titulo="Petición de Cesión de Datos" campo=PeticionSVDFAP permiso=adminOrGestor {
+    Pagina EditarPeticionSVDFAP titulo="Petición de Cesión de Datos" campo=PeticionSVDFAP permiso=adminOrGestor noForm {
         
         Grupo GrupoPeticionDatos titulo="Datos de la Petición" permiso=soloLeer {
             Texto titulo="ID Petición" campo=PeticionSVDFAP.atributos.idPeticion
@@ -268,34 +271,180 @@ Formulario CesionDatos {
         }
         
         Grupo grupoTablaSolicitudesIdentidad mostrarSiExpresion "(peticionSVDFAP.nombreServicio == \"identidad\")" {
-            Tabla tablaSolicitudesTransmisionIdentidad titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP {
+            Tabla tablaSolicitudesTransmisionIdentidad titulo="Solicitudes para las transmisiones de datos" campo=SolicitudTransmisionSVDFAP 
+            paginaLeer=VerCesionesDatosIdentidadSVD paginaEditar=EditarCesionesDatosIdentidadSVD{
                 Columna campo=SolicitudTransmisionSVDFAP.id titulo="ID" ancho="30"
                 Columna campo=SolicitudTransmisionSVDFAP.nombreServicio titulo="Tipo" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.idExpediente titulo="ID Expediente" ancho="90"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="80"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
-                Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar PDF Respuesta" expandir
+                Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar" expandir
             }
-            Grupo grupoPrepararPeticion borde=false permiso=prepararPeticionSVD {
-                Enlace prepararPeticion titulo="Preparar petición" estilo="btn" pagina=CesionDatosSVDListar
+            Grupo grupoPrepararPeticion titulo="Preparar la petición de datos para su envío" permiso=prepararPeticionSVD {
+                Enlace prepararPeticion titulo="Preparar" estilo="btn" pagina=CesionDatosSVDListar
             }
-            Grupo grupoSolicitarRespuesta borde=false permiso=solicitudRespuestaPeticionSVD {
-                Enlace solicitarRespuesta titulo="Solicitar Respuesta" estilo="btn" pagina=EditarPeticionSVDFAP
+            Grupo grupoSolicitarRespuesta titulo="Solicitar la respuesta a la petición para la cesión de datos" permiso=solicitudRespuestaPeticionSVD {
+                Enlace solicitarRespuesta titulo="Recuperar" estilo="btn" pagina=EditarPeticionSVDFAP
             }
         }
         
         Grupo grupoTablaSolicitudesResidencia mostrarSiExpresion "(peticionSVDFAP.nombreServicio == \"residencia\")" {
-            Tabla tablaSolicitudesTransmisionResidencia titulo="Solicitudes de Transmisión" campo=SolicitudTransmisionSVDFAP {
+            Tabla tablaSolicitudesTransmisionResidencia titulo="Solicitudes para las transmisiones de datos" campo=SolicitudTransmisionSVDFAP
+            paginaLeer=VerCesionesDatosIdentidadSVD paginaEditar=EditarCesionesDatosResidenciaSVD {
                 Columna campo=SolicitudTransmisionSVDFAP.id titulo="ID" ancho="30"
                 Columna campo=SolicitudTransmisionSVDFAP.nombreServicio titulo="Tipo" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.id titulo="ID Expediente" ancho="90"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaCreacion titulo="Fecha de creación" ancho="100"
                 Columna campo=SolicitudTransmisionSVDFAP.estado titulo="Estado" ancho="80"
                 Columna campo=SolicitudTransmisionSVDFAP.fechaRespuesta titulo="Fecha de respuesta" ancho="120"
-                Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar PDF Respuesta" expandir
+                Columna campo=SolicitudTransmisionSVDFAP.justificanteSVD.enlaceDescarga titulo="Descargar" expandir
             }
-            Enlace prepararPeticion titulo="Preparar petición" estilo="btn" pagina=CesionDatosSVDListar
+            Grupo grupoPrepararPeticion titulo="Preparar la petición de datos para su envío" permiso=prepararPeticionSVD {
+                Enlace prepararPeticion titulo="Preparar" estilo="btn" pagina=CesionDatosSVDListar
+            }
+            Grupo grupoSolicitarRespuesta titulo="Solicitar la respuesta a la petición para la cesión de datos" permiso=solicitudRespuestaPeticionSVD {
+                Enlace solicitarRespuesta titulo="Recuperar" estilo="btn" pagina=EditarPeticionSVDFAP
+            }
+        }
+    }
+    
+    Pagina EditarCesionesDatosIdentidadSVD titulo="Datos de la cesión de identidad" campo=SolicitudTransmisionSVDFAP permiso=adminOrGestor {
+        Grupo datosGenericos titulo="Datos genéricos de la Solicitud" {
+            Grupo datosSolicitante titulo="Datos del solicitante"{
+                Texto titulo="CIF del Organismo Solicitante: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.identificadorSolicitante requerido
+                Texto titulo="Nombre del Organismo/Organo: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.nombreSolicitante requerido
+                Texto titulo="Unidad tramitadora: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.unidadTramitadora
+                Texto titulo="Código del Procedimiento: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.codigoProcedimiento
+                Texto titulo="Nombre del procedimiento: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.nombreProcedimiento
+                Texto titulo="Finalidad: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.finalidad requerido
+                Combo titulo="Consentimiento: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.consentimiento requerido
+                Texto titulo="Nombre completo: " campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario
+            }
+            Grupo datosTitular titulo="Datos del titular"{
+                Texto titulo="Número de identificación: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.documentacion requerido
+                Combo titulo="Tipo de identificación: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion requerido
+            }
+        }
+        
+        Grupo datosEspecificos titulo="Datos específicos de la Solicitud" {
+            Texto titulo="Tipo de solicitante de datos: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.tipoSolicitante
+            Grupo datosResidencia titulo="Residencia" {
+                Combo ComboComunidadAutonoma titulo="Comunidad Autónoma: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.comunidadAutonoma busqueda
+                Combo ComboProvincia titulo="Provincia: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.provincia busqueda dependeDe=ComboComunidadAutonoma
+                Combo ComboIsla titulo="Isla: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.isla busqueda dependeDe=ComboProvincia
+                Combo ComboMunicipio titulo="Municipio: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.municipio busqueda dependeDe=ComboIsla
+            }
+            Grupo datosNacimiento titulo="Nacimiento" {
+                Fecha titulo="Fecha de nacimiento: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.fecha
+                Combo ComboProvinciaNacimiento titulo="Provincia: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.provincia
+                Combo ComboMunicipioNacimiento titulo="Municipio: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.municipio dependeDe=ComboProvinciaNacimiento
+                Combo ComboTitulo titulo="Español: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.espanol
+            }
+
+        }
+    }
+    
+    Pagina VerCesionesDatosIdentidadSVD titulo="Cesiones de datos individuales" campo=SolicitudTransmisionSVDFAP permiso=adminOrGestor{
+          Grupo gprRespuesta titulo="Respuesta a la petición de datos" permiso=soloLeer{
+              Texto titulo="Identificador de la cesión: " campo=SolicitudTransmisionSVDFAP.datosGenericos.transmision.idTransmision
+              Texto titulo="Estado: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.estado.literalError
+              Fecha titulo="Fecha de respuesta recibida: " campo=SolicitudTransmisionSVDFAP.fechaRespuesta
+              Grupo grpDatosIdentidad titulo="Datos de la identidad del ciudadano"  mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" {
+                  Texto titulo="Nombre completo: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.nombreCompleto
+                  Texto titulo="Primer apellido: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.apellido1
+                  Texto titulo="Segundo apellido: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.apellido2
+                  Texto titulo="Nacionalidad: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.nacionalidad
+                  Texto titulo="Nombre del padre: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.nombrePadre
+                  Texto titulo="Nombre de la madre: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.nombreMadre
+                  Fecha titulo="Fecha de caducidad: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.fechacaducidad
+                  Texto titulo="Sexo: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.sexo.nombre
+                  
+                  Grupo datosNacimiento titulo="Datos nacimiento" {
+                      Fecha titulo="Fecha de nacimiento: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosNacimiento.fecha
+                      Combo ComboProvinciaNacimiento titulo="Provincia: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosNacimiento.provincia
+                      Combo ComboLocalidadNacimiento titulo="Localidad: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosNacimiento.municipio
+                  }
+                  
+                  Grupo datosDireccion titulo="Datos dirección" {
+                      Combo titulo="Provincia: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosDireccion.provincia
+                      Texto titulo="Localidad: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosDireccion.localidad
+                      Texto titulo="Tipo de vía: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosDireccion.datosVia.tipo
+                      Texto titulo="Vía: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.datosTitular.datosDireccion.datosVia.nombre
+                  }
+              }           
+      }
+    }
+    
+    Pagina EditarCesionesDatosResidenciaSVD titulo="Solicitud de Transmisión - Residencia" campo=SolicitudTransmisionSVDFAP permiso=adminOrGestor {
+        Grupo datosGenericos titulo="Datos genéricos de la Solicitud" {
+            Grupo datosSolicitante titulo="Datos del solicitante"{
+                Texto titulo="CIF del Solicitante" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.identificadorSolicitante requerido
+                Texto titulo="Nombre del Solicitante" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.nombreSolicitante
+                Texto titulo="Finalidad" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.finalidad
+                Texto titulo="Unidad tramitadora" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.unidadTramitadora
+                Texto titulo="Código del Procedimiento" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.codigoProcedimiento
+                Texto titulo="Nombre del procedimiento" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.procedimiento.nombreProcedimiento
+                Combo titulo="Consentimiento" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.consentimiento
+                Grupo datosFuncionario titulo="Datos del funcionario" {
+                    Texto titulo="Nombre completo" campo=SolicitudTransmisionSVDFAP.datosGenericos.solicitante.funcionario.nombreCompletoFuncionario
+                    Combo titulo="Tipo de identificación: " campo=SolicitudTransmisionSVDFAP.datosGenericos.titular.tipoDocumentacion requerido
+                }
+            }
+        }
+        
+        Grupo datosEspecificos titulo="Datos específicos de la Solicitud" {
+            Texto titulo="Tipo de solicitante de datos" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.tipoSolicitante
+            
+            Grupo solicitud titulo="Residencia" {
+                Combo ComboComunidadAutonoma titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.comunidadAutonoma busqueda
+                Combo ComboProvincia titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.provincia busqueda dependeDe=ComboComunidadAutonoma
+                Combo ComboIsla titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.isla busqueda dependeDe=ComboProvincia
+                Combo ComboMunicipio titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.residencia.municipio busqueda dependeDe=ComboIsla
+                Combo ComboTitulo titulo="Español" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.espanol
+            }
+            
+            Grupo datosNacimiento titulo="Nacimiento" {
+                Fecha FechaNacimiento titulo="Fecha" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.fecha
+                Combo ComboComunidadAutonomaNacimiento titulo="Comunidad Autónoma" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.comunidadAutonoma busqueda
+                Combo ComboProvinciaNacimiento titulo="Provincia" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.provincia busqueda dependeDe=ComboComunidadAutonomaNacimiento
+                Combo ComboIslaNacimiento titulo="Isla" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.isla busqueda dependeDe=ComboProvinciaNacimiento
+                Combo ComboMunicipioNacimiento titulo="Municipio" campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.solicitud.solicitudNacimiento.municipio busqueda dependeDe=ComboIslaNacimiento
+            }
+        }
+        
+    }
+    
+    Pagina VerCesionesDatosResidenciaSVD titulo="Cesiones de datos individuales" campo=SolicitudTransmisionSVDFAP permiso=adminOrGestor{
+            Grupo respuesta titulo="Respuesta a la petición de datos"  permiso=soloLeer {
+            Texto titulo="Identificador de la cesión:" campo=SolicitudTransmisionSVDFAP.datosGenericos.transmision.idTransmision
+            Texto titulo="Estado: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.estado.literalError
+            Fecha titulo="Fecha de respuesta recibida: " campo=SolicitudTransmisionSVDFAP.fechaRespuesta
+             
+            Grupo grpDatosResidencia titulo="Datos de la residencia del ciudadano" mostrarSiExpresion "(solicitudTransmisionSVDFAP.estado == \"recibida\")" {
+                Grupo datosDomicilio titulo="Domicilio" {
+                    Combo titulo="Provincia: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.provincia
+                    Combo titulo="Municipio: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.municipio
+                    Texto titulo="Entidad colectiva: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.entColectiva.nombre
+                    Texto titulo="Entidad singular: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.entSingular.nombre
+                    Texto titulo="Núcleo: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.nucleo.nombre
+                    Texto titulo="Unidad poblacional: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.codUnidadPoblacional
+                }
+            Grupo datosDireccion titulo="Dirección" {
+                    Texto titulo="Tipo de vía: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.via.tipo
+                    Texto titulo="Vía: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.via.nombre
+                    Texto titulo="Número: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.numero.valor
+                    Texto titulo="Número superior: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.numeroSuperior.valor
+                    Texto titulo="Kmt: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.kmt
+                    Texto titulo="Hmt: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.hmt
+                    Texto titulo="Bloque: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.bloque
+                    Texto titulo="Portal: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.portal
+                    Texto titulo="Escalera: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.escalera
+                    Texto titulo="Planta: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.planta
+                    Texto titulo="Puerta: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.puerta
+                    Texto titulo="Código Postal: " campo=SolicitudTransmisionSVDFAP.datosEspecificos.datosEspecificosIdResi.domicilio.direccion.codigoPostal
+                  }
+              }
         }
     }
 }

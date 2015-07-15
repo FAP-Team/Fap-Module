@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.EditarCesionesDatosResidenciaSVDControllerGen;
+
+public class EditarCesionesDatosResidenciaSVDController extends EditarCesionesDatosResidenciaSVDControllerGen {
+
+}

@@ -3,15 +3,35 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import messages.Messages;
+import models.Agente;
+import models.ComboNombreServicioSVDFAP;
 import models.PeticionSVDFAP;
 import play.mvc.Util;
 import services.verificacionDatos.SVDService;
 import services.verificacionDatos.SVDServiceException;
+import services.verificacionDatos.SVDUtils;
 import config.InjectorConfig;
+import controllers.fap.AgenteController;
 import controllers.gen.CesionDatosSVDListarControllerGen;
 
 public class CesionDatosSVDListarController extends CesionDatosSVDListarControllerGen {
+	
+	public static void index(String accion) {
+		if (accion == null)
+			accion = getAccion();
+		if (!permiso(accion)) {
+			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
+			renderTemplate("fap/CesionDatosSVDListar/CesionDatosSVDListar.html");
+		}
+
+		ComboNombreServicioSVDFAP comboNombreServicioSVDFAP = CesionDatosSVDListarController.getComboNombreServicioSVDFAP();
+		Agente logAgente = AgenteController.getAgente();
+		log.info("Visitando página: " + "fap/CesionDatosSVDListar/CesionDatosSVDListar.html" + " Agente: " + logAgente);
+		renderTemplate("fap/CesionDatosSVDListar/CesionDatosSVDListar.html", accion, comboNombreServicioSVDFAP);
+	}
 
 	public static void tablatablaCesionesIdentidad() {
 
@@ -22,18 +42,20 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 
 		tables.TableRenderResponse<PeticionSVDFAP> response = new tables.TableRenderResponse<PeticionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "estadoPeticion"));
+		renderJSON(response.toJSON("id", "fechaCreacion", "fechaRespuesta", "atributos.idPeticion", "estadoPeticion"));
 	}
 
 	public static void enviarpeticionesIdentidad(Long id, List<Long> idsSeleccionados) {
 
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
-
+		PeticionSVDFAP peticion = null;
+		
 		try {
 			for (Long idPeticion: idsSeleccionados) {
-				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
 				try {
+					peticion = PeticionSVDFAP.findById(idPeticion);
 					svdService.peticionAsincrona(peticion);
+					peticion.save();
 				} catch (SVDServiceException e) {
 					Messages.error("Error al enviar la petición asíncrona");
 					play.Logger.error("Error al enviar la petición asíncrona: " + e);
@@ -62,18 +84,20 @@ public class CesionDatosSVDListarController extends CesionDatosSVDListarControll
 
 		tables.TableRenderResponse<PeticionSVDFAP> response = new tables.TableRenderResponse<PeticionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "estadoPeticion"));
+		renderJSON(response.toJSON("id", "fechaCreacion", "fechaRespuesta", "atributos.idPeticion", "estadoPeticion"));
 	}
 
 	public static void enviarpeticionesResidencia(Long id, List<Long> idsSeleccionados) {
 
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
+		PeticionSVDFAP peticion = null;
 
 		try {
 			for (Long idPeticion: idsSeleccionados) {
-				PeticionSVDFAP peticion = PeticionSVDFAP.findById(idPeticion);
 				try {
+					peticion = PeticionSVDFAP.findById(idPeticion);
 					svdService.peticionAsincrona(peticion);
+					peticion.save();
 				} catch (SVDServiceException e) {
 					Messages.error("Error al enviar la petición asíncrona");
 					play.Logger.error("Error al enviar la petición asíncrona: " + e);

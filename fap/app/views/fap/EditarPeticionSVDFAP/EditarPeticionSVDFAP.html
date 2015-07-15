@@ -6,7 +6,7 @@
      botonEditar:'Guardar', 
      encType:'application/x-www-form-urlencoded', 
      formulario:'CesionDatos', 
-     hayForm:true, 
+     hayForm:false, 
      mensajeFinal:false, 
      pagina:'EditarPeticionSVDFAP', 
      permiso:'adminOrGestor', 
@@ -34,7 +34,10 @@
      idEntidad:'idSolicitudTransmisionSVDFAP', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Solicitudes de Transmisión', 
+     titulo:'Solicitudes para las transmisiones de datos', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("EditarPeticionSVDFAPController.beforeOpenPageTable" , ['accion':'editar', 'idPeticionSVDFAP':peticionSVDFAP?.id, 'irDespuesDeValidar':'']), 
+     urlEditar:play.mvc.Router.reverse("EditarCesionesDatosIdentidadSVDController.index" , ['accion':'editar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_']), 
+     urlLeer:play.mvc.Router.reverse("VerCesionesDatosIdentidadSVDController.index" , ['accion':'leer', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_']), 
      urlTabla:@EditarPeticionSVDFAPController.tablatablaSolicitudesTransmisionIdentidad(idPeticionSVDFAP)
 }
     
@@ -48,21 +51,21 @@
         
     #{fap.columna alignPosition:'left', ancho:80, cabecera:'Estado', campo:'estado' /}
         
-    #{fap.columna alignPosition:'left', ancho:120, cabecera:'Fecha de respuesta', campo:'respuesta.fechaRespuesta' /}
+    #{fap.columna alignPosition:'left', ancho:120, cabecera:'Fecha de respuesta', campo:'fechaRespuesta' /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar PDF Respuesta', campo:'justificanteSVD.enlaceDescarga', expandir:true /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'justificanteSVD.enlaceDescarga', expandir:true /}
         
 #{/fap.tabla}
 
-            #{fap.grupo borde:false, permiso:'prepararPeticionSVD'}
+            #{fap.grupo permiso:'prepararPeticionSVD', titulo:'Preparar la petición de datos para su envío'}
                 
-            #{fap.enlace action:play.mvc.Router.reverse("CesionDatosSVDListarController.index" , ['redirigir': 'anterior']), estilo:'btn', id:'prepararPeticion', titulo:'Preparar petición' /}
+            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.prepararPeticion",, ['idPeticionSVDFAP':peticionSVDFAP?.id]), estilo:'btn', id:'prepararPeticion', titulo:'Preparar' /}
         
             #{/fap.grupo}
         
-            #{fap.grupo borde:false, permiso:'solicitudRespuestaPeticionSVD'}
+            #{fap.grupo permiso:'solicitudRespuestaPeticionSVD', titulo:'Solicitar la respuesta a la petición para la cesión de datos'}
                 
-            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.index" , ['idPeticionSVDFAP':peticionSVDFAP?.id, 'redirigir': 'anterior']), estilo:'btn', id:'solicitarRespuesta', titulo:'Solicitar Respuesta' /}
+            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.solicitarRespuesta" , ['idPeticionSVDFAP':peticionSVDFAP?.id]), estilo:'btn', id:'solicitarRespuesta', titulo:'Recuperar' /}
         
             #{/fap.grupo}
         
@@ -76,7 +79,10 @@
      idEntidad:'idSolicitudTransmisionSVDFAP', 
      saveEntity:false, 
      tipoContainer:'pagina', 
-     titulo:'Solicitudes de Transmisión', 
+     titulo:'Solicitudes para las transmisiones de datos', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("EditarPeticionSVDFAPController.beforeOpenPageTable" , ['accion':'editar', 'idPeticionSVDFAP':peticionSVDFAP?.id, 'irDespuesDeValidar':'']), 
+     urlEditar:play.mvc.Router.reverse("EditarCesionesDatosResidenciaSVDController.index" , ['accion':'editar', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_']), 
+     urlLeer:play.mvc.Router.reverse("VerCesionesDatosIdentidadSVDController.index" , ['accion':'leer', 'idSolicitudTransmisionSVDFAP':solicitudTransmisionSVDFAP?.id? solicitudTransmisionSVDFAP?.id:'_idSolicitudTransmisionSVDFAP_']), 
      urlTabla:@EditarPeticionSVDFAPController.tablatablaSolicitudesTransmisionResidencia(idPeticionSVDFAP)
 }
     
@@ -84,20 +90,31 @@
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Tipo', campo:'nombreServicio' /}
         
-    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosEspecificos.solicitud.id' /}
+    #{fap.columna alignPosition:'left', ancho:90, cabecera:'ID Expediente', campo:'datosEspecificos.datosEspecificosIdResi.solicitud.id' /}
         
     #{fap.columna alignPosition:'left', ancho:100, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
         
     #{fap.columna alignPosition:'left', ancho:80, cabecera:'Estado', campo:'estado' /}
         
-    #{fap.columna alignPosition:'left', ancho:120, cabecera:'Fecha de respuesta', campo:'respuesta.fechaRespuesta' /}
+    #{fap.columna alignPosition:'left', ancho:120, cabecera:'Fecha de respuesta', campo:'fechaRespuesta' /}
         
-    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar PDF Respuesta', campo:'justificanteSVD.enlaceDescarga', expandir:true /}
+    #{fap.columna alignPosition:'left', ancho:200, cabecera:'Descargar', campo:'justificanteSVD.enlaceDescarga', expandir:true /}
         
 #{/fap.tabla}
 
-            #{fap.enlace action:play.mvc.Router.reverse("CesionDatosSVDListarController.index" , ['redirigir': 'anterior']), estilo:'btn', id:'prepararPeticion', titulo:'Preparar petición' /}
+            #{fap.grupo permiso:'prepararPeticionSVD', titulo:'Preparar la petición de datos para su envío'}
+                
+            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.prepararPeticion" , ['idPeticionSVDFAP':peticionSVDFAP?.id]), estilo:'btn', id:'prepararPeticion', titulo:'Preparar' /}
+        
+            #{/fap.grupo}
+        
+            #{fap.grupo permiso:'solicitudRespuestaPeticionSVD', titulo:'Solicitar la respuesta a la petición para la cesión de datos'}
+                
+            #{fap.enlace action:play.mvc.Router.reverse("EditarPeticionSVDFAPController.solicitarRespuesta" , ['idPeticionSVDFAP':peticionSVDFAP?.id]), estilo:'btn', id:'solicitarRespuesta', titulo:'Recuperar' /}
+        
+            #{/fap.grupo}
         
             #{/fap.grupo}
         
 #{/fap.pagina}
+        

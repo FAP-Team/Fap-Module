@@ -43,6 +43,22 @@ public class PeticionSVDFAP extends FapModel {
 	@FapEnum("enumerado.fap.gen.NombreServicioSVDFAPEnum")
 	public String nombreServicio;
 
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaCreacion"), @Column(name = "fechaCreacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaCreacion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaPeticion"), @Column(name = "fechaPeticionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaPeticion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaConfirmacion"), @Column(name = "fechaConfirmacionTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaConfirmacion;
+
+	@org.hibernate.annotations.Columns(columns = { @Column(name = "fechaRespuesta"), @Column(name = "fechaRespuestaTZ") })
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTimeWithZone")
+	public DateTime fechaRespuesta;
+
 	public PeticionSVDFAP() {
 		init();
 	}

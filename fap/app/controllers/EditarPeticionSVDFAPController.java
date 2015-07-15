@@ -21,7 +21,6 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 			Messages.fatal("No tiene permisos suficientes para realizar esta acción");
 			renderTemplate("fap/EditarPeticionSVDFAP/EditarPeticionSVDFAP.html");
 		}
-		checkRedirigir();
 
 		PeticionSVDFAP peticionSVDFAP = null;
 		if ("crear".equals(accion)) {
@@ -52,7 +51,7 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "justificanteSVD.enlaceDescarga"));
+		renderJSON(response.toJSON("id", "nombreServicio", "datosGenericos.solicitante.idExpediente", "fechaCreacion", "estado", "fechaRespuesta", "justificanteSVD.enlaceDescarga"));
 	}
 
 
@@ -65,7 +64,7 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, false, true, "adminOrGestor", "", "adminOrGestor", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "nombreServicio", "datosEspecificos.solicitud.id", "fechaCreacion", "estado", "respuesta.datosGenericos.transmision.fechaGeneracion", "justificanteSVD.enlaceDescarga"));
+		renderJSON(response.toJSON("id", "nombreServicio", "datosGenericos.solicitante.idExpediente", "fechaCreacion", "estado", "fechaRespuesta", "justificanteSVD.enlaceDescarga"));
 	}
 
 
@@ -92,13 +91,13 @@ public class EditarPeticionSVDFAPController extends EditarPeticionSVDFAPControll
 
 	//Solicita Respuesta de una petición Asíncrona
 	public static void solicitarRespuesta(Long idPeticionSVDFAP) {
-
 		SVDService svdService = InjectorConfig.getInjector().getInstance(SVDService.class);
-
-		PeticionSVDFAP peticionSVDFAP = EditarPeticionSVDFAPController.getPeticionSVDFAP(idPeticionSVDFAP);
+		PeticionSVDFAP peticionSVDFAP = null;
 
 		try {
+			peticionSVDFAP = EditarPeticionSVDFAPController.getPeticionSVDFAP(idPeticionSVDFAP);
 			svdService.solicitudRespuesta(peticionSVDFAP);
+			peticionSVDFAP.save();
 		} catch (Exception ex) {
 			play.Logger.error("Se ha producido un error realizando la solicitud de respuesta asíncrona");
 			Messages.error("Error solicitando respuesta");

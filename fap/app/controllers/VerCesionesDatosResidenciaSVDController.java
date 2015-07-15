@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.VerCesionesDatosResidenciaSVDControllerGen;
+
+public class VerCesionesDatosResidenciaSVDController extends VerCesionesDatosResidenciaSVDControllerGen {
+
+}

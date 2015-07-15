@@ -84,7 +84,7 @@ public class CesionDatosSVDCrearController extends CesionDatosSVDCrearController
 			}
 		} catch (Exception e) {
 			Messages.error("Error creando la petición");
-			play.Logger.error("Se ha producido un error al crear la petición");
+			play.Logger.error("Se ha producido un error al crear la petición: " + e.getMessage());
 		}
 
 		CesionDatosSVDCrearController.crearRender("editar");

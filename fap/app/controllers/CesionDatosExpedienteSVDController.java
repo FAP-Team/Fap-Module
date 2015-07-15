@@ -55,7 +55,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "respuesta.fechaRespuesta", "justificanteSVD.enlaceDescarga", "estado"));
+		renderJSON(response.toJSON("datosGenericos.transmision.idTransmision", "datosGenericos.solicitante.idExpediente", "fechaCreacion", "fechaRespuesta", "justificanteSVD.enlaceDescarga", "estado", "id"));
 	}
 
 	public static void tablasolicitudesPeticionResidencia(Long idSolicitud) {
@@ -67,7 +67,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 		tables.TableRenderResponse<SolicitudTransmisionSVDFAP> response = new tables.TableRenderResponse<SolicitudTransmisionSVDFAP>(rowsFiltered, true, true, false, "adminOrGestor", "adminOrGestor", "", getAccion(), ids);
 
-		renderJSON(response.toJSON("id", "datosGenericos.solicitante.nombreSolicitante", "datosGenericos.solicitante.unidadTramitadora", "datosGenericos.solicitante.idExpediente", "datosGenericos.solicitante.consentimiento", "fechaCreacion", "respuesta.fechaRespuesta", "justificanteSVD.enlaceDescarga", "estado"));
+		renderJSON(response.toJSON("datosGenericos.transmision.idTransmision", "datosGenericos.solicitante.idExpediente", "fechaCreacion", "fechaRespuesta", "justificanteSVD.enlaceDescarga", "estado", "id"));
 	}
 
 	public static void enviarSolicitudesIdentidad(Long id, List<Long> idsSeleccionados) {
@@ -99,11 +99,9 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 		
 		if (!Messages.hasErrors()) {
 			peticion.save();
-//			String accion = getAccion();
-//			redirect("fap.DescargasAedController.getRespuestaSVD", peticion.uidUsuario, peticion.atributos.idPeticion, peticion.solicitudesTransmision.get(0).datosGenericos.transmision.idTransmision);
 			Messages.ok("Respuesta recibida con éxito");
 			play.Logger.info("Petición enviada con éxito");
-			VerCesionesDatosIdentidadExpedienteSVDController.index("leer", solicitudTransmision.getId());
+			VerCesionesDatosIdentidadExpedienteSVDController.index("leer", solicitudTransmision.getId(), id);
 		}
 		else
 		   CesionDatosExpedienteSVDController.index(getAccion(), id);
@@ -132,10 +130,12 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 
 			}
 		} catch (SVDServiceException e) {
+			Messages.keep();
 			Messages.error("Error al enviar la petición síncrona");
 			play.Logger.error("Error al enviar la petición síncrona: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception er) {
+			Messages.keep();
 			Messages.error("Error al enviar la petición síncrona");
 			play.Logger.error("Error al enviar la petición síncrona: " + er.getMessage());
 			er.printStackTrace();
@@ -143,9 +143,10 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 		
 		if (!Messages.hasErrors()) {
 			peticion.save();
+			Messages.keep();
 			Messages.ok("Respuesta recibida con éxito");
 			play.Logger.info("Petición enviada con éxito");
-			VerCesionesDatosIdentidadExpedienteSVDController.index("leer", solicitudTransmision.getId());
+			VerCesionesDatosIdentidadExpedienteSVDController.index("leer", solicitudTransmision.getId(), id);
 		}
 		else
 		   CesionDatosExpedienteSVDController.index(getAccion(), id);
@@ -161,7 +162,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 		
 		if (!Messages.hasErrors()) {
 			solicitudTransmisionSVDFAP.save();
-			EditarCesionesDatosIdentidadExpedienteSVDController.crearRender(solicitudTransmisionSVDFAP.getId());
+			EditarCesionesDatosIdentidadExpedienteSVDController.editarRender(solicitudTransmisionSVDFAP.getId(), idSolicitud);
 		}else
 			CesionDatosExpedienteSVDController.index("crear", idSolicitud);
 	}
@@ -176,7 +177,7 @@ public class CesionDatosExpedienteSVDController extends CesionDatosExpedienteSVD
 		
 		if (!Messages.hasErrors()) {
 			solicitudTransmisionSVDFAP.save();
-			EditarCesionesDatosIdentidadExpedienteSVDController.crearRender(solicitudTransmisionSVDFAP.getId());
+			EditarCesionesDatosIdentidadExpedienteSVDController.editarRender(solicitudTransmisionSVDFAP.getId(), idSolicitud);
 		}else
 			CesionDatosExpedienteSVDController.index("crear", idSolicitud);
 	}

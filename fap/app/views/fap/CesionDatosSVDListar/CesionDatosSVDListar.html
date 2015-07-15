@@ -1,0 +1,90 @@
+
+#{fap.pagina 
+     accion:accion, 
+     botonBorrar:'Borrar', 
+     botonCrear:'Guardar', 
+     botonEditar:'Guardar', 
+     encType:'application/x-www-form-urlencoded', 
+     formulario:'CesionDatos', 
+     hayForm:false, 
+     mensajeFinal:false, 
+     pagina:'CesionDatosSVDListar', 
+     permiso:'adminOrGestor', 
+     titulo:'Peticiones de cesiones de datos', 
+     urlBorrar:play.mvc.Router.reverse('CesionDatosSVDListarController.borrar' ), 
+     urlCrear:play.mvc.Router.reverse('CesionDatosSVDListarController.crear' ), 
+     urlEditar:play.mvc.Router.reverse('CesionDatosSVDListarController.editar' )
+}
+	
+			#{fap.grupo titulo:'Seleccione el tipo de Servicio'}
+				
+			#{fap.combo campo:'comboNombreServicioSVDFAP.nombreServicio', id:'tipoServicioSVD', requerido:true, titulo:'Servicio: ', parametros:[campo:'comboNombreServicioSVDFAP.nombreServicio', id:'tipoServicioSVD', requerido:true, titulo:'Servicio: '] /}		
+		
+			#{fap.grupo borde:false, siCombo:'tipoServicioSVD', siComboValue:['identidad']}
+				
+#{fap.tabla 
+     campo:'PeticionSVDFAP', 
+     id:'tablaCesionesIdentidad', 
+     idEntidad:'idPeticionSVDFAP', 
+     saveEntity:false, 
+     seleccionable:'Enviar peticiones Identidad', 
+     tipoContainer:'pagina', 
+     titulo:'Peticiones para la cesión de datos de identidad', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosSVDListarController.beforeOpenPageTable" , ['accion':'editar', 'irDespuesDeValidar':'']), 
+     urlCrear:play.mvc.Router.reverse('CesionDatosSVDCrearController.index', ['accion':'crear']), 
+     urlEditar:play.mvc.Router.reverse("EditarPeticionSVDFAPController.index" , ['accion':'editar', 'idPeticionSVDFAP':peticionSVDFAP?.id? peticionSVDFAP?.id:'_idPeticionSVDFAP_']), 
+     urlLeer:play.mvc.Router.reverse("EditarPeticionSVDFAPController.index" , ['accion':'leer', 'idPeticionSVDFAP':peticionSVDFAP?.id? peticionSVDFAP?.id:'_idPeticionSVDFAP_']), 
+     urlSeleccionable:'CesionDatosSVDListarController.enviarpeticionesIdentidad', 
+     urlTabla:@CesionDatosSVDListarController.tablatablaCesionesIdentidad()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Fecha de respuesta', campo:'fechaRespuesta' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Referencia', campo:'atributos.idPeticion', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estadoPeticion', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{fap.grupo borde:false, siCombo:'tipoServicioSVD', siComboValue:['residencia']}
+				
+#{fap.tabla 
+     campo:'PeticionSVDFAP', 
+     id:'tablaCesionesResidencia', 
+     idEntidad:'idPeticionSVDFAP', 
+     saveEntity:false, 
+     seleccionable:'Enviar peticiones Residencia', 
+     tipoContainer:'pagina', 
+     titulo:'Peticiones para la cesión de datos de residencia', 
+     urlBeforeOpenPageTable:play.mvc.Router.reverse("CesionDatosSVDListarController.beforeOpenPageTable" , ['accion':'editar', 'irDespuesDeValidar':'']), 
+     urlCrear:play.mvc.Router.reverse('CesionDatosSVDCrearController.index', ['accion':'crear']), 
+     urlEditar:play.mvc.Router.reverse("EditarPeticionSVDFAPController.index" , ['accion':'editar', 'idPeticionSVDFAP':peticionSVDFAP?.id? peticionSVDFAP?.id:'_idPeticionSVDFAP_']), 
+     urlLeer:play.mvc.Router.reverse("EditarPeticionSVDFAPController.index" , ['accion':'leer', 'idPeticionSVDFAP':peticionSVDFAP?.id? peticionSVDFAP?.id:'_idPeticionSVDFAP_']), 
+     urlSeleccionable:'CesionDatosSVDListarController.enviarpeticionesResidencia', 
+     urlTabla:@CesionDatosSVDListarController.tablatablaCesionesResidencia()
+}
+	
+	#{fap.columna alignPosition:'left', ancho:40, cabecera:'ID', campo:'id' /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Fecha de creación', campo:'fechaCreacion' /}
+		
+	#{fap.columna alignPosition:'left', ancho:80, cabecera:'Fecha de respuesta', campo:'fechaRespuesta' /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Referencia', campo:'atributos.idPeticion', expandir:true /}
+		
+	#{fap.columna alignPosition:'left', ancho:200, cabecera:'Estado', campo:'estadoPeticion', expandir:true /}
+		
+#{/fap.tabla}
+
+			#{/fap.grupo}
+		
+			#{/fap.grupo}
+		
+#{/fap.pagina}
+		

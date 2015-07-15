@@ -1,0 +1,7 @@
+package controllers;
+
+import controllers.gen.EditarCesionesDatosIdentidadSVDControllerGen;
+
+public class EditarCesionesDatosIdentidadSVDController extends EditarCesionesDatosIdentidadSVDControllerGen {
+
+}

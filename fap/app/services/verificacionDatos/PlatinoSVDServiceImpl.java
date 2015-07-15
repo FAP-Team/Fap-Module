@@ -21,6 +21,7 @@ import models.PeticionSVDFAP;
 import models.SolicitudTransmisionSVDFAP;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import com.itextpdf.text.Document;
 import com.sun.java_cup.internal.runtime.Scanner;
@@ -89,6 +90,13 @@ public class PlatinoSVDServiceImpl implements SVDService {
 			play.Logger.info("El servicio de SVD ha sido inyectado con Platino y NO está operativo.");
 	}
 
+	/**
+	 * Método que nos permite realizar una petición para la cesión de datos de forma síncrona.
+	 * 
+	 * Requesitos:
+	 * - Debe existir la autorización para poder realizar la misma.
+	 * - Sólo se permite una cesión de datos cada vez y tiene que haber al menos una.
+	 */
 	@Override
 	public void peticionSincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 
@@ -96,7 +104,7 @@ public class PlatinoSVDServiceImpl implements SVDService {
 			PeticionSincrona peticionPlatino = SVDUtils.peticionSincronaFAPToPeticionSincronaPlatino(peticion);
 			Respuesta respuestaPlatino = svdPort.peticionSincrona(peticionPlatino);
 			SVDUtils.respuestaPlatinoToRespuestaFAP(respuestaPlatino, peticion);
-			repercutirRespuestaExpedienteAED(peticion, peticion.solicitudesTransmision);			
+			repercutirRespuestaExpedienteAED(peticion, peticion.solicitudesTransmision.get(0));			
 		}
 		catch (Exception e) {
 			play.Logger.error("No se ha podido enviar la petición Síncrona. Causa: " + e.getMessage());
@@ -105,16 +113,22 @@ public class PlatinoSVDServiceImpl implements SVDService {
 
 	}
 
+	/**
+	 * Método que nos permite realizar una petición para la cesión de datos de forma asíncrona.
+	 * 
+	 * Requesitos:
+	 * - Debe existir la autorización para poder realizar la misma.
+	 * - Se pueden enviar más de una petición de datos a la vez, el máximo lo define el servicio y como mínimo una.
+	 */
 	@Override
 	public void peticionAsincrona(PeticionSVDFAP peticion) throws SVDServiceException {
 
 		try {
 			PeticionAsincrona peticionPlatino = SVDUtils.peticionAsincronaFAPToPeticionAsincronaPlatino(peticion);
+			peticion.fechaPeticion = new DateTime().now();
+			
 			ConfirmacionPeticion confirmacionPeticion = svdPort.peticionAsincrona(peticionPlatino);
-			peticion.estadoPeticion = TipoEstadoPeticionSVDFAPEnum.enviada.name();
-			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision)
-				solicitudTransmision.estado = TipoEstadoPeticionSVDFAPEnum.enviada.name();
-
+			
 			//Atributos
 			peticion.atributos.codigoCertificado = confirmacionPeticion.getAtributos().getCodigoCertificado();
 			peticion.atributos.idPeticion = confirmacionPeticion.getAtributos().getIdPeticion();
@@ -123,15 +137,30 @@ public class PlatinoSVDServiceImpl implements SVDService {
 
 			//Estado
 			peticion.atributos.estado.literalError = confirmacionPeticion.getAtributos().getEstado().getLiteralError();
-
-			peticion.save();
+		    peticion.fechaConfirmacion = SVDUtils.parseFecha(confirmacionPeticion.getAtributos().getTimeStamp());
+			
+			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision) {
+				solicitudTransmision.fechaPeticion = peticion.fechaPeticion;
+				solicitudTransmision.estado = TipoEstadoPeticionSVDFAPEnum.enviada.name();
+			}
+			
+			peticion.estadoPeticion = TipoEstadoPeticionSVDFAPEnum.enviada.name();
 		}
 		catch (Exception e) {
-			play.Logger.error("No se ha podido enviar la petición Asíncrona. Causa: " + e);
+			play.Logger.error("No se ha podido enviar la petición Asíncrona. Causa: " + e.getMessage());
 			throw new SVDServiceException("Error al realizar la petición Asíncrona", e);
 		}
 	}
 
+	/**
+	 * Nos permite recuperar las respuestas a la petición de un número de cesiones de datos.
+	 * 
+	 * Requesitos:
+	 * - Debe existir una petición con los datos del (uidUsuario, atributos...)
+	 * - Para cada cesión de datos de la petición debe repercutirse el documento de la respuesta en 
+	 *   los respectivos expedientes.
+	 *   
+	 */
 	@Override
 	public void solicitudRespuesta(PeticionSVDFAP peticion) throws SVDServiceException {
 
@@ -142,11 +171,11 @@ public class PlatinoSVDServiceImpl implements SVDService {
 			Respuesta respuesta = svdPort.solicitudRespuesta(solicitudRespuesta);
 			SVDUtils.respuestaPlatinoToRespuestaFAP(respuesta, peticion);
 			peticion.estadoPeticion = TipoEstadoPeticionSVDFAPEnum.recibida.name();
-			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision)
+			for (SolicitudTransmisionSVDFAP solicitudTransmision: peticion.solicitudesTransmision) {
+				solicitudTransmision.fechaRespuesta = solicitudTransmision.datosGenericos.transmision.fechaGeneracion;
 				solicitudTransmision.estado = TipoEstadoPeticionSVDFAPEnum.recibida.name();
-
-			peticion.save();
-
+				repercutirRespuestaExpedienteAED(peticion, solicitudTransmision);	
+			}
 		} catch (Exception e) {
 			play.Logger.error("No se ha podido solicitar la respuesta: " + e.getMessage());
 			throw new SVDServiceException("Error al realizar la solicitud de respuesta", e);
@@ -154,6 +183,13 @@ public class PlatinoSVDServiceImpl implements SVDService {
 
 	}
 
+	/**
+	 * Método que recupera un fichero con la respuesta a la petición de cesión de datos.
+	 * 
+	 * Requisitos:
+	 * - Debe existir una petición con los datos del (uidUsuario, idPeticion, idTransmision)
+	 * - Se recibe un documneto por cada idTransmision
+	 */
 	@Override
 	public RespuestaPdf peticionPDF(String uidUsuario, String idPeticion, String idTransmision) throws SVDServiceException {
 		PeticionPdf peticionPDF = new PeticionPdf();
@@ -171,6 +207,13 @@ public class PlatinoSVDServiceImpl implements SVDService {
 		return respuestaPdf;
 	}
 
+	/**
+	 * Método que permite recuperar una petición de cesión de datos.
+	 * 
+	 * Requisitos:
+	 * - Debe existir una petición con los datos del (uidUsuario, idPeticion)
+	 * 
+	 */
 	@Override
 	public Respuesta peticionRecover(PeticionSVDFAP peticion) throws SVDServiceException {
 		Respuesta peticionResponse = null;
@@ -205,65 +248,30 @@ public class PlatinoSVDServiceImpl implements SVDService {
 		return propertyPlaceholder.get("fap.platino.svd.url");
 	}
 	
-	private void repercutirRespuestaExpedienteAED(PeticionSVDFAP peticion, List<SolicitudTransmisionSVDFAP> solicitudes) throws SVDServiceException{
+	/**
+	 * Método que se encarga de recuperar el justificante de la cesión de datos y repercutirlo en el expediente.
+	 * @param peticion
+	 * @param solicitud
+	 * @throws SVDServiceException
+	 */
+	private void repercutirRespuestaExpedienteAED(PeticionSVDFAP peticion,SolicitudTransmisionSVDFAP solicitud) throws SVDServiceException{
 		try {
-		
-			for (SolicitudTransmisionSVDFAP solicitudTransmision : solicitudes){
-			   RespuestaPdf respuestaPDFSVD = peticionPDF(peticion.uidUsuario, peticion.atributos.idPeticion, solicitudTransmision.datosGenericos.transmision.idTransmision);
+			   RespuestaPdf respuestaPDFSVD = peticionPDF(peticion.uidUsuario, peticion.atributos.idPeticion, solicitud.datosGenericos.transmision.idTransmision);
+			  
+			   //Creando y almacenando el justificante de la cesión de datos en el AED
 			   DataHandler docPDF = respuestaPDFSVD.getPdf();
+			   solicitud.justificanteSVD = new Documento();
+			   solicitud.justificanteSVD.descripcion = "Justificante de peticion para la cesión de datos de " + peticion.nombreServicio;
+			   solicitud.justificanteSVD.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteSVD");
+			   gestorDocumentalService.saveDocumentoTemporal(solicitud.justificanteSVD, docPDF.getInputStream(), "JustificanteSVD.pdf");
 			   
-//			   Documento docRespuestaSVDFAP = new Documento();
-//			   docRespuestaSVDFAP.descripcion = "Justificante de peticion para la cesión de datos de " + peticion.nombreServicio;
-//			   docRespuestaSVDFAP.tipo = FapProperties.get("fap.aed.tiposdocumentos.justificanteSVD");
-//			   gestorDocumentalService.saveDocumentoTemporal(docRespuestaSVDFAP, docPDF.getInputStream(), "JustificanteSVD.pdf");
-
-//			   List<Documento> lstDocumentos = new ArrayList<Documento>();
-//			   lstDocumentos.clear();
-//			   lstDocumentos.add(docRespuestaSVDFAP);
-//			   gestorDocumentalService.clasificarDocumentos(solicitudTransmision.solicitud, lstDocumentos);
-			}
+			   //Clasificando el justificante de la sesión de datos en el expediente
+			   List<Documento> lstdocDocumentos = new ArrayList<Documento>();
+			   lstdocDocumentos.add(solicitud.justificanteSVD);
+			   gestorDocumentalService.clasificarDocumentos(solicitud.solicitud, lstdocDocumentos);
 		}catch(Exception e){
 			throw new SVDServiceException("No se ha podido obtener el justificante de la petición para la cesión de datos con código: " + peticion.atributos.idPeticion, e);
 		}
 	}
-	
-//	private void InputStreamToFile(InputStream is){
-//		OutputStream outputStream = null;
-//		 
-//		try {
-//			// write the inputStream to a FileOutputStream
-//			outputStream = 
-//	                    new FileOutputStream(new File("C:/Users/Byron/Desktop/prueba.txt"));
-//	 
-//			int read = 0;
-//			byte[] bytes = new byte[1024];
-//	 
-//			while ((read = is.read(bytes)) != -1) {
-//				outputStream.write(bytes, 0, read);
-//			}
-//	 
-//			System.out.println("Done!");
-//	 
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (is != null) {
-//				try {
-//					is.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			if (outputStream != null) {
-//				try {
-//					// outputStream.flush();
-//					outputStream.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//	 
-//			}
-//		}
-//	}
 	
 }

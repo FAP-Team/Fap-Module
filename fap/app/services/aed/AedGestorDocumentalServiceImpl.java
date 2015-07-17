@@ -925,37 +925,28 @@ public class AedGestorDocumentalServiceImpl implements GestorDocumentalService {
         try {
             PropiedadesDocumento propiedadesDocumento = obtenerPropiedades(documento.uri, documento.clasificado);
             PropiedadesAdministrativas propiedadesAdministrativas = (PropiedadesAdministrativas)propiedadesDocumento.getPropiedadesAvanzadas();
-            Firma firmaActual = propiedadesAdministrativas.getFirma();
-
 			boolean clasificado = isClasificado(documento);
-
-            models.Firmante firmante = firma.getFirmantes().get(0);
+            List<models.Firmante> firmantes = firma.getFirmantes();
+            
+            Firma firmaActual = propiedadesAdministrativas.getFirma();
     		if (propiedadesAdministrativas.getFirma() == null) {
     			firmaActual = new Firma();
     			firmaActual.setContenido(firma.getContenido());
-    			firmaActual.setTipoMime("text/xml");
-                asignarFirmante(firmaActual, firmante);
+    			firmaActual.setTipoMime("text/plain");
+    		} else		
+	    		if (!contieneTodosFirmantes(firmaActual.getContenido(), firma.getContenido())){
+	                throw new GestorDocumentalServiceException("La firma no contiene a los firmantes anteriores");
+	            }
+    		
+			for (models.Firmante firmante : firmantes)
+               asignarFirmante(firmaActual, firmante);
 
-    			propiedadesAdministrativas.setFirma(firmaActual);
-    			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
-
-    			String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
-
-    		} else if (!containsFirmante(firmante, firmaActual.getFirmantes())) {
-                if (!contieneTodosFirmantes(firmaActual.getContenido(), firma.getContenido())){
-                    throw new GestorDocumentalServiceException("La firma no contiene a los firmantes anteriores");
-                }
-    			Firma firmaNueva = concatenarFirma(firmaActual, firmante, firma.getContenido());
-
-            	propiedadesAdministrativas.setFirma(firmaNueva);
-            	propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
-
-            	String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
-            }
-            else {
-            	throw new GestorDocumentalServiceException("La firma ya existía");
-            }
+			propiedadesAdministrativas.setFirma(firmaActual);
+			propiedadesDocumento.setPropiedadesAvanzadas(propiedadesAdministrativas);
+			String uri = actualizarPropiedades(propiedadesDocumento, clasificado, documento);
+			play.Logger.info("Se ha agreado la firma al documento con uri: " + uri + " satisfactoriamente");
         }catch(AedExcepcion e){
+        	play.Logger.error("Se ha producido un error al agregar la firma en el documento AED", e);
             throw serviceExceptionFrom(e);
         }
     }
